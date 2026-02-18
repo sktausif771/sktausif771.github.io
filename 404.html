@@ -3,21 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 | SYSTEM ERROR</title>
+    <title>404 | SYSTEM FAILURE</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
+        /* =========================================
+           ERROR PAGE STYLES (INTERNAL)
+           ========================================= */
         :root {
             --primary: #00e676;
-            --red: #ff0055;
-            --bg: #050505;
+            --danger: #ff1744;
+            --bg-dark: #050505;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background-color: var(--bg);
+            background-color: var(--bg-dark);
             color: white;
             height: 100vh;
             display: flex;
@@ -27,23 +31,38 @@
             font-family: 'Share Tech Mono', monospace;
             overflow: hidden;
             text-align: center;
+            position: relative;
         }
 
-        /* --- GLITCH TEXT EFFECT --- */
-        .glitch-container {
+        /* --- BACKGROUND NOISE EFFECT --- */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* --- GLITCH TEXT CONTAINER --- */
+        .glitch-box {
             position: relative;
             margin-bottom: 20px;
         }
 
         .error-code {
-            font-size: 120px;
-            font-weight: bold;
+            font-size: 150px;
+            font-weight: 800;
             font-family: 'Rajdhani', sans-serif;
             color: white;
+            letter-spacing: -5px;
             position: relative;
             z-index: 1;
         }
 
+        /* Glitch Layers */
         .error-code::before,
         .error-code::after {
             content: attr(data-text);
@@ -52,78 +71,96 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: var(--bg);
+            background: var(--bg-dark);
         }
 
         .error-code::before {
             left: 2px;
-            text-shadow: -1px 0 var(--red);
+            text-shadow: -2px 0 var(--danger);
             clip: rect(24px, 550px, 90px, 0);
-            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+            animation: glitch-anim-1 3s infinite linear alternate-reverse;
         }
 
         .error-code::after {
             left: -2px;
-            text-shadow: -1px 0 var(--primary);
+            text-shadow: -2px 0 var(--primary);
             clip: rect(85px, 550px, 140px, 0);
-            animation: glitch-anim 2.5s infinite linear alternate-reverse;
+            animation: glitch-anim-2 2.5s infinite linear alternate-reverse;
         }
 
-        /* --- TEXT CONTENT --- */
-        .msg-title {
+        /* --- MESSAGE TEXT --- */
+        .error-title {
             font-size: 24px;
-            color: var(--primary);
+            color: var(--danger);
             text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
+            letter-spacing: 4px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--danger);
+            display: inline-block;
+            padding-bottom: 5px;
         }
 
-        .msg-desc {
+        .error-desc {
             color: #888;
             font-size: 14px;
-            max-width: 300px;
-            line-height: 1.5;
-            margin-bottom: 30px;
+            max-width: 400px;
+            line-height: 1.6;
+            margin-bottom: 40px;
         }
 
-        /* --- HOME BUTTON --- */
+        /* --- BUTTONS --- */
         .btn-home {
-            padding: 12px 30px;
+            position: relative;
+            padding: 15px 40px;
             background: transparent;
             color: var(--primary);
             border: 1px solid var(--primary);
             font-family: 'Rajdhani', sans-serif;
-            font-weight: bold;
+            font-weight: 700;
             font-size: 16px;
             text-decoration: none;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
             transition: 0.3s;
-            position: relative;
             overflow: hidden;
+            z-index: 2;
+        }
+
+        .btn-home::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: var(--primary);
+            transition: 0.3s;
+            z-index: -1;
         }
 
         .btn-home:hover {
-            background: var(--primary);
             color: black;
-            box-shadow: 0 0 20px rgba(0, 230, 118, 0.4);
+            box-shadow: 0 0 30px rgba(0, 230, 118, 0.4);
         }
+        .btn-home:hover::before { left: 0; }
 
-        /* --- COUNTDOWN TIMER --- */
-        .redirect-msg {
-            margin-top: 20px;
+        /* --- COUNTDOWN --- */
+        .redirect-timer {
+            margin-top: 30px;
             font-size: 12px;
             color: #555;
         }
+        .redirect-timer span {
+            color: white;
+            font-weight: bold;
+        }
 
-        /* --- ANIMATION KEYFRAMES --- */
-        @keyframes glitch-anim {
-            0% { clip: rect(10px, 9999px, 30px, 0); transform: skew(0.6deg); }
-            20% { clip: rect(50px, 9999px, 20px, 0); transform: skew(0.2deg); }
-            40% { clip: rect(20px, 9999px, 80px, 0); transform: skew(0.1deg); }
-            60% { clip: rect(80px, 9999px, 40px, 0); transform: skew(0.8deg); }
-            80% { clip: rect(40px, 9999px, 10px, 0); transform: skew(0.3deg); }
-            100% { clip: rect(70px, 9999px, 60px, 0); transform: skew(0.5deg); }
+        /* --- ANIMATIONS KEYFRAMES --- */
+        @keyframes glitch-anim-1 {
+            0% { clip: rect(30px, 9999px, 10px, 0); transform: skew(0.6deg); }
+            20% { clip: rect(50px, 9999px, 80px, 0); transform: skew(0.2deg); }
+            40% { clip: rect(10px, 9999px, 90px, 0); transform: skew(0.1deg); }
+            60% { clip: rect(80px, 9999px, 20px, 0); transform: skew(0.8deg); }
+            80% { clip: rect(40px, 9999px, 60px, 0); transform: skew(0.3deg); }
+            100% { clip: rect(70px, 9999px, 30px, 0); transform: skew(0.5deg); }
         }
 
         @keyframes glitch-anim-2 {
@@ -134,38 +171,31 @@
             80% { clip: rect(90px, 9999px, 40px, 0); transform: skew(0.1deg); }
             100% { clip: rect(30px, 9999px, 70px, 0); transform: skew(0.9deg); }
         }
-
-        /* CRT SCANLINE EFFECT */
-        body::before {
-            content: " ";
-            display: block;
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            z-index: 2;
-            background-size: 100% 2px, 3px 100%;
-            pointer-events: none;
-        }
     </style>
 </head>
 <body>
 
-    <div class="glitch-container">
+    <div class="glitch-box">
         <h1 class="error-code" data-text="404">404</h1>
     </div>
 
-    <div class="msg-title">SYSTEM SIGNAL LOST</div>
-    <p class="msg-desc">The requested file path has been corrupted or removed from the server database.</p>
+    <div class="error-title">SYSTEM SIGNAL LOST</div>
+    
+    <p class="error-desc">
+        The requested module could not be located in the MVX database. 
+        It may have been deleted or moved to a secure sector.
+    </p>
 
-    <a href="index.html" class="btn-home">RETURN TO BASE</a>
+    <a href="index.html" class="btn-home">
+        <i class="fas fa-undo"></i> RETURN TO BASE
+    </a>
 
-    <p class="redirect-msg">Auto-redirecting in <span id="countdown">5</span>s...</p>
+    <p class="redirect-timer">
+        Auto-redirecting in <span id="countdown">5</span> seconds...
+    </p>
 
     <script>
-        // --- AUTO REDIRECT LOGIC ---
+        // --- AUTO REDIRECT SYSTEM ---
         let seconds = 5;
         const countSpan = document.getElementById('countdown');
 
@@ -175,7 +205,7 @@
 
             if (seconds <= 0) {
                 clearInterval(timer);
-                window.location.href = "index.html"; // হোম পেজে পাঠিয়ে দিবে
+                window.location.href = "index.html"; // ব্যাক টু হোম
             }
         }, 1000);
     </script>

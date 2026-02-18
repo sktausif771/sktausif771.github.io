@@ -1,10 +1,13 @@
-/* =========================================
+/* ==========================================================================
    MVX STORE - CORE ENGINE (MAIN.JS)
-   Version: 5.0.2
-   Powered by: Firebase Realtime Database
-   ========================================= */
+   Version: 5.5.0 (Ultra Stable)
+   Server: Firebase Realtime Database
+   Auth: Google Identity Platform
+   ========================================================================== */
 
-// --- 1. FIREBASE CONFIGURATION (আপনার ডাটাবেস কানেকশন) ---
+console.log("Initializing MVX Store System...");
+
+// --- 1. FIREBASE CONFIGURATION (YOUR SPECIFIC DATA) ---
 const firebaseConfig = {
     apiKey: "AIzaSyAS3UXXrio_-c9uPbHwpDuTVrP-p8d903w",
     authDomain: "white-2k-17-v4.firebaseapp.com",
@@ -19,249 +22,300 @@ const firebaseConfig = {
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 } else {
-    firebase.app(); // if already initialized
+    firebase.app();
 }
 
+// --- Initialize Services ---
 const db = firebase.database();
+const auth = firebase.auth();
+const provider = new firebase.auth.GoogleAuthProvider();
 
 // --- 2. GLOBAL VARIABLES & DOM ELEMENTS ---
 const appGrid = document.getElementById('app-grid-container');
-const preloader = document.getElementById('preloader-overlay');
+const preloader = document.getElementById('app-preloader');
 const searchInput = document.getElementById('searchInput');
-const noResults = document.getElementById('no-results');
+const noResults = document.getElementById('no-results-view');
 const modal = document.getElementById('download-modal');
 
-let allAppsData = []; // Store all apps locally for fast searching
-let currentCategory = "All";
+// Data Storage
+let allAppsData = []; 
+let currentUser = null;
+const SERVER_PATH = "MVX_VIP_SERVER_V5"; // **NEW PATH** (Fix #3: No Data Mix)
 
-// --- 3. PRELOADER & INITIALIZATION ---
+// --- 3. SYSTEM STARTUP & PRELOADER ---
 window.addEventListener('load', () => {
-    // Hide preloader after connection is established
-    setTimeout(() => {
-        preloader.style.opacity = '0';
-        setTimeout(() => {
-            preloader.style.display = 'none';
-        }, 500);
-    }, 1500); // Minimum 1.5s showing brand logo
+    // Check Server Connection
+    const connectedRef = db.ref(".info/connected");
+    connectedRef.on("value", (snap) => {
+        if (snap.val() === true) {
+            console.log("✅ Connected to MVX V5 Server");
+            hidePreloader();
+        } else {
+            console.log("⚠️ Connecting...");
+        }
+    });
+
+    // Fallback to hide preloader if connection is slow
+    setTimeout(hidePreloader, 3000);
 });
 
-// --- 4. FETCH DATA FROM FIREBASE (REALTIME) ---
-console.log("Connecting to Firebase Database...");
+function hidePreloader() {
+    if(preloader) {
+        preloader.style.opacity = '0';
+        setTimeout(() => { preloader.style.display = 'none'; }, 500);
+    }
+}
 
-db.ref('apps').on('value', (snapshot) => {
+// --- 4. AUTHENTICATION SYSTEM (GOOGLE LOGIN - FIX #1) ---
+function signInWithGoogle() {
+    showToast("Connecting to Google...");
+    auth.signInWithPopup(provider)
+        .then((result) => {
+            showToast("Login Successful! Welcome " + result.user.displayName);
+            updateUI(result.user);
+        }).catch((error) => {
+            console.error(error);
+            showToast("Login Failed: " + error.message);
+        });
+}
+
+function signOutUser() {
+    auth.signOut().then(() => {
+        showToast("Logged out successfully");
+        updateUI(null);
+    });
+}
+
+// Auth State Observer
+auth.onAuthStateChanged((user) => {
+    currentUser = user;
+    updateUI(user);
+});
+
+// Update Sidebar UI based on Login Status
+function updateUI(user) {
+    const guestView = document.getElementById('guest-view');
+    const userView = document.getElementById('user-view');
+    const headerProfile = document.getElementById('header-profile-img');
+
+    if (user) {
+        // User is Logged In
+        guestView.style.display = 'none';
+        userView.style.display = 'block';
+        
+        document.getElementById('user-avatar-img').src = user.photoURL;
+        document.getElementById('user-display-name').innerText = user.displayName;
+        document.getElementById('user-email-addr').innerText = user.email;
+        headerProfile.src = user.photoURL;
+        
+        // Save to Session for Admin check
+        sessionStorage.setItem("user_email", user.email);
+    } else {
+        // User is Guest
+        guestView.style.display = 'block';
+        userView.style.display = 'none';
+        headerProfile.src = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+    }
+}
+
+// --- 5. DATA FETCHING (REALTIME) ---
+console.log(`Fetching Apps from: ${SERVER_PATH}`);
+
+db.ref(SERVER_PATH).on('value', (snapshot) => {
     const data = snapshot.val();
-    allAppsData = []; // Reset local data
+    allAppsData = []; // Clear local list
     
     if (data) {
-        // Convert Object to Array & Reverse (To show Newest Uploads First)
+        // Convert Object to Array & Reverse (Newest First)
         Object.keys(data).forEach(key => {
             allAppsData.push({
                 id: key,
                 ...data[key]
             });
         });
-        allAppsData.reverse(); // Newest first
+        allAppsData.reverse(); 
         
-        // Initial Render
+        // Render to Screen
         renderApps(allAppsData);
-        showToast(`Database Synced: ${allAppsData.length} Apps Loaded`);
+        showToast(`Server Synced: ${allAppsData.length} New Mods Loaded`);
     } else {
-        appGrid.innerHTML = '<p style="text-align:center; width:100%; color:#555;">No apps uploaded yet. Go to Admin Panel.</p>';
+        appGrid.innerHTML = `
+            <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;">
+                <i class="fas fa-server" style="font-size: 40px; margin-bottom: 10px;"></i>
+                <p>New Server V5 is Ready & Online!</p>
+                <p style="font-size: 12px; margin-top:5px;">Waiting for Admin to upload content...</p>
+            </div>
+        `;
     }
 }, (error) => {
-    console.error("Firebase Error:", error);
-    showToast("Error connecting to server!");
+    showToast("Database Error: " + error.message);
 });
 
-// --- 5. RENDER APPS TO HTML ---
-function renderApps(appsToRender) {
-    appGrid.innerHTML = ''; // Clear existing content
+// --- 6. RENDER FUNCTION (HTML GENERATOR) ---
+function renderApps(apps) {
+    appGrid.innerHTML = ''; // Clear skeleton
 
-    if (appsToRender.length === 0) {
-        noResults.style.display = 'flex'; // Show "No Results"
+    if (apps.length === 0) {
+        noResults.style.display = 'block';
         return;
     } else {
         noResults.style.display = 'none';
     }
 
-    appsToRender.forEach(app => {
-        // Create Card Element
+    apps.forEach(app => {
         const card = document.createElement('div');
         const isVip = app.category === 'VIP' || app.isPremium === 'true';
         
-        // Conditional Classes for Styling
-        card.className = `app-card ${isVip ? 'vip-card' : ''}`;
+        card.className = `app-card ${isVip ? 'vip-item' : ''}`;
         
-        // Inner HTML of the Card
+        // Dynamic HTML Card
         card.innerHTML = `
-            ${isVip ? '<div style="position:absolute; top:5px; right:5px; color:gold; font-size:10px;"><i class="fas fa-crown"></i></div>' : ''}
-            <img src="${app.iconUrl}" class="app-icon" alt="${app.appName}" loading="lazy" onerror="this.src='https://cdn-icons-png.flaticon.com/512/104/104663.png'">
-            <div class="app-title">${app.appName}</div>
-            <div class="app-meta">${app.size || 'N/A'} • ${app.version || 'v1.0'}</div>
-            <button class="btn-get" onclick="openDownloadModal('${app.id}')">
-                ${isVip ? 'UNLOCK NOW' : 'DOWNLOAD'}
+            ${isVip ? '<div style="position:absolute; top:5px; right:5px; color:#FFD700; font-size:12px; z-index:2;"><i class="fas fa-crown"></i></div>' : ''}
+            
+            <img src="${app.iconUrl}" class="app-icon-img" loading="lazy" 
+                 onerror="this.src='https://cdn-icons-png.flaticon.com/512/564/564619.png'">
+            
+            <div class="app-name-text" style="${isVip ? 'color:#FFD700' : ''}">${app.appName}</div>
+            
+            <div class="app-meta-text">
+                ${app.version || 'vLatest'} • ${app.size || 'Unknown'}
+            </div>
+            
+            <button class="btn-card-action ${isVip ? 'vip-btn' : ''}" onclick="openDownloadModal('${app.id}')">
+                ${isVip ? '<i class="fas fa-lock"></i> UNLOCK' : 'DOWNLOAD'}
             </button>
         `;
         
-        // Add to Grid
         appGrid.appendChild(card);
     });
 }
 
-// --- 6. CATEGORY FILTER LOGIC ---
-const categoryButtons = document.querySelectorAll('.cat-chip');
+// --- 7. CATEGORY FILTER SYSTEM ---
+const catButtons = document.querySelectorAll('.cat-pill');
 
-categoryButtons.forEach(btn => {
+catButtons.forEach(btn => {
     btn.addEventListener('click', () => {
-        // 1. Remove active class from all
-        categoryButtons.forEach(b => b.classList.remove('active'));
-        // 2. Add active to clicked
+        // Active State Logic
+        catButtons.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         
-        // 3. Filter Data
-        const category = btn.getAttribute('data-filter');
-        currentCategory = category;
+        const filter = btn.getAttribute('data-filter');
         
-        if (category === 'All') {
+        if (filter === 'All') {
             renderApps(allAppsData);
         } else {
-            const filtered = allAppsData.filter(app => app.category === category);
+            const filtered = allAppsData.filter(app => app.category === filter);
             renderApps(filtered);
         }
     });
 });
 
-// --- 7. SEARCH FUNCTIONALITY ---
+// --- 8. SEARCH SYSTEM ---
 searchInput.addEventListener('input', (e) => {
     const term = e.target.value.toLowerCase();
-    
-    const filtered = allAppsData.filter(app => {
-        return app.appName.toLowerCase().includes(term) || 
-               (app.category && app.category.toLowerCase().includes(term));
-    });
-    
+    const filtered = allAppsData.filter(app => 
+        app.appName.toLowerCase().includes(term) || 
+        (app.category && app.category.toLowerCase().includes(term))
+    );
     renderApps(filtered);
 });
 
-// UI Logic for Search Bar Toggle
-const searchToggle = document.getElementById('search-toggle');
-const searchDrawer = document.getElementById('search-drawer');
-const clearSearch = document.getElementById('clearSearch');
-
-searchToggle.addEventListener('click', () => {
-    searchDrawer.classList.toggle('open');
-    if(searchDrawer.classList.contains('open')) {
-        searchInput.focus();
-    }
-});
-
-// Clear Search Button Logic
-searchInput.addEventListener('keyup', () => {
-    if(searchInput.value.length > 0) clearSearch.style.display = 'block';
-    else clearSearch.style.display = 'none';
-});
-
-clearSearch.addEventListener('click', () => {
+// Clear Search
+document.getElementById('clearSearchBtn').addEventListener('click', () => {
     searchInput.value = '';
-    renderApps(allAppsData); // Reset list
-    clearSearch.style.display = 'none';
-    searchInput.focus();
+    renderApps(allAppsData);
+    document.getElementById('search-bar-container').classList.remove('open');
 });
 
-
-// --- 8. DOWNLOAD MODAL SYSTEM ---
+// --- 9. DOWNLOAD MODAL LOGIC (SECURE) ---
 function openDownloadModal(appId) {
     const app = allAppsData.find(a => a.id === appId);
     if (!app) return;
 
-    // Populate Modal Data
-    document.getElementById('modal-app-icon').src = app.iconUrl;
-    document.getElementById('modal-app-name').innerText = app.appName;
-    document.getElementById('modal-app-meta').innerText = `${app.version} • ${app.size}`;
-    
-    const downloadBtn = document.getElementById('final-download-btn');
-    
-    // Check if Password/Video Task is required (VIP Logic)
-    if (app.password && app.password.length > 0) {
-        downloadBtn.innerText = "LOCKED (Watch Video)";
-        downloadBtn.style.background = "#ff9800"; // Orange color for lock
-        downloadBtn.onclick = function() {
-            alert("🔒 This file is password protected!\nPlease contact Admin to get access.");
-        };
+    // Set Data
+    document.getElementById('modal-icon').src = app.iconUrl;
+    document.getElementById('modal-title').innerText = app.appName;
+    document.getElementById('modal-version').innerText = app.version || 'v1.0';
+    document.getElementById('modal-size').innerText = app.size || 'N/A';
+    document.getElementById('modal-type').innerText = app.category || 'APK';
+
+    const dlBtn = document.getElementById('start-download-btn');
+    const loginMsg = document.getElementById('login-required-msg');
+
+    // VIP Logic (Optional: Require Login for VIP)
+    if (app.category === 'VIP' && !currentUser) {
+        dlBtn.style.opacity = '0.5';
+        dlBtn.style.pointerEvents = 'none';
+        dlBtn.innerHTML = '<i class="fas fa-lock"></i> Login Required';
+        loginMsg.style.display = 'block';
     } else {
-        // Direct Download Logic
-        downloadBtn.innerText = "START DOWNLOAD";
-        downloadBtn.style.background = "#00e676";
+        dlBtn.style.opacity = '1';
+        dlBtn.style.pointerEvents = 'auto';
+        dlBtn.innerHTML = '<i class="fas fa-cloud-download-alt"></i> START DOWNLOAD';
+        loginMsg.style.display = 'none';
         
-        downloadBtn.onclick = function() {
-            // Trigger Direct Download
-            const link = document.createElement('a');
-            link.href = app.downloadUrl;
-            link.target = '_blank'; // Open in new tab/start download
-            link.download = app.appName + '.apk';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            showToast("Download Started...");
-            closeModal();
-        };
+        // Handle Password Protection
+        if(app.password && app.password.trim() !== "") {
+             dlBtn.onclick = () => {
+                 const userPass = prompt("🔒 Enter Password to Download:");
+                 if(userPass === app.password) {
+                     initiateDownload(app.downloadUrl);
+                 } else {
+                     showToast("❌ Wrong Password!");
+                 }
+             };
+        } else {
+             dlBtn.onclick = () => initiateDownload(app.downloadUrl);
+        }
     }
 
-    // Show Modal with Animation
     modal.classList.add('active');
 }
 
-// Close Modal Logic
-document.getElementById('closeModalBtn').addEventListener('click', closeModal);
-// Close if clicked outside
+function initiateDownload(url) {
+    showToast("🚀 Download Started...");
+    
+    // Direct Download Trigger
+    const a = document.createElement('a');
+    a.href = url;
+    a.target = '_blank';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    
+    // Close Modal after 1s
+    setTimeout(() => {
+        modal.classList.remove('active');
+    }, 1000);
+}
+
+// Close Modal Events
+document.getElementById('closeModal').addEventListener('click', () => {
+    modal.classList.remove('active');
+});
 modal.addEventListener('click', (e) => {
-    if (e.target === modal) closeModal();
+    if (e.target === modal) modal.classList.remove('active');
 });
 
-function closeModal() {
-    modal.classList.remove('active');
-}
-
-
-// --- 9. HIDDEN ADMIN TRIGGER (SECRET ACCESS) ---
-let tapCounter = 0;
-const triggerBtn = document.getElementById('adminTrigger');
-
-if (triggerBtn) {
-    triggerBtn.addEventListener('click', () => {
-        tapCounter++;
-        
-        if (tapCounter === 3) showToast("Admin Mode: 4 more taps...");
-        if (tapCounter === 5) showToast("Admin Mode: 2 more taps...");
-        
-        if (tapCounter === 7) {
-            showToast("Redirecting to Secure Login...");
-            tapCounter = 0;
-            // Delay slightly for effect
-            setTimeout(() => {
-                window.location.href = "login.html";
-            }, 1000);
-        }
-    });
-}
-
-
 // --- 10. TOAST NOTIFICATION SYSTEM ---
-function showToast(message) {
+function showToast(msg) {
     const container = document.getElementById('toast-container');
-    
     const toast = document.createElement('div');
     toast.className = 'toast';
-    toast.innerHTML = `<i class="fas fa-info-circle"></i> ${message}`;
+    toast.innerHTML = `<i class="fas fa-info-circle"></i> <span>${msg}</span>`;
     
     container.appendChild(toast);
     
-    // Remove after 3 seconds
+    // Animate Out
     setTimeout(() => {
-        toast.style.animation = 'slideUpFade 0.4s reverse forwards';
-        setTimeout(() => toast.remove(), 400);
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        setTimeout(() => toast.remove(), 300);
     }, 3000);
 }
 
-// --- END OF MAIN.JS ---
+// --- 11. ADMIN REDIRECT FIX (FIX #2) ---
+// This function is called from the HTML Sidebar
+function accessAdminPanel() {
+    window.location.href = "login.html";
+}

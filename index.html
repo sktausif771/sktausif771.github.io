@@ -3,209 +3,275 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
-    <title>MVX STORE - Official App Store</title>
-    <meta name="description" content="Download the latest Mods, Games, and Premium Tools directly from MVX STORE. Safe, Fast, and Secure.">
-    <meta name="keywords" content="apk, mod menu, injector, free fire mod, pubg tool, android hacks">
-    <meta name="author" content="MVX Team">
+    <title>MVX STORE - Official Mod Market | Download Premium Tools</title>
+    <meta name="description" content="The #1 Source for Android Modifications, Game Tools, and Premium Injectors. Login with Google for exclusive access.">
+    <meta name="keywords" content="mvx store, free fire mod, pubg injector, apk download, premium tools, android hacks">
+    <meta name="author" content="MVX Team Official">
     
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://mvxstore.com/">
-    <meta property="og:title" content="MVX STORE - Premium Mod Market">
-    <meta property="og:description" content="Get exclusive access to premium tools and game mods.">
-    <meta property="og:image" content="assets/banner.jpg">
-
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://mvxstore.com/">
-    <meta property="twitter:title" content="MVX STORE">
-    <meta property="twitter:description" content="The #1 Source for Android Modifications.">
+    <meta property="og:title" content="MVX STORE - Ultimate Modding Hub">
+    <meta property="og:description" content="Download exclusive mods and tools securely.">
+    <meta property="og:image" content="assets/preview.jpg">
+    
+    <meta name="theme-color" content="#00e676">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <link rel="stylesheet" href="style.css">
-
-    <meta name="theme-color" content="#00e676">
-    <meta name="msapplication-navbutton-color" content="#00e676">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
-<body>
+<body class="dark-theme">
 
-    <div id="preloader-overlay">
-        <div class="loader-content">
-            <div class="spinner-ring"></div>
-            <h2 class="loader-text">MVX <span style="color:#00e676;">STORE</span></h2>
-            <p>Initializing Secure Connection...</p>
+    <div id="app-preloader">
+        <div class="loader-wrapper">
+            <div class="hex-spinner"></div>
+            <div class="brand-loading">
+                <span>M</span><span>V</span><span>X</span>
+            </div>
+            <p class="loading-text">CONNECTING TO SECURE SERVER...</p>
         </div>
     </div>
 
-    <div class="bg-effects">
-        <div class="grid-overlay"></div>
-        <div class="glow-orb orb-1"></div>
-        <div class="glow-orb orb-2"></div>
+    <div class="bg-animation-container">
+        <div class="cyber-grid"></div>
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+        <div class="scanline"></div>
     </div>
 
-    <header id="main-header">
-        <div class="header-wrapper">
-            <div class="logo-container">
-                <i class="fas fa-bolt logo-icon"></i>
-                <div class="logo-text">
-                    <span class="brand-main">MVX</span>
-                    <span class="brand-sub">STORE</span>
+    <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
+    
+    <aside id="main-sidebar" class="sidebar-panel">
+        <div class="sidebar-header">
+            <div class="user-profile-widget" id="userProfileWidget">
+                <div id="guest-view">
+                    <div class="avatar-placeholder">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="auth-buttons">
+                        <button class="btn-google-login" onclick="signInWithGoogle()">
+                            <i class="fab fa-google"></i> Login with Google
+                        </button>
+                    </div>
+                    <p class="login-hint">Login to access VIP Mods</p>
+                </div>
+
+                <div id="user-view" style="display: none;">
+                    <img src="" id="user-avatar-img" class="user-avatar" alt="Profile">
+                    <h3 id="user-display-name">User Name</h3>
+                    <span id="user-email-addr" class="user-badge">user@gmail.com</span>
+                    <button class="btn-logout" onclick="signOutUser()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+            <button class="close-sidebar" onclick="toggleSidebar()"><i class="fas fa-times"></i></button>
+        </div>
+
+        <nav class="sidebar-menu">
+            <div class="menu-label">MAIN MENU</div>
+            <a href="#" class="menu-link active"><i class="fas fa-home"></i> Home Store</a>
+            <a href="#" class="menu-link"><i class="fas fa-fire"></i> Trending Mods</a>
+            <a href="#" class="menu-link"><i class="fas fa-history"></i> Download History</a>
+            
+            <div class="menu-label">COMMUNITY</div>
+            <a href="#" class="menu-link"><i class="fab fa-telegram-plane"></i> Join Telegram</a>
+            <a href="#" class="menu-link"><i class="fab fa-youtube"></i> YouTube Channel</a>
+            
+            <div class="menu-label">ADMINISTRATION</div>
+            <a href="#" onclick="accessAdminPanel()" class="menu-link admin-link">
+                <i class="fas fa-user-shield"></i> Admin Panel Access
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <p>MVX STORE v5.5.0</p>
+            <span>&copy; 2026 Copyright</span>
+        </div>
+    </aside>
+
+    <header class="sticky-header">
+        <div class="header-inner">
+            <div class="left-section">
+                <button class="hamburger-btn" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="logo-area">
+                    <i class="fas fa-bolt logo-icon-anim"></i>
+                    <span class="logo-text">MVX <span class="highlight">STORE</span></span>
                 </div>
             </div>
 
-            <div class="header-controls">
-                <div class="icon-btn" id="search-toggle">
+            <div class="right-section">
+                <button class="icon-btn search-trigger" onclick="toggleSearch()">
                     <i class="fas fa-search"></i>
-                </div>
-                <div class="icon-btn profile-btn" onclick="showToast('Login feature coming soon!')">
-                    <img src="https://via.placeholder.com/40" alt="User" id="user-avatar" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'">
+                </button>
+                <div class="profile-mini" onclick="toggleSidebar()">
+                    <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" id="header-profile-img" alt="User">
                 </div>
             </div>
         </div>
 
-        <div class="search-drawer" id="search-drawer">
-            <div class="search-input-wrapper">
-                <i class="fas fa-search search-prefix"></i>
+        <div id="search-bar-container" class="search-drawer">
+            <div class="search-input-box">
+                <i class="fas fa-search search-icon"></i>
                 <input type="text" id="searchInput" placeholder="Search for games, tools, or package names..." autocomplete="off">
-                <i class="fas fa-times search-clear" id="clearSearch"></i>
+                <button id="clearSearchBtn" class="clear-btn"><i class="fas fa-times"></i></button>
             </div>
         </div>
     </header>
 
-    <section class="hero-section">
-        <div class="hero-content">
-            <div class="hero-text">
-                <span class="badge-new">NEW UPDATE v5.0</span>
-                <h1>Premium <br><span class="highlight-text">Mod Menu</span></h1>
-                <p>Get the latest undetected injectors and tools for Free Fire & PUBG directly.</p>
+    <section class="hero-wrapper">
+        <div class="hero-card">
+            <div class="hero-content">
+                <span class="badge-update">NEW SERVER LIVE</span>
+                <h1>Discover Premium <br> <span class="text-gradient">Android Mods</span></h1>
+                <p>Get instant access to the latest injectors and game tools with high-speed download servers.</p>
+                <div class="hero-actions">
+                    <button class="btn-primary" onclick="scrollToApps()">Browse All</button>
+                    <button class="btn-secondary" onclick="signInWithGoogle()"><i class="fab fa-google"></i> Join VIP</button>
+                </div>
             </div>
-            <div class="hero-stats">
-                <div class="stat-item">
-                    <i class="fas fa-download"></i>
-                    <span>10k+</span>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-shield-alt"></i>
-                    <span>Safe</span>
-                </div>
+            <div class="hero-visual">
+                <i class="fas fa-rocket rocket-anim"></i>
             </div>
         </div>
     </section>
 
-    <nav class="category-nav-container">
-        <div class="category-track" id="categoryTrack">
-            <button class="cat-chip active" data-filter="All">
+    <div class="category-sticky-wrapper">
+        <div class="category-list" id="categoryScroll">
+            <button class="cat-pill active" data-filter="All">
                 <i class="fas fa-th-large"></i> All
             </button>
-            <button class="cat-chip" data-filter="Game">
+            <button class="cat-pill" data-filter="Game">
                 <i class="fas fa-gamepad"></i> Games
             </button>
-            <button class="cat-chip" data-filter="App">
+            <button class="cat-pill" data-filter="App">
                 <i class="fab fa-android"></i> Apps
             </button>
-            <button class="cat-chip" data-filter="Tool">
-                <i class="fas fa-tools"></i> Injectors
+            <button class="cat-pill" data-filter="Tool">
+                <i class="fas fa-tools"></i> Tools
             </button>
-            <button class="cat-chip vip-chip" data-filter="VIP">
+            <button class="cat-pill vip-pill" data-filter="VIP">
                 <i class="fas fa-crown"></i> VIP Premium
             </button>
         </div>
-    </nav>
+    </div>
 
-    <main class="main-container">
+    <main class="main-content">
+        <div class="section-title-row">
+            <h3>Latest Uploads</h3>
+            <span class="server-status"><i class="fas fa-circle"></i> Online</span>
+        </div>
+
+        <div id="app-grid-container" class="app-grid-layout">
+            <div class="app-card skeleton">
+                <div class="sk-icon"></div>
+                <div class="sk-title"></div>
+                <div class="sk-meta"></div>
+            </div>
+            <div class="app-card skeleton">
+                <div class="sk-icon"></div>
+                <div class="sk-title"></div>
+                <div class="sk-meta"></div>
+            </div>
+            <div class="app-card skeleton">
+                <div class="sk-icon"></div>
+                <div class="sk-title"></div>
+                <div class="sk-meta"></div>
+            </div>
+            <div class="app-card skeleton">
+                <div class="sk-icon"></div>
+                <div class="sk-title"></div>
+                <div class="sk-meta"></div>
+            </div>
+        </div>
         
-        <div class="section-header">
-            <h3>Trending Now</h3>
-            <span class="view-all">Updated Today</span>
-        </div>
-
-        <div id="app-grid-container" class="app-grid">
-            
-            <div class="app-card skeleton-card">
-                <div class="sk-icon"></div>
-                <div class="sk-line w-70"></div>
-                <div class="sk-line w-50"></div>
-            </div>
-            <div class="app-card skeleton-card">
-                <div class="sk-icon"></div>
-                <div class="sk-line w-70"></div>
-                <div class="sk-line w-50"></div>
-            </div>
-            <div class="app-card skeleton-card">
-                <div class="sk-icon"></div>
-                <div class="sk-line w-70"></div>
-                <div class="sk-line w-50"></div>
-            </div>
-            <div class="app-card skeleton-card">
-                <div class="sk-icon"></div>
-                <div class="sk-line w-70"></div>
-                <div class="sk-line w-50"></div>
-            </div>
-
-        </div>
-
-        <div id="no-results" class="empty-state" style="display: none;">
+        <div id="no-results-view" class="empty-state" style="display: none;">
             <i class="fas fa-box-open"></i>
-            <p>No apps found in this category.</p>
+            <h3>No Results Found</h3>
+            <p>Try searching for a different keyword or check back later.</p>
         </div>
-
     </main>
 
-    <div id="download-modal" class="modal-overlay">
-        <div class="modal-content">
+    <div id="download-modal" class="modal-backdrop">
+        <div class="modal-window">
             <div class="modal-header">
-                <h4><i class="fas fa-cloud-download-alt"></i> Download Center</h4>
-                <button class="close-modal" id="closeModalBtn">&times;</button>
+                <h4>Download Manager</h4>
+                <button class="close-modal-btn" id="closeModal">&times;</button>
             </div>
-            
             <div class="modal-body">
-                <img src="" id="modal-app-icon" class="modal-icon" alt="App Icon">
-                <h3 id="modal-app-name">App Name</h3>
-                <p id="modal-app-meta">Version 1.0 • 50MB</p>
+                <div class="app-preview-header">
+                    <img src="" id="modal-icon" class="modal-app-icon" alt="Icon">
+                    <div class="app-preview-info">
+                        <h2 id="modal-title">Application Name</h2>
+                        <p id="modal-version">v1.0.0</p>
+                    </div>
+                </div>
                 
-                <div class="security-check">
-                    <i class="fas fa-shield-virus"></i>
-                    <span>Scanned: Safe to use</span>
+                <div class="file-info-box">
+                    <div class="info-item">
+                        <span>Size</span>
+                        <strong id="modal-size">0 MB</strong>
+                    </div>
+                    <div class="info-item">
+                        <span>Type</span>
+                        <strong id="modal-type">APK</strong>
+                    </div>
+                    <div class="info-item">
+                        <span>Status</span>
+                        <strong style="color:var(--primary);">Safe</strong>
+                    </div>
+                </div>
+
+                <div id="login-required-msg" style="display:none; color: #ff4444; margin-bottom: 10px; font-size: 12px;">
+                    <i class="fas fa-lock"></i> Please Login with Google to download this file.
                 </div>
 
                 <div class="modal-actions">
-                    <a href="#" id="final-download-btn" class="btn-download-final">
-                        START DOWNLOAD
-                    </a>
+                    <button id="start-download-btn" class="btn-download-full">
+                        <i class="fas fa-cloud-download-alt"></i> START DOWNLOAD
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <footer class="site-footer">
-        <div class="footer-content">
-            <div class="footer-links">
-                <a href="#">Privacy Policy</a>
-                <a href="#">Telegram</a>
-                <a href="#">YouTube</a>
-            </div>
-            <p class="copyright">
-                &copy; 2026 MVX Team. Built for Gamers.
-            </p>
-            
-            <div class="version-display" id="adminTrigger">
-                System Version: <span>5.0.2 Stable</span>
-            </div>
-        </div>
-    </footer>
-
-    <div id="toast-container"></div>
+    <div id="toast-container" class="toast-position-bottom"></div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     
     <script src="main.js"></script>
 
+    <script>
+        function toggleSidebar() {
+            document.getElementById('main-sidebar').classList.toggle('active');
+            document.getElementById('sidebar-overlay').classList.toggle('active');
+        }
+
+        function toggleSearch() {
+            document.getElementById('search-bar-container').classList.toggle('open');
+            if(document.getElementById('search-bar-container').classList.contains('open')){
+                document.getElementById('searchInput').focus();
+            }
+        }
+
+        function scrollToApps() {
+            document.getElementById('app-grid-container').scrollIntoView({behavior: 'smooth'});
+        }
+
+        // Admin Access Redirect
+        function accessAdminPanel() {
+            window.location.href = "login.html";
+        }
+    </script>
 </body>
 </html>
