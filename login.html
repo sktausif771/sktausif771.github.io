@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Secure Access | MVX SYSTEM</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* =========================================
+           INTERNAL CSS (LOGIN SPECIFIC)
+           ========================================= */
+        :root {
+            --neon-color: #00e676;
+            --error-color: #ff0033;
+            --bg-color: #000000;
+            --glass-panel: rgba(10, 20, 10, 0.85);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--neon-color);
+            font-family: 'Share Tech Mono', monospace;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* --- MATRIX BACKGROUND EFFECT --- */
+        #matrix-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.3;
+        }
+
+        /* --- LOGIN PANEL DESIGN --- */
+        .login-wrapper {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 420px;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: var(--glass-panel);
+            border: 1px solid var(--neon-color);
+            padding: 40px 30px;
+            box-shadow: 0 0 30px rgba(0, 230, 118, 0.2), inset 0 0 20px rgba(0, 230, 118, 0.05);
+            backdrop-filter: blur(10px);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Corner Decorations */
+        .corner {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border: 2px solid var(--neon-color);
+            transition: all 0.3s;
+        }
+        .tl { top: 0; left: 0; border-right: none; border-bottom: none; }
+        .tr { top: 0; right: 0; border-left: none; border-bottom: none; }
+        .bl { bottom: 0; left: 0; border-right: none; border-top: none; }
+        .br { bottom: 0; right: 0; border-left: none; border-top: none; }
+
+        .login-box:hover .corner { width: 20px; height: 20px; }
+
+        /* Header Icon */
+        .system-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: var(--neon-color);
+            text-shadow: 0 0 15px var(--neon-color);
+            animation: pulse 2s infinite;
+        }
+
+        h2 {
+            font-family: 'Rajdhani', sans-serif;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .status-text {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+
+        /* Input Field */
+        .input-group {
+            position: relative;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .input-label {
+            font-size: 10px;
+            color: var(--neon-color);
+            margin-bottom: 5px;
+            display: block;
+            text-transform: uppercase;
+        }
+
+        .password-input {
+            width: 100%;
+            background: rgba(0,0,0,0.6);
+            border: 1px solid #333;
+            color: white;
+            padding: 15px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 18px;
+            text-align: center;
+            letter-spacing: 5px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .password-input:focus {
+            border-color: var(--neon-color);
+            box-shadow: 0 0 15px rgba(0, 230, 118, 0.3);
+        }
+
+        /* Unlock Button */
+        .unlock-btn {
+            background: transparent;
+            color: var(--neon-color);
+            border: 1px solid var(--neon-color);
+            padding: 15px 30px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            width: 100%;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .unlock-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--neon-color);
+            transition: 0.3s;
+            z-index: -1;
+        }
+
+        .unlock-btn:hover {
+            color: black;
+        }
+        .unlock-btn:hover::before {
+            left: 0;
+        }
+
+        /* Back Link */
+        .back-home {
+            display: inline-block;
+            margin-top: 25px;
+            color: #444;
+            text-decoration: none;
+            font-size: 12px;
+            transition: 0.3s;
+        }
+        .back-home:hover { color: white; text-shadow: 0 0 5px white; }
+
+        /* --- ANIMATIONS --- */
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Error Shake Animation */
+        .shake { animation: shake-anim 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shake-anim {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        /* Access Granted Animation */
+        .access-granted {
+            border-color: #00ff00 !important;
+            box-shadow: 0 0 50px #00ff00 !important;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="matrix-canvas"></canvas>
+
+    <div class="login-wrapper">
+        <div class="login-box" id="loginBox">
+            <div class="corner tl"></div><div class="corner tr"></div>
+            <div class="corner bl"></div><div class="corner br"></div>
+
+            <i class="fas fa-fingerprint system-icon"></i>
+            
+            <h2>System Access</h2>
+            <p class="status-text" id="statusMsg">AUTHENTICATION REQUIRED</p>
+
+            <div class="input-group">
+                <label class="input-label">Security Code</label>
+                <input type="password" id="passInput" class="password-input" placeholder="••••" maxlength="8" autocomplete="off">
+            </div>
+
+            <button class="unlock-btn" onclick="attemptLogin()">
+                Authorize
+            </button>
+
+            <a href="index.html" class="back-home">ABORT CONNECTION</a>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. CONFIGURATION ---
+        // এই পাসওয়ার্ড দিয়ে অ্যাডমিন প্যানেলে ঢুকতে হবে (আপনি চাইলে চেঞ্জ করতে পারেন)
+        const ADMIN_PASS = "1213"; 
+        
+        const input = document.getElementById('passInput');
+        const statusMsg = document.getElementById('statusMsg');
+        const loginBox = document.getElementById('loginBox');
+        const icon = document.querySelector('.system-icon');
+
+        // --- 2. LOGIN LOGIC ---
+        function attemptLogin() {
+            const enteredPass = input.value;
+            
+            // A. যদি পাসওয়ার্ড খালি থাকে
+            if(!enteredPass) {
+                triggerError("INPUT REQUIRED");
+                return;
+            }
+
+            // B. চেকিং এনিমেশন
+            statusMsg.innerText = "VERIFYING ENCRYPTION...";
+            statusMsg.style.color = "yellow";
+            
+            setTimeout(() => {
+                // C. পাসওয়ার্ড সঠিক হলে
+                if(enteredPass === ADMIN_PASS) {
+                    grantAccess();
+                } else {
+                    // D. পাসওয়ার্ড ভুল হলে
+                    triggerError("ACCESS DENIED - INVALID CODE");
+                }
+            }, 800); // একটু দেরি করে হ্যাকার ফিল দেওয়া
+        }
+
+        function grantAccess() {
+            // UI আপডেট
+            statusMsg.innerText = "ACCESS GRANTED";
+            statusMsg.style.color = "#00ff00";
+            input.style.borderColor = "#00ff00";
+            icon.className = "fas fa-unlock system-icon";
+            icon.style.color = "#00ff00";
+            
+            // সেশন স্টোরেজে লগইন ডাটা সেভ করা (যাতে admin.html এ চেক করা যায়)
+            sessionStorage.setItem("mvx_admin_token", "authorized_secure_session");
+            sessionStorage.setItem("login_timestamp", Date.now());
+
+            // রিডাইরেক্ট
+            setTimeout(() => {
+                window.location.href = "admin.html";
+            }, 1000);
+        }
+
+        function triggerError(msg) {
+            statusMsg.innerText = msg;
+            statusMsg.style.color = "#ff0033";
+            input.value = "";
+            loginBox.classList.add('shake');
+            
+            // এনিমেশন রিসেট
+            setTimeout(() => {
+                loginBox.classList.remove('shake');
+                statusMsg.innerText = "AUTHENTICATION REQUIRED";
+                statusMsg.style.color = "#666";
+            }, 1000);
+        }
+
+        // Enter বাটন চাপলে লগইন হবে
+        input.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                attemptLogin();
+            }
+        });
+
+        // --- 3. MATRIX BACKGROUND EFFECT (Canvas) ---
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+
+        // ফুল স্ক্রিন সেটআপ
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+        const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const nums = '0123456789';
+        const alphabet = katakana + latin + nums;
+
+        const fontSize = 16;
+        const columns = canvas.width/fontSize;
+        const rainDrops = [];
+
+        for( let x = 0; x < columns; x++ ) {
+            rainDrops[x] = 1;
+        }
+
+        const draw = () => {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#0F0'; // Green text
+            ctx.font = fontSize + 'px monospace';
+
+            for(let i = 0; i < rainDrops.length; i++) {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                ctx.fillText(text, i*fontSize, rainDrops[i]*fontSize);
+
+                if(rainDrops[i]*fontSize > canvas.height && Math.random() > 0.975){
+                    rainDrops[i] = 0;
+                }
+                rainDrops[i]++;
+            }
+        };
+
+        setInterval(draw, 30);
+
+        // উইন্ডো সাইজ চেঞ্জ হলে ক্যানভাস রিসেট
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | MVX STORE</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #00e676;
+            --bg-dark: #050505;
+            --card-bg: #111;
+            --text-main: #fff;
+            --danger: #ff1744;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            padding: 20px;
+        }
+
+        /* --- HEADER --- */
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #333;
+            margin-bottom: 30px;
+        }
+
+        .admin-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        .logout-btn {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* --- UPLOAD FORM --- */
+        .upload-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid #333;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+
+        h3 { margin-bottom: 20px; border-left: 4px solid var(--primary); padding-left: 10px; }
+
+        .form-group { margin-bottom: 15px; }
+
+        label { display: block; margin-bottom: 8px; font-size: 13px; color: #aaa; }
+
+        input, select {
+            width: 100%;
+            background: #000;
+            border: 1px solid #333;
+            padding: 12px;
+            color: white;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        input:focus, select:focus { border-color: var(--primary); }
+
+        .row { display: flex; gap: 10px; }
+
+        /* PUBLISH BUTTON */
+        .publish-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary);
+            color: black;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+        .publish-btn:hover { background: #00c853; }
+
+        /* --- MANAGE APPS --- */
+        .app-list {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #333;
+        }
+
+        .item-info { display: flex; align-items: center; gap: 15px; }
+
+        .item-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .delete-btn {
+            background: rgba(255, 23, 68, 0.1);
+            color: var(--danger);
+            border: none;
+            padding: 8px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .delete-btn:hover { background: var(--danger); color: white; }
+
+    </style>
+</head>
+<body>
+
+    <div class="admin-header">
+        <div class="admin-title"><i class="fas fa-user-shield"></i> Admin Panel</div>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+
+    <div class="upload-card">
+        <h3>Upload New Content</h3>
+        
+        <div class="form-group">
+            <label>App Name</label>
+            <input type="text" id="appName" placeholder="Ex: Free Fire Max Mod">
+        </div>
+
+        <div class="row">
+            <div class="form-group" style="flex:1">
+                <label>Version</label>
+                <input type="text" id="appVersion" placeholder="v1.0">
+            </div>
+            <div class="form-group" style="flex:1">
+                <label>Size</label>
+                <input type="text" id="appSize" placeholder="50 MB">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Category</label>
+            <select id="appCategory">
+                <option value="Game">Game</option>
+                <option value="App">App</option>
+                <option value="Tool">Injector / Tool</option>
+                <option value="VIP">VIP Premium</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Icon URL (Direct Link)</label>
+            <input type="text" id="iconUrl" placeholder="Paste image link here...">
+        </div>
+
+        <div class="form-group">
+            <label>Download Link (Direct URL)</label>
+            <input type="text" id="downloadUrl" placeholder="Paste MediaFire/Drive link here...">
+        </div>
+
+        <div class="form-group">
+            <label>Password (Optional for VIP)</label>
+            <input type="text" id="appPass" placeholder="Leave empty if free">
+        </div>
+
+        <button class="publish-btn" onclick="uploadApp()">PUBLISH NOW</button>
+    </div>
+
+    <div class="app-list" id="manageList">
+        <h3>Manage Apps</h3>
+        <p style="text-align:center; color:#555;">Loading list...</p>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <script>
+        // --- 1. FIREBASE CONFIG ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyAS3UXXrio_-c9uPbHwpDuTVrP-p8d903w",
+            authDomain: "white-2k-17-v4.firebaseapp.com",
+            databaseURL: "https://white-2k-17-v4-default-rtdb.firebaseio.com",
+            projectId: "white-2k-17-v4",
+            storageBucket: "white-2k-17-v4.firebasestorage.app",
+            messagingSenderId: "180909174928",
+            appId: "1:180909174928:android:148861a87d66c6980ca815"
+        };
+
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // --- 2. SECURITY CHECK ---
+        // কেউ যাতে লগইন ছাড়া ঢুকতে না পারে
+        if (!sessionStorage.getItem("mvx_admin_token")) {
+            alert("Unauthorized Access!");
+            window.location.href = "login.html";
+        }
+
+        function logout() {
+            sessionStorage.clear();
+            window.location.href = "index.html";
+        }
+
+        // --- 3. UPLOAD FUNCTION ---
+        function uploadApp() {
+            const name = document.getElementById('appName').value;
+            const version = document.getElementById('appVersion').value;
+            const size = document.getElementById('appSize').value;
+            const category = document.getElementById('appCategory').value;
+            const icon = document.getElementById('iconUrl').value;
+            const link = document.getElementById('downloadUrl').value;
+            const pass = document.getElementById('appPass').value;
+
+            if (!name || !link || !icon) {
+                alert("Please fill all required fields!");
+                return;
+            }
+
+            const newAppKey = db.ref().child('apps').push().key;
+            
+            const appData = {
+                appName: name,
+                version: version,
+                size: size,
+                category: category,
+                iconUrl: icon,
+                downloadUrl: link,
+                password: pass,
+                timestamp: Date.now()
+            };
+
+            db.ref('apps/' + newAppKey).set(appData)
+                .then(() => {
+                    alert("App Published Successfully! ✅");
+                    location.reload();
+                })
+                .catch((error) => {
+                    alert("Error: " + error.message);
+                });
+        }
+
+        // --- 4. MANAGE LIST (DELETE) ---
+        const listContainer = document.getElementById('manageList');
+
+        db.ref('apps').on('value', (snapshot) => {
+            const data = snapshot.val();
+            listContainer.innerHTML = '<h3>Manage Apps</h3>'; // Reset
+
+            if (data) {
+                // Reverse to show newest first
+                Object.keys(data).reverse().forEach(key => {
+                    const app = data[key];
+                    const item = `
+                        <div class="list-item">
+                            <div class="item-info">
+                                <img src="${app.iconUrl}" class="item-img" onerror="this.src='https://via.placeholder.com/40'">
+                                <div>
+                                    <div style="font-weight:bold; font-size:14px;">${app.appName}</div>
+                                    <div style="font-size:11px; color:#888;">${app.category} • ${app.version}</div>
+                                </div>
+                            </div>
+                            <button class="delete-btn" onclick="deleteApp('${key}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                    listContainer.innerHTML += item;
+                });
+            } else {
+                listContainer.innerHTML += '<p style="text-align:center; color:#555;">No apps found.</p>';
+            }
+        });
+
+        window.deleteApp = function(key) {
+            if (confirm("Are you sure you want to delete this app?")) {
+                db.ref('apps/' + key).remove();
+            }
+        }
+
+    </script>
+</body>
+</html>
