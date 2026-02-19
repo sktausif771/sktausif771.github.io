@@ -1,13 +1,12 @@
 /* ==========================================================================
    MVX STORE - CORE ENGINE (MAIN.JS)
-   Version: 5.5.0 (Ultra Stable)
-   Server: Firebase Realtime Database
-   Auth: Google Identity Platform
+   Version: 6.0.0 (Final Logic Update)
+   Features: Multi-Filter, Paid Redirect, Premium Lock
    ========================================================================== */
 
-console.log("Initializing MVX Store System...");
+console.log("Initializing MVX V6 Engine...");
 
-// --- 1. FIREBASE CONFIGURATION (YOUR SPECIFIC DATA) ---
+// --- 1. FIREBASE CONFIGURATION ---
 const firebaseConfig = {
     apiKey: "AIzaSyAS3UXXrio_-c9uPbHwpDuTVrP-p8d903w",
     authDomain: "white-2k-17-v4.firebaseapp.com",
@@ -18,19 +17,18 @@ const firebaseConfig = {
     appId: "1:180909174928:android:148861a87d66c6980ca815"
 };
 
-// --- Initialize Firebase ---
+// Initialize Firebase
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 } else {
     firebase.app();
 }
 
-// --- Initialize Services ---
 const db = firebase.database();
 const auth = firebase.auth();
 const provider = new firebase.auth.GoogleAuthProvider();
 
-// --- 2. GLOBAL VARIABLES & DOM ELEMENTS ---
+// --- 2. GLOBAL VARIABLES ---
 const appGrid = document.getElementById('app-grid-container');
 const preloader = document.getElementById('app-preloader');
 const searchInput = document.getElementById('searchInput');
@@ -40,35 +38,22 @@ const modal = document.getElementById('download-modal');
 // Data Storage
 let allAppsData = []; 
 let currentUser = null;
-const SERVER_PATH = "MVX_VIP_SERVER_V5"; // **NEW PATH** (Fix #3: No Data Mix)
+const SERVER_PATH = "MVX_VIP_SERVER_V5"; // Updated Server Path
+const WA_PAID_LINK = "https://wa.me/qr/3ZL3GSGN55QIO1"; // Your WhatsApp Link
 
-// --- 3. SYSTEM STARTUP & PRELOADER ---
+// --- 3. STARTUP & PRELOADER ---
 window.addEventListener('load', () => {
-    // Check Server Connection
-    const connectedRef = db.ref(".info/connected");
-    connectedRef.on("value", (snap) => {
-        if (snap.val() === true) {
-            console.log("✅ Connected to MVX V5 Server");
-            hidePreloader();
-        } else {
-            console.log("⚠️ Connecting...");
+    setTimeout(() => {
+        if(preloader) {
+            preloader.style.opacity = '0';
+            setTimeout(() => { preloader.style.display = 'none'; }, 500);
         }
-    });
-
-    // Fallback to hide preloader if connection is slow
-    setTimeout(hidePreloader, 3000);
+    }, 2000);
 });
 
-function hidePreloader() {
-    if(preloader) {
-        preloader.style.opacity = '0';
-        setTimeout(() => { preloader.style.display = 'none'; }, 500);
-    }
-}
-
-// --- 4. AUTHENTICATION SYSTEM (GOOGLE LOGIN - FIX #1) ---
+// --- 4. GOOGLE AUTHENTICATION (LOGIN SYSTEM) ---
 function signInWithGoogle() {
-    showToast("Connecting to Google...");
+    showToast("Connecting to Google Secure Server...");
     auth.signInWithPopup(provider)
         .then((result) => {
             showToast("Login Successful! Welcome " + result.user.displayName);
@@ -83,23 +68,21 @@ function signOutUser() {
     auth.signOut().then(() => {
         showToast("Logged out successfully");
         updateUI(null);
+        window.location.reload(); // Reload to reset premium access
     });
 }
 
-// Auth State Observer
 auth.onAuthStateChanged((user) => {
     currentUser = user;
     updateUI(user);
 });
 
-// Update Sidebar UI based on Login Status
 function updateUI(user) {
     const guestView = document.getElementById('guest-view');
     const userView = document.getElementById('user-view');
     const headerProfile = document.getElementById('header-profile-img');
 
     if (user) {
-        // User is Logged In
         guestView.style.display = 'none';
         userView.style.display = 'block';
         
@@ -107,11 +90,7 @@ function updateUI(user) {
         document.getElementById('user-display-name').innerText = user.displayName;
         document.getElementById('user-email-addr').innerText = user.email;
         headerProfile.src = user.photoURL;
-        
-        // Save to Session for Admin check
-        sessionStorage.setItem("user_email", user.email);
     } else {
-        // User is Guest
         guestView.style.display = 'block';
         userView.style.display = 'none';
         headerProfile.src = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
@@ -119,41 +98,36 @@ function updateUI(user) {
 }
 
 // --- 5. DATA FETCHING (REALTIME) ---
-console.log(`Fetching Apps from: ${SERVER_PATH}`);
-
 db.ref(SERVER_PATH).on('value', (snapshot) => {
     const data = snapshot.val();
-    allAppsData = []; // Clear local list
+    allAppsData = []; 
     
     if (data) {
-        // Convert Object to Array & Reverse (Newest First)
         Object.keys(data).forEach(key => {
             allAppsData.push({
                 id: key,
                 ...data[key]
             });
         });
-        allAppsData.reverse(); 
+        allAppsData.reverse(); // Newest Uploads First
         
-        // Render to Screen
         renderApps(allAppsData);
-        showToast(`Server Synced: ${allAppsData.length} New Mods Loaded`);
+        showToast(`Synced: ${allAppsData.length} Files Loaded`);
     } else {
         appGrid.innerHTML = `
             <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;">
                 <i class="fas fa-server" style="font-size: 40px; margin-bottom: 10px;"></i>
-                <p>New Server V5 is Ready & Online!</p>
-                <p style="font-size: 12px; margin-top:5px;">Waiting for Admin to upload content...</p>
+                <p>Server V5 Connected. Waiting for Admin Uploads...</p>
             </div>
         `;
     }
 }, (error) => {
-    showToast("Database Error: " + error.message);
+    showToast("Server Error: " + error.message);
 });
 
-// --- 6. RENDER FUNCTION (HTML GENERATOR) ---
+// --- 6. RENDER APPS (HTML GENERATOR) ---
 function renderApps(apps) {
-    appGrid.innerHTML = ''; // Clear skeleton
+    appGrid.innerHTML = ''; 
 
     if (apps.length === 0) {
         noResults.style.display = 'block';
@@ -164,25 +138,44 @@ function renderApps(apps) {
 
     apps.forEach(app => {
         const card = document.createElement('div');
-        const isVip = app.category === 'VIP' || app.isPremium === 'true';
         
-        card.className = `app-card ${isVip ? 'vip-item' : ''}`;
+        // Determine Styling Class based on Access Type
+        let cardClass = 'app-card';
+        let badgeHTML = '';
+        let btnClass = 'btn-card-action';
+        let btnText = 'DOWNLOAD';
+        let btnIcon = '<i class="fas fa-download"></i>';
+
+        if (app.accessType === 'Premium') {
+            cardClass += ' vip-item'; // Gold Border
+            badgeHTML = '<div style="position:absolute; top:5px; right:5px; color:#FFD700; font-size:10px; background:rgba(0,0,0,0.5); padding:2px 5px; border-radius:4px;">PREMIUM</div>';
+            btnClass += ' vip-btn';
+            btnText = 'UNLOCK';
+            btnIcon = '<i class="fas fa-lock"></i>';
+        } else if (app.accessType === 'Paid') {
+            cardClass += ' vip-item'; 
+            badgeHTML = '<div style="position:absolute; top:5px; right:5px; color:#00e676; font-size:10px; background:rgba(0,0,0,0.5); padding:2px 5px; border-radius:4px;">PAID</div>';
+            btnClass += ' vip-btn'; // Use VIP style for paid too
+            btnText = 'BUY NOW';
+            btnIcon = '<i class="fas fa-shopping-cart"></i>';
+        }
+
+        card.className = cardClass;
         
-        // Dynamic HTML Card
         card.innerHTML = `
-            ${isVip ? '<div style="position:absolute; top:5px; right:5px; color:#FFD700; font-size:12px; z-index:2;"><i class="fas fa-crown"></i></div>' : ''}
+            ${badgeHTML}
+            <img src="${app.iconUrl}" class="app-icon-img" loading="lazy" onerror="this.src='https://cdn-icons-png.flaticon.com/512/564/564619.png'">
             
-            <img src="${app.iconUrl}" class="app-icon-img" loading="lazy" 
-                 onerror="this.src='https://cdn-icons-png.flaticon.com/512/564/564619.png'">
-            
-            <div class="app-name-text" style="${isVip ? 'color:#FFD700' : ''}">${app.appName}</div>
-            
-            <div class="app-meta-text">
-                ${app.version || 'vLatest'} • ${app.size || 'Unknown'}
+            <div class="app-name-text" style="${app.accessType !== 'Free' ? 'color:#FFD700' : ''}">
+                ${app.appName}
             </div>
             
-            <button class="btn-card-action ${isVip ? 'vip-btn' : ''}" onclick="openDownloadModal('${app.id}')">
-                ${isVip ? '<i class="fas fa-lock"></i> UNLOCK' : 'DOWNLOAD'}
+            <div class="app-meta-text">
+                ${app.gameCategory} • ${app.size}
+            </div>
+            
+            <button class="${btnClass}" onclick="openDownloadModal('${app.id}')">
+                ${btnIcon} ${btnText}
             </button>
         `;
         
@@ -190,32 +183,40 @@ function renderApps(apps) {
     });
 }
 
-// --- 7. CATEGORY FILTER SYSTEM ---
+// --- 7. ADVANCED FILTER SYSTEM (GAME & TYPE) ---
 const catButtons = document.querySelectorAll('.cat-pill');
 
 catButtons.forEach(btn => {
     btn.addEventListener('click', () => {
-        // Active State Logic
+        // UI Active State
         catButtons.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         
         const filter = btn.getAttribute('data-filter');
         
         if (filter === 'All') {
+            // Show Everything
             renderApps(allAppsData);
+        } else if (['Free', 'Premium', 'Paid'].includes(filter)) {
+            // Filter by Access Type (Paid/Free/Premium)
+            const filtered = allAppsData.filter(app => app.accessType === filter);
+            renderApps(filtered);
         } else {
-            const filtered = allAppsData.filter(app => app.category === filter);
+            // Filter by Game Category (Free Fire, PUBG, etc.)
+            const filtered = allAppsData.filter(app => app.gameCategory === filter);
             renderApps(filtered);
         }
+        
+        showToast(`Showing: ${filter}`);
     });
 });
 
-// --- 8. SEARCH SYSTEM ---
+// --- 8. SEARCH LOGIC ---
 searchInput.addEventListener('input', (e) => {
     const term = e.target.value.toLowerCase();
     const filtered = allAppsData.filter(app => 
         app.appName.toLowerCase().includes(term) || 
-        (app.category && app.category.toLowerCase().includes(term))
+        app.gameCategory.toLowerCase().includes(term)
     );
     renderApps(filtered);
 });
@@ -227,69 +228,104 @@ document.getElementById('clearSearchBtn').addEventListener('click', () => {
     document.getElementById('search-bar-container').classList.remove('open');
 });
 
-// --- 9. DOWNLOAD MODAL LOGIC (SECURE) ---
+// --- 9. DOWNLOAD MODAL & REDIRECT LOGIC ---
 function openDownloadModal(appId) {
     const app = allAppsData.find(a => a.id === appId);
     if (!app) return;
 
-    // Set Data
+    // Populate Modal Info
     document.getElementById('modal-icon').src = app.iconUrl;
     document.getElementById('modal-title').innerText = app.appName;
     document.getElementById('modal-version').innerText = app.version || 'v1.0';
     document.getElementById('modal-size').innerText = app.size || 'N/A';
-    document.getElementById('modal-type').innerText = app.category || 'APK';
+    document.getElementById('modal-category').innerText = app.gameCategory || 'Game';
+    
+    // Set Type Color
+    const typeElem = document.getElementById('modal-type');
+    typeElem.innerText = app.accessType;
+    if(app.accessType === 'Paid') typeElem.style.color = '#FFD700';
+    else if(app.accessType === 'Premium') typeElem.style.color = '#00e676';
+    else typeElem.style.color = '#fff';
 
     const dlBtn = document.getElementById('start-download-btn');
     const loginMsg = document.getElementById('login-required-msg');
 
-    // VIP Logic (Optional: Require Login for VIP)
-    if (app.category === 'VIP' && !currentUser) {
-        dlBtn.style.opacity = '0.5';
-        dlBtn.style.pointerEvents = 'none';
-        dlBtn.innerHTML = '<i class="fas fa-lock"></i> Login Required';
-        loginMsg.style.display = 'block';
-    } else {
+    // --- LOGIC 1: PAID APPS (WHATSAPP REDIRECT) ---
+    if (app.accessType === 'Paid') {
         dlBtn.style.opacity = '1';
         dlBtn.style.pointerEvents = 'auto';
-        dlBtn.innerHTML = '<i class="fas fa-cloud-download-alt"></i> START DOWNLOAD';
+        dlBtn.style.background = 'linear-gradient(45deg, #25D366, #128C7E)'; // WhatsApp Color
+        dlBtn.innerHTML = '<i class="fab fa-whatsapp"></i> BUY VIA WHATSAPP';
         loginMsg.style.display = 'none';
         
-        // Handle Password Protection
-        if(app.password && app.password.trim() !== "") {
-             dlBtn.onclick = () => {
-                 const userPass = prompt("🔒 Enter Password to Download:");
-                 if(userPass === app.password) {
-                     initiateDownload(app.downloadUrl);
-                 } else {
-                     showToast("❌ Wrong Password!");
-                 }
-             };
+        dlBtn.onclick = function() {
+            window.open(WA_PAID_LINK, '_blank');
+        };
+    }
+    // --- LOGIC 2: PREMIUM APPS (LOGIN CHECK) ---
+    else if (app.accessType === 'Premium') {
+        if (!currentUser) {
+            // User NOT logged in
+            dlBtn.style.opacity = '0.5';
+            dlBtn.style.pointerEvents = 'none';
+            dlBtn.style.background = '#333';
+            dlBtn.innerHTML = '<i class="fas fa-lock"></i> LOGIN REQUIRED';
+            loginMsg.style.display = 'block';
         } else {
-             dlBtn.onclick = () => initiateDownload(app.downloadUrl);
+            // User IS logged in
+            dlBtn.style.opacity = '1';
+            dlBtn.style.pointerEvents = 'auto';
+            dlBtn.style.background = '#00e676';
+            dlBtn.innerHTML = '<i class="fas fa-cloud-download-alt"></i> PREMIUM DOWNLOAD';
+            loginMsg.style.display = 'none';
+            setupDirectDownload(dlBtn, app);
         }
+    } 
+    // --- LOGIC 3: FREE APPS (DIRECT) ---
+    else {
+        dlBtn.style.opacity = '1';
+        dlBtn.style.pointerEvents = 'auto';
+        dlBtn.style.background = '#00e676';
+        dlBtn.innerHTML = '<i class="fas fa-cloud-download-alt"></i> START DOWNLOAD';
+        loginMsg.style.display = 'none';
+        setupDirectDownload(dlBtn, app);
     }
 
     modal.classList.add('active');
 }
 
-function initiateDownload(url) {
+// Helper for Direct Download
+function setupDirectDownload(btn, app) {
+    // Password Logic
+    if(app.password && app.password.trim() !== "") {
+        btn.onclick = function() {
+            const userPass = prompt("🔒 This file is password protected. Enter Password:");
+            if(userPass === app.password) {
+                triggerDownload(app.downloadUrl);
+            } else {
+                showToast("❌ Incorrect Password!");
+            }
+        };
+    } else {
+        btn.onclick = function() {
+            triggerDownload(app.downloadUrl);
+        };
+    }
+}
+
+function triggerDownload(url) {
     showToast("🚀 Download Started...");
-    
-    // Direct Download Trigger
     const a = document.createElement('a');
     a.href = url;
-    a.target = '_blank';
+    a.target = '_blank'; // Opens in new tab/starts download
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     
-    // Close Modal after 1s
-    setTimeout(() => {
-        modal.classList.remove('active');
-    }, 1000);
+    setTimeout(() => { modal.classList.remove('active'); }, 1500);
 }
 
-// Close Modal Events
+// Modal Close Events
 document.getElementById('closeModal').addEventListener('click', () => {
     modal.classList.remove('active');
 });
@@ -297,25 +333,16 @@ modal.addEventListener('click', (e) => {
     if (e.target === modal) modal.classList.remove('active');
 });
 
-// --- 10. TOAST NOTIFICATION SYSTEM ---
+// --- 10. TOAST NOTIFICATION ---
 function showToast(msg) {
     const container = document.getElementById('toast-container');
     const toast = document.createElement('div');
     toast.className = 'toast';
-    toast.innerHTML = `<i class="fas fa-info-circle"></i> <span>${msg}</span>`;
-    
+    toast.innerHTML = `<i class="fas fa-bell"></i> <span>${msg}</span>`;
     container.appendChild(toast);
     
-    // Animate Out
     setTimeout(() => {
         toast.style.opacity = '0';
-        toast.style.transform = 'translateY(10px)';
         setTimeout(() => toast.remove(), 300);
     }, 3000);
-}
-
-// --- 11. ADMIN REDIRECT FIX (FIX #2) ---
-// This function is called from the HTML Sidebar
-function accessAdminPanel() {
-    window.location.href = "login.html";
 }

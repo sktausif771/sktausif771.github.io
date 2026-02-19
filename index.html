@@ -5,14 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
-    <title>MVX STORE - Official Mod Market | Download Premium Tools</title>
-    <meta name="description" content="The #1 Source for Android Modifications, Game Tools, and Premium Injectors. Login with Google for exclusive access.">
-    <meta name="keywords" content="mvx store, free fire mod, pubg injector, apk download, premium tools, android hacks">
+    <title>MVX STORE - Premium Mod Shop</title>
+    <meta name="description" content="Discover Premium Android Mods. Get instant access to the latest injectors, Free Fire Mods, PUBG Tools, and Paid VIP Menus.">
+    <meta name="keywords" content="mvx store, free fire mod, pubg injector, blood strike mod, paid mod menu, android hacks">
     <meta name="author" content="MVX Team Official">
     
     <meta property="og:type" content="website">
     <meta property="og:title" content="MVX STORE - Ultimate Modding Hub">
-    <meta property="og:description" content="Download exclusive mods and tools securely.">
+    <meta property="og:description" content="Download exclusive mods and tools securely. Join VIP now.">
     <meta property="og:image" content="assets/preview.jpg">
     
     <meta name="theme-color" content="#00e676">
@@ -34,7 +34,7 @@
             <div class="brand-loading">
                 <span>M</span><span>V</span><span>X</span>
             </div>
-            <p class="loading-text">CONNECTING TO SECURE SERVER...</p>
+            <p class="loading-text">SYNCING WITH SERVER V5...</p>
         </div>
     </div>
 
@@ -52,14 +52,14 @@
             <div class="user-profile-widget" id="userProfileWidget">
                 <div id="guest-view">
                     <div class="avatar-placeholder">
-                        <i class="fas fa-user"></i>
+                        <i class="fas fa-user-astronaut"></i>
                     </div>
                     <div class="auth-buttons">
                         <button class="btn-google-login" onclick="signInWithGoogle()">
                             <i class="fab fa-google"></i> Login with Google
                         </button>
                     </div>
-                    <p class="login-hint">Login to access VIP Mods</p>
+                    <p class="login-hint">Login required for Premium files</p>
                 </div>
 
                 <div id="user-view" style="display: none;">
@@ -80,9 +80,15 @@
             <a href="#" class="menu-link"><i class="fas fa-fire"></i> Trending Mods</a>
             <a href="#" class="menu-link"><i class="fas fa-history"></i> Download History</a>
             
-            <div class="menu-label">COMMUNITY</div>
-            <a href="#" class="menu-link"><i class="fab fa-telegram-plane"></i> Join Telegram</a>
-            <a href="#" class="menu-link"><i class="fab fa-youtube"></i> YouTube Channel</a>
+            <div class="menu-label">COMMUNITY LINKS</div>
+            
+            <a href="https://t.me/MR_VOID_X_PANEL" target="_blank" class="menu-link">
+                <i class="fab fa-telegram-plane"></i> Join Telegram
+            </a>
+            
+            <a href="https://youtube.com/@mvx_pro?si=gMZGBSv44SAkCTAW" target="_blank" class="menu-link">
+                <i class="fab fa-youtube"></i> YouTube Channel
+            </a>
             
             <div class="menu-label">ADMINISTRATION</div>
             <a href="#" onclick="accessAdminPanel()" class="menu-link admin-link">
@@ -92,7 +98,7 @@
 
         <div class="sidebar-footer">
             <p>MVX STORE v5.5.0</p>
-            <span>&copy; 2026 Copyright</span>
+            <span>&copy; 2026 Official</span>
         </div>
     </aside>
 
@@ -104,7 +110,7 @@
                 </button>
                 <div class="logo-area">
                     <i class="fas fa-bolt logo-icon-anim"></i>
-                    <span class="logo-text">MVX <span class="highlight">STORE</span></span>
+                    <span class="logo-text">MVX <span class="highlight">PRO</span></span>
                 </div>
             </div>
 
@@ -121,7 +127,7 @@
         <div id="search-bar-container" class="search-drawer">
             <div class="search-input-box">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" id="searchInput" placeholder="Search for games, tools, or package names..." autocomplete="off">
+                <input type="text" id="searchInput" placeholder="Search Free Fire, PUBG, Tools..." autocomplete="off">
                 <button id="clearSearchBtn" class="clear-btn"><i class="fas fa-times"></i></button>
             </div>
         </div>
@@ -130,12 +136,15 @@
     <section class="hero-wrapper">
         <div class="hero-card">
             <div class="hero-content">
-                <span class="badge-update">NEW SERVER LIVE</span>
+                <span class="badge-update">OFFICIAL SERVER</span>
+                
                 <h1>Discover Premium <br> <span class="text-gradient">Android Mods</span></h1>
+                
                 <p>Get instant access to the latest injectors and game tools with high-speed download servers.</p>
+                
                 <div class="hero-actions">
                     <button class="btn-primary" onclick="scrollToApps()">Browse All</button>
-                    <button class="btn-secondary" onclick="signInWithGoogle()"><i class="fab fa-google"></i> Join VIP</button>
+                    <button class="btn-secondary" onclick="signInWithGoogle()"><i class="fas fa-crown"></i> Join VIP</button>
                 </div>
             </div>
             <div class="hero-visual">
@@ -149,17 +158,25 @@
             <button class="cat-pill active" data-filter="All">
                 <i class="fas fa-th-large"></i> All
             </button>
-            <button class="cat-pill" data-filter="Game">
-                <i class="fas fa-gamepad"></i> Games
+            
+            <button class="cat-pill" data-filter="Free Fire">
+                <i class="fas fa-fire"></i> Free Fire
             </button>
-            <button class="cat-pill" data-filter="App">
-                <i class="fab fa-android"></i> Apps
+            <button class="cat-pill" data-filter="PUBG">
+                <i class="fas fa-crosshairs"></i> PUBG
             </button>
-            <button class="cat-pill" data-filter="Tool">
-                <i class="fas fa-tools"></i> Tools
+            <button class="cat-pill" data-filter="Blood Strike">
+                <i class="fas fa-skull"></i> Blood Strike
             </button>
-            <button class="cat-pill vip-pill" data-filter="VIP">
-                <i class="fas fa-crown"></i> VIP Premium
+            
+            <button class="cat-pill free-pill" data-filter="Free">
+                <i class="fas fa-gift"></i> Free
+            </button>
+            <button class="cat-pill vip-pill" data-filter="Premium">
+                <i class="fas fa-user-lock"></i> Premium
+            </button>
+            <button class="cat-pill paid-pill" data-filter="Paid">
+                <i class="fas fa-shopping-cart"></i> Paid Shop
             </button>
         </div>
     </div>
@@ -167,7 +184,7 @@
     <main class="main-content">
         <div class="section-title-row">
             <h3>Latest Uploads</h3>
-            <span class="server-status"><i class="fas fa-circle"></i> Online</span>
+            <span class="server-status"><i class="fas fa-circle"></i> V5 Server Online</span>
         </div>
 
         <div id="app-grid-container" class="app-grid-layout">
@@ -195,15 +212,15 @@
         
         <div id="no-results-view" class="empty-state" style="display: none;">
             <i class="fas fa-box-open"></i>
-            <h3>No Results Found</h3>
-            <p>Try searching for a different keyword or check back later.</p>
+            <h3>No Files Found</h3>
+            <p>Try selecting a different category or search term.</p>
         </div>
     </main>
 
     <div id="download-modal" class="modal-backdrop">
         <div class="modal-window">
             <div class="modal-header">
-                <h4>Download Manager</h4>
+                <h4>MVX Downloader</h4>
                 <button class="close-modal-btn" id="closeModal">&times;</button>
             </div>
             <div class="modal-body">
@@ -221,23 +238,23 @@
                         <strong id="modal-size">0 MB</strong>
                     </div>
                     <div class="info-item">
-                        <span>Type</span>
-                        <strong id="modal-type">APK</strong>
+                        <span>Category</span>
+                        <strong id="modal-category">Game</strong>
                     </div>
                     <div class="info-item">
-                        <span>Status</span>
-                        <strong style="color:var(--primary);">Safe</strong>
+                        <span>Type</span>
+                        <strong id="modal-type" style="color:var(--primary);">Free</strong>
                     </div>
                 </div>
 
-                <div id="login-required-msg" style="display:none; color: #ff4444; margin-bottom: 10px; font-size: 12px;">
-                    <i class="fas fa-lock"></i> Please Login with Google to download this file.
+                <div id="login-required-msg" style="display:none; background:rgba(255,0,0,0.1); padding:10px; border-radius:8px; color: #ff4444; margin-bottom: 15px; font-size: 12px; border:1px solid #ff4444;">
+                    <i class="fas fa-lock"></i> <b>Access Denied:</b> Login with Google to download Premium files.
                 </div>
 
                 <div class="modal-actions">
-                    <button id="start-download-btn" class="btn-download-full">
+                    <a href="#" id="start-download-btn" class="btn-download-full">
                         <i class="fas fa-cloud-download-alt"></i> START DOWNLOAD
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
@@ -268,7 +285,6 @@
             document.getElementById('app-grid-container').scrollIntoView({behavior: 'smooth'});
         }
 
-        // Admin Access Redirect
         function accessAdminPanel() {
             window.location.href = "login.html";
         }
