@@ -5,15 +5,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
-    <title>MVX STORE - Premium Mod Shop</title>
-    <meta name="description" content="Discover Premium Android Mods. Get instant access to the latest injectors, Free Fire Mods, PUBG Tools, and Paid VIP Menus.">
-    <meta name="keywords" content="mvx store, free fire mod, pubg injector, blood strike mod, paid mod menu, android hacks">
+    <title>MVX STORE - Premium Mod Shop & Injectors</title>
+    <meta name="description" content="Discover Premium Android Mods. Get instant access to the latest injectors, Free Fire Mods, PUBG Tools, and Paid VIP Menus securely.">
+    <meta name="keywords" content="mvx store, free fire mod, pubg injector, blood strike mod, paid mod menu, android hacks, premium injectors">
     <meta name="author" content="MVX Team Official">
+    <meta name="robots" content="index, follow">
     
     <meta property="og:type" content="website">
     <meta property="og:title" content="MVX STORE - Ultimate Modding Hub">
-    <meta property="og:description" content="Download exclusive mods and tools securely. Join VIP now.">
+    <meta property="og:description" content="Download exclusive mods and tools securely. Join VIP now for unlimited access.">
     <meta property="og:image" content="assets/preview.jpg">
+    <meta property="og:url" content="https://mvx-store-official.com">
     
     <meta name="theme-color" content="#00e676">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -21,7 +23,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <link rel="stylesheet" href="style.css">
@@ -34,7 +35,8 @@
             <div class="brand-loading">
                 <span>M</span><span>V</span><span>X</span>
             </div>
-            <p class="loading-text">SYNCING WITH SERVER V5...</p>
+            <p class="loading-text">SYNCING WITH SERVER V9...</p>
+            <p style="color: #444; font-size: 9px; margin-top: 5px;">Establishing secure connection</p>
         </div>
     </div>
 
@@ -49,56 +51,59 @@
     
     <aside id="main-sidebar" class="sidebar-panel">
         <div class="sidebar-header">
+            
             <div class="user-profile-widget" id="userProfileWidget">
+                
                 <div id="guest-view">
                     <div class="avatar-placeholder">
                         <i class="fas fa-user-astronaut"></i>
                     </div>
                     <div class="auth-buttons">
                         <button class="btn-google-login" onclick="signInWithGoogle()">
-                            <i class="fab fa-google"></i> Login with Google
+                            <i class="fab fa-google"></i> Secure Login with Google
                         </button>
                     </div>
-                    <p class="login-hint">Login required for Premium files</p>
+                    <p class="login-hint">Login is required for Premium files</p>
                 </div>
 
                 <div id="user-view" style="display: none;">
                     <img src="" id="user-avatar-img" class="user-avatar" alt="Profile">
-                    <h3 id="user-display-name">User Name</h3>
-                    <span id="user-email-addr" class="user-badge">user@gmail.com</span>
+                    <h3 id="user-display-name">Loading Name...</h3>
+                    <span id="user-email-addr" class="user-badge">loading@email.com</span>
                     <button class="btn-logout" onclick="signOutUser()">
-                        <i class="fas fa-sign-out-alt"></i> Logout
+                        <i class="fas fa-sign-out-alt"></i> Secure Logout
                     </button>
                 </div>
             </div>
+            
             <button class="close-sidebar" onclick="toggleSidebar()"><i class="fas fa-times"></i></button>
         </div>
 
         <nav class="sidebar-menu">
-            <div class="menu-label">MAIN MENU</div>
+            <div class="menu-label">MAIN NAVIGATION MENU</div>
             <a href="#" class="menu-link active"><i class="fas fa-home"></i> Home Store</a>
             <a href="#" class="menu-link"><i class="fas fa-fire"></i> Trending Mods</a>
             <a href="#" class="menu-link"><i class="fas fa-history"></i> Download History</a>
+            <a href="#" class="menu-link"><i class="fas fa-star"></i> VIP Subscription</a>
             
-            <div class="menu-label">COMMUNITY LINKS</div>
-            
+            <div class="menu-label">COMMUNITY & SUPPORT LINKS</div>
             <a href="https://t.me/MR_VOID_X_PANEL" target="_blank" class="menu-link">
-                <i class="fab fa-telegram-plane"></i> Join Telegram
+                <i class="fab fa-telegram-plane"></i> Join Telegram Channel
             </a>
-            
-            <a href="https://youtube.com/@mvx_pro?si=gMZGBSv44SAkCTAW" target="_blank" class="menu-link">
-                <i class="fab fa-youtube"></i> YouTube Channel
+            <a href="https://youtube.com/@mvx_pro" target="_blank" class="menu-link">
+                <i class="fab fa-youtube"></i> Official YouTube Channel
             </a>
+            <a href="#" class="menu-link"><i class="fas fa-headset"></i> Contact Support</a>
             
-            <div class="menu-label">ADMINISTRATION</div>
+            <div class="menu-label">SYSTEM ADMINISTRATION</div>
             <a href="#" onclick="accessAdminPanel()" class="menu-link admin-link">
                 <i class="fas fa-user-shield"></i> Admin Panel Access
             </a>
         </nav>
 
         <div class="sidebar-footer">
-            <p>MVX STORE v5.5.0</p>
-            <span>&copy; 2026 Official</span>
+            <p>MVX STORE v9.5.0 PRO</p>
+            <span>&copy; 2026 Official MVX Team. All rights reserved.</span>
         </div>
     </aside>
 
@@ -108,7 +113,7 @@
                 <button class="hamburger-btn" onclick="toggleSidebar()">
                     <i class="fas fa-bars"></i>
                 </button>
-                <div class="logo-area">
+                <div class="logo-area" onclick="window.scrollTo(0,0)">
                     <i class="fas fa-bolt logo-icon-anim"></i>
                     <span class="logo-text">MVX <span class="highlight">PRO</span></span>
                 </div>
@@ -119,7 +124,7 @@
                     <i class="fas fa-search"></i>
                 </button>
                 <div class="profile-mini" onclick="toggleSidebar()">
-                    <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" id="header-profile-img" alt="User">
+                    <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" id="header-profile-img" alt="User Avatar">
                 </div>
             </div>
         </div>
@@ -127,7 +132,7 @@
         <div id="search-bar-container" class="search-drawer">
             <div class="search-input-box">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" id="searchInput" placeholder="Search Free Fire, PUBG, Tools..." autocomplete="off">
+                <input type="text" id="searchInput" placeholder="Search for Free Fire, PUBG, Tools, VIP Menus..." autocomplete="off">
                 <button id="clearSearchBtn" class="clear-btn"><i class="fas fa-times"></i></button>
             </div>
         </div>
@@ -136,15 +141,15 @@
     <section class="hero-wrapper">
         <div class="hero-card">
             <div class="hero-content">
-                <span class="badge-update">OFFICIAL SERVER</span>
+                <span class="badge-update">OFFICIAL SERVER V9 LIVE</span>
                 
                 <h1>Discover Premium <br> <span class="text-gradient">Android Mods</span></h1>
                 
-                <p>Get instant access to the latest injectors and game tools with high-speed download servers.</p>
+                <p>Get instant access to the latest elite injectors and game tools with high-speed download servers. 100% Secure & Tested.</p>
                 
                 <div class="hero-actions">
-                    <button class="btn-primary" onclick="scrollToApps()">Browse All</button>
-                    <button class="btn-secondary" onclick="signInWithGoogle()"><i class="fas fa-crown"></i> Join VIP</button>
+                    <button class="btn-primary" onclick="scrollToApps()">Browse All Files</button>
+                    <button class="btn-secondary" onclick="signInWithGoogle()"><i class="fas fa-crown"></i> Join VIP Now</button>
                 </div>
             </div>
             <div class="hero-visual">
@@ -156,85 +161,90 @@
     <div class="category-sticky-wrapper">
         <div class="category-list" id="categoryScroll">
             <button class="cat-pill active" data-filter="All">
-                <i class="fas fa-th-large"></i> All
+                <i class="fas fa-th-large"></i> All Games
             </button>
             
             <button class="cat-pill" data-filter="Free Fire">
                 <i class="fas fa-fire"></i> Free Fire
             </button>
+            
             <button class="cat-pill" data-filter="PUBG">
-                <i class="fas fa-crosshairs"></i> PUBG
+                <i class="fas fa-crosshairs"></i> PUBG Mobile
             </button>
+            
             <button class="cat-pill" data-filter="Blood Strike">
                 <i class="fas fa-skull"></i> Blood Strike
             </button>
             
             <button class="cat-pill free-pill" data-filter="Free">
-                <i class="fas fa-gift"></i> Free
+                <i class="fas fa-gift"></i> Free Section
             </button>
+            
             <button class="cat-pill vip-pill" data-filter="Premium">
                 <i class="fas fa-user-lock"></i> Premium
             </button>
+            
             <button class="cat-pill paid-pill" data-filter="Paid">
-                <i class="fas fa-shopping-cart"></i> Paid Shop
+                <i class="fas fa-shopping-cart"></i> Paid Store
             </button>
         </div>
     </div>
 
     <main class="main-content">
         <div class="section-title-row">
-            <h3>Latest Uploads</h3>
-            <span class="server-status"><i class="fas fa-circle"></i> V5 Server Online</span>
+            <h3><i class="fas fa-cloud-download-alt" style="margin-right: 8px; color: var(--primary);"></i> Latest Database Uploads</h3>
+            <span class="server-status"><i class="fas fa-circle" style="color: #00e676;"></i> System Online</span>
         </div>
 
         <div id="app-grid-container" class="app-grid-layout">
+            
             <div class="app-card skeleton">
-                <div class="sk-icon"></div>
-                <div class="sk-title"></div>
-                <div class="sk-meta"></div>
+                <div class="sk-icon"></div><div class="sk-title"></div><div class="sk-meta"></div><div class="sk-btn" style="width:100%; height:30px; background:#222; border-radius:8px; margin-top:10px;"></div>
             </div>
             <div class="app-card skeleton">
-                <div class="sk-icon"></div>
-                <div class="sk-title"></div>
-                <div class="sk-meta"></div>
+                <div class="sk-icon"></div><div class="sk-title"></div><div class="sk-meta"></div><div class="sk-btn" style="width:100%; height:30px; background:#222; border-radius:8px; margin-top:10px;"></div>
             </div>
             <div class="app-card skeleton">
-                <div class="sk-icon"></div>
-                <div class="sk-title"></div>
-                <div class="sk-meta"></div>
+                <div class="sk-icon"></div><div class="sk-title"></div><div class="sk-meta"></div><div class="sk-btn" style="width:100%; height:30px; background:#222; border-radius:8px; margin-top:10px;"></div>
             </div>
             <div class="app-card skeleton">
-                <div class="sk-icon"></div>
-                <div class="sk-title"></div>
-                <div class="sk-meta"></div>
+                <div class="sk-icon"></div><div class="sk-title"></div><div class="sk-meta"></div><div class="sk-btn" style="width:100%; height:30px; background:#222; border-radius:8px; margin-top:10px;"></div>
             </div>
+            <div class="app-card skeleton">
+                <div class="sk-icon"></div><div class="sk-title"></div><div class="sk-meta"></div><div class="sk-btn" style="width:100%; height:30px; background:#222; border-radius:8px; margin-top:10px;"></div>
+            </div>
+            <div class="app-card skeleton">
+                <div class="sk-icon"></div><div class="sk-title"></div><div class="sk-meta"></div><div class="sk-btn" style="width:100%; height:30px; background:#222; border-radius:8px; margin-top:10px;"></div>
+            </div>
+            
         </div>
         
         <div id="no-results-view" class="empty-state" style="display: none;">
-            <i class="fas fa-box-open"></i>
-            <h3>No Files Found</h3>
-            <p>Try selecting a different category or search term.</p>
+            <i class="fas fa-box-open" style="font-size: 60px; color: #444;"></i>
+            <h3>No Compatible Files Found</h3>
+            <p>Try selecting a different category or refining your search term.</p>
         </div>
     </main>
 
     <div id="download-modal" class="modal-backdrop">
         <div class="modal-window">
             <div class="modal-header">
-                <h4>MVX Downloader</h4>
+                <h4>MVX Secure Downloader</h4>
                 <button class="close-modal-btn" id="closeModal">&times;</button>
             </div>
             <div class="modal-body">
+                
                 <div class="app-preview-header">
-                    <img src="" id="modal-icon" class="modal-app-icon" alt="Icon">
+                    <img src="" id="modal-icon" class="modal-app-icon" alt="App Icon">
                     <div class="app-preview-info">
                         <h2 id="modal-title">Application Name</h2>
-                        <p id="modal-version">v1.0.0</p>
+                        <p id="modal-version" style="font-family: monospace; color: var(--primary);">v1.0.0</p>
                     </div>
                 </div>
                 
                 <div class="file-info-box">
                     <div class="info-item">
-                        <span>Size</span>
+                        <span>File Size</span>
                         <strong id="modal-size">0 MB</strong>
                     </div>
                     <div class="info-item">
@@ -242,20 +252,25 @@
                         <strong id="modal-category">Game</strong>
                     </div>
                     <div class="info-item">
-                        <span>Type</span>
+                        <span>Access Level</span>
                         <strong id="modal-type" style="color:var(--primary);">Free</strong>
                     </div>
                 </div>
 
-                <div id="login-required-msg" style="display:none; background:rgba(255,0,0,0.1); padding:10px; border-radius:8px; color: #ff4444; margin-bottom: 15px; font-size: 12px; border:1px solid #ff4444;">
-                    <i class="fas fa-lock"></i> <b>Access Denied:</b> Login with Google to download Premium files.
+                <div id="login-required-msg" style="display:none; background:rgba(255,0,0,0.1); padding:12px; border-radius:10px; color: #ff4444; margin-bottom: 20px; font-size: 13px; border:1px solid #ff4444; text-align: center;">
+                    <i class="fas fa-user-lock" style="font-size: 18px; display: block; margin-bottom: 5px;"></i> 
+                    <b>Authentication Required:</b> Please login with Google to unlock and download Premium files.
                 </div>
 
                 <div class="modal-actions">
                     <a href="#" id="start-download-btn" class="btn-download-full">
-                        <i class="fas fa-cloud-download-alt"></i> START DOWNLOAD
+                        <i class="fas fa-cloud-download-alt"></i> START DOWNLOAD SEQUENCE
                     </a>
                 </div>
+                
+                <p style="text-align: center; font-size: 10px; color: #555; margin-top: 15px;">
+                    By downloading, you agree to the MVX Terms of Service. Files are scanned for malware.
+                </p>
             </div>
         </div>
     </div>
@@ -269,25 +284,51 @@
     <script src="main.js"></script>
 
     <script>
+        /**
+         * Toggles the Sidebar Menu visibility
+         */
         function toggleSidebar() {
-            document.getElementById('main-sidebar').classList.toggle('active');
-            document.getElementById('sidebar-overlay').classList.toggle('active');
-        }
-
-        function toggleSearch() {
-            document.getElementById('search-bar-container').classList.toggle('open');
-            if(document.getElementById('search-bar-container').classList.contains('open')){
-                document.getElementById('searchInput').focus();
+            const sidebar = document.getElementById('main-sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            if (sidebar && overlay) {
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
             }
         }
 
-        function scrollToApps() {
-            document.getElementById('app-grid-container').scrollIntoView({behavior: 'smooth'});
+        /**
+         * Toggles the Search Bar Drawer visibility
+         */
+        function toggleSearch() {
+            const searchContainer = document.getElementById('search-bar-container');
+            const searchInput = document.getElementById('searchInput');
+            if (searchContainer) {
+                searchContainer.classList.toggle('open');
+                if(searchContainer.classList.contains('open') && searchInput){
+                    searchInput.focus();
+                }
+            }
         }
 
+        /**
+         * Smooth scrolls down to the app grid section
+         */
+        function scrollToApps() {
+            const grid = document.getElementById('app-grid-container');
+            if (grid) {
+                grid.scrollIntoView({behavior: 'smooth', block: 'start'});
+            }
+        }
+
+        /**
+         * Redirects to the Admin Login page
+         */
         function accessAdminPanel() {
             window.location.href = "login.html";
         }
+        
+        // Console branding
+        console.log("%c MVX STORE V9 UI LOADED ", "background: #00e676; color: #000; font-weight: bold; padding: 5px; border-radius: 5px;");
     </script>
 </body>
 </html>

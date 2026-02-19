@@ -2,325 +2,420 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard | MVX COMMAND CENTER</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Master Control | MVX VIP SERVER V9</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700;800&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* =========================================
-           ADMIN PANEL STYLES (NEON THEME)
-           ========================================= */
+        /* =====================================================================
+           ULTIMATE ADMIN CSS (NEON DARK THEME - FULL EXPANDED)
+           ===================================================================== */
         :root {
             --primary: #00e676;
-            --secondary: #2979ff;
+            --primary-glow: rgba(0, 230, 118, 0.4);
             --gold: #FFD700;
-            --bg-dark: #050505;
-            --card-bg: #111;
-            --text-main: #fff;
+            --gold-glow: rgba(255, 215, 0, 0.4);
             --danger: #ff1744;
-            --input-bg: #0a0a0a;
+            --dark-bg: #030303;
+            --panel-bg: rgba(15, 15, 15, 0.95);
+            --input-bg: #111111;
+            --border: 1px solid #222;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
 
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
+            background-color: var(--dark-bg);
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            padding-bottom: 50px;
+            /* Cyber Grid Background */
+            background-image: 
+                linear-gradient(rgba(0, 230, 118, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 230, 118, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
         }
 
-        /* --- HEADER SECTION --- */
-        .admin-header {
+        /* --- HEADER AREA --- */
+        .top-bar {
+            background: var(--panel-bg);
+            padding: 15px 30px;
+            border-bottom: 1px solid #333;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px;
-            background: var(--card-bg);
-            border-radius: 15px;
-            border: 1px solid #333;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 5px 25px rgba(0,0,0,0.8);
         }
 
-        .admin-branding {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .admin-branding h2 {
+        .brand-logo { display: flex; align-items: center; gap: 15px; }
+        .brand-logo h1 {
             font-family: 'Rajdhani', sans-serif;
+            font-size: 26px;
+            letter-spacing: 2px;
             color: var(--primary);
-            font-size: 24px;
             text-transform: uppercase;
+            text-shadow: 0 0 15px var(--primary-glow);
         }
 
-        .status-badge {
-            font-size: 10px;
+        .server-status {
+            font-size: 11px;
             background: rgba(0, 230, 118, 0.1);
             color: var(--primary);
-            padding: 4px 8px;
-            border-radius: 5px;
+            padding: 6px 15px;
+            border-radius: 20px;
             border: 1px solid var(--primary);
+            display: flex; align-items: center; gap: 8px;
+            font-weight: 600;
+            letter-spacing: 1px;
         }
+        .blink { width: 8px; height: 8px; background: var(--primary); border-radius: 50%; animation: pulse 1.5s infinite; box-shadow: 0 0 10px var(--primary); }
 
         .btn-logout {
             background: rgba(255, 23, 68, 0.1);
             color: var(--danger);
             border: 1px solid var(--danger);
-            padding: 10px 20px;
+            padding: 10px 25px;
             border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
             cursor: pointer;
             transition: 0.3s;
-            font-weight: 600;
+            display: flex; align-items: center; gap: 8px;
         }
-        .btn-logout:hover { background: var(--danger); color: white; }
+        .btn-logout:hover { background: var(--danger); color: white; box-shadow: 0 0 15px rgba(255, 23, 68, 0.4); }
 
-        /* --- UPLOAD CONTAINER --- */
-        .upload-container {
+        /* --- DASHBOARD STATS CARDS --- */
+        .stats-container {
+            max-width: 1400px;
+            margin: 30px auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            padding: 0 20px;
+        }
+
+        .stat-card {
+            background: var(--panel-bg);
+            padding: 25px;
+            border-radius: 15px;
+            border: var(--border);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: 0.3s;
+        }
+        .stat-card:hover { transform: translateY(-5px); border-color: #444; }
+        .stat-icon { font-size: 35px; color: var(--primary); filter: drop-shadow(0 0 10px var(--primary-glow)); }
+        .stat-info h3 { font-size: 28px; font-weight: 700; font-family: 'Rajdhani', sans-serif; }
+        .stat-info p { font-size: 13px; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* --- MAIN LAYOUT GRID --- */
+        .main-grid {
+            max-width: 1400px;
+            margin: 0 auto;
             display: grid;
             grid-template-columns: 1fr;
             gap: 30px;
+            padding: 0 20px;
         }
 
-        @media(min-width: 768px) {
-            .upload-container { grid-template-columns: 3fr 2fr; }
+        @media(min-width: 1024px) {
+            .main-grid { grid-template-columns: 1.2fr 1.5fr; } /* Left form smaller, right list bigger */
         }
 
-        .card {
-            background: var(--card-bg);
-            border-radius: 15px;
-            border: 1px solid #222;
-            padding: 25px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        .panel-box {
+            background: var(--panel-bg);
+            border: var(--border);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+            position: relative;
         }
 
-        h3 { margin-bottom: 20px; border-left: 4px solid var(--primary); padding-left: 15px; font-family: 'Rajdhani', sans-serif; letter-spacing: 1px; }
+        .panel-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 22px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #333;
+            color: white;
+            display: flex; justify-content: space-between; align-items: center;
+            letter-spacing: 1px;
+        }
 
-        /* --- FORM ELEMENTS --- */
-        .form-group { margin-bottom: 20px; }
+        /* --- FORM CONTROLS --- */
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; font-size: 13px; color: #aaa; margin-bottom: 8px; font-weight: 500; letter-spacing: 0.5px; }
         
-        label { display: block; margin-bottom: 8px; font-size: 13px; color: #aaa; font-weight: 500; }
-        
-        input, select {
+        .form-control {
             width: 100%;
             background: var(--input-bg);
             border: 1px solid #333;
-            padding: 14px;
+            padding: 15px;
             color: white;
             border-radius: 10px;
-            outline: none;
-            transition: 0.3s;
             font-size: 14px;
+            transition: 0.3s;
+            font-family: 'Poppins', sans-serif;
         }
-        input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(0, 230, 118, 0.1); }
-
-        .row { display: flex; gap: 15px; }
-
-        /* --- UPLOAD TYPE TOGGLE --- */
-        .upload-type-switch {
-            display: flex;
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px var(--primary-glow);
             background: #000;
-            padding: 5px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #333;
         }
 
-        .switch-btn {
-            flex: 1;
-            padding: 10px;
-            text-align: center;
-            cursor: pointer;
-            border-radius: 8px;
-            font-size: 13px;
-            color: #666;
-            transition: 0.3s;
-        }
-        .switch-btn.active {
-            background: var(--primary);
-            color: black;
-            font-weight: bold;
-        }
+        .row-2 { display: flex; gap: 20px; }
 
-        /* --- FILE UPLOAD BOX --- */
-        .file-drop-zone {
-            border: 2px dashed #444;
-            background: rgba(255,255,255,0.02);
-            border-radius: 10px;
-            padding: 30px;
-            text-align: center;
-            cursor: pointer;
-            transition: 0.3s;
-            position: relative;
-        }
-        .file-drop-zone:hover { border-color: var(--primary); background: rgba(0, 230, 118, 0.05); }
-        
-        .file-icon { font-size: 40px; color: #555; margin-bottom: 10px; }
-        .file-name-display { font-size: 12px; color: var(--primary); margin-top: 10px; word-break: break-all; }
-
-        /* --- PROGRESS BAR --- */
-        .progress-wrapper {
-            margin-top: 20px;
-            background: #222;
-            height: 10px;
-            border-radius: 5px;
-            overflow: hidden;
-            display: none; /* Hidden initially */
-        }
-        .progress-fill {
-            height: 100%;
-            background: var(--primary);
-            width: 0%;
-            transition: width 0.2s;
-        }
-        .progress-text { font-size: 11px; text-align: center; margin-top: 5px; color: #aaa; }
-
-        /* --- SUBMIT BUTTON --- */
-        .btn-publish {
+        /* --- ACTION BUTTONS --- */
+        .btn-submit {
             width: 100%;
-            padding: 16px;
+            padding: 18px;
             background: var(--primary);
-            color: black;
+            color: #000;
             font-weight: 800;
             border: none;
             border-radius: 10px;
             cursor: pointer;
-            font-size: 16px;
-            margin-top: 10px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            font-size: 15px;
             transition: 0.3s;
+            margin-top: 15px;
+            font-family: 'Rajdhani', sans-serif;
         }
-        .btn-publish:hover { background: #00c853; box-shadow: 0 0 20px rgba(0, 230, 118, 0.4); }
+        .btn-submit:hover {
+            background: #00c853;
+            box-shadow: 0 5px 25px var(--primary-glow);
+            transform: translateY(-2px);
+        }
 
-        /* --- MANAGE LIST --- */
-        .app-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #151515;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #222;
+        .btn-update {
+            background: var(--gold);
+            display: none; /* Hidden by default */
         }
-        .app-info-left { display: flex; align-items: center; gap: 15px; }
-        .app-thumb { width: 45px; height: 45px; border-radius: 10px; object-fit: cover; }
+        .btn-update:hover { background: #FFA500; box-shadow: 0 5px 25px var(--gold-glow); }
+
+        .btn-cancel {
+            background: transparent;
+            color: var(--danger);
+            border: 1px solid var(--danger);
+            margin-top: 15px;
+            font-size: 13px;
+            display: none;
+        }
+        .btn-cancel:hover { background: var(--danger); color: white; }
+
+        /* --- LIST & SEARCH AREA --- */
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .search-box input { padding-left: 45px; border-radius: 50px; background: #161616; border-color: #444; }
+        .search-icon { position: absolute; left: 18px; top: 16px; color: #666; font-size: 16px; }
+
+        .app-list-container {
+            max-height: 700px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
         
-        .badge { font-size: 9px; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; margin-left: 5px; }
-        .badge-free { background: #222; color: #aaa; border: 1px solid #444; }
-        .badge-premium { background: rgba(0, 230, 118, 0.1); color: var(--primary); border: 1px solid var(--primary); }
-        .badge-paid { background: rgba(255, 215, 0, 0.1); color: var(--gold); border: 1px solid var(--gold); }
+        /* Custom Scrollbar for list */
+        .app-list-container::-webkit-scrollbar { width: 6px; }
+        .app-list-container::-webkit-scrollbar-track { background: transparent; }
+        .app-list-container::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        .app-list-container::-webkit-scrollbar-thumb:hover { background: var(--primary); }
 
-        /* Hidden Inputs */
-        #fileInput { display: none; }
+        .list-item {
+            background: #161616;
+            border: 1px solid #222;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .list-item:hover {
+            background: #1a1a1a;
+            border-color: var(--primary);
+            transform: translateX(5px);
+        }
+        .list-item::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 4px; background: transparent; transition: 0.3s; }
+        .list-item:hover::before { background: var(--primary); }
+
+        .item-info { display: flex; align-items: center; gap: 18px; }
+        .item-img { width: 55px; height: 55px; border-radius: 12px; object-fit: cover; background: #000; border: 1px solid #333; }
+        
+        .item-text h4 { font-size: 15px; color: white; margin-bottom: 5px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .item-text span { font-size: 12px; color: #888; }
+
+        .item-actions { display: flex; gap: 10px; }
+        .action-icon {
+            width: 35px; height: 35px;
+            display: flex; justify-content: center; align-items: center;
+            border-radius: 8px;
+            background: #222;
+            color: #888;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+        .del-icon:hover { background: rgba(255, 23, 68, 0.2); color: var(--danger); border: 1px solid var(--danger); }
+        .edit-icon:hover { background: rgba(0, 230, 118, 0.2); color: var(--primary); border: 1px solid var(--primary); }
+
+        /* Badge Styles */
+        .badge { font-size: 10px; padding: 3px 8px; border-radius: 6px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .b-free { color: #aaa; border: 1px solid #444; background: #222; }
+        .b-prem { color: var(--primary); border: 1px solid var(--primary); background: rgba(0,230,118,0.1); }
+        .b-paid { color: var(--gold); border: 1px solid var(--gold); background: rgba(255,215,0,0.1); }
+
+        @keyframes pulse { 50% { opacity: 0.4; transform: scale(0.8); } }
     </style>
 </head>
 <body>
 
-    <div class="admin-header">
-        <div class="admin-branding">
-            <i class="fas fa-shield-alt" style="font-size: 30px; color: var(--primary);"></i>
+    <header class="top-bar">
+        <div class="brand-logo">
+            <i class="fas fa-user-shield" style="color:var(--primary); font-size: 30px;"></i>
             <div>
-                <h2>Admin Console</h2>
-                <span class="status-badge">SECURE CONNECTION V5.5</span>
+                <h1>MVX ADMIN CONSOLE</h1>
             </div>
         </div>
-        <button class="btn-logout" onclick="logout()">
-            <i class="fas fa-power-off"></i> LOGOUT
-        </button>
+        <div style="display: flex; gap: 20px; align-items: center;">
+            <div class="server-status"><div class="blink"></div> DATABASE SECURE</div>
+            <button class="btn-logout" onclick="logoutSystem()"><i class="fas fa-power-off"></i> LOGOUT</button>
+        </div>
+    </header>
+
+    <div class="stats-container">
+        <div class="stat-card">
+            <i class="fas fa-hdd stat-icon"></i>
+            <div class="stat-info">
+                <h3 id="totalAppsCount">0</h3>
+                <p>Total Files Active</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-network-wired stat-icon" style="color:var(--gold);"></i>
+            <div class="stat-info">
+                <h3 style="color:var(--gold);">DIRECT</h3>
+                <p>Storage Engine</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-shield-check stat-icon" style="color:#2979ff;"></i>
+            <div class="stat-info">
+                <h3 style="color:#2979ff;">ENCRYPTED</h3>
+                <p>Admin Session</p>
+            </div>
+        </div>
     </div>
 
-    <div class="upload-container">
+    <div class="main-grid">
         
-        <div class="card">
-            <h3><i class="fas fa-cloud-upload-alt"></i> Upload New App</h3>
-
-            <div class="form-group">
-                <label>Application Name</label>
-                <input type="text" id="appName" placeholder="Ex: Free Fire Max Mod Menu v5">
+        <div class="panel-box">
+            <div class="panel-title">
+                <span><i class="fas fa-terminal"></i> Content Manager</span>
+                <span style="font-size:11px; color:var(--primary); font-weight:bold; letter-spacing:1px; background:#111; padding:5px 10px; border-radius:5px;" id="modeText">MODE: ADD NEW</span>
             </div>
 
-            <div class="row">
-                <div class="form-group" style="flex: 1;">
+            <input type="hidden" id="editKey">
+
+            <div class="input-group">
+                <label>Application Name / Title</label>
+                <input type="text" id="inpName" class="form-control" placeholder="Ex: Free Fire Max VIP Menu V10">
+            </div>
+
+            <div class="row-2">
+                <div class="input-group" style="flex:1;">
                     <label>Version</label>
-                    <input type="text" id="appVersion" placeholder="v1.0">
+                    <input type="text" id="inpVer" class="form-control" placeholder="v1.0.0">
                 </div>
-                <div class="form-group" style="flex: 1;">
-                    <label>Size</label>
-                    <input type="text" id="appSize" placeholder="50 MB">
+                <div class="input-group" style="flex:1;">
+                    <label>File Size (MB)</label>
+                    <input type="text" id="inpSize" class="form-control" placeholder="55 MB">
                 </div>
             </div>
 
-            <div class="row">
-                <div class="form-group" style="flex: 1;">
+            <div class="row-2">
+                <div class="input-group" style="flex:1;">
                     <label>Game Category</label>
-                    <select id="gameCategory">
-                        <option value="Free Fire">Free Fire</option>
+                    <select id="inpCat" class="form-control">
+                        <option value="Free Fire">Free Fire / Max</option>
                         <option value="PUBG">PUBG Mobile</option>
                         <option value="Blood Strike">Blood Strike</option>
-                        <option value="Others">Others / Tools</option>
+                        <option value="Others">Injectors / Tools</option>
                     </select>
                 </div>
-                <div class="form-group" style="flex: 1;">
-                    <label>Access Type</label>
-                    <select id="accessType" onchange="togglePaidOptions()">
-                        <option value="Free">Free (Direct)</option>
-                        <option value="Premium">Premium (Login Req)</option>
-                        <option value="Paid">Paid (Buy Now)</option>
+                <div class="input-group" style="flex:1;">
+                    <label>Access Level</label>
+                    <select id="inpType" class="form-control" onchange="checkPaidState()">
+                        <option value="Free">Free (Direct Access)</option>
+                        <option value="Premium">Premium (Login Required)</option>
+                        <option value="Paid">Paid (Buy via WhatsApp)</option>
                     </select>
                 </div>
             </div>
 
-            <label>Upload Method</label>
-            <div class="upload-type-switch">
-                <div class="switch-btn active" id="btnLink" onclick="switchMethod('link')">External Link</div>
-                <div class="switch-btn" id="btnFile" onclick="switchMethod('file')">Upload File</div>
+            <div class="input-group">
+                <label>App Icon URL (Direct Image Link)</label>
+                <input type="text" id="inpIcon" class="form-control" placeholder="https://i.ibb.co/example.jpg">
             </div>
 
-            <div id="linkInputSection" class="form-group">
-                <label id="urlLabel">Download Link (Mediafire/Drive)</label>
-                <input type="text" id="downloadUrl" placeholder="Paste your link here...">
-                <p style="font-size: 10px; color: #666; margin-top: 5px;">*For Paid Apps, this will auto-set to your WhatsApp.</p>
-            </div>
-
-            <div id="fileInputSection" class="form-group" style="display: none;">
-                <label>Select APK/ZIP File</label>
-                <div class="file-drop-zone" onclick="document.getElementById('fileInput').click()">
-                    <i class="fas fa-file-import file-icon"></i>
-                    <p>Click to Browse Gallery/Files</p>
-                    <div id="fileNameDisplay" class="file-name-display"></div>
+            <div class="input-group">
+                <label id="lblLink" style="color:var(--primary);">Download Link (Drive / Telegram / Mediafire)</label>
+                <input type="text" id="inpLink" class="form-control" placeholder="Paste your file link here...">
+                <div style="font-size:11px; color:#888; margin-top:8px;">
+                    <i class="fas fa-magic" style="color:var(--primary);"></i> System automatically converts Google Drive view links to Direct Downloads.
                 </div>
-                <input type="file" id="fileInput" accept=".apk, .zip, .rar">
-                
-                <div class="progress-wrapper" id="progressWrapper">
-                    <div class="progress-fill" id="progressBar"></div>
-                </div>
-                <div class="progress-text" id="progressText"></div>
             </div>
 
-            <div class="form-group">
-                <label>Icon Image URL</label>
-                <input type="text" id="iconUrl" placeholder="Direct Image Link">
+            <div class="input-group">
+                <label>File Password (Optional)</label>
+                <input type="text" id="inpPass" class="form-control" placeholder="Leave empty if no password is required">
             </div>
 
-            <div class="form-group" id="passGroup">
-                <label>Password (Optional)</label>
-                <input type="text" id="appPass" placeholder="Leave empty if none">
-            </div>
+            <button id="btnAdd" class="btn-submit" onclick="pushToDatabase()">
+                <i class="fas fa-cloud-upload-alt"></i> PUBLISH TO SERVER
+            </button>
+            
+            <button id="btnUpd" class="btn-submit btn-update" onclick="updateDatabase()">
+                <i class="fas fa-sync"></i> SAVE CHANGES
+            </button>
 
-            <button class="btn-publish" onclick="startUploadProcess()">PUBLISH CONTENT</button>
+            <button id="btnCancel" class="btn-submit btn-cancel" onclick="resetFormState()">
+                <i class="fas fa-times"></i> CANCEL EDITING
+            </button>
+
         </div>
 
-        <div class="card">
-            <h3><i class="fas fa-tasks"></i> Manage Content</h3>
-            <div id="manageList" style="max-height: 600px; overflow-y: auto; padding-right: 5px;">
-                <p style="text-align:center; color:#555;">Connecting to Database...</p>
+        <div class="panel-box">
+            <div class="panel-title">
+                <span><i class="fas fa-database"></i> Live Database</span>
+                <i class="fas fa-sync-alt" style="cursor:pointer; font-size:16px; color:#888;" onclick="location.reload()" title="Refresh List"></i>
+            </div>
+
+            <div class="search-box">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="searchInp" class="form-control" placeholder="Search apps by name..." onkeyup="filterLiveList()">
+            </div>
+
+            <div class="app-list-container" id="listArea">
+                <div style="text-align:center; padding:50px 20px; color:#555;">
+                    <i class="fas fa-circle-notch fa-spin" style="font-size: 30px; margin-bottom: 15px;"></i>
+                    <p>Establishing secure connection to MVX Server...</p>
+                </div>
             </div>
         </div>
 
@@ -328,10 +423,9 @@
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
 
     <script>
-        // --- 1. CONFIGURATION ---
+        // --- 1. FIREBASE SECURE CONFIGURATION ---
         const firebaseConfig = {
             apiKey: "AIzaSyAS3UXXrio_-c9uPbHwpDuTVrP-p8d903w",
             authDomain: "white-2k-17-v4.firebaseapp.com",
@@ -344,177 +438,240 @@
 
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-        const storage = firebase.storage();
-        
-        // SERVER PATH (Do not change)
-        const SERVER_PATH = "MVX_VIP_SERVER_V5"; 
-        const WA_LINK = "https://wa.me/qr/3ZL3GSGN55QIO1";
+        const DB_PATH = "MVX_VIP_SERVER_V5";
+        const WA_LINK = "https://wa.me/qr/3ZL3GSGN55QIO1"; // Replace with your actual WhatsApp link/number
 
-        // --- 2. AUTH CHECK ---
+        // --- 2. ADMIN AUTHENTICATION CHECK ---
         if (!sessionStorage.getItem("mvx_admin_token")) {
+            // Kick out unauthorized users to login page
             window.location.href = "login.html";
         }
-        function logout() {
-            sessionStorage.removeItem("mvx_admin_token");
-            window.location.href = "index.html";
-        }
 
-        // --- 3. UI LOGIC (SWITCHES) ---
-        let currentMethod = 'link';
-
-        function switchMethod(method) {
-            currentMethod = method;
-            const btnLink = document.getElementById('btnLink');
-            const btnFile = document.getElementById('btnFile');
-            const linkSec = document.getElementById('linkInputSection');
-            const fileSec = document.getElementById('fileInputSection');
-
-            if(method === 'link') {
-                btnLink.classList.add('active');
-                btnFile.classList.remove('active');
-                linkSec.style.display = 'block';
-                fileSec.style.display = 'none';
-            } else {
-                btnFile.classList.add('active');
-                btnLink.classList.remove('active');
-                linkSec.style.display = 'none';
-                fileSec.style.display = 'block';
+        function logoutSystem() {
+            if(confirm("Are you sure you want to terminate the secure admin session?")) {
+                sessionStorage.removeItem("mvx_admin_token");
+                window.location.href = "index.html"; // Go back to home
             }
         }
 
-        // File Selection Display
-        document.getElementById('fileInput').addEventListener('change', function(e) {
-            const fileName = e.target.files[0] ? e.target.files[0].name : "No file selected";
-            document.getElementById('fileNameDisplay').innerText = fileName;
-        });
+        // --- 3. SMART LINK CONVERTER (Google Drive Auto-Fix) ---
+        function fixDirectLink(url) {
+            if (!url) return "";
+            // Check if it's a Google Drive share link and convert it to a direct download link
+            if (url.includes('drive.google.com') && url.includes('/view')) {
+                return url.replace('/view?usp=sharing', '').replace('/view?usp=drivesdk', '').replace('file/d/', 'uc?export=download&id=');
+            }
+            return url;
+        }
 
-        // Toggle Paid Logic
-        function togglePaidOptions() {
-            const type = document.getElementById('accessType').value;
-            const urlInput = document.getElementById('downloadUrl');
-            const urlLabel = document.getElementById('urlLabel');
-
-            if(type === 'Paid') {
-                urlInput.value = WA_LINK;
-                urlInput.disabled = false; // Admin can still edit if needed
-                urlLabel.innerText = "Redirect Link (Auto-set to WhatsApp)";
-                // Force Link Method
-                switchMethod('link'); 
+        // Auto-fill WhatsApp link if 'Paid' is selected
+        function checkPaidState() {
+            const type = document.getElementById('inpType').value;
+            const linkBox = document.getElementById('inpLink');
+            const label = document.getElementById('lblLink');
+            
+            if (type === 'Paid') {
+                linkBox.value = WA_LINK;
+                label.innerText = "WhatsApp Contact Link (Auto-Inserted)";
+                label.style.color = "var(--gold)";
             } else {
-                if(urlInput.value === WA_LINK) urlInput.value = "";
-                urlInput.disabled = false;
-                urlLabel.innerText = "Download Link (Mediafire/Drive)";
+                if(linkBox.value === WA_LINK) linkBox.value = "";
+                label.innerText = "Download Link (Drive / Telegram)";
+                label.style.color = "var(--primary)";
             }
         }
 
-        // --- 4. UPLOAD LOGIC ---
-        function startUploadProcess() {
-            const name = document.getElementById('appName').value;
-            const version = document.getElementById('appVersion').value;
-            const size = document.getElementById('appSize').value;
-            const category = document.getElementById('gameCategory').value; // Specific Game
-            const type = document.getElementById('accessType').value; // Free/Premium/Paid
-            const icon = document.getElementById('iconUrl').value;
-            const pass = document.getElementById('appPass').value;
+        // --- 4. CRUD OPERATIONS (CREATE, READ, UPDATE, DELETE) ---
+        
+        // A. CREATE: Push New Data to Firebase
+        function pushToDatabase() {
+            const name = document.getElementById('inpName').value;
+            const ver = document.getElementById('inpVer').value || "v1.0";
+            const size = document.getElementById('inpSize').value || "Unknown";
+            const cat = document.getElementById('inpCat').value;
+            const type = document.getElementById('inpType').value;
+            const icon = document.getElementById('inpIcon').value;
+            const pass = document.getElementById('inpPass').value;
+            let link = document.getElementById('inpLink').value;
 
-            if(!name || !icon) {
-                alert("Please fill all required fields (Name, Icon)");
+            // Form Validation
+            if (!name || !icon || !link) {
+                alert("⚠️ Error: Application Name, Icon URL, and Download Link are mandatory fields!");
                 return;
             }
 
-            // A. IF FILE UPLOAD
-            if(currentMethod === 'file') {
-                const file = document.getElementById('fileInput').files[0];
-                if(!file) { alert("Please select a file!"); return; }
+            link = fixDirectLink(link); // Apply auto-fix logic
 
-                const storageRef = storage.ref(`apks/${Date.now()}_${file.name}`);
-                const uploadTask = storageRef.put(file);
-
-                // Progress Bar Logic
-                document.getElementById('progressWrapper').style.display = 'block';
-                
-                uploadTask.on('state_changed', 
-                    (snapshot) => {
-                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        document.getElementById('progressBar').style.width = progress + '%';
-                        document.getElementById('progressText').innerText = `Uploading: ${Math.floor(progress)}%`;
-                    }, 
-                    (error) => { alert("Upload Failed: " + error.message); }, 
-                    () => {
-                        uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-                            saveToDatabase(name, version, size, category, type, icon, downloadURL, pass);
-                        });
-                    }
-                );
-            } 
-            // B. IF LINK
-            else {
-                const link = document.getElementById('downloadUrl').value;
-                if(!link) { alert("Please enter a link!"); return; }
-                saveToDatabase(name, version, size, category, type, icon, link, pass);
-            }
-        }
-
-        function saveToDatabase(name, ver, size, cat, type, icon, link, pass) {
-            const newKey = db.ref(SERVER_PATH).push().key;
-            const appData = {
-                appName: name,
-                version: ver,
-                size: size,
-                gameCategory: cat, // e.g. Free Fire
-                accessType: type,  // e.g. Paid
-                iconUrl: icon,
-                downloadUrl: link,
-                password: pass,
+            const newKey = db.ref(DB_PATH).push().key;
+            const payload = {
+                appName: name, version: ver, size: size,
+                gameCategory: cat, accessType: type,
+                iconUrl: icon, downloadUrl: link, password: pass,
                 timestamp: Date.now()
             };
 
-            db.ref(SERVER_PATH + '/' + newKey).set(appData).then(() => {
-                alert("✅ Upload Successful!");
-                location.reload();
-            });
+            db.ref(DB_PATH + "/" + newKey).set(payload)
+                .then(() => {
+                    alert("✅ Success: File published to server!");
+                    resetFormState();
+                })
+                .catch((err) => alert("❌ Server Error: " + err.message));
         }
 
-        // --- 5. MANAGE LIST ---
-        const listContainer = document.getElementById('manageList');
-        db.ref(SERVER_PATH).on('value', (snapshot) => {
-            const data = snapshot.val();
-            listContainer.innerHTML = '';
-            if(data) {
-                Object.keys(data).reverse().forEach(key => {
-                    const app = data[key];
-                    let badgeClass = 'badge-free';
-                    if(app.accessType === 'Premium') badgeClass = 'badge-premium';
-                    if(app.accessType === 'Paid') badgeClass = 'badge-paid';
+        // B. READ: Live Real-time Listener for the List
+        db.ref(DB_PATH).on('value', (snap) => {
+            const data = snap.val();
+            const listArea = document.getElementById('listArea');
+            const countBox = document.getElementById('totalAppsCount');
+            listArea.innerHTML = "";
+            
+            if (data) {
+                // Reverse to show newest at the top
+                const keys = Object.keys(data).reverse(); 
+                countBox.innerText = keys.length; // Update total files stat
 
-                    const item = `
-                        <div class="app-item">
-                            <div class="app-info-left">
-                                <img src="${app.iconUrl}" class="app-thumb" onerror="this.src='https://via.placeholder.com/40'">
-                                <div>
-                                    <div style="font-weight:bold; font-size:13px; color:white;">
-                                        ${app.appName}
-                                        <span class="badge ${badgeClass}">${app.accessType}</span>
-                                    </div>
-                                    <div style="font-size:11px; color:#888;">
-                                        ${app.gameCategory} • ${app.version}
-                                    </div>
+                keys.forEach(key => {
+                    const app = data[key];
+                    
+                    // Style badge based on Access Type
+                    let badgeClass = "b-free";
+                    if(app.accessType === 'Premium') badgeClass = "b-prem";
+                    if(app.accessType === 'Paid') badgeClass = "b-paid";
+
+                    // Safely stringify data for passing to edit function
+                    const safeStr = JSON.stringify(app).replace(/"/g, '&quot;');
+
+                    const row = `
+                        <div class="list-item" id="item-${key}">
+                            <div class="item-info">
+                                <img src="${app.iconUrl}" class="item-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/564/564619.png'">
+                                <div class="item-text">
+                                    <h4>${app.appName} <span class="badge ${badgeClass}">${app.accessType}</span></h4>
+                                    <span>${app.gameCategory} • ${app.version} • ${app.size}</span>
                                 </div>
                             </div>
-                            <i class="fas fa-trash" style="color:var(--danger); cursor:pointer;" onclick="deleteApp('${key}')"></i>
+                            <div class="item-actions">
+                                <div class="action-icon edit-icon" onclick="prepareEdit('${key}', ${safeStr})" title="Edit Content">
+                                    <i class="fas fa-pen"></i>
+                                </div>
+                                <div class="action-icon del-icon" onclick="removeData('${key}')" title="Delete Permanently">
+                                    <i class="fas fa-trash"></i>
+                                </div>
+                            </div>
                         </div>
                     `;
-                    listContainer.innerHTML += item;
+                    listArea.innerHTML += row;
                 });
             } else {
-                listContainer.innerHTML = '<p style="text-align:center; padding:20px; color:#555;">No apps found.</p>';
+                listArea.innerHTML = "<div class='empty-state' style='text-align:center; padding:40px; color:#555;'><i class='fas fa-folder-open' style='font-size:40px; margin-bottom:10px;'></i><br>Database is empty. Add new files.</div>";
+                countBox.innerText = "0";
             }
         });
 
-        window.deleteApp = function(key) {
-            if(confirm("Delete this app?")) {
-                db.ref(SERVER_PATH + '/' + key).remove();
+        // C. PREPARE EDIT: Load data into form inputs
+        window.prepareEdit = function(key, appData) {
+            // Scroll smoothly to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Populate Form Fields
+            document.getElementById('editKey').value = key;
+            document.getElementById('inpName').value = appData.appName;
+            document.getElementById('inpVer').value = appData.version;
+            document.getElementById('inpSize').value = appData.size;
+            document.getElementById('inpCat').value = appData.gameCategory;
+            document.getElementById('inpType').value = appData.accessType;
+            document.getElementById('inpIcon').value = appData.iconUrl;
+            document.getElementById('inpLink').value = appData.downloadUrl;
+            document.getElementById('inpPass').value = appData.password || "";
+
+            // Toggle Buttons & UI Text
+            document.getElementById('btnAdd').style.display = 'none';
+            document.getElementById('btnUpd').style.display = 'block';
+            document.getElementById('btnCancel').style.display = 'block';
+            
+            const modeText = document.getElementById('modeText');
+            modeText.innerText = "MODE: EDITING FILE";
+            modeText.style.color = "var(--gold)";
+            modeText.style.background = "rgba(255, 215, 0, 0.1)";
+            
+            checkPaidState(); // Update label state
+        }
+
+        // D. UPDATE: Save edited data back to Firebase
+        function updateDatabase() {
+            const key = document.getElementById('editKey').value;
+            if(!key) return;
+
+            const name = document.getElementById('inpName').value;
+            const ver = document.getElementById('inpVer').value;
+            const size = document.getElementById('inpSize').value;
+            const cat = document.getElementById('inpCat').value;
+            const type = document.getElementById('inpType').value;
+            const icon = document.getElementById('inpIcon').value;
+            const pass = document.getElementById('inpPass').value;
+            let link = document.getElementById('inpLink').value;
+
+            link = fixDirectLink(link); // Ensure link is still fixed
+
+            const updates = {
+                appName: name, version: ver, size: size,
+                gameCategory: cat, accessType: type,
+                iconUrl: icon, downloadUrl: link, password: pass
+            };
+
+            db.ref(DB_PATH + "/" + key).update(updates)
+                .then(() => {
+                    alert("✅ Success: Data updated in the server!");
+                    resetFormState();
+                });
+        }
+
+        // E. DELETE: Remove file from Firebase
+        window.removeData = function(key) {
+            if(confirm("⚠️ CRITICAL WARNING: Are you sure you want to permanently DELETE this file from the server? This action cannot be undone.")) {
+                db.ref(DB_PATH + "/" + key).remove();
             }
+        }
+
+        // F. RESET: Clear form and revert to ADD mode
+        function resetFormState() {
+            document.getElementById('editKey').value = "";
+            document.getElementById('inpName').value = "";
+            document.getElementById('inpVer').value = "";
+            document.getElementById('inpSize').value = "";
+            document.getElementById('inpLink').value = "";
+            document.getElementById('inpIcon').value = "";
+            document.getElementById('inpPass').value = "";
+            
+            // Reset Dropdowns to default
+            document.getElementById('inpCat').selectedIndex = 0;
+            document.getElementById('inpType').selectedIndex = 0;
+            checkPaidState();
+
+            // Revert Buttons & UI Text
+            document.getElementById('btnAdd').style.display = 'block';
+            document.getElementById('btnUpd').style.display = 'none';
+            document.getElementById('btnCancel').style.display = 'none';
+            
+            const modeText = document.getElementById('modeText');
+            modeText.innerText = "MODE: ADD NEW";
+            modeText.style.color = "var(--primary)";
+            modeText.style.background = "#111";
+        }
+
+        // G. SEARCH: Filter the live list via typing
+        function filterLiveList() {
+            const filterValue = document.getElementById('searchInp').value.toLowerCase();
+            const listItems = document.querySelectorAll('.list-item');
+            
+            listItems.forEach(item => {
+                const textContent = item.querySelector('.item-text').innerText.toLowerCase();
+                if(textContent.includes(filterValue)) {
+                    item.style.display = "flex";
+                } else {
+                    item.style.display = "none";
+                }
+            });
         }
 
     </script>

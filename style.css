@@ -1,7 +1,7 @@
 /* ==========================================================================
-   MVX STORE - ULTIMATE STYLE ARCHITECTURE
-   Version: 8.0.0 (Final Production Build)
-   Theme: Neon Cyberpunk | Gold VIP | WhatsApp Integration
+   MVX STORE - ULTIMATE STYLE ARCHITECTURE (FULL EXPANDED VERSION)
+   Version: 11.0.0 (Production Build)
+   Theme: Neon Cyberpunk | Gold VIP | Glassmorphism UI
    Developer: MVX Team
    ========================================================================== */
 
@@ -168,6 +168,7 @@ img {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    transition: opacity 0.5s ease;
 }
 
 .loader-wrapper {
