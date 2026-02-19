@@ -3,359 +3,920 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Secure Access | MVX SYSTEM</title>
+    <meta name="theme-color" content="#00e676">
+    <title>Admin Authentication | MVX SECURE NEXUS</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* =========================================
-           INTERNAL CSS (LOGIN SPECIFIC)
-           ========================================= */
-        :root {
-            --neon-color: #00e676;
-            --error-color: #ff0033;
-            --bg-color: #000000;
-            --glass-panel: rgba(10, 20, 10, 0.85);
+        /* ===================================================================
+           MVX ADMIN LOGIN - ULTIMATE AUTHENTICATION PORTAL V2.0
+           Integrated with Main System (Matches 404, Admin, Index)
+           Features: Matrix Rain, 3D Effects, Biometric Animation
+           =================================================================== */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            /* Core Colors - Match Main System */
+            --primary: #00e676;
+            --primary-dark: #00c853;
+            --primary-dim: rgba(0, 230, 118, 0.1);
+            --primary-glow: 0 0 30px rgba(0, 230, 118, 0.3);
+            
+            --danger: #ff1744;
+            --danger-dim: rgba(255, 23, 68, 0.1);
+            --danger-glow: 0 0 30px rgba(255, 23, 68, 0.3);
+            
+            --gold: #FFD700;
+            --gold-dim: rgba(255, 215, 0, 0.1);
+            
+            /* Backgrounds */
+            --bg-void: #030303;
+            --bg-panel: rgba(3, 3, 3, 0.9);
+            --bg-input: #111111;
+            
+            /* Borders */
+            --border-dim: 1px solid #222;
+            --border-glow: 1px solid rgba(0, 230, 118, 0.3);
+            
+            /* Text */
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --text-muted: #666666;
+            --text-crt: #e0e0e0;
+            
+            /* Fonts */
+            --font-head: 'Rajdhani', sans-serif;
+            --font-mono: 'Share Tech Mono', monospace;
+            
+            /* Dimensions */
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 24px;
+        }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--neon-color);
-            font-family: 'Share Tech Mono', monospace;
-            height: 100vh;
-            overflow: hidden;
+            background: var(--bg-void);
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            min-height: 100vh;
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             position: relative;
+            overflow: hidden;
         }
 
-        /* --- MATRIX BACKGROUND EFFECT --- */
-        #matrix-canvas {
-            position: absolute;
+        /* ========== MATRIX RAIN BACKGROUND ========== */
+        #matrixCanvas {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: 0;
-            opacity: 0.3;
+            opacity: 0.15;
+            pointer-events: none;
         }
 
-        /* --- LOGIN PANEL DESIGN --- */
-        .login-wrapper {
+        /* ========== CYBER GRID (Same as Main System) ========== */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 230, 118, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 230, 118, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* ========== CRT SCANLINES ========== */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.1) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 2;
+            animation: scan 10s linear infinite;
+        }
+
+        /* ========== MAIN LOGIN CONTAINER ========== */
+        .login-universe {
             position: relative;
             z-index: 10;
             width: 100%;
             max-width: 420px;
             padding: 20px;
+            perspective: 1000px;
         }
 
-        .login-box {
-            background: var(--glass-panel);
-            border: 1px solid var(--neon-color);
-            padding: 40px 30px;
-            box-shadow: 0 0 30px rgba(0, 230, 118, 0.2), inset 0 0 20px rgba(0, 230, 118, 0.05);
-            backdrop-filter: blur(10px);
-            text-align: center;
+        /* ========== LOGIN POD ========== */
+        .login-pod {
+            background: var(--bg-panel);
+            backdrop-filter: blur(20px);
+            border: var(--border-dim);
+            border-radius: var(--radius-lg);
+            padding: 40px 35px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px var(--primary-dim);
             position: relative;
             overflow: hidden;
+            transform-style: preserve-3d;
+            animation: podFloat 6s ease-in-out infinite;
         }
 
-        /* Corner Decorations */
-        .corner {
+        /* Holographic Corners */
+        .corner-element {
             position: absolute;
-            width: 10px;
-            height: 10px;
-            border: 2px solid var(--neon-color);
-            transition: all 0.3s;
+            width: 30px;
+            height: 30px;
+            border: 2px solid var(--primary);
+            filter: drop-shadow(0 0 10px var(--primary));
+            opacity: 0.5;
+            transition: all 0.3s ease;
         }
-        .tl { top: 0; left: 0; border-right: none; border-bottom: none; }
-        .tr { top: 0; right: 0; border-left: none; border-bottom: none; }
-        .bl { bottom: 0; left: 0; border-right: none; border-top: none; }
-        .br { bottom: 0; right: 0; border-left: none; border-top: none; }
 
-        .login-box:hover .corner { width: 20px; height: 20px; }
+        .corner-tl {
+            top: 15px;
+            left: 15px;
+            border-right: none;
+            border-bottom: none;
+        }
 
-        /* Header Icon */
+        .corner-tr {
+            top: 15px;
+            right: 15px;
+            border-left: none;
+            border-bottom: none;
+        }
+
+        .corner-bl {
+            bottom: 15px;
+            left: 15px;
+            border-right: none;
+            border-top: none;
+        }
+
+        .corner-br {
+            bottom: 15px;
+            right: 15px;
+            border-left: none;
+            border-top: none;
+        }
+
+        .login-pod:hover .corner-element {
+            width: 40px;
+            height: 40px;
+            opacity: 1;
+            border-color: var(--primary);
+        }
+
+        /* ========== SYSTEM ICON ========== */
         .system-icon {
-            font-size: 60px;
-            margin-bottom: 20px;
-            color: var(--neon-color);
-            text-shadow: 0 0 15px var(--neon-color);
-            animation: pulse 2s infinite;
+            text-align: center;
+            margin-bottom: 25px;
         }
 
-        h2 {
-            font-family: 'Rajdhani', sans-serif;
-            letter-spacing: 3px;
+        .system-icon i {
+            font-size: 4.5rem;
+            color: var(--primary);
+            filter: drop-shadow(0 0 20px var(--primary));
+            animation: iconPulse 3s infinite;
+        }
+
+        .icon-ring {
+            width: 100px;
+            height: 100px;
+            border: 2px solid transparent;
+            border-top-color: var(--primary);
+            border-bottom-color: var(--gold);
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            animation: spin 4s linear infinite;
+        }
+
+        /* ========== TITLE SECTION ========== */
+        .title-section {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .title-section h2 {
+            font-family: var(--font-head);
+            font-size: 2rem;
+            letter-spacing: 4px;
             text-transform: uppercase;
-            font-size: 24px;
-            margin-bottom: 5px;
+            background: linear-gradient(135deg, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
         }
 
-        .status-text {
-            font-size: 12px;
-            color: #666;
-            margin-bottom: 30px;
+        .title-section .subtitle {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            font-family: var(--font-mono);
+        }
+
+        .status-indicator {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 4px 12px;
+            background: var(--primary-dim);
+            border: 1px solid var(--primary);
+            border-radius: 30px;
+            color: var(--primary);
+            font-size: 0.65rem;
             letter-spacing: 1px;
         }
 
-        /* Input Field */
+        /* ========== INPUT FIELDS ========== */
         .input-group {
-            position: relative;
             margin-bottom: 25px;
-            text-align: left;
+            position: relative;
         }
 
-        .input-label {
-            font-size: 10px;
-            color: var(--neon-color);
-            margin-bottom: 5px;
+        .input-group label {
             display: block;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
             text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .password-input {
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-size: 1rem;
+            z-index: 2;
+        }
+
+        .input-field {
             width: 100%;
-            background: rgba(0,0,0,0.6);
-            border: 1px solid #333;
-            color: white;
-            padding: 15px;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 18px;
-            text-align: center;
-            letter-spacing: 5px;
-            outline: none;
-            transition: 0.3s;
-        }
-
-        .password-input:focus {
-            border-color: var(--neon-color);
-            box-shadow: 0 0 15px rgba(0, 230, 118, 0.3);
-        }
-
-        /* Unlock Button */
-        .unlock-btn {
-            background: transparent;
-            color: var(--neon-color);
-            border: 1px solid var(--neon-color);
-            padding: 15px 30px;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            text-transform: uppercase;
+            background: var(--bg-input);
+            border: var(--border-dim);
+            border-radius: var(--radius-md);
+            padding: 16px 16px 16px 45px;
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            font-size: 1rem;
             letter-spacing: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px var(--primary-dim);
+            outline: none;
+            background: #000;
+        }
+
+        .input-field::placeholder {
+            color: #333;
+            letter-spacing: 0px;
+        }
+
+        /* Password Strength Indicator (Visual only) */
+        .password-strength {
+            margin-top: 8px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .strength-bar {
+            height: 3px;
+            flex: 1;
+            background: #222;
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+
+        .strength-bar.active {
+            background: var(--primary);
+            box-shadow: 0 0 10px var(--primary);
+        }
+
+        /* ========== CAPTCHA SIMULATOR ========== */
+        .captcha-sim {
+            background: #0a0a0a;
+            border: var(--border-dim);
+            border-radius: var(--radius-md);
+            padding: 12px 15px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .captcha-sim span {
+            font-family: var(--font-mono);
+            font-size: 1.2rem;
+            color: var(--primary);
+            letter-spacing: 4px;
+            text-shadow: 0 0 8px var(--primary);
+        }
+
+        .captcha-sim i {
+            color: #444;
+            font-size: 1rem;
+        }
+
+        .captcha-sim input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            padding: 5px;
+        }
+
+        .captcha-sim input:focus {
+            outline: none;
+        }
+
+        /* ========== LOGIN BUTTON ========== */
+        .login-btn {
             width: 100%;
-            transition: 0.3s;
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 16px;
+            border-radius: var(--radius-md);
+            font-family: var(--font-head);
+            font-weight: 700;
+            font-size: 1.2rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            cursor: pointer;
             position: relative;
             overflow: hidden;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
-        .unlock-btn::before {
+        .login-btn::before {
             content: '';
             position: absolute;
             top: 0;
             left: -100%;
             width: 100%;
             height: 100%;
-            background: var(--neon-color);
-            transition: 0.3s;
+            background: var(--primary);
+            transition: left 0.4s cubic-bezier(0.19, 1, 0.22, 1);
             z-index: -1;
         }
 
-        .unlock-btn:hover {
-            color: black;
+        .login-btn:hover {
+            color: #000;
+            box-shadow: var(--primary-glow);
+            transform: translateY(-3px);
         }
-        .unlock-btn:hover::before {
+
+        .login-btn:hover::before {
             left: 0;
         }
 
-        /* Back Link */
-        .back-home {
-            display: inline-block;
-            margin-top: 25px;
-            color: #444;
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        /* ========== ACCESS OPTIONS ========== */
+        .access-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .back-link {
+            color: var(--text-muted);
             text-decoration: none;
-            font-size: 12px;
-            transition: 0.3s;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
         }
-        .back-home:hover { color: white; text-shadow: 0 0 5px white; }
 
-        /* --- ANIMATIONS --- */
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 1; }
+        .back-link:hover {
+            color: var(--primary);
+        }
+
+        .biometric-option {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .biometric-option:hover {
+            color: var(--gold);
+            transform: scale(1.1);
+        }
+
+        /* ========== STATUS MESSAGE ========== */
+        .status-message {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            min-height: 40px;
+            transition: all 0.3s;
+        }
+
+        .status-message.error {
+            color: var(--danger);
+            background: var(--danger-dim);
+            border: 1px solid var(--danger);
+        }
+
+        .status-message.success {
+            color: var(--primary);
+            background: var(--primary-dim);
+            border: 1px solid var(--primary);
+        }
+
+        /* ========== LOADING OVERLAY ========== */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 20;
+            border-radius: var(--radius-lg);
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 3px solid transparent;
+            border-top-color: var(--primary);
+            border-bottom-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-text {
+            color: var(--primary);
+            font-family: var(--font-mono);
+            letter-spacing: 2px;
+        }
+
+        /* ========== ANIMATIONS ========== */
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes scan {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100px; }
+        }
+
+        @keyframes iconPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
             50% { transform: scale(1.1); opacity: 0.8; }
-            100% { transform: scale(1); opacity: 1; }
         }
 
-        /* Error Shake Animation */
-        .shake { animation: shake-anim 0.5s cubic-bezier(.36,.07,.19,.97) both; }
-        @keyframes shake-anim {
-            10%, 90% { transform: translate3d(-1px, 0, 0); }
-            20%, 80% { transform: translate3d(2px, 0, 0); }
-            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-            40%, 60% { transform: translate3d(4px, 0, 0); }
+        @keyframes podFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
 
-        /* Access Granted Animation */
-        .access-granted {
-            border-color: #00ff00 !important;
-            box-shadow: 0 0 50px #00ff00 !important;
+        @keyframes glitchText {
+            0%, 100% { text-shadow: 2px 0 0 var(--danger), -2px 0 0 var(--primary); }
+            33% { text-shadow: -2px 0 0 var(--danger), 2px 0 0 var(--primary); }
+            66% { text-shadow: 2px 0 0 var(--primary), -2px 0 0 var(--danger); }
+        }
+
+        .glitch {
+            animation: glitchText 0.3s infinite;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 480px) {
+            .login-pod {
+                padding: 30px 20px;
+            }
+
+            .title-section h2 {
+                font-size: 1.5rem;
+            }
+
+            .system-icon i {
+                font-size: 3.5rem;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Matrix Canvas Background -->
+    <canvas id="matrixCanvas"></canvas>
 
-    <canvas id="matrix-canvas"></canvas>
+    <!-- Main Login Container -->
+    <div class="login-universe">
+        <div class="login-pod" id="loginPod">
+            <!-- Corner Decorations -->
+            <div class="corner-element corner-tl"></div>
+            <div class="corner-element corner-tr"></div>
+            <div class="corner-element corner-bl"></div>
+            <div class="corner-element corner-br"></div>
 
-    <div class="login-wrapper">
-        <div class="login-box" id="loginBox">
-            <div class="corner tl"></div><div class="corner tr"></div>
-            <div class="corner bl"></div><div class="corner br"></div>
-
-            <i class="fas fa-fingerprint system-icon"></i>
-            
-            <h2>System Access</h2>
-            <p class="status-text" id="statusMsg">AUTHENTICATION REQUIRED</p>
-
-            <div class="input-group">
-                <label class="input-label">Security Code</label>
-                <input type="password" id="passInput" class="password-input" placeholder="••••" maxlength="8" autocomplete="off">
+            <!-- Loading Overlay -->
+            <div class="loading-overlay" id="loadingOverlay">
+                <div class="loader"></div>
+                <div class="loading-text" id="loadingText">VERIFYING CREDENTIALS</div>
             </div>
 
-            <button class="unlock-btn" onclick="attemptLogin()">
-                Authorize
+            <!-- System Icon -->
+            <div class="system-icon">
+                <div class="icon-ring"></div>
+                <i class="fas fa-fingerprint"></i>
+            </div>
+
+            <!-- Title Section -->
+            <div class="title-section">
+                <h2>NEXUS ACCESS</h2>
+                <div class="subtitle">AUTHENTICATION PORTAL v2.0</div>
+                <div class="status-indicator" id="statusIndicator">
+                    <i class="fas fa-shield-alt"></i> ENCRYPTED CONNECTION
+                </div>
+            </div>
+
+            <!-- Status Message (Dynamic) -->
+            <div class="status-message" id="statusMessage"></div>
+
+            <!-- Password Input -->
+            <div class="input-group">
+                <label>SECURITY CLEARANCE CODE</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-key"></i>
+                    <input type="password" 
+                           id="passwordInput" 
+                           class="input-field" 
+                           placeholder="••••••••" 
+                           maxlength="8"
+                           autocomplete="off"
+                           autofocus>
+                </div>
+                <!-- Visual password strength (just for show) -->
+                <div class="password-strength">
+                    <div class="strength-bar"></div>
+                    <div class="strength-bar"></div>
+                    <div class="strength-bar"></div>
+                    <div class="strength-bar"></div>
+                </div>
+            </div>
+
+            <!-- CAPTCHA Simulator (Visual Only) -->
+            <div class="captcha-sim">
+                <i class="fas fa-robot"></i>
+                <span>MVX-42</span>
+                <input type="text" placeholder="Enter code" id="captchaInput" maxlength="6">
+            </div>
+
+            <!-- Login Button -->
+            <button class="login-btn" onclick="attemptLogin()" id="loginButton">
+                <i class="fas fa-unlock-alt"></i> AUTHORIZE ACCESS
             </button>
 
-            <a href="index.html" class="back-home">ABORT CONNECTION</a>
+            <!-- Footer Options -->
+            <div class="access-options">
+                <a href="index.html" class="back-link">
+                    <i class="fas fa-arrow-left"></i> RETURN TO STORE
+                </a>
+                <div class="biometric-option" title="Biometric Access">
+                    <i class="fas fa-scan-fingerprint"></i>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // --- 1. CONFIGURATION ---
-        // এই পাসওয়ার্ড দিয়ে অ্যাডমিন প্যানেলে ঢুকতে হবে (আপনি চাইলে চেঞ্জ করতে পারেন)
-        const ADMIN_PASS = "1213"; 
-        
-        const input = document.getElementById('passInput');
-        const statusMsg = document.getElementById('statusMsg');
-        const loginBox = document.getElementById('loginBox');
-        const icon = document.querySelector('.system-icon');
+        (function() {
+            "use strict";
 
-        // --- 2. LOGIN LOGIC ---
-        function attemptLogin() {
-            const enteredPass = input.value;
-            
-            // A. যদি পাসওয়ার্ড খালি থাকে
-            if(!enteredPass) {
-                triggerError("INPUT REQUIRED");
-                return;
+            // ==================== CONFIGURATION ====================
+            const CONFIG = {
+                adminPassword: "1213",        // Admin password (change this)
+                redirectUrl: "admin.html",     // Where to go after login
+                maxAttempts: 5,                 // Max failed attempts before lockout
+                lockoutTime: 30                  // Lockout time in seconds
+            };
+
+            // ==================== STATE MANAGEMENT ====================
+            let failedAttempts = 0;
+            let isLocked = false;
+            let lockoutTimer = null;
+            let lockoutSeconds = 0;
+
+            // ==================== DOM ELEMENTS ====================
+            const passwordInput = document.getElementById('passwordInput');
+            const captchaInput = document.getElementById('captchaInput');
+            const loginButton = document.getElementById('loginButton');
+            const statusMessage = document.getElementById('statusMessage');
+            const statusIndicator = document.getElementById('statusIndicator');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const loadingText = document.getElementById('loadingText');
+            const loginPod = document.getElementById('loginPod');
+            const strengthBars = document.querySelectorAll('.strength-bar');
+
+            // ==================== MATRIX RAIN BACKGROUND ====================
+            const canvas = document.getElementById('matrixCanvas');
+            const ctx = canvas.getContext('2d');
+
+            function initMatrix() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+{}[]|\\:;"<>,.?/~`';
+                const fontSize = 14;
+                const columns = canvas.width / fontSize;
+                const drops = [];
+
+                for (let i = 0; i < columns; i++) {
+                    drops[i] = Math.floor(Math.random() * canvas.height / fontSize);
+                }
+
+                function drawMatrix() {
+                    ctx.fillStyle = 'rgba(3, 3, 3, 0.05)';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    ctx.fillStyle = '#00e676';
+                    ctx.font = `${fontSize}px 'Share Tech Mono', monospace`;
+
+                    for (let i = 0; i < drops.length; i++) {
+                        const char = chars[Math.floor(Math.random() * chars.length)];
+                        ctx.fillText(char, i * fontSize, drops[i] * fontSize);
+
+                        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                            drops[i] = 0;
+                        }
+                        drops[i]++;
+                    }
+                }
+
+                setInterval(drawMatrix, 40);
             }
 
-            // B. চেকিং এনিমেশন
-            statusMsg.innerText = "VERIFYING ENCRYPTION...";
-            statusMsg.style.color = "yellow";
-            
-            setTimeout(() => {
-                // C. পাসওয়ার্ড সঠিক হলে
-                if(enteredPass === ADMIN_PASS) {
-                    grantAccess();
+            // ==================== PASSWORD STRENGTH VISUAL ====================
+            passwordInput.addEventListener('input', function() {
+                const val = this.value;
+                const strength = Math.min(val.length, 8);
+                
+                strengthBars.forEach((bar, index) => {
+                    if (index < strength) {
+                        bar.classList.add('active');
+                    } else {
+                        bar.classList.remove('active');
+                    }
+                });
+
+                // Add glow effect based on length
+                if (val.length === 8) {
+                    this.style.borderColor = 'var(--primary)';
+                    this.style.boxShadow = '0 0 20px rgba(0, 230, 118, 0.3)';
                 } else {
-                    // D. পাসওয়ার্ড ভুল হলে
-                    triggerError("ACCESS DENIED - INVALID CODE");
+                    this.style.borderColor = '';
+                    this.style.boxShadow = '';
                 }
-            }, 800); // একটু দেরি করে হ্যাকার ফিল দেওয়া
-        }
+            });
 
-        function grantAccess() {
-            // UI আপডেট
-            statusMsg.innerText = "ACCESS GRANTED";
-            statusMsg.style.color = "#00ff00";
-            input.style.borderColor = "#00ff00";
-            icon.className = "fas fa-unlock system-icon";
-            icon.style.color = "#00ff00";
-            
-            // সেশন স্টোরেজে লগইন ডাটা সেভ করা (যাতে admin.html এ চেক করা যায়)
-            sessionStorage.setItem("mvx_admin_token", "authorized_secure_session");
-            sessionStorage.setItem("login_timestamp", Date.now());
-
-            // রিডাইরেক্ট
-            setTimeout(() => {
-                window.location.href = "admin.html";
-            }, 1000);
-        }
-
-        function triggerError(msg) {
-            statusMsg.innerText = msg;
-            statusMsg.style.color = "#ff0033";
-            input.value = "";
-            loginBox.classList.add('shake');
-            
-            // এনিমেশন রিসেট
-            setTimeout(() => {
-                loginBox.classList.remove('shake');
-                statusMsg.innerText = "AUTHENTICATION REQUIRED";
-                statusMsg.style.color = "#666";
-            }, 1000);
-        }
-
-        // Enter বাটন চাপলে লগইন হবে
-        input.addEventListener("keypress", function(event) {
-            if (event.key === "Enter") {
-                attemptLogin();
-            }
-        });
-
-        // --- 3. MATRIX BACKGROUND EFFECT (Canvas) ---
-        const canvas = document.getElementById('matrix-canvas');
-        const ctx = canvas.getContext('2d');
-
-        // ফুল স্ক্রিন সেটআপ
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
-        const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        const nums = '0123456789';
-        const alphabet = katakana + latin + nums;
-
-        const fontSize = 16;
-        const columns = canvas.width/fontSize;
-        const rainDrops = [];
-
-        for( let x = 0; x < columns; x++ ) {
-            rainDrops[x] = 1;
-        }
-
-        const draw = () => {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.fillStyle = '#0F0'; // Green text
-            ctx.font = fontSize + 'px monospace';
-
-            for(let i = 0; i < rainDrops.length; i++) {
-                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
-                ctx.fillText(text, i*fontSize, rainDrops[i]*fontSize);
-
-                if(rainDrops[i]*fontSize > canvas.height && Math.random() > 0.975){
-                    rainDrops[i] = 0;
+            // ==================== CAPTCHA AUTO-SHUFFLE ====================
+            function shuffleCaptcha() {
+                const captchaSpan = document.querySelector('.captcha-sim span');
+                const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';
+                let result = '';
+                for (let i = 0; i < 6; i++) {
+                    result += chars[Math.floor(Math.random() * chars.length)];
                 }
-                rainDrops[i]++;
+                captchaSpan.textContent = result;
             }
-        };
 
-        setInterval(draw, 30);
+            // Shuffle captcha every 30 seconds
+            setInterval(shuffleCaptcha, 30000);
+            shuffleCaptcha();
 
-        // উইন্ডো সাইজ চেঞ্জ হলে ক্যানভাস রিসেট
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
+            // ==================== LOGIN FUNCTION ====================
+            window.attemptLogin = function() {
+                // Check if locked out
+                if (isLocked) {
+                    showStatus(`⛔ ACCESS LOCKED - WAIT ${lockoutSeconds}s`, 'error');
+                    return;
+                }
 
+                const password = passwordInput.value;
+                const captcha = captchaInput.value.toUpperCase();
+                const expectedCaptcha = document.querySelector('.captcha-sim span').textContent;
+
+                // Validate CAPTCHA
+                if (captcha !== expectedCaptcha) {
+                    showStatus('❌ CAPTCHA MISMATCH - ACCESS DENIED', 'error');
+                    passwordInput.value = '';
+                    passwordInput.focus();
+                    failedAttempts++;
+                    checkLockout();
+                    return;
+                }
+
+                // Validate password
+                if (!password) {
+                    showStatus('⚠️ ACCESS CODE REQUIRED', 'error');
+                    passwordInput.focus();
+                    return;
+                }
+
+                // Show loading
+                loadingOverlay.classList.add('active');
+                loginButton.disabled = true;
+
+                // Simulate verification delay (hacker effect)
+                setTimeout(() => {
+                    if (password === CONFIG.adminPassword) {
+                        // SUCCESS
+                        loadingText.textContent = 'ACCESS GRANTED - DECRYPTING...';
+                        showStatus('✅ ACCESS GRANTED - WELCOME ADMIN', 'success');
+                        
+                        // Visual success effect
+                        loginPod.style.borderColor = 'var(--primary)';
+                        loginPod.style.boxShadow = '0 0 50px rgba(0, 230, 118, 0.5)';
+                        
+                        // Save admin session
+                        sessionStorage.setItem('mvx_admin_token', 'authorized_secure_session');
+                        sessionStorage.setItem('login_timestamp', Date.now());
+
+                        // Redirect to admin panel
+                        setTimeout(() => {
+                            window.location.href = CONFIG.redirectUrl;
+                        }, 1500);
+                    } else {
+                        // FAILED
+                        loadingOverlay.classList.remove('active');
+                        loginButton.disabled = false;
+                        
+                        showStatus('❌ ACCESS DENIED - INVALID CREDENTIALS', 'error');
+                        passwordInput.value = '';
+                        passwordInput.focus();
+                        
+                        // Shake effect
+                        loginPod.classList.add('glitch');
+                        setTimeout(() => loginPod.classList.remove('glitch'), 500);
+                        
+                        failedAttempts++;
+                        checkLockout();
+                    }
+                }, 1500);
+            };
+
+            // ==================== LOCKOUT MECHANISM ====================
+            function checkLockout() {
+                if (failedAttempts >= CONFIG.maxAttempts) {
+                    isLocked = true;
+                    lockoutSeconds = CONFIG.lockoutTime;
+                    
+                    showStatus(`⛔ MAXIMUM ATTEMPTS EXCEEDED - LOCKED FOR ${lockoutSeconds}S`, 'error');
+                    
+                    // Disable input
+                    passwordInput.disabled = true;
+                    captchaInput.disabled = true;
+                    loginButton.disabled = true;
+                    
+                    // Start countdown
+                    lockoutTimer = setInterval(() => {
+                        lockoutSeconds--;
+                        
+                        if (lockoutSeconds <= 0) {
+                            clearInterval(lockoutTimer);
+                            isLocked = false;
+                            failedAttempts = 0;
+                            
+                            passwordInput.disabled = false;
+                            captchaInput.disabled = false;
+                            loginButton.disabled = false;
+                            
+                            showStatus('🟢 LOCKOUT EXPIRED - TRY AGAIN', 'success');
+                            shuffleCaptcha();
+                        } else {
+                            showStatus(`⛔ LOCKED - ${lockoutSeconds}S REMAINING`, 'error');
+                        }
+                    }, 1000);
+                } else {
+                    const attemptsLeft = CONFIG.maxAttempts - failedAttempts;
+                    if (attemptsLeft > 0) {
+                        showStatus(`⚠️ ${attemptsLeft} ATTEMPT(S) REMAINING`, 'error');
+                    }
+                }
+            }
+
+            // ==================== STATUS MESSAGE ====================
+            function showStatus(message, type = 'info') {
+                statusMessage.textContent = message;
+                statusMessage.className = `status-message ${type}`;
+                
+                if (type === 'error') {
+                    statusIndicator.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ACCESS BLOCKED';
+                    statusIndicator.style.color = 'var(--danger)';
+                    statusIndicator.style.borderColor = 'var(--danger)';
+                } else if (type === 'success') {
+                    statusIndicator.innerHTML = '<i class="fas fa-check-circle"></i> ACCESS GRANTED';
+                    statusIndicator.style.color = 'var(--primary)';
+                    statusIndicator.style.borderColor = 'var(--primary)';
+                } else {
+                    statusIndicator.innerHTML = '<i class="fas fa-shield-alt"></i> ENCRYPTED CONNECTION';
+                    statusIndicator.style.color = '';
+                    statusIndicator.style.borderColor = '';
+                }
+            }
+
+            // ==================== ENTER KEY SUPPORT ====================
+            passwordInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    attemptLogin();
+                }
+            });
+
+            captchaInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    attemptLogin();
+                }
+            });
+
+            // ==================== RESIZE HANDLER ====================
+            window.addEventListener('resize', () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            });
+
+            // ==================== PARALLAX EFFECT ====================
+            document.addEventListener('mousemove', (e) => {
+                const x = (window.innerWidth / 2 - e.pageX) / 50;
+                const y = (window.innerHeight / 2 - e.pageY) / 50;
+                
+                loginPod.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
+            });
+
+            document.addEventListener('mouseleave', () => {
+                loginPod.style.transition = 'transform 0.5s ease';
+                loginPod.style.transform = 'rotateY(0deg) rotateX(0deg)';
+                
+                setTimeout(() => {
+                    loginPod.style.transition = '';
+                }, 500);
+            });
+
+            // ==================== INITIALIZE ====================
+            initMatrix();
+
+            // Focus password input on load
+            passwordInput.focus();
+
+            // Clear any existing admin session (prevents auto-login)
+            if (sessionStorage.getItem('mvx_admin_token')) {
+                // If already logged in, redirect to admin
+                window.location.href = 'admin.html';
+            }
+
+            // ==================== BIOMETRIC SIMULATOR ====================
+            document.querySelector('.biometric-option').addEventListener('click', () => {
+                showStatus('🔴 BIOMETRIC SCANNER OFFLINE - USE PASSWORD', 'error');
+            });
+
+        })();
     </script>
 </body>
 </html>

@@ -4,409 +4,645 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#ff1744">
-    <title>404 | FATAL ERROR | MVX SYSTEM</title>
+    <meta name="robots" content="noindex, nofollow">
+    <title>404 - Nexus Breach | MVX SYSTEM</title>
     
+    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* =====================================================================
-           ULTIMATE ERROR PAGE CSS (EXPANDED LOGIC & ANIMATIONS)
-           ===================================================================== */
+        /* ===================================================================
+           ULTIMATE 404 ERROR PAGE - MVX CYBER EDITION V2.0
+           Fixed: Parallax bugs, Mobile responsiveness, Animation sync
+           =================================================================== */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         :root {
-            --primary: #00e676;
-            --danger: #ff1744;
-            --danger-glow: 0 0 30px rgba(255, 23, 68, 0.6);
-            --bg-dark: #050505;
-            --text-main: #fff;
+            --primary-neon: #00e676;
+            --danger-core: #ff1744;
+            --danger-glow: 0 0 30px rgba(255, 23, 68, 0.7);
+            --bg-void: #030303;
+            --text-crt: #e0e0e0;
             --font-tech: 'Share Tech Mono', monospace;
             --font-head: 'Rajdhani', sans-serif;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
-
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            height: 100vh;
+            background: var(--bg-void);
+            color: var(--text-crt);
+            min-height: 100vh;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             font-family: var(--font-tech);
-            overflow: hidden;
-            text-align: center;
+            overflow-x: hidden;
             position: relative;
-            perspective: 1000px;
+            perspective: 1200px;
+            line-height: 1.6;
         }
 
-        /* --- CRT MONITOR SCANLINE EFFECT --- */
+        /* ========== CRT & SCANLINES ========== */
         body::before {
-            content: " ";
-            display: block;
-            position: absolute;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            z-index: 2;
-            background-size: 100% 2px, 3px 100%;
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.1) 0px,
+                rgba(0, 255, 0, 0.02) 2px,
+                transparent 3px,
+                transparent 5px
+            );
             pointer-events: none;
+            z-index: 1;
+            animation: scan 10s linear infinite;
         }
 
-        /* --- SCREEN FLICKER ANIMATION --- */
         body::after {
-            content: " ";
-            display: block;
-            position: absolute;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background: rgba(0, 0, 0, 0.1);
-            opacity: 0;
-            z-index: 2;
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 20% 40%, rgba(255, 23, 68, 0.1) 0%, transparent 40%);
             pointer-events: none;
-            animation: flicker 0.15s infinite;
+            z-index: 1;
         }
 
-        @keyframes flicker {
-            0% { opacity: 0.05; } 50% { opacity: 0.2; } 100% { opacity: 0.05; }
-        }
-
-        /* --- MAIN CONTAINER --- */
-        .error-container {
+        /* ========== MAIN CONTAINER ========== */
+        .error-universe {
             position: relative;
             z-index: 10;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             width: 100%;
-            max-width: 800px;
-            padding: 20px;
+            max-width: 900px;
+            padding: 2rem 1.5rem;
+            margin: 0 auto;
             transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
         }
 
-        /* --- 404 GLITCH TEXT (ADVANCED RGB SPLIT) --- */
-        .glitch-box {
+        /* ========== 404 GLITCH ART ========== */
+        .glitch-monolith {
+            text-align: center;
+            margin-bottom: 1.5rem;
             position: relative;
-            margin-bottom: 10px;
-            transform: translateZ(30px); /* 3D pop effect */
         }
 
-        .error-code {
-            font-size: 180px;
+        .error-giant {
+            font-size: clamp(120px, 25vw, 220px);
             font-weight: 800;
             font-family: var(--font-head);
-            color: var(--text-main);
-            letter-spacing: -8px;
+            color: transparent;
+            -webkit-text-stroke: 2px rgba(255, 23, 68, 0.3);
+            text-shadow: 
+                0 0 20px rgba(255, 23, 68, 0.3),
+                4px 4px 0 rgba(0, 230, 118, 0.2),
+                -4px -4px 0 rgba(0, 255, 255, 0.2);
+            letter-spacing: -5px;
             position: relative;
-            z-index: 1;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+            animation: flicker 3s infinite;
         }
 
-        /* RGB Layers for Glitch */
-        .error-code::before,
-        .error-code::after {
+        .error-giant::before,
+        .error-giant::after {
             content: attr(data-text);
             position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: var(--bg-dark);
-            z-index: -1;
-        }
-
-        .error-code::before {
-            left: 3px;
-            text-shadow: -3px 0 var(--danger);
-            clip: rect(24px, 550px, 90px, 0);
-            animation: glitch-anim-1 2.5s infinite linear alternate-reverse;
-        }
-
-        .error-code::after {
-            left: -3px;
-            text-shadow: 3px 0 #0ff; /* Cyan split */
-            clip: rect(85px, 550px, 140px, 0);
-            animation: glitch-anim-2 3s infinite linear alternate-reverse;
-        }
-
-        /* --- HEADINGS & WARNINGS --- */
-        .error-title {
-            font-size: 28px;
-            color: var(--danger);
-            text-transform: uppercase;
-            letter-spacing: 6px;
-            margin-bottom: 15px;
-            border-bottom: 2px solid var(--danger);
-            display: inline-block;
-            padding-bottom: 5px;
-            box-shadow: 0 5px 0 -3px var(--danger);
-            text-shadow: var(--danger-glow);
-        }
-
-        /* --- FAKE TERMINAL CONSOLE --- */
-        .terminal-box {
-            background: rgba(10, 10, 10, 0.8);
-            border: 1px solid #333;
-            border-left: 3px solid var(--danger);
+            top: 0;
+            left: 0;
             width: 100%;
-            max-width: 500px;
-            padding: 15px;
-            text-align: left;
-            font-size: 13px;
-            color: #aaa;
-            margin-bottom: 30px;
-            border-radius: 4px;
-            height: 120px;
-            overflow: hidden;
-            position: relative;
+            height: 100%;
+            background: var(--bg-void);
+            color: transparent;
+            -webkit-text-stroke: 2px transparent;
         }
-        
-        .terminal-box::before {
-            content: "SYSTEM LOGS //";
-            display: block;
-            color: var(--danger);
-            font-size: 10px;
-            margin-bottom: 8px;
+
+        .error-giant::before {
+            left: 4px;
+            text-shadow: 3px 0 #00e676;
+            animation: glitch-1 2.2s infinite linear alternate-reverse;
+            clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+        }
+
+        .error-giant::after {
+            left: -4px;
+            text-shadow: -3px 0 #2979ff;
+            animation: glitch-2 2.5s infinite linear alternate-reverse;
+            clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+        }
+
+        /* ========== STATUS BADGE ========== */
+        .status-badge {
+            display: inline-block;
+            background: rgba(255, 23, 68, 0.1);
+            border: 1px solid var(--danger-core);
+            color: var(--danger-core);
+            padding: 0.5rem 2rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            letter-spacing: 3px;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            box-shadow: 0 0 15px rgba(255, 23, 68, 0.3);
+            backdrop-filter: blur(5px);
+        }
+
+        /* ========== DIAGNOSTIC TERMINAL ========== */
+        .diagnostic-panel {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #333;
+            border-left: 4px solid var(--danger-core);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem auto;
+            max-width: 550px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .diagnostic-header {
+            color: #888;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
             letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .diagnostic-header i {
+            color: var(--danger-core);
+        }
+
+        .log-stream {
+            font-family: var(--font-tech);
+            font-size: 0.85rem;
+            color: #aaa;
+            height: 100px;
+            overflow-y: auto;
+            padding-right: 10px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--danger-core) #222;
+        }
+
+        .log-stream::-webkit-scrollbar {
+            width: 4px;
+        }
+        .log-stream::-webkit-scrollbar-track {
+            background: #222;
+        }
+        .log-stream::-webkit-scrollbar-thumb {
+            background: var(--danger-core);
+            border-radius: 2px;
         }
 
         .log-line {
-            margin-bottom: 4px;
-            line-height: 1.4;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: slideIn 0.3s ease;
         }
-        .log-warn { color: var(--danger); }
-        .log-info { color: #0ff; }
-        .log-success { color: var(--primary); }
 
-        /* Blinking Cursor */
-        .cursor {
+        .log-line.error {
+            color: var(--danger-core);
+        }
+        .log-line.success {
+            color: var(--primary-neon);
+        }
+        .log-line.info {
+            color: #2979ff;
+        }
+
+        .log-prompt {
+            display: flex;
+            align-items: center;
+            margin-top: 1rem;
+            color: var(--primary-neon);
+        }
+
+        .cursor-block {
             display: inline-block;
-            width: 8px;
-            height: 15px;
-            background-color: var(--primary);
-            animation: blinker 1s step-end infinite;
-            vertical-align: middle;
-            margin-left: 5px;
+            width: 10px;
+            height: 18px;
+            background: var(--primary-neon);
+            margin-left: 8px;
+            animation: blink 1s step-end infinite;
         }
-        @keyframes blinker { 50% { opacity: 0; } }
 
-        /* --- OVERRIDE BUTTON --- */
-        .btn-home {
-            position: relative;
-            padding: 16px 45px;
-            background: rgba(255, 23, 68, 0.05);
-            color: var(--text-main);
-            border: 1px solid var(--danger);
-            font-family: var(--font-head);
+        /* ========== REDIRECT PROTOCOL ========== */
+        .redirect-protocol {
+            margin: 2rem auto 1.5rem;
+            max-width: 350px;
+        }
+
+        .countdown-display {
+            font-size: 2.5rem;
             font-weight: 800;
-            font-size: 18px;
-            text-decoration: none;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            transition: 0.3s;
-            overflow: hidden;
-            z-index: 2;
-            border-radius: 4px;
+            color: var(--primary-neon);
+            text-shadow: 0 0 20px rgba(0, 230, 118, 0.5);
+            margin-bottom: 0.5rem;
+            font-family: var(--font-head);
         }
 
-        .btn-home::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: var(--danger);
-            transition: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-            z-index: -1;
-        }
-
-        .btn-home:hover {
-            color: black;
-            box-shadow: var(--danger-glow);
-            border-color: transparent;
-            transform: scale(1.05);
-        }
-        .btn-home:hover::before { left: 0; }
-
-        /* --- COUNTDOWN & PROGRESS BAR --- */
-        .redirect-wrapper {
-            margin-top: 30px;
-            width: 100%;
-            max-width: 300px;
-            text-align: center;
-        }
-
-        .redirect-text {
-            font-size: 11px;
-            color: #666;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .redirect-text span {
-            color: var(--primary);
-            font-weight: bold;
-            font-size: 14px;
-        }
-
-        .progress-bar-container {
+        .progress-arc {
             width: 100%;
             height: 4px;
             background: #222;
             border-radius: 2px;
             overflow: hidden;
-            position: relative;
+            margin: 0.8rem 0;
         }
 
-        .progress-bar-fill {
+        .progress-fill {
             height: 100%;
             width: 100%;
-            background: var(--primary);
+            background: linear-gradient(90deg, var(--primary-neon), #2979ff);
             transform-origin: left;
-            /* Animation added via JS based on time */
+            transition: transform linear;
         }
 
-        /* --- COMPLEX GLITCH KEYFRAMES --- */
-        @keyframes glitch-anim-1 {
-            0% { clip: rect(30px, 9999px, 10px, 0); transform: skew(0.6deg); }
-            20% { clip: rect(50px, 9999px, 80px, 0); transform: skew(0.2deg); }
-            40% { clip: rect(10px, 9999px, 90px, 0); transform: skew(0.1deg); }
-            60% { clip: rect(80px, 9999px, 20px, 0); transform: skew(0.8deg); }
-            80% { clip: rect(40px, 9999px, 60px, 0); transform: skew(0.3deg); }
-            100% { clip: rect(70px, 9999px, 30px, 0); transform: skew(0.5deg); }
+        .redirect-label {
+            color: #666;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
-        @keyframes glitch-anim-2 {
-            0% { clip: rect(60px, 9999px, 10px, 0); transform: skew(0.7deg); }
-            20% { clip: rect(20px, 9999px, 50px, 0); transform: skew(0.3deg); }
-            40% { clip: rect(10px, 9999px, 90px, 0); transform: skew(0.2deg); }
-            60% { clip: rect(50px, 9999px, 20px, 0); transform: skew(0.6deg); }
-            80% { clip: rect(90px, 9999px, 40px, 0); transform: skew(0.1deg); }
-            100% { clip: rect(30px, 9999px, 70px, 0); transform: skew(0.9deg); }
-        }
-        
-        /* Mobile adjustment */
-        @media (max-width: 600px) {
-            .error-code { font-size: 120px; }
-            .error-title { font-size: 20px; }
+        /* ========== ACTION BUTTON ========== */
+        .nexus-button {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 1.2rem 3rem;
+            background: transparent;
+            border: 2px solid var(--danger-core);
+            color: #fff;
+            font-family: var(--font-head);
+            font-weight: 700;
+            font-size: 1.2rem;
+            letter-spacing: 3px;
+            text-decoration: none;
+            text-transform: uppercase;
+            border-radius: 6px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
         }
 
+        .nexus-button i {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .nexus-button:hover {
+            color: #000;
+            border-color: transparent;
+            box-shadow: var(--danger-glow);
+            transform: translateY(-3px);
+        }
+
+        .nexus-button:hover i {
+            transform: rotate(15deg) scale(1.1);
+        }
+
+        .nexus-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--danger-core);
+            transition: left 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            z-index: -1;
+        }
+
+        .nexus-button:hover::before {
+            left: 0;
+        }
+
+        /* ========== KEYFRAMES ========== */
+        @keyframes glitch-1 {
+            0% { clip-path: polygon(0 2%, 100% 2%, 100% 30%, 0 30%); transform: translate(0); }
+            20% { clip-path: polygon(0 15%, 100% 15%, 100% 55%, 0 55%); transform: translate(-2px, 1px); }
+            40% { clip-path: polygon(0 40%, 100% 40%, 100% 70%, 0 70%); transform: translate(2px, -1px); }
+            60% { clip-path: polygon(0 60%, 100% 60%, 100% 85%, 0 85%); transform: translate(-1px, 2px); }
+            80% { clip-path: polygon(0 75%, 100% 75%, 100% 95%, 0 95%); transform: translate(1px, 1px); }
+            100% { clip-path: polygon(0 88%, 100% 88%, 100% 100%, 0 100%); transform: translate(0); }
+        }
+
+        @keyframes glitch-2 {
+            0% { clip-path: polygon(0 30%, 100% 30%, 100% 58%, 0 58%); transform: translate(0); }
+            20% { clip-path: polygon(0 45%, 100% 45%, 100% 80%, 0 80%); transform: translate(2px, -1px); }
+            40% { clip-path: polygon(0 20%, 100% 20%, 100% 45%, 0 45%); transform: translate(-2px, 1px); }
+            60% { clip-path: polygon(0 70%, 100% 70%, 100% 90%, 0 90%); transform: translate(1px, -2px); }
+            80% { clip-path: polygon(0 10%, 100% 10%, 100% 35%, 0 35%); transform: translate(-1px, 2px); }
+            100% { clip-path: polygon(0 50%, 100% 50%, 100% 75%, 0 75%); transform: translate(0); }
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            92% { opacity: 1; }
+            93% { opacity: 0.3; }
+            94% { opacity: 1; }
+            95% { opacity: 0.5; }
+            96% { opacity: 1; }
+        }
+
+        @keyframes scan {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100px; }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 480px) {
+            .error-universe {
+                padding: 1rem;
+            }
+            
+            .diagnostic-panel {
+                padding: 1rem;
+            }
+            
+            .nexus-button {
+                padding: 1rem 1.5rem;
+                font-size: 1rem;
+            }
+            
+            .countdown-display {
+                font-size: 2rem;
+            }
+        }
     </style>
 </head>
 <body>
-
-    <div class="error-container" id="parallax-container">
+    <div class="error-universe" id="parallaxCore">
         
-        <div class="glitch-box">
-            <h1 class="error-code" data-text="404">404</h1>
+        <!-- 404 Glitch Core -->
+        <div class="glitch-monolith">
+            <div class="error-giant" data-text="404">404</div>
         </div>
 
-        <div class="error-title">FATAL SYSTEM EXCEPTION</div>
-        
-        <div class="terminal-box" id="terminal">
-            <span class="cursor" id="term-cursor"></span>
+        <!-- Status Indicator -->
+        <div class="status-badge">
+            <i class="fas fa-skull-crosswalk"></i> SYSTEM BREACH DETECTED
         </div>
 
-        <a href="index.html" class="btn-home">
-            <i class="fas fa-satellite-dish"></i> RE-ESTABLISH CONNECTION
+        <!-- Diagnostic Terminal (Live Logs) -->
+        <div class="diagnostic-panel">
+            <div class="diagnostic-header">
+                <i class="fas fa-terminal"></i> DIAGNOSTIC CONSOLE [ACTIVE]
+                <span style="margin-left: auto; font-size: 0.7rem;">v2.0.4</span>
+            </div>
+            
+            <div class="log-stream" id="logTerminal">
+                <!-- Dynamic logs will be injected via JS -->
+            </div>
+            
+            <div class="log-prompt">
+                <span>root@mvx:~$</span>
+                <span class="cursor-block"></span>
+            </div>
+        </div>
+
+        <!-- Redirect Protocol -->
+        <div class="redirect-protocol">
+            <div class="countdown-display" id="countdownTimer">8</div>
+            <div class="progress-arc">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="redirect-label">
+                <i class="fas fa-shield-halded"></i> AUTO-REROUTE TO SAFE NEXUS
+            </div>
+        </div>
+
+        <!-- Primary Action Button -->
+        <a href="index.html" class="nexus-button" id="manualRedirect">
+            <i class="fas fa-satellite-dish"></i> FORCE RECONNECT
+            <i class="fas fa-arrow-right"></i>
         </a>
-
-        <div class="redirect-wrapper">
-            <div class="redirect-text">
-                Forced auto-routing in <span id="countdown">8</span>s
-            </div>
-            <div class="progress-bar-container">
-                <div class="progress-bar-fill" id="progressBar"></div>
-            </div>
-        </div>
-
     </div>
 
     <script>
-        // --- 1. CONFIGURATION ---
-        let secondsLeft = 8; // Total time before redirect
-        const totalTime = secondsLeft;
-        const countSpan = document.getElementById('countdown');
-        const progressBar = document.getElementById('progressBar');
-        const terminal = document.getElementById('terminal');
-        const cursor = document.getElementById('term-cursor');
+        (function() {
+            "use strict";
 
-        // --- 2. FAKE TERMINAL LOGGING SYSTEM ---
-        const logs = [
-            { text: "ERROR: Module not found at requested sector.", class: "log-warn" },
-            { text: "Scanning backup nodes...", class: "log-info" },
-            { text: "Connection to node [192.168.X.X] timed out.", class: "log-warn" },
-            { text: "Attempting to trace origin IP...", class: "log-info" },
-            { text: "Data corrupted. Initiating fallback protocol.", class: "log-warn" },
-            { text: "Bypassing firewall to access root index...", class: "log-info" },
-            { text: "SUCCESS: Safe route identified.", class: "log-success" }
-        ];
+            // ==================== CONFIGURATION ====================
+            const CONFIG = {
+                redirectTime: 8,           // seconds
+                homeUrl: 'index.html',
+                logEntries: [
+                    { type: 'error', text: '404: Requested resource not found in nexus' },
+                    { type: 'error', text: 'Connection to node 0x7F.0x00.0x00.0x01 timed out' },
+                    { type: 'info', text: 'Scanning alternate routes...' },
+                    { type: 'info', text: 'Bypassing corrupted sectors...' },
+                    { type: 'error', text: 'Handshake failed: checksum mismatch' },
+                    { type: 'success', text: 'Backup node located [MVX-CORE]' },
+                    { type: 'info', text: 'Initiating emergency protocol...' },
+                    { type: 'success', text: 'Redirect sequence armed' }
+                ]
+            };
 
-        let currentLog = 0;
+            // ==================== DOM ELEMENTS ====================
+            const timerElement = document.getElementById('countdownTimer');
+            const progressFill = document.getElementById('progressFill');
+            const logTerminal = document.getElementById('logTerminal');
+            const manualBtn = document.getElementById('manualRedirect');
+            const parallaxEl = document.getElementById('parallaxCore');
 
-        function printLog() {
-            if (currentLog < logs.length) {
-                const logData = logs[currentLog];
-                const span = document.createElement('div');
-                span.className = `log-line ${logData.class}`;
-                span.innerText = `> ${logData.text}`;
+            let timeLeft = CONFIG.redirectTime;
+            let timerInterval = null;
+            let logIndex = 0;
+
+            // ==================== INITIAL SETUP ====================
+            function init() {
+                if (!timerElement || !progressFill || !logTerminal) {
+                    console.error('Critical DOM elements missing');
+                    return;
+                }
+
+                // Set initial progress bar state
+                progressFill.style.transform = 'scaleX(1)';
                 
-                // Insert before cursor
-                terminal.insertBefore(span, cursor);
+                // Start all systems
+                startCountdown();
+                startLogStream();
+                initParallax();
                 
-                // Auto scroll to bottom
-                terminal.scrollTop = terminal.scrollHeight;
-                
-                currentLog++;
-                
-                // Randomize typing delay for realistic feel
-                const delay = Math.random() * 800 + 400; 
-                setTimeout(printLog, delay);
+                // Attach manual redirect handler
+                if (manualBtn) {
+                    manualBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        window.location.href = CONFIG.homeUrl;
+                    });
+                }
             }
-        }
 
-        // Start terminal printing
-        setTimeout(printLog, 500);
+            // ==================== COUNTDOWN & PROGRESS ====================
+            function startCountdown() {
+                // Smooth progress bar animation
+                setTimeout(() => {
+                    progressFill.style.transition = `transform ${CONFIG.redirectTime}s linear`;
+                    progressFill.style.transform = 'scaleX(0)';
+                }, 50);
 
-        // --- 3. AUTO REDIRECT & PROGRESS BAR ---
-        // Smoothly animate progress bar using CSS transitions
-        progressBar.style.transition = `transform ${secondsLeft}s linear`;
-        
-        // Slight delay to ensure transition applies properly
-        setTimeout(() => {
-            progressBar.style.transform = "scaleX(0)";
-        }, 50);
+                // Update timer display every second
+                timerInterval = setInterval(() => {
+                    timeLeft -= 1;
+                    
+                    if (timerElement) {
+                        timerElement.textContent = timeLeft;
+                    }
 
-        // Text Countdown
-        const timer = setInterval(() => {
-            secondsLeft--;
-            countSpan.innerText = secondsLeft;
-
-            if (secondsLeft <= 0) {
-                clearInterval(timer);
-                window.location.href = "index.html"; // Redirect to Base
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        executeRedirect();
+                    }
+                }, 1000);
             }
-        }, 1000);
 
-        // --- 4. 3D PARALLAX EFFECT ON MOUSEMOVE ---
-        const container = document.getElementById('parallax-container');
-        
-        document.addEventListener('mousemove', (e) => {
-            const xAxis = (window.innerWidth / 2 - e.pageX) / 40;
-            const yAxis = (window.innerHeight / 2 - e.pageY) / 40;
-            
-            // Apply slight rotation based on mouse position
-            container.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
-        });
+            function executeRedirect() {
+                // Cleanup before redirect
+                clearInterval(timerInterval);
+                window.location.href = CONFIG.homeUrl;
+            }
 
-        // Reset transform when mouse leaves window
-        document.addEventListener('mouseleave', () => {
-            container.style.transition = 'transform 0.5s ease';
-            container.style.transform = `rotateY(0deg) rotateX(0deg)`;
-            
-            // Remove transition after reset so it follows mouse smoothly again
-            setTimeout(() => {
-                container.style.transition = 'none';
-            }, 500);
-        });
+            // ==================== LOG STREAM SIMULATOR ====================
+            function startLogStream() {
+                if (!logTerminal) return;
 
+                // Clear any placeholder
+                logTerminal.innerHTML = '';
+
+                function addLog() {
+                    if (logIndex >= CONFIG.logEntries.length) {
+                        // Loop back to beginning for continuous effect
+                        logIndex = 0;
+                    }
+
+                    const entry = CONFIG.logEntries[logIndex];
+                    const logDiv = document.createElement('div');
+                    logDiv.className = `log-line ${entry.type}`;
+                    
+                    // Add appropriate icon
+                    let icon = '';
+                    if (entry.type === 'error') icon = '❌';
+                    else if (entry.type === 'success') icon = '✅';
+                    else icon = 'ℹ️';
+                    
+                    logDiv.innerHTML = `<span>${icon}</span> ${entry.text}`;
+                    
+                    logTerminal.appendChild(logDiv);
+                    
+                    // Auto-scroll to bottom
+                    logTerminal.scrollTop = logTerminal.scrollHeight;
+                    
+                    logIndex++;
+                    
+                    // Random delay between 400-1200ms for realism
+                    const nextDelay = Math.random() * 800 + 400;
+                    setTimeout(addLog, nextDelay);
+                }
+
+                // Start the log stream after a brief pause
+                setTimeout(addLog, 300);
+            }
+
+            // ==================== 3D PARALLAX EFFECT (FIXED) ====================
+            function initParallax() {
+                if (!parallaxEl) return;
+
+                let rafId = null;
+                let targetX = 0, targetY = 0;
+                let currentX = 0, currentY = 0;
+
+                // Mouse move handler
+                function handleMouseMove(e) {
+                    const centerX = window.innerWidth / 2;
+                    const centerY = window.innerHeight / 2;
+                    
+                    targetX = (centerX - e.pageX) / 35;
+                    targetY = (centerY - e.pageY) / 35;
+                }
+
+                // Animation loop for smooth parallax
+                function updateParallax() {
+                    // Smooth interpolation
+                    currentX += (targetX - currentX) * 0.08;
+                    currentY += (targetY - currentY) * 0.08;
+                    
+                    parallaxEl.style.transform = `rotateY(${currentX}deg) rotateX(${currentY}deg)`;
+                    
+                    rafId = requestAnimationFrame(updateParallax);
+                }
+
+                // Reset on mouse leave
+                function handleMouseLeave() {
+                    targetX = 0;
+                    targetY = 0;
+                    
+                    // Smooth reset
+                    parallaxEl.style.transition = 'transform 0.5s ease';
+                    parallaxEl.style.transform = 'rotateY(0deg) rotateX(0deg)';
+                    
+                    setTimeout(() => {
+                        parallaxEl.style.transition = 'none';
+                    }, 500);
+                }
+
+                // Add event listeners
+                document.addEventListener('mousemove', handleMouseMove, { passive: true });
+                document.addEventListener('mouseleave', handleMouseLeave);
+                
+                // Start animation loop
+                rafId = requestAnimationFrame(updateParallax);
+
+                // Cleanup function (optional - for potential unmount)
+                window.cleanupParallax = () => {
+                    if (rafId) cancelAnimationFrame(rafId);
+                    document.removeEventListener('mousemove', handleMouseMove);
+                    document.removeEventListener('mouseleave', handleMouseLeave);
+                };
+            }
+
+            // ==================== START EVERYTHING ====================
+            // Ensure DOM is fully loaded
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+
+            // Optional: Clean up on page unload
+            window.addEventListener('beforeunload', () => {
+                if (typeof window.cleanupParallax === 'function') {
+                    window.cleanupParallax();
+                }
+            });
+
+        })();
     </script>
-
 </body>
 </html>
