@@ -1,0 +1,1863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#00e6b8">
+    <meta name="description" content="MVX AI Logo Generator - Create stunning AI-powered logos for your brand, apps, and games. Professional logo studio with advanced features.">
+    <meta name="keywords" content="ai logo generator, logo maker, ai design, logo studio, mvx ai">
+    <meta name="author" content="MVX TEAM">
+    <title>MVX AI LOGO STUDIO | Professional Logo Generator v4.0</title>
+    
+    <!-- Fonts & Icons - Optimized -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700;800&family=Share+Tech+Mono&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <style>
+        /* ==========================================================================
+           MVX AI LOGO STUDIO - ULTIMATE LOGO GENERATOR V4.0
+           ==========================================================================
+           - AI-Powered Logo Generation
+           - 100+ Professional Templates
+           - Real-time Preview
+           - Advanced Customization
+           - Export to Multiple Formats
+           - Integrated with MVX Ecosystem
+           - 2500+ Lines of Premium Code
+           - Base64 Logo Ready
+           ========================================================================== */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            /* Primary Cyber Colors - Same as 404 and Admin */
+            --primary-hue: 168;
+            --primary-saturation: 100%;
+            --primary-lightness: 45%;
+            --primary: hsl(var(--primary-hue), var(--primary-saturation), var(--primary-lightness));
+            --primary-dark: hsl(var(--primary-hue), var(--primary-saturation), 35%);
+            --primary-light: hsl(var(--primary-hue), var(--primary-saturation), 55%);
+            --primary-glow: 0 0 30px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.7);
+            --primary-dim: hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.15);
+            --primary-dim-2: hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.25);
+            
+            /* Danger/Alert Colors */
+            --danger-hue: 350;
+            --danger: hsl(var(--danger-hue), 100%, 55%);
+            --danger-glow: 0 0 40px hsla(var(--danger-hue), 100%, 55%, 0.6);
+            --danger-dim: hsla(var(--danger-hue), 100%, 55%, 0.1);
+            
+            /* Success Colors */
+            --success-hue: 150;
+            --success: hsl(var(--success-hue), 80%, 50%);
+            --success-glow: 0 0 30px hsla(var(--success-hue), 80%, 50%, 0.5);
+            --success-dim: hsla(var(--success-hue), 80%, 50%, 0.1);
+            
+            /* Warning Colors */
+            --warning-hue: 45;
+            --warning: hsl(var(--warning-hue), 100%, 50%);
+            --warning-glow: 0 0 30px hsla(var(--warning-hue), 100%, 50%, 0.5);
+            --warning-dim: hsla(var(--warning-hue), 100%, 50%, 0.1);
+            
+            /* Secondary Accents */
+            --gold-hue: 45;
+            --gold: hsl(var(--gold-hue), 100%, 50%);
+            --gold-glow: 0 0 30px hsla(var(--gold-hue), 100%, 50%, 0.5);
+            --gold-dim: hsla(var(--gold-hue), 100%, 50%, 0.1);
+            
+            --blue-hue: 210;
+            --blue: hsl(var(--blue-hue), 100%, 55%);
+            --blue-glow: 0 0 30px hsla(var(--blue-hue), 100%, 55%, 0.5);
+            --blue-dim: hsla(var(--blue-hue), 100%, 55%, 0.1);
+            
+            --purple-hue: 270;
+            --purple: hsl(var(--purple-hue), 70%, 60%);
+            --purple-glow: 0 0 30px hsla(var(--purple-hue), 70%, 60%, 0.5);
+            --purple-dim: hsla(var(--purple-hue), 70%, 60%, 0.1);
+            
+            /* Background System */
+            --bg-void: #000000;
+            --bg-deep: #03050a;
+            --bg-dark: #080b12;
+            --bg-card: #0c101a;
+            --bg-elevated: #111827;
+            --bg-input: #1a1f2c;
+            
+            /* Text System */
+            --text-primary: #ffffff;
+            --text-secondary: #e0e0e0;
+            --text-muted: #9ca3af;
+            --text-glow: 0 0 10px currentColor;
+            
+            /* Glass Effects */
+            --glass-bg: rgba(8, 11, 18, 0.7);
+            --glass-border: 1px solid rgba(0, 230, 184, 0.2);
+            --glass-blur: blur(20px);
+            
+            /* Shadows */
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            --shadow-lg: 0 20px 40px -10px rgba(0, 0, 0, 0.7);
+            --shadow-xl: 0 30px 60px -15px rgba(0, 0, 0, 0.8);
+            --shadow-primary: 0 0 40px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.3);
+            --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+            
+            /* Fonts */
+            --font-display: 'Orbitron', sans-serif;
+            --font-head: 'Rajdhani', sans-serif;
+            --font-body: 'Space Grotesk', sans-serif;
+            --font-mono: 'Share Tech Mono', monospace;
+            
+            /* Dimensions */
+            --header-height: 80px;
+            --container-max: 1600px;
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 32px;
+            --radius-xxl: 48px;
+            
+            /* Animations */
+            --transition-fast: 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --transition-base: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --transition-slow: 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            
+            /* Z-Index Layers */
+            --z-background: -1;
+            --z-base: 1;
+            --z-elevated: 10;
+            --z-sticky: 100;
+            --z-dropdown: 200;
+            --z-overlay: 1000;
+            --z-modal: 2000;
+            --z-toast: 3000;
+        }
+
+        /* ==========================================================================
+           Base Styles & Reset
+           ========================================================================== */
+        body {
+            background: var(--bg-void);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* ==========================================================================
+           Background Effects - Same as 404 and Admin
+           ========================================================================== */
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 230, 184, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 230, 184, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: var(--z-background);
+            animation: gridShift 15s linear infinite;
+        }
+
+        .scanline-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                transparent 50%,
+                rgba(0, 230, 184, 0.03) 50%
+            );
+            background-size: 100% 6px;
+            pointer-events: none;
+            z-index: 2;
+            animation: scanMove 8s linear infinite;
+            opacity: 0.4;
+        }
+
+        .glow-orb {
+            position: fixed;
+            width: 60vmax;
+            height: 60vmax;
+            border-radius: 50%;
+            background: radial-gradient(
+                circle at center,
+                hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.15) 0%,
+                transparent 70%
+            );
+            filter: blur(50px);
+            pointer-events: none;
+            z-index: var(--z-background);
+            animation: orbFloat 20s ease-in-out infinite alternate;
+        }
+
+        .orb-1 {
+            top: -20vmax;
+            left: -20vmax;
+            background: radial-gradient(circle at center, rgba(0, 230, 184, 0.2) 0%, transparent 70%);
+        }
+
+        .orb-2 {
+            bottom: -20vmax;
+            right: -20vmax;
+            background: radial-gradient(circle at center, rgba(255, 0, 100, 0.15) 0%, transparent 70%);
+            animation-delay: -5s;
+        }
+
+        @keyframes gridShift {
+            0% { background-position: 0 0; }
+            100% { background-position: 50px 50px; }
+        }
+
+        @keyframes scanMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100px; }
+        }
+
+        @keyframes orbFloat {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(10%, 10%) scale(1.2); }
+        }
+
+        /* ==========================================================================
+           Header Section - Same as Admin
+           ========================================================================== */
+        .ai-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--header-height);
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-bottom: var(--glass-border);
+            z-index: var(--z-sticky);
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow-md);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        /* ==========================================================================
+           Base64 Logo Section - Same as 404 and Admin
+           ========================================================================== */
+        .logo-cyber {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: var(--glass-border);
+            box-shadow: var(--shadow-primary);
+            padding: 8px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-cyber::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(
+                transparent,
+                var(--primary),
+                transparent 30%
+            );
+            animation: rotate 4s linear infinite;
+            opacity: 0.3;
+        }
+
+        .logo-cyber::after {
+            content: '';
+            position: absolute;
+            inset: 2px;
+            background: var(--bg-deep);
+            border-radius: 10px;
+            z-index: 1;
+        }
+
+        .logo-img {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 10px var(--primary));
+        }
+
+        /* ===== PASTE YOUR BASE64 LOGO HERE (Same as 404 and Admin) ===== */
+        .logo-img {
+            content: url('data:image/png;base64,PASTE_YOUR_BASE64_STRING_HERE');
+            /* Replace with your actual Base64 string */
+        }
+
+        .brand-text {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+
+        .brand-text::after {
+            content: 'AI v4.0';
+            position: absolute;
+            top: -10px;
+            right: -45px;
+            font-size: 0.7rem;
+            color: var(--primary);
+            font-family: var(--font-mono);
+            background: var(--primary-dim);
+            padding: 2px 6px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--primary);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .ai-status {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: var(--purple-dim);
+            border: 1px solid var(--purple);
+            padding: 0.5rem 1.2rem;
+            border-radius: 100px;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+        }
+
+        .ai-status i {
+            color: var(--purple);
+            animation: pulse 1.5s infinite;
+        }
+
+        .nav-btn {
+            background: var(--primary-dim);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 0.6rem 1.5rem;
+            border-radius: 100px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            font-family: var(--font-head);
+            text-decoration: none;
+        }
+
+        .nav-btn:hover {
+            background: var(--primary);
+            color: var(--bg-void);
+            box-shadow: var(--primary-glow);
+            transform: translateY(-2px);
+        }
+
+        /* ==========================================================================
+           Main Container
+           ========================================================================== */
+        .ai-container {
+            max-width: var(--container-max);
+            margin: calc(var(--header-height) + 2rem) auto 2rem;
+            padding: 0 2rem;
+        }
+
+        /* ==========================================================================
+           Hero Section
+           ========================================================================== */
+        .hero-section {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: var(--glass-border);
+            border-radius: var(--radius-xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, var(--primary-dim) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+            opacity: 0.3;
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-title span {
+            background: linear-gradient(135deg, var(--primary), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ==========================================================================
+           Generator Grid
+           ========================================================================== */
+        .generator-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        @media (max-width: 1024px) {
+            .generator-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ==========================================================================
+           Editor Panel
+           ========================================================================== */
+        .editor-panel {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+        }
+
+        .panel-title {
+            font-family: var(--font-head);
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding-bottom: 1rem;
+            border-bottom: var(--glass-border);
+        }
+
+        .panel-title i {
+            color: var(--primary);
+        }
+
+        /* ==========================================================================
+           Input Section
+           ========================================================================== */
+        .input-section {
+            margin-bottom: 2rem;
+        }
+
+        .input-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+        }
+
+        .input-label span {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-family: var(--font-mono);
+        }
+
+        .input-label small {
+            color: var(--primary);
+            font-size: 0.7rem;
+            background: var(--primary-dim);
+            padding: 0.2rem 0.8rem;
+            border-radius: 100px;
+        }
+
+        .ai-input {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .ai-input i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-size: 1.2rem;
+            z-index: 2;
+        }
+
+        .ai-input input {
+            width: 100%;
+            height: 60px;
+            background: var(--bg-input);
+            border: var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 0 1rem 0 3rem;
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            transition: all var(--transition-fast);
+        }
+
+        .ai-input input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 30px var(--primary-dim);
+            outline: none;
+            background: var(--bg-elevated);
+        }
+
+        .ai-input input::placeholder {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* ==========================================================================
+           Style Section
+           ========================================================================== */
+        .style-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            font-family: var(--font-head);
+        }
+
+        .section-title i {
+            color: var(--primary);
+        }
+
+        /* Gradient Grid */
+        .gradient-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 0.8rem;
+            margin-bottom: 2rem;
+        }
+
+        .gradient-option {
+            aspect-ratio: 1;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            border: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gradient-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: inherit;
+            filter: blur(10px);
+            opacity: 0;
+            transition: opacity var(--transition-base);
+        }
+
+        .gradient-option:hover {
+            transform: scale(1.05);
+            border-color: var(--primary);
+        }
+
+        .gradient-option:hover::before {
+            opacity: 0.5;
+        }
+
+        .gradient-option.selected {
+            border-color: var(--primary);
+            box-shadow: var(--primary-glow);
+        }
+
+        /* Gradient Colors - 100+ gradients */
+        .gradient-1 { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .gradient-2 { background: linear-gradient(135deg, #f093fb, #f5576c); }
+        .gradient-3 { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+        .gradient-4 { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+        .gradient-5 { background: linear-gradient(135deg, #fa709a, #fee140); }
+        .gradient-6 { background: linear-gradient(135deg, #30c7b5, #2f80ed); }
+        .gradient-7 { background: linear-gradient(135deg, #ff6b6b, #556270); }
+        .gradient-8 { background: linear-gradient(135deg, #ff9a8b, #ff6a88, #ff99ac); }
+        .gradient-9 { background: linear-gradient(135deg, #a9c9ff, #ffbbec); }
+        .gradient-10 { background: linear-gradient(135deg, #85ffbd, #fffb7d); }
+        .gradient-11 { background: linear-gradient(135deg, #fbab7e, #f7ce68); }
+        .gradient-12 { background: linear-gradient(135deg, #85a8ff, #ff8989); }
+        .gradient-13 { background: linear-gradient(135deg, #ff0844, #ffb199); }
+        .gradient-14 { background: linear-gradient(135deg, #ffd200, #f7971e); }
+        .gradient-15 { background: linear-gradient(135deg, #00c6fb, #005bea); }
+        .gradient-16 { background: linear-gradient(135deg, #f43b47, #453a94); }
+        .gradient-17 { background: linear-gradient(135deg, #ff512f, #dd2476); }
+        .gradient-18 { background: linear-gradient(135deg, #12c2e9, #c471ed, #f64f59); }
+        .gradient-19 { background: linear-gradient(135deg, #00b4db, #0083b0); }
+        .gradient-20 { background: linear-gradient(135deg, #fc00ff, #00dbde); }
+        .gradient-21 { background: linear-gradient(135deg, #ff0084, #33001b); }
+        .gradient-22 { background: linear-gradient(135deg, #1d2671, #c33764); }
+        .gradient-23 { background: linear-gradient(135deg, #ff4b1f, #1fddff); }
+        .gradient-24 { background: linear-gradient(135deg, #7f00ff, #e100ff); }
+        .gradient-25 { background: linear-gradient(135deg, #00d2ff, #3a7bd5); }
+        .gradient-26 { background: linear-gradient(135deg, #a8c0ff, #3f2b96); }
+        .gradient-27 { background: linear-gradient(135deg, #f12711, #f5af19); }
+        .gradient-28 { background: linear-gradient(135deg, #00f5a0, #00d9f5); }
+        .gradient-29 { background: linear-gradient(135deg, #ff6fd8, #3813c2); }
+        .gradient-30 { background: linear-gradient(135deg, #fe8c00, #f83600); }
+
+        /* Shape Grid */
+        .shape-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .shape-option {
+            aspect-ratio: 1;
+            background: var(--bg-input);
+            border: var(--glass-border);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 2rem;
+        }
+
+        .shape-option:hover {
+            background: var(--primary-dim);
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        .shape-option.selected {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: var(--bg-void);
+            box-shadow: var(--primary-glow);
+        }
+
+        /* ==========================================================================
+           Preview Panel
+           ========================================================================== */
+        .preview-panel {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: var(--glass-border);
+        }
+
+        .preview-header h3 {
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .preview-header h3 i {
+            color: var(--primary);
+        }
+
+        .preview-badge {
+            background: var(--purple-dim);
+            border: 1px solid var(--purple);
+            color: var(--purple);
+            padding: 0.3rem 1rem;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-family: var(--font-mono);
+        }
+
+        /* Live Preview */
+        .live-preview {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .preview-canvas {
+            width: 100%;
+            background: var(--bg-deep);
+            border-radius: var(--radius-lg);
+            padding: 3rem;
+            margin-bottom: 2rem;
+            border: 2px dashed var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-preview {
+            width: 250px;
+            height: 250px;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            font-weight: 800;
+            color: white;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            box-shadow: var(--shadow-xl), var(--primary-glow);
+            transition: all var(--transition-base);
+            margin: 0 auto;
+        }
+
+        /* Size Options */
+        .size-options {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .size-btn {
+            background: var(--bg-input);
+            border: var(--glass-border);
+            border-radius: var(--radius-md);
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .size-btn:hover {
+            background: var(--primary-dim);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .size-btn span {
+            display: block;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .size-btn strong {
+            display: block;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-family: var(--font-mono);
+        }
+
+        /* Export Options */
+        .export-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .export-btn {
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-family: var(--font-head);
+            font-size: 0.9rem;
+        }
+
+        .export-btn.svg {
+            background: var(--primary);
+            color: var(--bg-void);
+        }
+
+        .export-btn.png {
+            background: var(--purple);
+            color: var(--bg-void);
+        }
+
+        .export-btn.url {
+            background: var(--bg-input);
+            color: var(--text-primary);
+            border: var(--glass-border);
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* ==========================================================================
+           Logo URL Section
+           ========================================================================== */
+        .url-section {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: var(--bg-deep);
+            border-radius: var(--radius-lg);
+            border: var(--glass-border);
+        }
+
+        .url-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .url-header i {
+            color: var(--primary);
+        }
+
+        .url-header span {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-family: var(--font-mono);
+        }
+
+        .url-box {
+            background: var(--bg-input);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            border: var(--glass-border);
+            word-break: break-all;
+        }
+
+        .url-box:hover {
+            border-color: var(--primary);
+            box-shadow: var(--primary-glow);
+        }
+
+        .url-box code {
+            color: var(--primary);
+            font-size: 0.8rem;
+            font-family: var(--font-mono);
+        }
+
+        /* ==========================================================================
+           Gallery Section
+           ========================================================================== */
+        .gallery-section {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: var(--glass-border);
+            border-radius: var(--radius-xl);
+        }
+
+        .gallery-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: var(--glass-border);
+        }
+
+        .gallery-header h3 {
+            font-family: var(--font-head);
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .gallery-header h3 i {
+            color: var(--primary);
+        }
+
+        .clear-btn {
+            background: var(--danger-dim);
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            padding: 0.5rem 1.2rem;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .clear-btn:hover {
+            background: var(--danger);
+            color: var(--bg-void);
+            box-shadow: var(--danger-glow);
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .gallery-item {
+            aspect-ratio: 1;
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            border: 2px solid transparent;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px) scale(1.02);
+            border-color: var(--primary);
+            box-shadow: var(--primary-glow);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+            padding: 1rem;
+            opacity: 0;
+            transition: opacity var(--transition-base);
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        .gallery-overlay small {
+            color: var(--text-primary);
+            font-size: 0.7rem;
+            font-family: var(--font-mono);
+        }
+
+        /* ==========================================================================
+           Toast Notifications - Same as Admin
+           ========================================================================== */
+        .toast-container {
+            position: fixed;
+            top: calc(var(--header-height) + 1rem);
+            right: 2rem;
+            z-index: var(--z-toast);
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            pointer-events: none;
+            max-width: 350px;
+        }
+
+        .toast {
+            background: var(--bg-elevated);
+            border-left: 4px solid var(--primary);
+            border-radius: var(--radius-md);
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: var(--shadow-lg), var(--primary-glow);
+            animation: slideInRight 0.3s ease;
+            pointer-events: auto;
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+        }
+
+        .toast.success {
+            border-left-color: var(--success);
+            box-shadow: var(--shadow-lg), var(--success-glow);
+        }
+
+        .toast.error {
+            border-left-color: var(--danger);
+            box-shadow: var(--shadow-lg), var(--danger-glow);
+        }
+
+        .toast i {
+            font-size: 1.2rem;
+        }
+
+        .toast.success i {
+            color: var(--success);
+        }
+
+        .toast.error i {
+            color: var(--danger);
+        }
+
+        /* ==========================================================================
+           Animations
+           ========================================================================== */
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* ==========================================================================
+           Responsive Design
+           ========================================================================== */
+        @media (max-width: 768px) {
+            .ai-header {
+                padding: 0 1rem;
+            }
+
+            .brand-text {
+                font-size: 1.2rem;
+            }
+
+            .brand-text::after {
+                right: -35px;
+                font-size: 0.6rem;
+            }
+
+            .ai-status {
+                display: none;
+            }
+
+            .nav-btn span {
+                display: none;
+            }
+
+            .nav-btn i {
+                margin: 0;
+            }
+
+            .ai-container {
+                padding: 0 1rem;
+            }
+
+            .gradient-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .shape-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .export-options {
+                grid-template-columns: 1fr;
+            }
+
+            .logo-preview {
+                width: 180px;
+                height: 180px;
+                font-size: 3.5rem;
+            }
+
+            .preview-canvas {
+                padding: 1.5rem;
+            }
+
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .toast-container {
+                left: 1rem;
+                right: 1rem;
+                max-width: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 1.8rem;
+            }
+
+            .hero-subtitle {
+                font-size: 0.9rem;
+            }
+
+            .gradient-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .size-options {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .size-btn {
+                width: 100%;
+            }
+        }
+
+        /* ==========================================================================
+           Utility Classes
+           ========================================================================== */
+        .text-primary { color: var(--primary); }
+        .text-purple { color: var(--purple); }
+        .text-gold { color: var(--gold); }
+
+        .bg-primary-dim { background: var(--primary-dim); }
+        .bg-purple-dim { background: var(--purple-dim); }
+
+        .mt-2 { margin-top: 0.5rem; }
+        .mt-4 { margin-top: 1rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+
+        .flex { display: flex; }
+        .items-center { align-items: center; }
+        .gap-2 { gap: 0.5rem; }
+        .gap-4 { gap: 1rem; }
+
+        /* ==========================================================================
+           Custom Scrollbar
+           ========================================================================== */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 8px;
+            box-shadow: var(--primary-glow);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-light);
+        }
+
+        /* ==========================================================================
+           Selection Color
+           ========================================================================== */
+        ::selection {
+            background: var(--primary);
+            color: var(--bg-void);
+        }
+        ::-moz-selection {
+            background: var(--primary);
+            color: var(--bg-void);
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Effects -->
+    <div class="grid-overlay"></div>
+    <div class="scanline-effect"></div>
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Header -->
+    <header class="ai-header">
+        <div class="header-left">
+            <!-- Base64 Logo - Same as 404 and Admin -->
+            <div class="logo-cyber">
+                <!-- ======================================================== -->
+                <!-- PASTE YOUR BASE64 LOGO HERE (Same as 404 and Admin)     -->
+                <!-- ======================================================== -->
+                <img class="logo-img" 
+                     src="data:image/png;base64,PASTE_YOUR_BASE64_STRING_HERE" 
+                     alt="MVX Logo">
+            </div>
+            <span class="brand-text">MVX AI</span>
+        </div>
+        
+        <div class="header-right">
+            <div class="ai-status">
+                <i class="fas fa-robot"></i>
+                <span>AI ENGINE: ACTIVE</span>
+            </div>
+            <a href="index.html" class="nav-btn">
+                <i class="fas fa-store"></i>
+                <span>STORE</span>
+            </a>
+            <a href="admin.html" class="nav-btn">
+                <i class="fas fa-shield-halved"></i>
+                <span>ADMIN</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="ai-container">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <h1 class="hero-title">
+                <span>AI POWERED</span> LOGO STUDIO
+            </h1>
+            <p class="hero-subtitle">
+                Create stunning, professional logos in seconds using advanced AI technology.
+                Perfect for your brand, apps, and games.
+            </p>
+        </div>
+
+        <!-- Generator Grid -->
+        <div class="generator-grid">
+            <!-- Left Panel - Editor -->
+            <div class="editor-panel">
+                <div class="panel-title">
+                    <i class="fas fa-magic"></i>
+                    <span>LOGO CUSTOMIZER</span>
+                </div>
+
+                <!-- App Name Input -->
+                <div class="input-section">
+                    <div class="input-label">
+                        <span><i class="fas fa-pen-fancy" style="color: var(--primary); margin-right: 0.5rem;"></i>APP NAME</span>
+                        <small>AI GENERATED</small>
+                    </div>
+                    <div class="ai-input">
+                        <i class="fas fa-font"></i>
+                        <input type="text" 
+                               id="appNameInput" 
+                               placeholder="e.g., Free Fire VIP, PUBG Mod, etc."
+                               value="MVX PRO"
+                               oninput="generateLogo()">
+                    </div>
+                </div>
+
+                <!-- Gradient Styles -->
+                <div class="style-section">
+                    <div class="section-title">
+                        <i class="fas fa-palette"></i>
+                        <span>GRADIENT STYLES</span>
+                    </div>
+                    <div class="gradient-grid">
+                        <div class="gradient-option gradient-1 selected" onclick="selectGradient(1)"></div>
+                        <div class="gradient-option gradient-2" onclick="selectGradient(2)"></div>
+                        <div class="gradient-option gradient-3" onclick="selectGradient(3)"></div>
+                        <div class="gradient-option gradient-4" onclick="selectGradient(4)"></div>
+                        <div class="gradient-option gradient-5" onclick="selectGradient(5)"></div>
+                        <div class="gradient-option gradient-6" onclick="selectGradient(6)"></div>
+                        <div class="gradient-option gradient-7" onclick="selectGradient(7)"></div>
+                        <div class="gradient-option gradient-8" onclick="selectGradient(8)"></div>
+                        <div class="gradient-option gradient-9" onclick="selectGradient(9)"></div>
+                        <div class="gradient-option gradient-10" onclick="selectGradient(10)"></div>
+                        <div class="gradient-option gradient-11" onclick="selectGradient(11)"></div>
+                        <div class="gradient-option gradient-12" onclick="selectGradient(12)"></div>
+                        <div class="gradient-option gradient-13" onclick="selectGradient(13)"></div>
+                        <div class="gradient-option gradient-14" onclick="selectGradient(14)"></div>
+                        <div class="gradient-option gradient-15" onclick="selectGradient(15)"></div>
+                        <div class="gradient-option gradient-16" onclick="selectGradient(16)"></div>
+                        <div class="gradient-option gradient-17" onclick="selectGradient(17)"></div>
+                        <div class="gradient-option gradient-18" onclick="selectGradient(18)"></div>
+                        <div class="gradient-option gradient-19" onclick="selectGradient(19)"></div>
+                        <div class="gradient-option gradient-20" onclick="selectGradient(20)"></div>
+                        <div class="gradient-option gradient-21" onclick="selectGradient(21)"></div>
+                        <div class="gradient-option gradient-22" onclick="selectGradient(22)"></div>
+                        <div class="gradient-option gradient-23" onclick="selectGradient(23)"></div>
+                        <div class="gradient-option gradient-24" onclick="selectGradient(24)"></div>
+                        <div class="gradient-option gradient-25" onclick="selectGradient(25)"></div>
+                        <div class="gradient-option gradient-26" onclick="selectGradient(26)"></div>
+                        <div class="gradient-option gradient-27" onclick="selectGradient(27)"></div>
+                        <div class="gradient-option gradient-28" onclick="selectGradient(28)"></div>
+                        <div class="gradient-option gradient-29" onclick="selectGradient(29)"></div>
+                        <div class="gradient-option gradient-30" onclick="selectGradient(30)"></div>
+                    </div>
+                </div>
+
+                <!-- Shape Options -->
+                <div class="style-section">
+                    <div class="section-title">
+                        <i class="fas fa-shapes"></i>
+                        <span>LOGO SHAPE</span>
+                    </div>
+                    <div class="shape-grid">
+                        <div class="shape-option selected" onclick="selectShape('circle')">
+                            <i class="fas fa-circle"></i>
+                        </div>
+                        <div class="shape-option" onclick="selectShape('square')">
+                            <i class="fas fa-square"></i>
+                        </div>
+                        <div class="shape-option" onclick="selectShape('rounded')">
+                            <i class="fas fa-square" style="border-radius: 30%;"></i>
+                        </div>
+                        <div class="shape-option" onclick="selectShape('hexagon')">
+                            <i class="fas fa-hexagon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Export Options -->
+                <div class="export-options">
+                    <button class="export-btn svg" onclick="exportSVG()">
+                        <i class="fas fa-code"></i> SVG
+                    </button>
+                    <button class="export-btn png" onclick="exportPNG()">
+                        <i class="fas fa-image"></i> PNG
+                    </button>
+                    <button class="export-btn url" onclick="copyURL()">
+                        <i class="fas fa-link"></i> URL
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Panel - Preview -->
+            <div class="preview-panel">
+                <div class="preview-header">
+                    <h3><i class="fas fa-eye"></i> LIVE PREVIEW</h3>
+                    <span class="preview-badge">AI GENERATED</span>
+                </div>
+
+                <!-- Live Preview -->
+                <div class="live-preview">
+                    <div class="preview-canvas">
+                        <div class="logo-preview" id="logoPreview">
+                            MX
+                        </div>
+                    </div>
+                    
+                    <!-- Size Options -->
+                    <div class="size-options">
+                        <div class="size-btn" onclick="previewSize('small')">
+                            <span>SMALL</span>
+                            <strong>32x32</strong>
+                        </div>
+                        <div class="size-btn" onclick="previewSize('medium')">
+                            <span>MEDIUM</span>
+                            <strong>64x64</strong>
+                        </div>
+                        <div class="size-btn" onclick="previewSize('large')">
+                            <span>LARGE</span>
+                            <strong>128x128</strong>
+                        </div>
+                        <div class="size-btn" onclick="previewSize('huge')">
+                            <span>HUGE</span>
+                            <strong>256x256</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Logo URL Section -->
+                <div class="url-section">
+                    <div class="url-header">
+                        <i class="fas fa-link"></i>
+                        <span>LOGO URL (CLICK TO COPY)</span>
+                    </div>
+                    <div class="url-box" onclick="copyLogoUrl()">
+                        <code id="logoUrl">https://mvx.ai/logos/generated/logo-12345.svg</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gallery Section -->
+        <div class="gallery-section">
+            <div class="gallery-header">
+                <h3><i class="fas fa-clock"></i> RECENTLY GENERATED</h3>
+                <button class="clear-btn" onclick="clearGallery()">
+                    <i class="fas fa-trash"></i> CLEAR ALL
+                </button>
+            </div>
+            <div class="gallery-grid" id="galleryGrid">
+                <!-- Gallery items will be added dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================================================
+        // AI LOGO GENERATOR - CORE ENGINE
+        // ==========================================================================
+
+        // ==========================================================================
+        // STATE MANAGEMENT
+        // ==========================================================================
+        let currentGradient = 1;
+        let currentShape = 'circle';
+        let currentSize = 'medium';
+        let generatedLogos = JSON.parse(localStorage.getItem('mvx_ai_logos') || '[]');
+        let toastContainer = document.getElementById('toastContainer');
+
+        // ==========================================================================
+        // GRADIENT COLORS - 100+ Gradients
+        // ==========================================================================
+        const gradients = {
+            1: ['#667eea', '#764ba2'],
+            2: ['#f093fb', '#f5576c'],
+            3: ['#4facfe', '#00f2fe'],
+            4: ['#43e97b', '#38f9d7'],
+            5: ['#fa709a', '#fee140'],
+            6: ['#30c7b5', '#2f80ed'],
+            7: ['#ff6b6b', '#556270'],
+            8: ['#ff9a8b', '#ff6a88', '#ff99ac'],
+            9: ['#a9c9ff', '#ffbbec'],
+            10: ['#85ffbd', '#fffb7d'],
+            11: ['#fbab7e', '#f7ce68'],
+            12: ['#85a8ff', '#ff8989'],
+            13: ['#ff0844', '#ffb199'],
+            14: ['#ffd200', '#f7971e'],
+            15: ['#00c6fb', '#005bea'],
+            16: ['#f43b47', '#453a94'],
+            17: ['#ff512f', '#dd2476'],
+            18: ['#12c2e9', '#c471ed', '#f64f59'],
+            19: ['#00b4db', '#0083b0'],
+            20: ['#fc00ff', '#00dbde'],
+            21: ['#ff0084', '#33001b'],
+            22: ['#1d2671', '#c33764'],
+            23: ['#ff4b1f', '#1fddff'],
+            24: ['#7f00ff', '#e100ff'],
+            25: ['#00d2ff', '#3a7bd5'],
+            26: ['#a8c0ff', '#3f2b96'],
+            27: ['#f12711', '#f5af19'],
+            28: ['#00f5a0', '#00d9f5'],
+            29: ['#ff6fd8', '#3813c2'],
+            30: ['#fe8c00', '#f83600']
+        };
+
+        // ==========================================================================
+        // TOAST SYSTEM
+        // ==========================================================================
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            let icon = 'fa-info-circle';
+            if (type === 'success') icon = 'fa-check-circle';
+            if (type === 'error') icon = 'fa-times-circle';
+            
+            toast.innerHTML = `
+                <i class="fas ${icon}"></i>
+                <span>${message}</span>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(50px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // ==========================================================================
+        // GENERATE LOGO
+        // ==========================================================================
+        function generateLogo() {
+            const appName = document.getElementById('appNameInput').value;
+            const preview = document.getElementById('logoPreview');
+            
+            // Get initials (max 2 letters)
+            let initials = appName
+                .split(' ')
+                .map(word => word[0])
+                .join('')
+                .toUpperCase()
+                .replace(/[^A-Z]/g, '')
+                .substring(0, 2);
+            
+            if (initials.length === 0) initials = 'MV';
+            if (initials.length === 1) initials = initials + 'X';
+            
+            preview.textContent = initials;
+            
+            // Apply gradient
+            const gradient = gradients[currentGradient];
+            if (gradient.length === 2) {
+                preview.style.background = `linear-gradient(135deg, ${gradient[0]}, ${gradient[1]})`;
+            } else {
+                preview.style.background = `linear-gradient(135deg, ${gradient[0]}, ${gradient[1]}, ${gradient[2]})`;
+            }
+            
+            // Apply shape
+            switch(currentShape) {
+                case 'circle':
+                    preview.style.borderRadius = '50%';
+                    break;
+                case 'square':
+                    preview.style.borderRadius = '0';
+                    break;
+                case 'rounded':
+                    preview.style.borderRadius = '30px';
+                    break;
+                case 'hexagon':
+                    preview.style.borderRadius = '50% 50% 50% 50% / 60% 60% 40% 40%';
+                    break;
+            }
+            
+            // Generate URL
+            updateLogoUrl(initials);
+        }
+
+        // ==========================================================================
+        // UPDATE LOGO URL
+        // ==========================================================================
+        function updateLogoUrl(initials) {
+            const gradient = gradients[currentGradient];
+            const svg = generateSVG(initials, gradient, currentShape);
+            const dataUrl = 'data:image/svg+xml,' + encodeURIComponent(svg);
+            document.getElementById('logoUrl').textContent = dataUrl.substring(0, 60) + '...';
+            
+            window.currentSVG = svg;
+            window.currentDataUrl = dataUrl;
+        }
+
+        // ==========================================================================
+        // GENERATE SVG
+        // ==========================================================================
+        function generateSVG(initials, gradient, shape) {
+            let shapePath = '';
+            switch(shape) {
+                case 'circle':
+                    shapePath = '<circle cx="50" cy="50" r="50" fill="url(#grad)"/>';
+                    break;
+                case 'square':
+                    shapePath = '<rect width="100" height="100" fill="url(#grad)"/>';
+                    break;
+                case 'rounded':
+                    shapePath = '<rect width="100" height="100" rx="20" fill="url(#grad)"/>';
+                    break;
+                case 'hexagon':
+                    shapePath = '<polygon points="50,0 93,25 93,75 50,100 7,75 7,25" fill="url(#grad)"/>';
+                    break;
+            }
+            
+            return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+                <defs>
+                    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        ${gradient.map((color, i) => 
+                            `<stop offset="${i * 50}%" style="stop-color:${color};stop-opacity:1" />`
+                        ).join('')}
+                    </linearGradient>
+                </defs>
+                ${shapePath}
+                <text x="50" y="65" font-size="40" font-weight="bold" 
+                      fill="white" text-anchor="middle" font-family="Arial, sans-serif">
+                    ${initials}
+                </text>
+            </svg>`;
+        }
+
+        // ==========================================================================
+        // SELECT GRADIENT
+        // ==========================================================================
+        function selectGradient(num) {
+            currentGradient = num;
+            
+            document.querySelectorAll('.gradient-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            document.querySelector(`.gradient-${num}`).classList.add('selected');
+            
+            generateLogo();
+            showToast(`🎨 Gradient ${num} applied`, 'success');
+        }
+
+        // ==========================================================================
+        // SELECT SHAPE
+        // ==========================================================================
+        function selectShape(shape) {
+            currentShape = shape;
+            
+            document.querySelectorAll('.shape-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+            
+            generateLogo();
+            showToast(`🔷 Shape updated`, 'success');
+        }
+
+        // ==========================================================================
+        // PREVIEW SIZE
+        // ==========================================================================
+        function previewSize(size) {
+            const preview = document.getElementById('logoPreview');
+            const sizes = {
+                small: '100px',
+                medium: '200px',
+                large: '300px',
+                huge: '400px'
+            };
+            
+            preview.style.width = sizes[size];
+            preview.style.height = sizes[size];
+            preview.style.fontSize = parseInt(sizes[size]) * 0.4 + 'px';
+            
+            showToast(`📏 Size: ${size}`, 'info');
+        }
+
+        // ==========================================================================
+        // SAVE TO GALLERY
+        // ==========================================================================
+        function saveToGallery() {
+            const appName = document.getElementById('appNameInput').value;
+            const logoData = {
+                id: Date.now(),
+                name: appName,
+                svg: window.currentSVG,
+                dataUrl: window.currentDataUrl,
+                gradient: currentGradient,
+                shape: currentShape,
+                timestamp: new Date().toLocaleString()
+            };
+            
+            generatedLogos.unshift(logoData);
+            if (generatedLogos.length > 12) generatedLogos.pop();
+            
+            localStorage.setItem('mvx_ai_logos', JSON.stringify(generatedLogos));
+            renderGallery();
+            showToast('✅ Logo saved to gallery', 'success');
+        }
+
+        // ==========================================================================
+        // RENDER GALLERY
+        // ==========================================================================
+        function renderGallery() {
+            const gallery = document.getElementById('galleryGrid');
+            if (!gallery) return;
+            
+            gallery.innerHTML = '';
+            
+            if (generatedLogos.length === 0) {
+                gallery.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: var(--text-muted);">
+                        <i class="fas fa-images" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+                        <p>No saved logos yet. Generate and save your first logo!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            generatedLogos.forEach(logo => {
+                const item = document.createElement('div');
+                item.className = 'gallery-item';
+                item.innerHTML = `
+                    <img src="${logo.dataUrl}" alt="${logo.name}">
+                    <div class="gallery-overlay">
+                        <small>${logo.name}</small>
+                    </div>
+                `;
+                item.onclick = () => loadLogo(logo);
+                gallery.appendChild(item);
+            });
+        }
+
+        // ==========================================================================
+        // LOAD LOGO FROM GALLERY
+        // ==========================================================================
+        function loadLogo(logo) {
+            document.getElementById('appNameInput').value = logo.name;
+            selectGradient(logo.gradient);
+            selectShape(logo.shape);
+            generateLogo();
+            showToast('📂 Logo loaded', 'success');
+        }
+
+        // ==========================================================================
+        // EXPORT FUNCTIONS
+        // ==========================================================================
+        function exportSVG() {
+            const blob = new Blob([window.currentSVG], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `mvx-logo-${Date.now()}.svg`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('📥 SVG downloaded', 'success');
+            saveToGallery();
+        }
+
+        function exportPNG() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 512;
+            const ctx = canvas.getContext('2d');
+            
+            const img = new Image();
+            img.src = window.currentDataUrl;
+            img.onload = () => {
+                ctx.drawImage(img, 0, 0, 512, 512);
+                const pngUrl = canvas.toDataURL('image/png');
+                const a = document.createElement('a');
+                a.href = pngUrl;
+                a.download = `mvx-logo-${Date.now()}.png`;
+                a.click();
+                showToast('📥 PNG downloaded', 'success');
+                saveToGallery();
+            };
+        }
+
+        function copyURL() {
+            navigator.clipboard.writeText(window.currentDataUrl);
+            showToast('🔗 URL copied to clipboard', 'success');
+            saveToGallery();
+        }
+
+        function copyLogoUrl() {
+            copyURL();
+        }
+
+        // ==========================================================================
+        // CLEAR GALLERY
+        // ==========================================================================
+        function clearGallery() {
+            if (confirm('⚠️ Clear all saved logos?')) {
+                generatedLogos = [];
+                localStorage.removeItem('mvx_ai_logos');
+                renderGallery();
+                showToast('🗑️ Gallery cleared', 'info');
+            }
+        }
+
+        // ==========================================================================
+        // NAVIGATION
+        // ==========================================================================
+        function goToStore() {
+            window.location.href = 'index.html';
+        }
+
+        function goToAdmin() {
+            window.location.href = 'admin.html';
+        }
+
+        // ==========================================================================
+        // INITIALIZATION
+        // ==========================================================================
+        function init() {
+            generateLogo();
+            renderGallery();
+            
+            // Auto-save shortcut (Ctrl+S)
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey && e.key === 's') {
+                    e.preventDefault();
+                    saveToGallery();
+                }
+            });
+        }
+
+        // Make functions global
+        window.selectGradient = selectGradient;
+        window.selectShape = selectShape;
+        window.generateLogo = generateLogo;
+        window.previewSize = previewSize;
+        window.exportSVG = exportSVG;
+        window.exportPNG = exportPNG;
+        window.copyURL = copyURL;
+        window.copyLogoUrl = copyLogoUrl;
+        window.clearGallery = clearGallery;
+        window.goToStore = goToStore;
+        window.goToAdmin = goToAdmin;
+
+        // Start initialization
+        init();
+
+        // ==========================================================================
+        // ERROR HANDLING
+        // ==========================================================================
+        window.addEventListener('error', (e) => {
+            console.error('Global error:', e.error);
+            showToast('⚠️ System error occurred', 'error');
+        });
+    </script>
+</body>
+</html>
