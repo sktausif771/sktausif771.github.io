@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#00e6b8">
+    <title>App Details | MVX STORE v4.0</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <style>
+        /* ==========================================================================
+           MVX STORE V4.0 - APP DETAILS PAGE
+           ========================================================================== */
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        :root {
+            --primary: #00e6b8; --primary-dim: rgba(0, 230, 184, 0.15);
+            --gold: #ffd700; --gold-dim: rgba(255, 215, 0, 0.15);
+            --danger: #ff003c; --danger-dim: rgba(255, 0, 60, 0.15);
+            --bg-void: #000000; --bg-card: #0c101a; --bg-input: #1a1f2c;
+            --text-primary: #ffffff; --text-muted: #9ca3af;
+            --glass-bg: rgba(8, 11, 18, 0.8); --glass-border: 1px solid rgba(0, 230, 184, 0.2);
+            --font-head: 'Rajdhani', sans-serif; --font-body: 'Space Grotesk', sans-serif;
+        }
+
+        body { background: var(--bg-void); color: var(--text-primary); font-family: var(--font-body); min-height: 100vh; overflow-x: hidden; }
+
+        /* Background Effects */
+        .grid-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(0, 230, 184, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 230, 184, 0.03) 1px, transparent 1px); background-size: 50px 50px; pointer-events: none; z-index: -1; }
+        .glow-orb { position: fixed; width: 50vmax; height: 50vmax; border-radius: 50%; background: radial-gradient(circle at center, rgba(0, 230, 184, 0.1) 0%, transparent 70%); filter: blur(50px); pointer-events: none; z-index: -1; top: -10vmax; right: -10vmax; }
+
+        /* Navigation Bar */
+        .navbar { position: sticky; top: 0; background: var(--glass-bg); backdrop-filter: blur(10px); border-bottom: var(--glass-border); height: 60px; display: flex; align-items: center; padding: 0 20px; z-index: 100; gap: 15px; }
+        .back-btn { background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; transition: 0.3s; }
+        .back-btn:hover { color: var(--primary); }
+        .nav-title { font-family: var(--font-head); font-size: 1.2rem; font-weight: 700; letter-spacing: 1px; }
+
+        /* Main Container */
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        
+        /* App Header Info */
+        .app-header { display: flex; gap: 20px; align-items: center; margin-bottom: 30px; background: var(--bg-card); padding: 20px; border-radius: 16px; border: var(--glass-border); }
+        .app-logo { width: 90px; height: 90px; border-radius: 20px; object-fit: cover; border: 2px solid var(--primary-dim); background: var(--bg-input); }
+        .app-info { flex: 1; }
+        .app-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 5px; color: var(--primary); }
+        .app-meta { display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.9rem; color: var(--text-muted); font-family: var(--font-mono); }
+        .meta-tag { background: var(--bg-input); padding: 5px 10px; border-radius: 8px; border: 1px solid #333; display: flex; align-items: center; gap: 5px; }
+
+        /* Screenshots - Play Store Style */
+        .screenshots-section { margin-bottom: 30px; }
+        .section-title { font-family: var(--font-head); font-size: 1.2rem; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; color: var(--text-muted); }
+        .screenshots-container { display: flex; gap: 15px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 15px; scrollbar-width: thin; scrollbar-color: var(--primary) var(--bg-input); }
+        .screenshots-container::-webkit-scrollbar { height: 6px; }
+        .screenshots-container::-webkit-scrollbar-track { background: var(--bg-input); border-radius: 10px; }
+        .screenshots-container::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+        
+        .screenshot-img { height: 350px; border-radius: 12px; object-fit: contain; background: var(--bg-card); border: var(--glass-border); scroll-snap-align: center; max-width: 80vw; }
+
+        /* Download & Password Section */
+        .download-section { background: var(--bg-card); padding: 20px; border-radius: 16px; border: var(--glass-border); margin-bottom: 30px; text-align: center; }
+        
+        .password-box { display: none; margin-bottom: 20px; }
+        .video-btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 12px; background: rgba(255, 0, 0, 0.1); border: 1px solid #ff0000; color: #ff0000; border-radius: 8px; font-weight: 600; text-decoration: none; margin-bottom: 15px; transition: 0.3s; }
+        .video-btn:hover { background: #ff0000; color: #fff; }
+        
+        .pass-input-group { display: flex; gap: 10px; }
+        .pass-input { flex: 1; background: var(--bg-input); border: 1px solid #333; color: #fff; padding: 12px 15px; border-radius: 8px; font-size: 1rem; outline: none; transition: 0.3s; }
+        .pass-input:focus { border-color: var(--primary); }
+        
+        .btn { padding: 15px 20px; border-radius: 8px; font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; border: none; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; width: 100%; }
+        .btn-primary { background: var(--primary); color: #000; }
+        .btn-primary:hover { box-shadow: 0 0 20px var(--primary-dim); transform: translateY(-2px); }
+        .btn-whatsapp { background: #25D366; color: #fff; }
+        .btn-whatsapp:hover { background: #128C7E; transform: translateY(-2px); }
+        
+        /* Extra Links */
+        .extra-links { display: flex; flex-direction: column; gap: 10px; margin-bottom: 30px; }
+        .extra-link-btn { background: var(--bg-input); border: 1px solid #333; color: var(--text-primary); padding: 15px; border-radius: 12px; text-decoration: none; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; }
+        .extra-link-btn:hover { border-color: var(--primary); background: var(--primary-dim); padding-left: 20px; }
+        .extra-link-btn i { color: var(--primary); }
+
+        /* Description Section */
+        .description-box { background: var(--bg-card); padding: 25px; border-radius: 16px; border: var(--glass-border); line-height: 1.8; color: var(--text-secondary); white-space: pre-line; }
+
+        /* Toast */
+        .toast-container { position: fixed; top: 80px; right: 20px; z-index: 9999; }
+        .toast { background: var(--bg-input); border-left: 4px solid var(--primary); padding: 15px 20px; margin-bottom: 10px; border-radius: 8px; display: flex; gap: 10px; align-items: center; animation: slideIn 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.5); font-weight: 500; }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+        
+        /* Loading Skeleton */
+        .loader { text-align: center; padding: 50px; color: var(--primary); font-family: var(--font-head); font-size: 1.5rem; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+    </style>
+</head>
+<body>
+    <div class="grid-overlay"></div>
+    <div class="glow-orb"></div>
+    <div class="toast-container" id="toastContainer"></div>
+
+    <nav class="navbar">
+        <button class="back-btn" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
+        <span class="nav-title">APP DETAILS</span>
+    </nav>
+
+    <div class="container" id="mainContent">
+        <div class="loader">LOADING DATA...</div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <script>
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyAS3UXXrio_-c9uPbHwpDuTVrP-p8d903w",
+            authDomain: "white-2k-17-v4.firebaseapp.com",
+            databaseURL: "https://white-2k-17-v4-default-rtdb.firebaseio.com",
+            projectId: "white-2k-17-v4",
+            storageBucket: "white-2k-17-v4.firebasestorage.app",
+            messagingSenderId: "180909174928",
+            appId: "1:180909174928:android:148861a87d66c6980ca815"
+        };
+        
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+        const database = firebase.database();
+        const DB_PATH = "MVX_VIP_SERVER_V5";
+
+        // Utilities
+        const urlParams = new URLSearchParams(window.location.search);
+        const appId = urlParams.get('id');
+        let appData = null;
+
+        function showToast(msg, type='success') {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast`;
+            toast.style.borderLeftColor = type === 'error' ? 'var(--danger)' : 'var(--primary)';
+            toast.innerHTML = `<i class="fas fa-${type==='error'?'times':'check'}-circle" style="color:${type==='error'?'var(--danger)':'var(--primary)'}"></i> <span>${msg}</span>`;
+            toastContainer.appendChild(toast);
+            setTimeout(() => { toast.style.opacity = '0'; setTimeout(()=>toast.remove(), 300); }, 3000);
+        }
+
+        // Fetch Data
+        if(!appId) {
+            document.getElementById('mainContent').innerHTML = `<div class="loader" style="color:var(--danger)">ERROR: APP ID NOT FOUND</div>`;
+        } else {
+            database.ref(`${DB_PATH}/${appId}`).once('value').then(snapshot => {
+                if(!snapshot.exists()) {
+                    document.getElementById('mainContent').innerHTML = `<div class="loader" style="color:var(--danger)">ERROR: APP NOT FOUND</div>`;
+                    return;
+                }
+                appData = snapshot.val();
+                renderPage();
+            }).catch(err => {
+                document.getElementById('mainContent').innerHTML = `<div class="loader" style="color:var(--danger)">DATABASE ERROR</div>`;
+            });
+        }
+
+        function renderPage() {
+            const container = document.getElementById('mainContent');
+            const logoSrc = appData.logoBase64 || 'https://cdn-icons-png.flaticon.com/512/564/564619.png';
+            
+            // Generate Screenshots HTML
+            let screenshotsHTML = '';
+            if(appData.screenshots && appData.screenshots.length > 0) {
+                const imagesHTML = appData.screenshots.map(img => `<img src="${img}" class="screenshot-img" alt="Preview">`).join('');
+                screenshotsHTML = `
+                    <div class="screenshots-section">
+                        <div class="section-title"><i class="fas fa-images"></i> PREVIEW</div>
+                        <div class="screenshots-container">${imagesHTML}</div>
+                    </div>
+                `;
+            }
+
+            // Generate Download Section HTML
+            let downloadHTML = '';
+            if(appData.accessType === 'Paid') {
+                downloadHTML = `
+                    <div class="download-section">
+                        <i class="fas fa-crown" style="font-size: 3rem; color: var(--gold); margin-bottom: 15px;"></i>
+                        <h3 style="margin-bottom: 15px;">PAID VIP APP</h3>
+                        <a href="${appData.downloadUrl}" target="_blank" class="btn btn-whatsapp"><i class="fab fa-whatsapp"></i> BUY VIA WHATSAPP</a>
+                    </div>
+                `;
+            } 
+            else if (appData.password && appData.password.trim() !== '') {
+                // Password Protected
+                const videoLink = appData.passwordVideoUrl ? `<a href="${appData.passwordVideoUrl}" target="_blank" class="video-btn"><i class="fab fa-youtube"></i> GET PASSWORD FROM VIDEO</a>` : '';
+                downloadHTML = `
+                    <div class="download-section">
+                        <i class="fas fa-lock" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 15px;"></i>
+                        <h3 style="margin-bottom: 15px;">FILE IS ENCRYPTED</h3>
+                        ${videoLink}
+                        <div class="pass-input-group">
+                            <input type="text" id="passVerifyInput" class="pass-input" placeholder="Enter Password Here...">
+                            <button class="btn btn-primary" style="width: auto;" onclick="verifyPassword()"><i class="fas fa-unlock"></i></button>
+                        </div>
+                    </div>
+                `;
+            } 
+            else {
+                // Direct Download (No Password)
+                downloadHTML = `
+                    <div class="download-section">
+                        <button class="btn btn-primary" onclick="startDownload()"><i class="fas fa-download"></i> DIRECT DOWNLOAD</button>
+                    </div>
+                `;
+            }
+
+            // Generate Extra Links HTML
+            let extraLinksHTML = '';
+            if(appData.extraLinks && appData.extraLinks.length > 0) {
+                const links = appData.extraLinks.map(link => `
+                    <a href="${link.url}" target="_blank" class="extra-link-btn">
+                        <span><i class="fas fa-link" style="margin-right: 10px;"></i> ${link.title}</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                `).join('');
+                extraLinksHTML = `<div class="extra-links"><div class="section-title" style="margin-bottom:5px;"><i class="fas fa-share-alt"></i> SOCIAL & BIO</div>${links}</div>`;
+            }
+
+            // Description HTML
+            let descriptionHTML = '';
+            if(appData.description && appData.description.trim() !== '') {
+                descriptionHTML = `
+                    <div class="section-title"><i class="fas fa-align-left"></i> DESCRIPTION</div>
+                    <div class="description-box">${appData.description}</div>
+                `;
+            }
+
+            // Combine and Render
+            container.innerHTML = `
+                <div class="app-header">
+                    <img src="${logoSrc}" class="app-logo" alt="Logo">
+                    <div class="app-info">
+                        <h1 class="app-title">${appData.appName}</h1>
+                        <div class="app-meta">
+                            <span class="meta-tag"><i class="fas fa-code-branch"></i> ${appData.version || 'v1.0'}</span>
+                            <span class="meta-tag"><i class="fas fa-weight-hanging"></i> ${appData.size || 'N/A'}</span>
+                            <span class="meta-tag"><i class="fas fa-tag"></i> ${appData.accessType}</span>
+                        </div>
+                    </div>
+                </div>
+
+                ${screenshotsHTML}
+                ${downloadHTML}
+                ${extraLinksHTML}
+                ${descriptionHTML}
+            `;
+        }
+
+        // Action Functions
+        function verifyPassword() {
+            const input = document.getElementById('passVerifyInput').value;
+            if(!input) {
+                showToast('Please enter password!', 'error');
+                return;
+            }
+            if(input === appData.password) {
+                showToast('Password Verified! Downloading...');
+                setTimeout(startDownload, 1000);
+            } else {
+                showToast('Incorrect Password!', 'error');
+            }
+        }
+
+        function startDownload() {
+            let url = appData.downloadUrl;
+            if(!url) {
+                showToast('Download link broken!', 'error');
+                return;
+            }
+            // Auto-convert Google Drive Links for direct download
+            const driveMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+            if (driveMatch) {
+                url = `https://drive.google.com/uc?export=download&id=${driveMatch[1]}`;
+            }
+            
+            window.open(url, '_blank');
+        }
+    </script>
+</body>
+</html>

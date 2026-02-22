@@ -5,1443 +5,280 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#00e6b8">
     <meta name="robots" content="noindex, nofollow">
-    <meta name="description" content="MVX ADMIN NEXUS - Secure Control Panel for MVX Cyber System. Manage files, users, and system settings.">
-    <meta name="keywords" content="admin panel, mvx admin, cyber control, file manager, database manager">
-    <meta name="author" content="MVX TEAM">
     <title>MVX ADMIN NEXUS | Secure Control Panel v4.0</title>
     
-    <!-- Fonts & Icons - Optimized -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700;800&family=Share+Tech+Mono&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
     <style>
         /* ==========================================================================
-           MVX ADMIN NEXUS - ULTIMATE CONTROL PANEL V4.0
-           ==========================================================================
-           - Complete Admin Dashboard
-           - Real-time Database Management
-           - Advanced Security Features
-           - Integrated with 404 Page Style
-           - 3000+ Lines of Premium Code
-           - Full CRUD Operations
-           - Base64 Logo Ready
+           MVX ADMIN NEXUS - V4.0 CSS 
            ========================================================================== */
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         :root {
-            /* Primary Cyber Colors - Same as 404 page */
-            --primary-hue: 168;
-            --primary-saturation: 100%;
-            --primary-lightness: 45%;
+            --primary-hue: 168; --primary-saturation: 100%; --primary-lightness: 45%;
             --primary: hsl(var(--primary-hue), var(--primary-saturation), var(--primary-lightness));
             --primary-dark: hsl(var(--primary-hue), var(--primary-saturation), 35%);
-            --primary-light: hsl(var(--primary-hue), var(--primary-saturation), 55%);
-            --primary-glow: 0 0 30px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.7);
             --primary-dim: hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.15);
-            --primary-dim-2: hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.25);
+            --danger: #ff003c; --danger-dim: rgba(255, 0, 60, 0.1);
+            --success: #00ff88; --warning: #ffb800; --gold: #ffd700; --gold-dim: rgba(255, 215, 0, 0.1);
             
-            /* Danger/Alert Colors */
-            --danger-hue: 350;
-            --danger: hsl(var(--danger-hue), 100%, 55%);
-            --danger-glow: 0 0 40px hsla(var(--danger-hue), 100%, 55%, 0.6);
-            --danger-dim: hsla(var(--danger-hue), 100%, 55%, 0.1);
+            --bg-void: #000000; --bg-deep: #03050a; --bg-dark: #080b12; 
+            --bg-card: #0c101a; --bg-elevated: #111827; --bg-input: #1a1f2c;
             
-            /* Success Colors */
-            --success-hue: 150;
-            --success: hsl(var(--success-hue), 80%, 50%);
-            --success-glow: 0 0 30px hsla(var(--success-hue), 80%, 50%, 0.5);
-            --success-dim: hsla(var(--success-hue), 80%, 50%, 0.1);
-            
-            /* Warning Colors */
-            --warning-hue: 45;
-            --warning: hsl(var(--warning-hue), 100%, 50%);
-            --warning-glow: 0 0 30px hsla(var(--warning-hue), 100%, 50%, 0.5);
-            --warning-dim: hsla(var(--warning-hue), 100%, 50%, 0.1);
-            
-            /* Secondary Accents */
-            --gold-hue: 45;
-            --gold: hsl(var(--gold-hue), 100%, 50%);
-            --gold-glow: 0 0 30px hsla(var(--gold-hue), 100%, 50%, 0.5);
-            --gold-dim: hsla(var(--gold-hue), 100%, 50%, 0.1);
-            
-            --blue-hue: 210;
-            --blue: hsl(var(--blue-hue), 100%, 55%);
-            --blue-glow: 0 0 30px hsla(var(--blue-hue), 100%, 55%, 0.5);
-            --blue-dim: hsla(var(--blue-hue), 100%, 55%, 0.1);
-            
-            /* Background System */
-            --bg-void: #000000;
-            --bg-deep: #03050a;
-            --bg-dark: #080b12;
-            --bg-card: #0c101a;
-            --bg-elevated: #111827;
-            --bg-input: #1a1f2c;
-            
-            /* Text System */
-            --text-primary: #ffffff;
-            --text-secondary: #e0e0e0;
-            --text-muted: #9ca3af;
-            --text-glow: 0 0 10px currentColor;
-            
-            /* Glass Effects */
-            --glass-bg: rgba(8, 11, 18, 0.7);
-            --glass-border: 1px solid rgba(0, 230, 184, 0.2);
+            --text-primary: #ffffff; --text-muted: #9ca3af;
+            --glass-bg: rgba(8, 11, 18, 0.7); --glass-border: 1px solid rgba(0, 230, 184, 0.2);
             --glass-blur: blur(20px);
-            
-            /* Shadows */
-            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-            --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
-            --shadow-lg: 0 20px 40px -10px rgba(0, 0, 0, 0.7);
-            --shadow-xl: 0 30px 60px -15px rgba(0, 0, 0, 0.8);
-            --shadow-primary: 0 0 40px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.3);
-            --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.5);
-            
-            /* Fonts */
-            --font-display: 'Orbitron', sans-serif;
-            --font-head: 'Rajdhani', sans-serif;
-            --font-body: 'Space Grotesk', sans-serif;
+            --font-head: 'Rajdhani', sans-serif; --font-body: 'Space Grotesk', sans-serif;
             --font-mono: 'Share Tech Mono', monospace;
-            
-            /* Dimensions */
-            --header-height: 80px;
-            --sidebar-width: 300px;
-            --container-max: 1600px;
-            --radius-sm: 8px;
-            --radius-md: 16px;
-            --radius-lg: 24px;
-            --radius-xl: 32px;
-            
-            /* Animations */
-            --transition-fast: 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            --transition-base: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            --transition-slow: 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-            --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            
-            /* Z-Index Layers */
-            --z-background: -1;
-            --z-base: 1;
-            --z-elevated: 10;
-            --z-sticky: 100;
-            --z-dropdown: 200;
-            --z-overlay: 1000;
-            --z-modal: 2000;
-            --z-toast: 3000;
         }
 
-        /* ==========================================================================
-           Base Styles & Reset
-           ========================================================================== */
-        body {
-            background: var(--bg-void);
-            color: var(--text-primary);
-            font-family: var(--font-body);
-            min-height: 100vh;
-            position: relative;
-            overflow-x: hidden;
-            line-height: 1.6;
-        }
-
-        /* ==========================================================================
-           Background Effects - Same as 404 page
-           ========================================================================== */
-        .grid-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                linear-gradient(rgba(0, 230, 184, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 230, 184, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            pointer-events: none;
-            z-index: var(--z-background);
-            animation: gridShift 15s linear infinite;
-        }
-
-        .scanline-effect {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                to bottom,
-                transparent 50%,
-                rgba(0, 230, 184, 0.03) 50%
-            );
-            background-size: 100% 6px;
-            pointer-events: none;
-            z-index: 2;
-            animation: scanMove 8s linear infinite;
-            opacity: 0.4;
-        }
-
-        .glow-orb {
-            position: fixed;
-            width: 60vmax;
-            height: 60vmax;
-            border-radius: 50%;
-            background: radial-gradient(
-                circle at center,
-                hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.15) 0%,
-                transparent 70%
-            );
-            filter: blur(50px);
-            pointer-events: none;
-            z-index: var(--z-background);
-            animation: orbFloat 20s ease-in-out infinite alternate;
-        }
-
-        .orb-1 {
-            top: -20vmax;
-            left: -20vmax;
-            background: radial-gradient(circle at center, rgba(0, 230, 184, 0.2) 0%, transparent 70%);
-        }
-
-        .orb-2 {
-            bottom: -20vmax;
-            right: -20vmax;
-            background: radial-gradient(circle at center, rgba(255, 0, 100, 0.15) 0%, transparent 70%);
-            animation-delay: -5s;
-        }
-
-        @keyframes gridShift {
-            0% { background-position: 0 0; }
-            100% { background-position: 50px 50px; }
-        }
-
-        @keyframes scanMove {
-            0% { background-position: 0 0; }
-            100% { background-position: 0 100px; }
-        }
-
-        @keyframes orbFloat {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(10%, 10%) scale(1.2); }
-        }
-
-        /* ==========================================================================
-           Header Section
-           ========================================================================== */
-        .admin-header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: var(--header-height);
-            background: var(--glass-bg);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border-bottom: var(--glass-border);
-            z-index: var(--z-sticky);
-            padding: 0 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: var(--shadow-md);
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        /* ==========================================================================
-           Base64 Logo Section - Same as 404 page
-           ========================================================================== */
-        .logo-cyber {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            background: var(--glass-bg);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border: var(--glass-border);
-            box-shadow: var(--shadow-primary);
-            padding: 8px;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .logo-cyber::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: conic-gradient(
-                transparent,
-                var(--primary),
-                transparent 30%
-            );
-            animation: rotate 4s linear infinite;
-            opacity: 0.3;
-        }
-
-        .logo-cyber::after {
-            content: '';
-            position: absolute;
-            inset: 2px;
-            background: var(--bg-deep);
-            border-radius: 10px;
-            z-index: 1;
-        }
-
-        .logo-img {
-            position: relative;
-            z-index: 2;
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            filter: drop-shadow(0 0 10px var(--primary));
-        }
-
-        /* ===== PASTE YOUR BASE64 LOGO HERE (Same as 404 page) ===== */
-        .logo-img {
-            content: url('data:image/png;base64,PASTE_YOUR_BASE64_STRING_HERE');
-            /* Replace with your actual Base64 string */
-        }
-
-        .brand-text {
-            font-family: var(--font-display);
-            font-size: 1.5rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            background: linear-gradient(135deg, #fff, var(--primary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            position: relative;
-        }
-
-        .brand-text::after {
-            content: 'v4.0';
-            position: absolute;
-            top: -10px;
-            right: -30px;
-            font-size: 0.7rem;
-            color: var(--primary);
-            font-family: var(--font-mono);
-            background: var(--primary-dim);
-            padding: 2px 6px;
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--primary);
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        .system-status {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            background: var(--primary-dim);
-            border: 1px solid var(--primary);
-            padding: 0.5rem 1.2rem;
-            border-radius: 100px;
-            font-family: var(--font-mono);
-            font-size: 0.8rem;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--primary);
-            border-radius: 50%;
-            box-shadow: var(--primary-glow);
-            animation: pulse 1.5s infinite;
-        }
-
-        .logout-btn {
-            background: var(--danger-dim);
-            border: 1px solid var(--danger);
-            color: var(--danger);
-            padding: 0.6rem 1.5rem;
-            border-radius: 100px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            cursor: pointer;
-            transition: all var(--transition-base);
-            font-family: var(--font-head);
-        }
-
-        .logout-btn:hover {
-            background: var(--danger);
-            color: var(--bg-void);
-            box-shadow: var(--danger-glow);
-            transform: translateY(-2px);
-        }
-
-        /* ==========================================================================
-           Main Container
-           ========================================================================== */
-        .admin-container {
-            max-width: var(--container-max);
-            margin: calc(var(--header-height) + 2rem) auto 2rem;
-            padding: 0 2rem;
-        }
-
-        /* ==========================================================================
-           Stats Grid
-           ========================================================================== */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: var(--glass-bg);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border: var(--glass-border);
-            border-radius: var(--radius-lg);
-            padding: 1.8rem;
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            transition: all var(--transition-base);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: var(--primary);
-            box-shadow: var(--primary-glow);
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary);
-            box-shadow: var(--shadow-lg), var(--primary-glow);
-        }
-
-        .stat-icon {
-            font-size: 2.5rem;
-            color: var(--primary);
-            filter: drop-shadow(0 0 10px var(--primary));
-        }
-
-        .stat-info h3 {
-            font-size: 2rem;
-            font-family: var(--font-display);
-            font-weight: 700;
-            line-height: 1;
-            margin-bottom: 0.3rem;
-        }
-
-        .stat-info p {
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-family: var(--font-mono);
-        }
-
-        /* ==========================================================================
-           Main Workspace Grid
-           ========================================================================== */
-        .workspace-grid {
-            display: grid;
-            grid-template-columns: 1.2fr 1.8fr;
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        @media (max-width: 1200px) {
-            .workspace-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* ==========================================================================
-           Panel Base Styles
-           ========================================================================== */
-        .admin-panel {
-            background: var(--glass-bg);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border: var(--glass-border);
-            border-radius: var(--radius-lg);
-            padding: 2rem;
-            box-shadow: var(--shadow-lg);
-        }
-
-        .panel-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: var(--glass-border);
-        }
-
-        .panel-header h2 {
-            font-family: var(--font-head);
-            font-size: 1.5rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-        }
-
-        .panel-header h2 i {
-            color: var(--primary);
-        }
-
-        .mode-badge {
-            background: var(--primary-dim);
-            border: 1px solid var(--primary);
-            color: var(--primary);
-            padding: 0.4rem 1.2rem;
-            border-radius: 100px;
-            font-size: 0.8rem;
-            font-family: var(--font-mono);
-            letter-spacing: 1px;
-        }
-
-        /* ==========================================================================
-           Form Styles
-           ========================================================================== */
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-bottom: 0.5rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            font-family: var(--font-mono);
-        }
-
-        .form-control {
-            width: 100%;
-            background: var(--bg-input);
-            border: var(--glass-border);
-            border-radius: var(--radius-md);
-            padding: 0.9rem 1rem;
-            color: var(--text-primary);
-            font-family: var(--font-body);
-            font-size: 0.95rem;
-            transition: all var(--transition-fast);
-        }
-
-        .form-control:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 20px var(--primary-dim);
-            outline: none;
-            background: var(--bg-elevated);
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-
-        select.form-control {
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2300e6b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 1rem center;
-            padding-right: 2.5rem;
-        }
-
-        /* ==========================================================================
-           Button Styles
-           ========================================================================== */
-        .btn {
-            width: 100%;
-            padding: 1rem;
-            border-radius: var(--radius-md);
-            font-family: var(--font-head);
-            font-weight: 700;
-            font-size: 1rem;
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.8rem;
-            cursor: pointer;
-            transition: all var(--transition-base);
-            border: none;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        .btn:active::before {
-            width: 300px;
-            height: 300px;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: var(--bg-void);
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-light);
-            box-shadow: var(--primary-glow);
-            transform: translateY(-2px);
-        }
-
-        .btn-update {
-            background: var(--gold);
-            color: var(--bg-void);
-            display: none;
-        }
-
-        .btn-update:hover {
-            background: var(--warning);
-            box-shadow: var(--gold-glow);
-            transform: translateY(-2px);
-        }
-
-        .btn-cancel {
-            background: transparent;
-            border: 1px solid var(--danger);
-            color: var(--danger);
-            display: none;
-            margin-top: 1rem;
-        }
-
-        .btn-cancel:hover {
-            background: var(--danger);
-            color: var(--bg-void);
-            box-shadow: var(--danger-glow);
-        }
-
-        .btn-danger {
-            background: var(--danger-dim);
-            border: 1px solid var(--danger);
-            color: var(--danger);
-            margin-top: 0.5rem;
-        }
-
-        .btn-danger:hover {
-            background: var(--danger);
-            color: var(--bg-void);
-            box-shadow: var(--danger-glow);
-        }
-
-        /* ==========================================================================
-           Search & List Styles
-           ========================================================================== */
-        .search-wrapper {
-            position: relative;
-            margin-bottom: 2rem;
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-            z-index: 2;
-        }
-
-        .search-wrapper .form-control {
-            padding-left: 3rem;
-        }
-
-        .list-container {
-            max-height: 600px;
-            overflow-y: auto;
-            padding-right: 0.5rem;
-        }
-
-        .list-container::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .list-container::-webkit-scrollbar-track {
-            background: var(--bg-dark);
-            border-radius: 6px;
-        }
-
-        .list-container::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 6px;
-            box-shadow: var(--primary-glow);
-        }
-
-        /* ==========================================================================
-           List Item Styles
-           ========================================================================== */
-        .list-item {
-            background: var(--bg-card);
-            border: var(--glass-border);
-            border-radius: var(--radius-md);
-            padding: 1.2rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: all var(--transition-base);
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .list-item:hover {
-            border-color: var(--primary);
-            transform: translateX(5px);
-            background: var(--bg-elevated);
-            box-shadow: var(--shadow-md), var(--primary-glow);
-        }
-
-        .list-item::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            width: 3px;
-            background: transparent;
-            transition: all var(--transition-fast);
-        }
-
-        .list-item:hover::before {
-            background: var(--primary);
-            box-shadow: var(--primary-glow);
-        }
-
-        .item-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            flex: 1;
-        }
-
-        .item-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            object-fit: cover;
-            background: var(--bg-dark);
-            border: 1px solid var(--primary-dim);
-        }
-
-        .item-details h4 {
-            font-size: 1rem;
-            margin-bottom: 0.3rem;
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-        }
-
-        .item-details span {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            font-family: var(--font-mono);
-        }
-
-        .badge {
-            font-size: 0.65rem;
-            padding: 0.2rem 0.8rem;
-            border-radius: 100px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .badge-free {
-            background: var(--primary-dim);
-            color: var(--primary);
-            border: 1px solid var(--primary);
-        }
-
-        .badge-premium {
-            background: var(--gold-dim);
-            color: var(--gold);
-            border: 1px solid var(--gold);
-        }
-
-        .badge-paid {
-            background: var(--danger-dim);
-            color: var(--danger);
-            border: 1px solid var(--danger);
-        }
-
-        .item-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .action-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--bg-dark);
-            color: var(--text-muted);
-            border: 1px solid var(--glass-border);
-            cursor: pointer;
-            transition: all var(--transition-fast);
-        }
-
-        .action-btn.edit:hover {
-            background: var(--primary-dim);
-            color: var(--primary);
-            border-color: var(--primary);
-            transform: scale(1.1);
-        }
-
-        .action-btn.delete:hover {
-            background: var(--danger-dim);
-            color: var(--danger);
-            border-color: var(--danger);
-            transform: scale(1.1);
-        }
-
-        /* ==========================================================================
-           Hint Text
-           ========================================================================== */
-        .hint-text {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            margin-top: 0.3rem;
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-            font-family: var(--font-mono);
-        }
-
-        .hint-text i {
-            color: var(--primary);
-        }
-
-        /* ==========================================================================
-           Empty State
-           ========================================================================== */
-        .empty-state {
-            text-align: center;
-            padding: 3rem 1rem;
-            color: var(--text-muted);
-            border: 2px dashed var(--glass-border);
-            border-radius: var(--radius-lg);
-        }
-
-        .empty-state i {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            opacity: 0.3;
-        }
-
-        .empty-state h3 {
-            font-size: 1.2rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.5rem;
-        }
-
-        /* ==========================================================================
-           Loading Skeleton
-           ========================================================================== */
-        .skeleton-item {
-            background: linear-gradient(90deg, 
-                var(--bg-card) 25%, 
-                var(--bg-elevated) 50%, 
-                var(--bg-card) 75%
-            );
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            border-radius: var(--radius-md);
-            height: 80px;
-            margin-bottom: 1rem;
-        }
-
-        @keyframes shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-
-        /* ==========================================================================
-           Modal Styles
-           ========================================================================== */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            z-index: var(--z-modal);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity var(--transition-base);
-        }
-
-        .modal-overlay.active {
-            display: flex;
-            opacity: 1;
-        }
-
-        .modal-container {
-            width: 90%;
-            max-width: 500px;
-            background: var(--bg-elevated);
-            border: var(--glass-border);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            transform: scale(0.9);
-            transition: transform var(--transition-bounce);
-        }
-
-        .modal-overlay.active .modal-container {
-            transform: scale(1);
-        }
-
-        .modal-header {
-            padding: 1.5rem 2rem;
-            background: var(--bg-dark);
-            border-bottom: var(--glass-border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-header h3 {
-            font-family: var(--font-head);
-            font-size: 1.3rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .modal-header h3 i {
-            color: var(--danger);
-        }
-
-        .modal-close {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            font-size: 2rem;
-            cursor: pointer;
-            transition: all var(--transition-fast);
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-        }
-
-        .modal-close:hover {
-            color: var(--danger);
-            background: var(--danger-dim);
-            transform: rotate(90deg);
-        }
-
-        .modal-body {
-            padding: 2rem;
-            text-align: center;
-        }
-
-        .modal-body i {
-            font-size: 4rem;
-            color: var(--danger);
-            margin-bottom: 1rem;
-        }
-
-        .modal-body h4 {
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-        }
-
-        .modal-body p {
-            color: var(--text-muted);
-            margin-bottom: 2rem;
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .modal-actions .btn {
-            flex: 1;
-        }
-
-        /* ==========================================================================
-           Toast Notifications
-           ========================================================================== */
-        .toast-container {
-            position: fixed;
-            top: calc(var(--header-height) + 1rem);
-            right: 2rem;
-            z-index: var(--z-toast);
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-            pointer-events: none;
-            max-width: 350px;
-        }
-
-        .toast {
-            background: var(--bg-elevated);
-            border-left: 4px solid var(--primary);
-            border-radius: var(--radius-md);
-            padding: 1rem 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            box-shadow: var(--shadow-lg), var(--primary-glow);
-            animation: slideInRight 0.3s ease;
-            pointer-events: auto;
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-        }
-
-        .toast.error {
-            border-left-color: var(--danger);
-            box-shadow: var(--shadow-lg), var(--danger-glow);
-        }
-
-        .toast.success {
-            border-left-color: var(--success);
-            box-shadow: var(--shadow-lg), var(--success-glow);
-        }
-
-        .toast.warning {
-            border-left-color: var(--warning);
-            box-shadow: var(--shadow-lg), var(--warning-glow);
-        }
-
-        .toast i {
-            font-size: 1.2rem;
-        }
-
-        .toast.error i {
-            color: var(--danger);
-        }
-
-        .toast.success i {
-            color: var(--success);
-        }
-
-        .toast.warning i {
-            color: var(--warning);
-        }
-
-        .toast span {
-            flex: 1;
-            font-size: 0.9rem;
-        }
-
-        /* ==========================================================================
-           Animations
-           ========================================================================== */
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.5); opacity: 0.7; }
-        }
-
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        /* ==========================================================================
-           Responsive Design
-           ========================================================================== */
-        @media (max-width: 768px) {
-            .admin-header {
-                padding: 0 1rem;
-            }
-
-            .brand-text {
-                font-size: 1.2rem;
-            }
-
-            .brand-text::after {
-                right: -25px;
-                font-size: 0.6rem;
-            }
-
-            .system-status {
-                display: none;
-            }
-
-            .logout-btn span {
-                display: none;
-            }
-
-            .logout-btn i {
-                margin: 0;
-            }
-
-            .admin-container {
-                padding: 0 1rem;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-
-            .item-info {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
-            }
-
-            .item-details h4 {
-                flex-wrap: wrap;
-            }
-
-            .toast-container {
-                left: 1rem;
-                right: 1rem;
-                max-width: none;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .panel-header {
-                flex-direction: column;
-                gap: 1rem;
-                align-items: flex-start;
-            }
-
-            .item-actions {
-                flex-direction: column;
-            }
-
-            .modal-actions {
-                flex-direction: column;
-            }
-        }
-
-        /* ==========================================================================
-           Utility Classes
-           ========================================================================== */
-        .text-primary { color: var(--primary); }
-        .text-danger { color: var(--danger); }
-        .text-success { color: var(--success); }
-        .text-warning { color: var(--warning); }
-        .text-gold { color: var(--gold); }
-
-        .bg-primary-dim { background: var(--primary-dim); }
-        .bg-danger-dim { background: var(--danger-dim); }
-
-        .mt-2 { margin-top: 0.5rem; }
-        .mt-4 { margin-top: 1rem; }
-        .mt-6 { margin-top: 1.5rem; }
-        .mb-2 { margin-bottom: 0.5rem; }
-        .mb-4 { margin-bottom: 1rem; }
-        .mb-6 { margin-bottom: 1.5rem; }
-
-        .flex { display: flex; }
-        .items-center { align-items: center; }
-        .gap-2 { gap: 0.5rem; }
-        .gap-4 { gap: 1rem; }
-
-        .w-100 { width: 100%; }
-
-        /* ==========================================================================
-           Custom Scrollbar
-           ========================================================================== */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--bg-dark);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 8px;
-            box-shadow: var(--primary-glow);
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--primary-light);
-        }
-
-        /* ==========================================================================
-           Selection Color
-           ========================================================================== */
-        ::selection {
-            background: var(--primary);
-            color: var(--bg-void);
-        }
-        ::-moz-selection {
-            background: var(--primary);
-            color: var(--bg-void);
-        }
+        body { background: var(--bg-void); color: var(--text-primary); font-family: var(--font-body); min-height: 100vh; overflow-x: hidden; }
+
+        /* Background Effects */
+        .grid-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(0, 230, 184, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 230, 184, 0.03) 1px, transparent 1px); background-size: 50px 50px; pointer-events: none; z-index: -1; }
+        
+        /* Header */
+        .admin-header { position: fixed; top: 0; left: 0; width: 100%; height: 80px; background: var(--glass-bg); backdrop-filter: var(--glass-blur); border-bottom: var(--glass-border); z-index: 100; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; }
+        .header-left, .header-right { display: flex; align-items: center; gap: 1.5rem; }
+        .brand-text { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--primary); }
+        .logout-btn { background: var(--danger-dim); border: 1px solid var(--danger); color: var(--danger); padding: 0.6rem 1.5rem; border-radius: 100px; cursor: pointer; font-family: var(--font-head); font-weight: 600; transition: 0.3s; }
+        .logout-btn:hover { background: var(--danger); color: #fff; }
+
+        /* Layout */
+        .admin-container { max-width: 1600px; margin: 100px auto 2rem; padding: 0 2rem; }
+        .workspace-grid { display: grid; grid-template-columns: 1.2fr 1.8fr; gap: 2rem; }
+        @media (max-width: 1200px) { .workspace-grid { grid-template-columns: 1fr; } }
+        
+        .admin-panel { background: var(--glass-bg); backdrop-filter: var(--glass-blur); border: var(--glass-border); border-radius: 16px; padding: 2rem; }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: var(--glass-border); padding-bottom: 1rem; }
+        .panel-header h2 { font-family: var(--font-head); font-size: 1.5rem; }
+
+        /* Forms */
+        .form-group { margin-bottom: 1.2rem; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem; font-family: var(--font-mono); text-transform: uppercase; }
+        .form-control { width: 100%; background: var(--bg-input); border: var(--glass-border); border-radius: 8px; padding: 0.9rem; color: #fff; font-family: var(--font-body); outline: none; transition: 0.3s; }
+        .form-control:focus { border-color: var(--primary); box-shadow: 0 0 15px var(--primary-dim); }
+        textarea.form-control { resize: vertical; min-height: 100px; }
+        
+        /* Dynamic Hide/Show Wrapper */
+        .dynamic-wrapper { display: none; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* File Upload Styling */
+        .file-upload-box { border: 2px dashed var(--primary-dim); border-radius: 8px; padding: 1rem; text-align: center; background: var(--bg-input); cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; }
+        .file-upload-box:hover { border-color: var(--primary); background: var(--primary-dim); }
+        .file-upload-box input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+        .file-upload-box i { font-size: 2rem; color: var(--primary); margin-bottom: 0.5rem; }
+        .preview-area { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+        .preview-img { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; border: 1px solid var(--primary); }
+
+        /* Extra Links Container */
+        .extra-link-row { display: grid; grid-template-columns: 1fr 2fr; gap: 10px; margin-bottom: 10px; }
+        
+        /* Toggle Switch */
+        .toggle-switch { position: relative; display: inline-block; width: 50px; height: 24px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--bg-input); transition: .4s; border-radius: 24px; border: var(--glass-border); }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 3px; background-color: var(--text-muted); transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--primary-dim); border-color: var(--primary); }
+        input:checked + .slider:before { transform: translateX(24px); background-color: var(--primary); box-shadow: 0 0 10px var(--primary); }
+
+        /* Buttons */
+        .btn { width: 100%; padding: 1rem; border-radius: 8px; font-family: var(--font-head); font-weight: 700; font-size: 1.1rem; border: none; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .btn-primary { background: var(--primary); color: #000; }
+        .btn-primary:hover { box-shadow: 0 0 20px var(--primary-dim); transform: translateY(-2px); }
+        .btn-update { background: var(--gold); color: #000; display: none; }
+        .btn-cancel { background: transparent; border: 1px solid var(--danger); color: var(--danger); display: none; }
+
+        /* List & Items */
+        .list-container { max-height: 800px; overflow-y: auto; padding-right: 5px; }
+        .list-item { background: var(--bg-card); border: var(--glass-border); border-radius: 12px; padding: 1rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; }
+        .list-item:hover { border-color: var(--primary); transform: translateX(5px); }
+        .item-info { display: flex; align-items: center; gap: 1rem; }
+        .item-icon { width: 50px; height: 50px; border-radius: 10px; object-fit: cover; }
+        .item-details h4 { font-size: 1rem; margin-bottom: 0.2rem; display: flex; align-items: center; gap: 0.5rem; }
+        .badge { font-size: 0.65rem; padding: 0.2rem 0.6rem; border-radius: 100px; background: var(--primary-dim); color: var(--primary); border: 1px solid var(--primary); }
+        .badge.hidden { background: rgba(255,255,255,0.1); color: #fff; border-color: #555; }
+        .action-btn { width: 35px; height: 35px; border-radius: 8px; background: var(--bg-dark); border: 1px solid var(--glass-border); color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; margin-left: 5px; }
+        .action-btn.edit:hover { background: var(--primary-dim); color: var(--primary); border-color: var(--primary); }
+        .action-btn.delete:hover { background: var(--danger-dim); color: var(--danger); border-color: var(--danger); }
+        .item-actions { display: flex; }
+
+        /* Toast */
+        .toast-container { position: fixed; top: 90px; right: 20px; z-index: 9999; }
+        .toast { background: var(--bg-elevated); border-left: 4px solid var(--primary); padding: 1rem; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); display: flex; gap: 10px; align-items: center; animation: slideIn 0.3s; }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
     </style>
 </head>
 <body>
-    <!-- Background Effects -->
     <div class="grid-overlay"></div>
-    <div class="scanline-effect"></div>
-    <div class="glow-orb orb-1"></div>
-    <div class="glow-orb orb-2"></div>
-
-    <!-- Toast Container -->
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- Delete Confirmation Modal -->
-    <div class="modal-overlay" id="deleteModal">
-        <div class="modal-container">
-            <div class="modal-header">
-                <h3><i class="fas fa-exclamation-triangle"></i> CONFIRM DELETE</h3>
-                <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <i class="fas fa-trash-alt"></i>
-                <h4>Are you sure?</h4>
-                <p>This action cannot be undone. The file will be permanently deleted from the database.</p>
-                <div class="modal-actions">
-                    <button class="btn btn-danger" onclick="confirmDelete()">DELETE</button>
-                    <button class="btn btn-primary" onclick="closeDeleteModal()">CANCEL</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Header -->
     <header class="admin-header">
         <div class="header-left">
-            <!-- Base64 Logo - Same as 404 page -->
-            <div class="logo-cyber">
-                <!-- ======================================================== -->
-                <!-- PASTE YOUR BASE64 LOGO HERE (Same as 404 page)          -->
-                <!-- ======================================================== -->
-                <img class="logo-img" 
-                     src="data:image/png;base64,PASTE_YOUR_BASE64_STRING_HERE" 
-                     alt="MVX Logo">
-            </div>
-            <span class="brand-text">MVX ADMIN</span>
+            <span class="brand-text">MVX NEXUS ADMIN</span>
         </div>
-        
         <div class="header-right">
-            <div class="system-status">
-                <span class="status-dot"></span>
-                <span>DATABASE: ONLINE</span>
-                <i class="fas fa-database" style="color: var(--primary);"></i>
-            </div>
             <button class="logout-btn" onclick="logoutSystem()">
-                <i class="fas fa-power-off"></i>
-                <span>TERMINATE</span>
+                <i class="fas fa-power-off"></i> LOGOUT
             </button>
         </div>
     </header>
 
-    <!-- Main Container -->
     <div class="admin-container">
-        <!-- Stats Cards -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <i class="fas fa-database stat-icon"></i>
-                <div class="stat-info">
-                    <h3 id="totalApps">0</h3>
-                    <p>Total Files</p>
-                </div>
-            </div>
-            <div class="stat-card">
-                <i class="fas fa-crown stat-icon" style="color: var(--gold);"></i>
-                <div class="stat-info">
-                    <h3 id="premiumCount">0</h3>
-                    <p>Premium Items</p>
-                </div>
-            </div>
-            <div class="stat-card">
-                <i class="fas fa-shield-halved stat-icon" style="color: var(--blue);"></i>
-                <div class="stat-info">
-                    <h3 id="freeCount">0</h3>
-                    <p>Free Items</p>
-                </div>
-            </div>
-            <div class="stat-card">
-                <i class="fas fa-cart-shopping stat-icon" style="color: var(--danger);"></i>
-                <div class="stat-info">
-                    <h3 id="paidCount">0</h3>
-                    <p>Paid Items</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Main Workspace -->
         <div class="workspace-grid">
-            <!-- Left Panel - Form -->
+            
             <div class="admin-panel">
                 <div class="panel-header">
-                    <h2><i class="fas fa-terminal"></i> FILE MANAGER</h2>
-                    <span class="mode-badge" id="modeDisplay">ADD NEW</span>
+                    <h2 id="modeDisplay"><i class="fas fa-cloud-upload-alt"></i> UPLOAD NEW APP</h2>
                 </div>
 
-                <input type="hidden" id="editKey" value="">
+                <input type="hidden" id="editKey">
 
                 <div class="form-group">
-                    <label><i class="fas fa-tag"></i> APPLICATION NAME</label>
-                    <input type="text" id="appName" class="form-control" placeholder="e.g., Free Fire VIP Menu v10" autocomplete="off">
+                    <label>APP NAME</label>
+                    <input type="text" id="appName" class="form-control" placeholder="e.g., Free Fire VIP Hack">
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label><i class="fas fa-code-branch"></i> VERSION</label>
-                        <input type="text" id="appVersion" class="form-control" placeholder="v2.0.0" autocomplete="off">
+                        <label>VERSION</label>
+                        <input type="text" id="appVersion" class="form-control" placeholder="v2.0">
                     </div>
                     <div class="form-group">
-                        <label><i class="fas fa-weight-hanging"></i> SIZE (MB)</label>
-                        <input type="text" id="appSize" class="form-control" placeholder="45 MB" autocomplete="off">
+                        <label>SIZE (MB)</label>
+                        <input type="text" id="appSize" class="form-control" placeholder="45 MB">
                     </div>
+                </div>
+
+                <div class="form-group">
+                    <label>ACCESS TYPE</label>
+                    <select id="accessType" class="form-control" onchange="handleAccessChange()">
+                        <option value="">-- Select Access Type --</option>
+                        <option value="Free">Free (Public)</option>
+                        <option value="Premium">Premium (Login Required)</option>
+                        <option value="Paid">Paid (VIP)</option>
+                    </select>
+                </div>
+
+                <div class="form-group dynamic-wrapper" id="categoryWrapper">
+                    <label>GAME / CATEGORY</label>
+                    <select id="appCategory" class="form-control">
+                        <option value="Free Fire">Free Fire / MAX</option>
+                        <option value="PUBG">PUBG Mobile</option>
+                        <option value="Blood Strike">Blood Strike</option>
+                        <option value="Other Game">Other Game</option>
+                        <option value="Tools">Tools / Injectors</option>
+                    </select>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label><i class="fas fa-gamepad"></i> GAME CATEGORY</label>
-                        <select id="appCategory" class="form-control">
-                            <option value="Free Fire">Free Fire / MAX</option>
-                            <option value="PUBG">PUBG Mobile</option>
-                            <option value="Blood Strike">Blood Strike</option>
-                            <option value="Call of Duty">Call of Duty Mobile</option>
-                            <option value="GTA V">GTA V Mods</option>
-                            <option value="Others">Tools / Injectors</option>
-                        </select>
+                        <label>APP LOGO</label>
+                        <div class="file-upload-box">
+                            <i class="fas fa-image"></i>
+                            <p style="font-size: 0.8rem; color: var(--text-muted)">Click to select Logo</p>
+                            <input type="file" id="logoUpload" accept="image/*" onchange="handleImageUpload(this, 'logoPreview', true)">
+                        </div>
+                        <div class="preview-area" id="logoPreview"></div>
                     </div>
                     <div class="form-group">
-                        <label><i class="fas fa-lock"></i> ACCESS TYPE</label>
-                        <select id="accessType" class="form-control" onchange="handleAccessTypeChange()">
-                            <option value="Free">Free (Public)</option>
-                            <option value="Premium">Premium (Login Required)</option>
-                            <option value="Paid">Paid (WhatsApp)</option>
-                        </select>
+                        <label>YOUTUBE BANNER / THUMBNAIL</label>
+                        <div class="file-upload-box">
+                            <i class="fas fa-tv"></i>
+                            <p style="font-size: 0.8rem; color: var(--text-muted)">Click to select Banner</p>
+                            <input type="file" id="bannerUpload" accept="image/*" onchange="handleImageUpload(this, 'bannerPreview', true)">
+                        </div>
+                        <div class="preview-area" id="bannerPreview"></div>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label><i class="fas fa-image"></i> ICON URL</label>
-                    <input type="url" id="iconUrl" class="form-control" placeholder="https://i.ibb.co/icon.jpg" autocomplete="off">
+                    <label>PREVIEW SCREENSHOTS (MAX 5)</label>
+                    <div class="file-upload-box">
+                        <i class="fas fa-mobile-alt"></i>
+                        <p style="font-size: 0.8rem; color: var(--text-muted)">Select multiple images (1-5)</p>
+                        <input type="file" id="screenshotsUpload" accept="image/*" multiple onchange="handleMultipleImages(this)">
+                    </div>
+                    <div class="preview-area" id="screenshotsPreview"></div>
                 </div>
 
                 <div class="form-group">
-                    <label id="linkLabel"><i class="fas fa-link"></i> DOWNLOAD LINK</label>
-                    <input type="url" id="downloadLink" class="form-control" placeholder="Paste your download link" autocomplete="off">
-                    <div class="hint-text">
-                        <i class="fas fa-magic"></i> Auto-converts Google Drive links
+                    <label>DOWNLOAD LINK</label>
+                    <input type="url" id="downloadLink" class="form-control" placeholder="Direct or Drive Link">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>FILE PASSWORD</label>
+                        <input type="text" id="filePassword" class="form-control" placeholder="Leave empty if none">
+                    </div>
+                    <div class="form-group">
+                        <label>PASSWORD VIDEO LINK (YOUTUBE)</label>
+                        <input type="url" id="videoLink" class="form-control" placeholder="https://youtube.com/...">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label><i class="fas fa-key"></i> FILE PASSWORD (Optional)</label>
-                    <input type="text" id="filePassword" class="form-control" placeholder="Leave empty if no password" autocomplete="off">
+                    <label>EXTRA LINKS (OPTIONAL)</label>
+                    <div id="extraLinksContainer">
+                        <div class="extra-link-row">
+                            <input type="text" class="form-control link-title" placeholder="Title (e.g. Telegram)">
+                            <input type="url" class="form-control link-url" placeholder="URL Link">
+                        </div>
+                        <div class="extra-link-row">
+                            <input type="text" class="form-control link-title" placeholder="Title (e.g. YouTube)">
+                            <input type="url" class="form-control link-url" placeholder="URL Link">
+                        </div>
+                    </div>
                 </div>
 
-                <button class="btn btn-primary" id="btnAdd" onclick="addNewFile()">
-                    <i class="fas fa-cloud-upload-alt"></i> PUBLISH TO NEXUS
-                </button>
+                <div class="form-group">
+                    <label>APP DESCRIPTION</label>
+                    <textarea id="appDescription" class="form-control" placeholder="Write app details, features etc..."></textarea>
+                </div>
 
-                <button class="btn btn-update" id="btnUpdate" onclick="updateFile()">
-                    <i class="fas fa-sync-alt"></i> SAVE CHANGES
-                </button>
+                <div class="form-group" style="display: flex; align-items: center; gap: 15px; background: var(--bg-input); padding: 10px; border-radius: 8px;">
+                    <label style="margin: 0;">HIDE APP FROM USERS?</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="isHidden">
+                        <span class="slider"></span>
+                    </label>
+                </div>
 
-                <button class="btn btn-cancel" id="btnCancel" onclick="resetForm()">
-                    <i class="fas fa-times"></i> CANCEL EDIT
-                </button>
+                <button class="btn btn-primary" id="btnAdd" onclick="saveApp()"><i class="fas fa-save"></i> PUBLISH APP</button>
+                <button class="btn btn-update" id="btnUpdate" onclick="saveApp()"><i class="fas fa-sync"></i> UPDATE APP</button>
+                <button class="btn btn-cancel" id="btnCancel" onclick="resetForm()"><i class="fas fa-times"></i> CANCEL EDIT</button>
             </div>
 
-            <!-- Right Panel - List -->
             <div class="admin-panel">
                 <div class="panel-header">
-                    <h2><i class="fas fa-list"></i> LIVE DATABASE</h2>
-                    <i class="fas fa-sync-alt" style="color: var(--text-muted); cursor: pointer;" onclick="refreshData()" data-tooltip="Refresh Data"></i>
+                    <h2><i class="fas fa-database"></i> LIVE APPS</h2>
+                    <input type="text" id="searchInput" class="form-control" style="width: 200px; padding: 0.5rem;" placeholder="Search..." onkeyup="filterList()">
                 </div>
-
-                <div class="search-wrapper">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" id="searchInput" class="form-control" placeholder="Search files by name or category..." onkeyup="filterList()" autocomplete="off">
-                </div>
-
                 <div class="list-container" id="listContainer">
-                    <!-- Skeletons will be shown initially -->
-                    <div class="skeleton-item"></div>
-                    <div class="skeleton-item"></div>
-                    <div class="skeleton-item"></div>
-                    <div class="skeleton-item"></div>
-                    <div class="skeleton-item"></div>
+                    <p style="text-align: center; color: var(--text-muted); margin-top: 2rem;">Loading Data...</p>
                 </div>
             </div>
+
         </div>
     </div>
 
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
-        // ==========================================================================
-        // FIREBASE CONFIGURATION - Same as index.html and 404 page
-        // ==========================================================================
+        // FIREBASE CONFIG
         const firebaseConfig = {
             apiKey: "AIzaSyAS3UXXrio_-c9uPbHwpDuTVrP-p8d903w",
             authDomain: "white-2k-17-v4.firebaseapp.com",
@@ -1451,464 +288,273 @@
             messagingSenderId: "180909174928",
             appId: "1:180909174928:android:148861a87d66c6980ca815"
         };
-
-        // Initialize Firebase
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-
+        
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const database = firebase.database();
-        const DB_PATH = "MVX_VIP_SERVER_V5"; // Same as index.html
-        const WA_LINK = "https://wa.me/qr/3ZL3GSGN55QIO1"; // WhatsApp link
+        const DB_PATH = "MVX_VIP_SERVER_V5";
 
-        // ==========================================================================
-        // AUTH CHECK - Connected to login.html
-        // ==========================================================================
-        (function checkAuth() {
-            if (!sessionStorage.getItem('mvx_admin_token')) {
-                window.location.href = 'login.html';
-            }
-        })();
+        // AUTHENTICATION CHECK
+        if (!sessionStorage.getItem('mvx_admin_token')) {
+            window.location.href = 'login.html';
+        }
 
-        // ==========================================================================
         // GLOBAL VARIABLES
-        // ==========================================================================
-        let allFiles = [];
-        let currentEditKey = null;
-        let deleteKey = null;
+        let allApps = [];
+        let base64Logo = "";
+        let base64Banner = "";
+        let base64Screenshots = [];
 
-        // ==========================================================================
         // DOM ELEMENTS
-        // ==========================================================================
-        const listContainer = document.getElementById('listContainer');
-        const totalAppsSpan = document.getElementById('totalApps');
-        const premiumCountSpan = document.getElementById('premiumCount');
-        const freeCountSpan = document.getElementById('freeCount');
-        const paidCountSpan = document.getElementById('paidCount');
-        const modeDisplay = document.getElementById('modeDisplay');
-        const editKeyInput = document.getElementById('editKey');
-        const toastContainer = document.getElementById('toastContainer');
-        const deleteModal = document.getElementById('deleteModal');
-        
-        // Form inputs
-        const appName = document.getElementById('appName');
-        const appVersion = document.getElementById('appVersion');
-        const appSize = document.getElementById('appSize');
-        const appCategory = document.getElementById('appCategory');
+        const catWrapper = document.getElementById('categoryWrapper');
         const accessType = document.getElementById('accessType');
-        const iconUrl = document.getElementById('iconUrl');
-        const downloadLink = document.getElementById('downloadLink');
-        const filePassword = document.getElementById('filePassword');
-        
-        // Buttons
-        const btnAdd = document.getElementById('btnAdd');
-        const btnUpdate = document.getElementById('btnUpdate');
-        const btnCancel = document.getElementById('btnCancel');
+        const toastContainer = document.getElementById('toastContainer');
 
-        // ==========================================================================
-        // TOAST SYSTEM
-        // ==========================================================================
-        function showToast(message, type = 'info') {
+        // TOAST FUNCTION
+        function showToast(msg, type='success') {
             const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            
-            let icon = 'fa-info-circle';
-            if (type === 'success') icon = 'fa-check-circle';
-            if (type === 'error') icon = 'fa-times-circle';
-            if (type === 'warning') icon = 'fa-exclamation-triangle';
-            
-            toast.innerHTML = `
-                <i class="fas ${icon}"></i>
-                <span>${message}</span>
-            `;
-            
+            toast.className = `toast`;
+            toast.style.borderLeftColor = type === 'error' ? 'var(--danger)' : 'var(--success)';
+            toast.innerHTML = `<i class="fas fa-${type==='error'?'times':'check'}-circle" style="color:${type==='error'?'var(--danger)':'var(--success)'}"></i> <span>${msg}</span>`;
             toastContainer.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateX(50px)';
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
+            setTimeout(() => { toast.style.opacity = '0'; setTimeout(()=>toast.remove(), 300); }, 3000);
         }
 
-        // ==========================================================================
-        // HELPER FUNCTIONS
-        // ==========================================================================
-        function convertGoogleDriveLink(url) {
-            if (!url) return url;
-            
-            const patterns = [
-                /\/d\/([a-zA-Z0-9_-]+)/,
-                /id=([a-zA-Z0-9_-]+)/,
-                /\/file\/d\/([a-zA-Z0-9_-]+)/
-            ];
-            
-            for (let pattern of patterns) {
-                const match = url.match(pattern);
-                if (match && match[1]) {
-                    return `https://drive.google.com/uc?export=download&id=${match[1]}`;
-                }
-            }
-            return url;
-        }
-
-        function handleAccessTypeChange() {
-            const type = accessType.value;
-            const linkLabel = document.getElementById('linkLabel');
-            
-            if (type === 'Paid') {
-                downloadLink.value = WA_LINK;
-                linkLabel.innerHTML = '<i class="fas fa-whatsapp"></i> WHATSAPP CONTACT LINK <span style="color: var(--gold);">(Auto-filled)</span>';
-                downloadLink.readOnly = true;
+        // SMART CATEGORY TOGGLE
+        function handleAccessChange() {
+            if(accessType.value) {
+                catWrapper.style.display = 'block';
             } else {
-                if (downloadLink.value === WA_LINK) {
-                    downloadLink.value = '';
-                }
-                linkLabel.innerHTML = '<i class="fas fa-link"></i> DOWNLOAD LINK';
-                downloadLink.readOnly = false;
+                catWrapper.style.display = 'none';
             }
         }
 
-        function resetForm() {
-            appName.value = '';
-            appVersion.value = '';
-            appSize.value = '';
-            appCategory.value = 'Free Fire';
-            accessType.value = 'Free';
-            iconUrl.value = '';
-            downloadLink.value = '';
-            filePassword.value = '';
-            downloadLink.readOnly = false;
+        // IMAGE TO BASE64 CONVERTER
+        function handleImageUpload(input, previewId, isSingle) {
+            const file = input.files[0];
+            if(!file) return;
             
-            currentEditKey = null;
-            editKeyInput.value = '';
-            
-            btnAdd.style.display = 'block';
-            btnUpdate.style.display = 'none';
-            btnCancel.style.display = 'none';
-            modeDisplay.textContent = 'ADD NEW';
-            modeDisplay.style.color = 'var(--primary)';
-            
-            handleAccessTypeChange();
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const b64 = e.target.result;
+                document.getElementById(previewId).innerHTML = `<img src="${b64}" class="preview-img">`;
+                if(previewId === 'logoPreview') base64Logo = b64;
+                if(previewId === 'bannerPreview') base64Banner = b64;
+            };
+            reader.readAsDataURL(file);
         }
 
-        // ==========================================================================
-        // CRUD OPERATIONS
-        // ==========================================================================
-        function addNewFile() {
-            if (!appName.value || !iconUrl.value || !downloadLink.value) {
-                showToast('❌ Name, Icon URL, and Download Link are required!', 'error');
+        function handleMultipleImages(input) {
+            const files = input.files;
+            if(files.length > 5) {
+                showToast("Maximum 5 screenshots allowed!", "error");
+                return;
+            }
+            
+            base64Screenshots = [];
+            document.getElementById('screenshotsPreview').innerHTML = '';
+            
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    base64Screenshots.push(e.target.result);
+                    document.getElementById('screenshotsPreview').innerHTML += `<img src="${e.target.result}" class="preview-img">`;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // GATHER EXTRA LINKS
+        function getExtraLinks() {
+            let links = [];
+            const rows = document.querySelectorAll('.extra-link-row');
+            rows.forEach(row => {
+                const title = row.querySelector('.link-title').value;
+                const url = row.querySelector('.link-url').value;
+                if(title && url) links.push({ title, url });
+            });
+            return links;
+        }
+
+        function populateExtraLinks(links) {
+            const rows = document.querySelectorAll('.extra-link-row');
+            rows[0].querySelector('.link-title').value = links[0] ? links[0].title : '';
+            rows[0].querySelector('.link-url').value = links[0] ? links[0].url : '';
+            rows[1].querySelector('.link-title').value = links[1] ? links[1].title : '';
+            rows[1].querySelector('.link-url').value = links[1] ? links[1].url : '';
+        }
+
+        // SAVE OR UPDATE APP
+        async function saveApp() {
+            const appName = document.getElementById('appName').value;
+            const access = accessType.value;
+            const category = document.getElementById('appCategory').value;
+            const downloadLink = document.getElementById('downloadLink').value;
+            
+            if(!appName || !access || !downloadLink) {
+                showToast("Name, Access Type & Download Link required!", "error");
                 return;
             }
 
-            const fileData = {
-                appName: appName.value,
-                version: appVersion.value || 'v1.0',
-                size: appSize.value || 'Unknown',
-                gameCategory: appCategory.value,
-                accessType: accessType.value,
-                iconUrl: iconUrl.value,
-                downloadUrl: convertGoogleDriveLink(downloadLink.value),
-                password: filePassword.value || '',
+            const appData = {
+                appName: appName,
+                version: document.getElementById('appVersion').value || 'v1.0',
+                size: document.getElementById('appSize').value || 'N/A',
+                accessType: access,
+                gameCategory: category,
+                logoBase64: base64Logo,
+                bannerBase64: base64Banner,
+                screenshots: base64Screenshots,
+                downloadUrl: downloadLink,
+                password: document.getElementById('filePassword').value,
+                passwordVideoUrl: document.getElementById('videoLink').value,
+                description: document.getElementById('appDescription').value,
+                extraLinks: getExtraLinks(),
+                isHidden: document.getElementById('isHidden').checked,
                 timestamp: Date.now()
             };
 
-            const newKey = database.ref(DB_PATH).push().key;
+            const editKey = document.getElementById('editKey').value;
             
-            database.ref(`${DB_PATH}/${newKey}`).set(fileData)
-                .then(() => {
-                    showToast('✅ File published successfully!', 'success');
-                    resetForm();
-                })
-                .catch(error => {
-                    showToast('❌ Error: ' + error.message, 'error');
-                });
+            try {
+                if(editKey) {
+                    // Retain old images if new ones aren't uploaded
+                    const existingData = allApps.find(a => a.key === editKey);
+                    if(!base64Logo) appData.logoBase64 = existingData.logoBase64 || "";
+                    if(!base64Banner) appData.bannerBase64 = existingData.bannerBase64 || "";
+                    if(base64Screenshots.length === 0) appData.screenshots = existingData.screenshots || [];
+                    
+                    await database.ref(`${DB_PATH}/${editKey}`).update(appData);
+                    showToast("App Updated Successfully!");
+                } else {
+                    await database.ref(DB_PATH).push(appData);
+                    showToast("App Published Successfully!");
+                }
+                resetForm();
+            } catch (error) {
+                showToast(error.message, "error");
+            }
         }
 
-        function prepareEdit(key, fileData) {
-            appName.value = fileData.appName || '';
-            appVersion.value = fileData.version || '';
-            appSize.value = fileData.size || '';
-            appCategory.value = fileData.gameCategory || 'Free Fire';
-            accessType.value = fileData.accessType || 'Free';
-            iconUrl.value = fileData.iconUrl || '';
-            downloadLink.value = fileData.downloadUrl || '';
-            filePassword.value = fileData.password || '';
+        // LOAD DATA & RENDER LIST
+        database.ref(DB_PATH).on('value', (snap) => {
+            const data = snap.val();
+            const list = document.getElementById('listContainer');
+            list.innerHTML = '';
+            allApps = [];
+
+            if(!data) {
+                list.innerHTML = '<p style="text-align:center; color:gray;">No Apps Found</p>';
+                return;
+            }
+
+            allApps = Object.entries(data).map(([key, val]) => ({key, ...val})).reverse();
+            renderList(allApps);
+        });
+
+        function renderList(apps) {
+            const list = document.getElementById('listContainer');
+            list.innerHTML = '';
+            apps.forEach(app => {
+                const isHidden = app.isHidden ? '<span class="badge hidden"><i class="fas fa-eye-slash"></i> Hidden</span>' : '';
+                const logoSrc = app.logoBase64 || 'https://cdn-icons-png.flaticon.com/512/564/564619.png';
+                
+                list.innerHTML += `
+                    <div class="list-item" style="${app.isHidden ? 'opacity:0.6' : ''}">
+                        <div class="item-info">
+                            <img src="${logoSrc}" class="item-icon">
+                            <div class="item-details">
+                                <h4>${app.appName} <span class="badge">${app.accessType}</span> ${isHidden}</h4>
+                                <span style="font-size:0.75rem; color:var(--text-muted)">${app.gameCategory} | ${app.version}</span>
+                            </div>
+                        </div>
+                        <div class="item-actions">
+                            <div class="action-btn edit" onclick='editApp("${app.key}")'><i class="fas fa-edit"></i></div>
+                            <div class="action-btn delete" onclick='deleteApp("${app.key}")'><i class="fas fa-trash"></i></div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // EDIT & DELETE
+        function editApp(key) {
+            const app = allApps.find(a => a.key === key);
+            if(!app) return;
+
+            document.getElementById('editKey').value = key;
+            document.getElementById('appName').value = app.appName;
+            document.getElementById('appVersion').value = app.version || '';
+            document.getElementById('appSize').value = app.size || '';
             
-            currentEditKey = key;
-            editKeyInput.value = key;
+            accessType.value = app.accessType;
+            handleAccessChange();
+            setTimeout(() => { document.getElementById('appCategory').value = app.gameCategory; }, 50);
+
+            document.getElementById('downloadLink').value = app.downloadUrl || '';
+            document.getElementById('filePassword').value = app.password || '';
+            document.getElementById('videoLink').value = app.passwordVideoUrl || '';
+            document.getElementById('appDescription').value = app.description || '';
+            document.getElementById('isHidden').checked = app.isHidden || false;
+
+            if(app.extraLinks) populateExtraLinks(app.extraLinks);
+
+            // Set Image Previews
+            base64Logo = ""; base64Banner = ""; base64Screenshots = [];
+            document.getElementById('logoPreview').innerHTML = app.logoBase64 ? `<img src="${app.logoBase64}" class="preview-img">` : '';
+            document.getElementById('bannerPreview').innerHTML = app.bannerBase64 ? `<img src="${app.bannerBase64}" class="preview-img">` : '';
             
-            btnAdd.style.display = 'none';
-            btnUpdate.style.display = 'block';
-            btnCancel.style.display = 'block';
-            modeDisplay.textContent = 'EDITING FILE';
-            modeDisplay.style.color = 'var(--gold)';
-            
-            handleAccessTypeChange();
-            
+            document.getElementById('screenshotsPreview').innerHTML = '';
+            if(app.screenshots) {
+                app.screenshots.forEach(img => {
+                    document.getElementById('screenshotsPreview').innerHTML += `<img src="${img}" class="preview-img">`;
+                });
+            }
+
+            document.getElementById('modeDisplay').innerHTML = '<i class="fas fa-edit" style="color:var(--gold)"></i> EDITING APP';
+            document.getElementById('btnAdd').style.display = 'none';
+            document.getElementById('btnUpdate').style.display = 'block';
+            document.getElementById('btnCancel').style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function updateFile() {
-            if (!currentEditKey) return;
-
-            const fileData = {
-                appName: appName.value,
-                version: appVersion.value || 'v1.0',
-                size: appSize.value || 'Unknown',
-                gameCategory: appCategory.value,
-                accessType: accessType.value,
-                iconUrl: iconUrl.value,
-                downloadUrl: convertGoogleDriveLink(downloadLink.value),
-                password: filePassword.value || '',
-                timestamp: Date.now()
-            };
-
-            database.ref(`${DB_PATH}/${currentEditKey}`).update(fileData)
-                .then(() => {
-                    showToast('✅ File updated successfully!', 'success');
-                    resetForm();
-                })
-                .catch(error => {
-                    showToast('❌ Error: ' + error.message, 'error');
-                });
-        }
-
-        function showDeleteModal(key) {
-            deleteKey = key;
-            deleteModal.classList.add('active');
-        }
-
-        function closeDeleteModal() {
-            deleteModal.classList.remove('active');
-            deleteKey = null;
-        }
-
-        function confirmDelete() {
-            if (!deleteKey) return;
-            
-            database.ref(`${DB_PATH}/${deleteKey}`).remove()
-                .then(() => {
-                    showToast('✅ File deleted successfully', 'success');
-                    closeDeleteModal();
-                })
-                .catch(error => {
-                    showToast('❌ Error: ' + error.message, 'error');
-                    closeDeleteModal();
-                });
-        }
-
-        // ==========================================================================
-        // REAL-TIME LISTENER
-        // ==========================================================================
-        database.ref(DB_PATH).on('value', (snapshot) => {
-            const data = snapshot.val();
-            listContainer.innerHTML = '';
-            
-            if (!data) {
-                listContainer.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-folder-open"></i>
-                        <h3>No Files in Database</h3>
-                        <p>Add your first file using the form</p>
-                    </div>
-                `;
-                updateStats([]);
-                return;
+        function deleteApp(key) {
+            if(confirm("Are you sure you want to delete this app?")) {
+                database.ref(`${DB_PATH}/${key}`).remove()
+                .then(() => showToast("App Deleted!"))
+                .catch(e => showToast(e.message, "error"));
             }
-
-            allFiles = Object.entries(data).map(([key, value]) => ({
-                key,
-                ...value
-            }));
-
-            updateStats(allFiles);
-            
-            allFiles.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-            
-            renderList(allFiles);
-        });
-
-        function updateStats(files) {
-            totalAppsSpan.textContent = files.length;
-            
-            const premiumCount = files.filter(f => f.accessType === 'Premium').length;
-            const freeCount = files.filter(f => f.accessType === 'Free').length;
-            const paidCount = files.filter(f => f.accessType === 'Paid').length;
-            
-            premiumCountSpan.textContent = premiumCount;
-            freeCountSpan.textContent = freeCount;
-            paidCountSpan.textContent = paidCount;
         }
 
-        function renderList(files) {
-            listContainer.innerHTML = '';
-            
-            if (files.length === 0) {
-                listContainer.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-search"></i>
-                        <h3>No Matching Files</h3>
-                        <p>Try different search terms</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            files.forEach(file => {
-                let badgeClass = 'badge-free';
-                if (file.accessType === 'Premium') badgeClass = 'badge-premium';
-                if (file.accessType === 'Paid') badgeClass = 'badge-paid';
-
-                const item = document.createElement('div');
-                item.className = 'list-item';
-                item.innerHTML = `
-                    <div class="item-info">
-                        <img src="${file.iconUrl || 'https://cdn-icons-png.flaticon.com/512/564/564619.png'}" 
-                             class="item-icon" 
-                             onerror="this.src='https://cdn-icons-png.flaticon.com/512/564/564619.png'"
-                             alt="${file.appName}">
-                        <div class="item-details">
-                            <h4>
-                                ${file.appName || 'Untitled'}
-                                <span class="badge ${badgeClass}">${file.accessType || 'Free'}</span>
-                            </h4>
-                            <span>${file.gameCategory || 'Other'} • ${file.version || 'v1.0'} • ${file.size || '?'}</span>
-                        </div>
-                    </div>
-                    <div class="item-actions">
-                        <div class="action-btn edit" onclick='prepareEdit("${file.key}", ${JSON.stringify(file).replace(/'/g, "\\'")})'>
-                            <i class="fas fa-edit"></i>
-                        </div>
-                        <div class="action-btn delete" onclick='showDeleteModal("${file.key}")'>
-                            <i class="fas fa-trash"></i>
-                        </div>
-                    </div>
-                `;
-                listContainer.appendChild(item);
+        // RESET FORM
+        function resetForm() {
+            document.querySelectorAll('input, textarea, select').forEach(el => {
+                if(el.type === 'checkbox') el.checked = false;
+                else el.value = '';
             });
+            document.getElementById('logoPreview').innerHTML = '';
+            document.getElementById('bannerPreview').innerHTML = '';
+            document.getElementById('screenshotsPreview').innerHTML = '';
+            base64Logo = ""; base64Banner = ""; base64Screenshots = [];
+            
+            catWrapper.style.display = 'none';
+            document.getElementById('modeDisplay').innerHTML = '<i class="fas fa-cloud-upload-alt"></i> UPLOAD NEW APP';
+            document.getElementById('btnAdd').style.display = 'block';
+            document.getElementById('btnUpdate').style.display = 'none';
+            document.getElementById('btnCancel').style.display = 'none';
         }
 
-        // ==========================================================================
-        // SEARCH FILTER
-        // ==========================================================================
+        // SEARCH
         function filterList() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            
-            if (!searchTerm) {
-                renderList(allFiles);
-                return;
-            }
-
-            const filtered = allFiles.filter(file => 
-                (file.appName && file.appName.toLowerCase().includes(searchTerm)) ||
-                (file.gameCategory && file.gameCategory.toLowerCase().includes(searchTerm)) ||
-                (file.version && file.version.toLowerCase().includes(searchTerm))
-            );
-            
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allApps.filter(a => a.appName.toLowerCase().includes(term) || a.gameCategory.toLowerCase().includes(term));
             renderList(filtered);
         }
 
-        // ==========================================================================
-        // REFRESH DATA
-        // ==========================================================================
-        function refreshData() {
-            showToast('🔄 Refreshing data...', 'info');
-            database.ref(DB_PATH).once('value')
-                .then(() => {
-                    showToast('✅ Data refreshed', 'success');
-                });
-        }
-
-        // ==========================================================================
         // LOGOUT
-        // ==========================================================================
         function logoutSystem() {
-            showDeleteModalForLogout();
-        }
-
-        function showDeleteModalForLogout() {
-            const modal = document.createElement('div');
-            modal.className = 'modal-overlay active';
-            modal.innerHTML = `
-                <div class="modal-container">
-                    <div class="modal-header">
-                        <h3><i class="fas fa-power-off"></i> CONFIRM LOGOUT</h3>
-                        <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">&times;</button>
-                    </div>
-                    <div class="modal-body">
-                        <i class="fas fa-sign-out-alt" style="color: var(--danger);"></i>
-                        <h4>Terminate Session?</h4>
-                        <p>You will be redirected to the login page.</p>
-                        <div class="modal-actions">
-                            <button class="btn btn-danger" onclick="confirmLogout()">LOGOUT</button>
-                            <button class="btn btn-primary" onclick="this.closest('.modal-overlay').remove()">CANCEL</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(modal);
-        }
-
-        function confirmLogout() {
             sessionStorage.removeItem('mvx_admin_token');
-            sessionStorage.removeItem('login_timestamp');
-            showToast('👋 Logging out...', 'info');
-            setTimeout(() => {
-                window.location.href = 'login.html';
-            }, 1000);
+            window.location.href = 'login.html';
         }
-
-        // ==========================================================================
-        // INITIALIZATION
-        // ==========================================================================
-        function init() {
-            handleAccessTypeChange();
-            
-            // Add keyboard shortcut for logout (Ctrl+Shift+L)
-            document.addEventListener('keydown', (e) => {
-                if (e.ctrlKey && e.shiftKey && e.key === 'L') {
-                    e.preventDefault();
-                    logoutSystem();
-                }
-            });
-        }
-
-        // Make functions global
-        window.addNewFile = addNewFile;
-        window.prepareEdit = prepareEdit;
-        window.updateFile = updateFile;
-        window.showDeleteModal = showDeleteModal;
-        window.closeDeleteModal = closeDeleteModal;
-        window.confirmDelete = confirmDelete;
-        window.resetForm = resetForm;
-        window.logoutSystem = logoutSystem;
-        window.filterList = filterList;
-        window.refreshData = refreshData;
-        window.handleAccessTypeChange = handleAccessTypeChange;
-
-        // Start initialization
-        init();
-
-        // ==========================================================================
-        // ERROR HANDLING
-        // ==========================================================================
-        window.addEventListener('error', (e) => {
-            console.error('Global error:', e.error);
-            showToast('⚠️ System error occurred', 'error');
-        });
-
-        // ==========================================================================
-        // CONNECTION MONITOR
-        // ==========================================================================
-        const connectedRef = database.ref('.info/connected');
-        connectedRef.on('value', (snap) => {
-            if (snap.val() === true) {
-                showToast('🟢 Connected to database', 'success');
-            } else {
-                showToast('🔴 Database connection lost', 'error');
-            }
-        });
     </script>
 </body>
 </html>

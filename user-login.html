@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#00e6b8">
+    <title>User Authentication | MVX STORE</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <style>
+        /* ==========================================================================
+           MVX STORE - USER LOGIN & PROFILE PAGE
+           ========================================================================== */
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        :root {
+            --primary: #00e6b8; --primary-dim: rgba(0, 230, 184, 0.15);
+            --danger: #ff003c; --danger-dim: rgba(255, 0, 60, 0.15);
+            --bg-void: #000000; --bg-card: #0c101a; --bg-input: #1a1f2c;
+            --text-primary: #ffffff; --text-muted: #9ca3af;
+            --glass-bg: rgba(8, 11, 18, 0.8); --glass-border: 1px solid rgba(0, 230, 184, 0.2);
+            --font-head: 'Rajdhani', sans-serif; --font-body: 'Space Grotesk', sans-serif;
+        }
+
+        body { background: var(--bg-void); color: var(--text-primary); font-family: var(--font-body); min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+
+        /* Background Effects */
+        .grid-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(0, 230, 184, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 230, 184, 0.03) 1px, transparent 1px); background-size: 50px 50px; z-index: -1; animation: gridShift 15s linear infinite; }
+        .glow-orb { position: absolute; width: 60vmax; height: 60vmax; border-radius: 50%; background: radial-gradient(circle at center, rgba(0, 230, 184, 0.1) 0%, transparent 70%); filter: blur(50px); z-index: -1; animation: orbFloat 10s ease-in-out infinite alternate; }
+        @keyframes gridShift { 0% { background-position: 0 0; } 100% { background-position: 50px 50px; } }
+        @keyframes orbFloat { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
+
+        /* Top Bar */
+        .top-bar { position: absolute; top: 0; left: 0; width: 100%; padding: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 10; }
+        .back-btn { background: var(--glass-bg); border: var(--glass-border); color: var(--text-primary); padding: 10px 20px; border-radius: 8px; text-decoration: none; font-family: var(--font-head); font-weight: 600; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .back-btn:hover { background: var(--primary-dim); color: var(--primary); border-color: var(--primary); }
+
+        /* Auth Container */
+        .auth-container { width: 100%; max-width: 450px; padding: 30px; background: var(--glass-bg); backdrop-filter: blur(15px); border: var(--glass-border); border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); z-index: 5; text-align: center; position: relative; overflow: hidden; }
+        
+        .brand-logo { font-family: 'Orbitron', sans-serif; font-size: 2rem; color: var(--primary); margin-bottom: 5px; }
+        .subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 30px; }
+
+        /* Forms */
+        .form-section { display: none; animation: fadeIn 0.4s ease; }
+        .form-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .input-group { margin-bottom: 20px; text-align: left; position: relative; }
+        .input-group i { position: absolute; top: 50%; left: 15px; transform: translateY(-50%); color: var(--text-muted); }
+        .form-control { width: 100%; padding: 15px 15px 15px 45px; background: var(--bg-input); border: 1px solid #333; border-radius: 10px; color: #fff; font-family: var(--font-body); font-size: 1rem; outline: none; transition: 0.3s; }
+        .form-control:focus { border-color: var(--primary); box-shadow: 0 0 15px var(--primary-dim); }
+
+        /* Buttons */
+        .btn { width: 100%; padding: 15px; border-radius: 10px; font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; border: none; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; }
+        .btn-primary { background: var(--primary); color: #000; }
+        .btn-primary:hover { box-shadow: 0 0 20px var(--primary-dim); transform: translateY(-2px); }
+        .btn-google { background: #fff; color: #000; }
+        .btn-google:hover { background: #f0f0f0; transform: translateY(-2px); }
+        
+        .toggle-link { color: var(--primary); cursor: pointer; text-decoration: underline; font-weight: 600; }
+        .divider { display: flex; align-items: center; text-align: center; margin: 20px 0; color: var(--text-muted); font-size: 0.9rem; }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #333; }
+        .divider:not(:empty)::before { margin-right: .25em; }
+        .divider:not(:empty)::after { margin-left: .25em; }
+
+        /* Profile Section */
+        .profile-section { display: none; text-align: center; animation: fadeIn 0.4s ease; }
+        .profile-avatar { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary); padding: 5px; margin: 0 auto 20px; background: var(--bg-input); }
+        .profile-name { font-family: var(--font-head); font-size: 1.8rem; font-weight: 700; margin-bottom: 5px; }
+        .profile-email { color: var(--primary); font-family: var(--font-mono); font-size: 0.9rem; background: var(--primary-dim); padding: 5px 15px; border-radius: 100px; display: inline-block; margin-bottom: 30px; }
+        
+        .btn-danger { background: var(--danger-dim); border: 1px solid var(--danger); color: var(--danger); }
+        .btn-danger:hover { background: var(--danger); color: #fff; box-shadow: 0 0 20px var(--danger-dim); transform: translateY(-2px); }
+
+        /* Toast */
+        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; }
+        .toast { background: var(--bg-input); border-left: 4px solid var(--primary); padding: 15px 20px; margin-bottom: 10px; border-radius: 8px; display: flex; gap: 10px; align-items: center; animation: slideIn 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.5); font-weight: 500; }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+
+        /* Loading Overlay */
+        .loading-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--glass-bg); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 20; border-radius: 20px; flex-direction: column; }
+        .loading-overlay i { font-size: 3rem; color: var(--primary); animation: spin 1s linear infinite; margin-bottom: 10px; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="grid-overlay"></div>
+    <div class="glow-orb"></div>
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div class="top-bar">
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> BACK TO STORE</a>
+    </div>
+
+    <div class="auth-container">
+        <div class="loading-overlay" id="loadingOverlay">
+            <i class="fas fa-circle-notch"></i>
+            <p>Please wait...</p>
+        </div>
+
+        <div class="brand-logo">MVX SYSTEM</div>
+        <div class="subtitle">Secure Authentication Portal</div>
+
+        <div class="form-section active" id="loginForm">
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="loginEmail" class="form-control" placeholder="Email Address" autocomplete="off">
+            </div>
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="loginPassword" class="form-control" placeholder="Password" autocomplete="off">
+            </div>
+            <button class="btn btn-primary" onclick="login()"><i class="fas fa-sign-in-alt"></i> SECURE LOGIN</button>
+            
+            <div class="divider">OR</div>
+            
+            <button class="btn btn-google" onclick="googleSignIn()">
+                <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" width="20" alt="Google"> CONTINUE WITH GOOGLE
+            </button>
+            
+            <p style="margin-top: 20px; color: var(--text-muted); font-size: 0.9rem;">
+                Don't have an account? <span class="toggle-link" onclick="toggleView('registerForm')">Create one</span>
+            </p>
+        </div>
+
+        <div class="form-section" id="registerForm">
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input type="text" id="regName" class="form-control" placeholder="Full Name" autocomplete="off">
+            </div>
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="regEmail" class="form-control" placeholder="Email Address" autocomplete="off">
+            </div>
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="regPassword" class="form-control" placeholder="Create Password" autocomplete="off">
+            </div>
+            <button class="btn btn-primary" onclick="register()"><i class="fas fa-user-plus"></i> REGISTER ACCOUNT</button>
+            
+            <p style="margin-top: 20px; color: var(--text-muted); font-size: 0.9rem;">
+                Already registered? <span class="toggle-link" onclick="toggleView('loginForm')">Login here</span>
+            </p>
+        </div>
+
+        <div class="profile-section" id="profileSection">
+            <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" id="userAvatar" class="profile-avatar" alt="Avatar">
+            <h2 class="profile-name" id="userName">User Name</h2>
+            <div class="profile-email" id="userEmail">user@email.com</div>
+            
+            <button class="btn btn-primary" onclick="window.location.href='index.html'">
+                <i class="fas fa-store"></i> GO TO APP STORE
+            </button>
+            <button class="btn btn-danger" onclick="logout()">
+                <i class="fas fa-power-off"></i> LOGOUT SESSION
+            </button>
+        </div>
+
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+    <script>
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyAS3UXXrio_-c9uPbHwpDuTVrP-p8d903w",
+            authDomain: "white-2k-17-v4.firebaseapp.com",
+            projectId: "white-2k-17-v4",
+            storageBucket: "white-2k-17-v4.firebasestorage.app",
+            messagingSenderId: "180909174928",
+            appId: "1:180909174928:android:148861a87d66c6980ca815"
+        };
+        
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+        const auth = firebase.auth();
+        const googleProvider = new firebase.auth.GoogleAuthProvider();
+
+        // UI Controls
+        function showToast(msg, type='success') {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast`;
+            toast.style.borderLeftColor = type === 'error' ? 'var(--danger)' : 'var(--primary)';
+            toast.innerHTML = `<i class="fas fa-${type==='error'?'times':'check'}-circle" style="color:${type==='error'?'var(--danger)':'var(--primary)'}"></i> <span>${msg}</span>`;
+            toastContainer.appendChild(toast);
+            setTimeout(() => { toast.style.opacity = '0'; setTimeout(()=>toast.remove(), 300); }, 3000);
+        }
+
+        function toggleView(viewId) {
+            document.getElementById('loginForm').classList.remove('active');
+            document.getElementById('registerForm').classList.remove('active');
+            document.getElementById('profileSection').style.display = 'none';
+            document.querySelector('.subtitle').style.display = 'block';
+            
+            if(viewId === 'profileSection') {
+                document.getElementById('profileSection').style.display = 'block';
+                document.querySelector('.subtitle').style.display = 'none';
+            } else {
+                document.getElementById(viewId).classList.add('active');
+            }
+        }
+
+        function showLoader(show) {
+            document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
+        }
+
+        // Auth State Listener
+        auth.onAuthStateChanged((user) => {
+            showLoader(false);
+            if (user) {
+                // User is logged in
+                document.getElementById('userAvatar').src = user.photoURL || 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+                document.getElementById('userName').innerText = user.displayName || 'MVX User';
+                document.getElementById('userEmail').innerText = user.email;
+                toggleView('profileSection');
+            } else {
+                // User is logged out
+                toggleView('loginForm');
+            }
+        });
+
+        // Authentication Functions
+        function login() {
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPassword').value;
+            if(!email || !pass) return showToast('Please enter email and password', 'error');
+            
+            showLoader(true);
+            auth.signInWithEmailAndPassword(email, pass)
+                .then(() => showToast('Login Successful!'))
+                .catch(err => {
+                    showLoader(false);
+                    showToast(err.message, 'error');
+                });
+        }
+
+        function register() {
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const pass = document.getElementById('regPassword').value;
+            if(!name || !email || !pass) return showToast('Please fill all fields', 'error');
+            
+            showLoader(true);
+            auth.createUserWithEmailAndPassword(email, pass)
+                .then((result) => {
+                    return result.user.updateProfile({ displayName: name });
+                })
+                .then(() => showToast('Account Created Successfully!'))
+                .catch(err => {
+                    showLoader(false);
+                    showToast(err.message, 'error');
+                });
+        }
+
+        function googleSignIn() {
+            showLoader(true);
+            auth.signInWithPopup(googleProvider)
+                .then(() => showToast('Google Login Successful!'))
+                .catch(err => {
+                    showLoader(false);
+                    showToast(err.message, 'error');
+                });
+        }
+
+        function logout() {
+            showLoader(true);
+            auth.signOut().then(() => showToast('Logged out successfully'));
+        }
+    </script>
+</body>
+</html>
