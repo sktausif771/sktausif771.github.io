@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#00e6b8">
+    <title>STORE ADMIN DASHBOARD | MVX SYSTEM v4.0</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <style>
+        /* ==========================================================================
+           MVX STORE ADMIN DASHBOARD V4.0
+           ========================================================================== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #00e6b8; --primary-dim: rgba(0, 230, 184, 0.15);
+            --danger: #ff003c; --bg-void: #000000; --bg-card: #0c101a; --bg-input: #1a1f2c;
+            --text-primary: #ffffff; --text-muted: #9ca3af;
+            --glass-bg: rgba(8, 11, 18, 0.8); --glass-border: 1px solid rgba(0, 230, 184, 0.2);
+            --font-head: 'Orbitron', sans-serif; --font-body: 'Space Grotesk', sans-serif;
+        }
+
+        body { background: var(--bg-void); color: var(--text-primary); font-family: var(--font-body); padding-bottom: 50px; }
+        
+        /* Navbar */
+        .navbar { position: sticky; top: 0; background: var(--glass-bg); backdrop-filter: blur(10px); border-bottom: var(--glass-border); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+        .brand { font-family: var(--font-head); font-size: 1.5rem; color: var(--primary); }
+        .nav-btns button { background: var(--danger); color: #fff; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+
+        /* Container */
+        .container { max-width: 1000px; margin: 30px auto; padding: 0 20px; display: grid; gap: 30px; grid-template-columns: 1fr; }
+
+        /* Card Setup */
+        .card { background: var(--bg-card); border: var(--glass-border); border-radius: 16px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .card-title { font-family: var(--font-head); color: var(--primary); margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+
+        /* Form Elements */
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; color: var(--text-muted); font-size: 0.9rem; font-weight: 600; }
+        input, select, textarea { width: 100%; background: var(--bg-input); border: 1px solid #333; color: #fff; padding: 12px 15px; border-radius: 8px; font-family: var(--font-body); outline: none; transition: 0.3s; }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary); }
+        textarea { resize: vertical; min-height: 100px; }
+
+        /* Image Upload Grid */
+        .img-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
+        .img-upload-box { background: var(--bg-input); border: 2px dashed #333; border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; }
+        .img-upload-box:hover { border-color: var(--primary); }
+        .img-upload-box img { max-width: 100%; max-height: 150px; border-radius: 8px; display: none; margin: 0 auto; }
+        .img-upload-box .placeholder { color: var(--text-muted); font-size: 0.9rem; }
+        .img-upload-box input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+
+        /* Previews Section */
+        .preview-list { display: flex; gap: 10px; overflow-x: auto; margin-top: 10px; padding-bottom: 10px; }
+        .preview-item { position: relative; width: 100px; height: 150px; flex-shrink: 0; border-radius: 8px; overflow: hidden; border: 1px solid var(--primary); }
+        .preview-item img { width: 100%; height: 100%; object-fit: cover; }
+        .preview-item .remove-btn { position: absolute; top: 5px; right: 5px; background: red; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-weight: bold; }
+
+        /* Extra Links */
+        .extra-link-row { display: flex; gap: 10px; margin-bottom: 10px; }
+        .btn-add-link { background: var(--primary-dim); border: 1px dashed var(--primary); color: var(--primary); width: 100%; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+
+        /* Submit Button */
+        .btn-submit { width: 100%; background: var(--primary); color: #000; font-family: var(--font-head); font-size: 1.2rem; font-weight: 700; padding: 15px; border: none; border-radius: 12px; cursor: pointer; margin-top: 20px; transition: 0.3s; }
+        .btn-submit:hover { box-shadow: 0 0 20px var(--primary-dim); transform: translateY(-2px); }
+
+        /* Toast */
+        .toast-container { position: fixed; top: 80px; right: 20px; z-index: 9999; }
+        .toast { background: var(--bg-input); border-left: 4px solid var(--primary); padding: 15px 20px; margin-bottom: 10px; border-radius: 8px; display: flex; gap: 10px; align-items: center; color: #fff; animation: slideIn 0.3s; }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="brand"><i class="fas fa-satellite-dish"></i> STORE ADMIN</div>
+        <div class="nav-btns">
+            <button onclick="window.location.href='index.html'" style="background: var(--bg-input); border: 1px solid #333; margin-right: 10px;"><i class="fas fa-home"></i> STORE</button>
+            <button onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i> LOGOUT</button>
+        </div>
+    </nav>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div class="container">
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-upload"></i> UPLOAD NEW APP</h2>
+            
+            <form id="uploadForm" onsubmit="submitApp(event)">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>App / Game Name *</label>
+                        <input type="text" id="appName" required placeholder="e.g. Free Fire Mod VIP">
+                    </div>
+                    <div class="form-group">
+                        <label>Version</label>
+                        <input type="text" id="version" placeholder="e.g. v1.100.1">
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>Size</label>
+                        <input type="text" id="size" placeholder="e.g. 150 MB">
+                    </div>
+                    <div class="form-group">
+                        <label>Category *</label>
+                        <select id="category" required>
+                            <option value="Free Fire">Free Fire</option>
+                            <option value="PUBG">PUBG</option>
+                            <option value="Blood Strike">Blood Strike</option>
+                            <option value="Tools">Tools</option>
+                            <option value="Other Game">Others</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Access Type *</label>
+                        <select id="accessType" required>
+                            <option value="Free">Free</option>
+                            <option value="Premium">Premium</option>
+                            <option value="Paid">Paid</option>
+                        </select>
+                    </div>
+                </div>
+
+                <h3 style="margin: 20px 0 10px; color: var(--primary); font-size: 1.1rem;">Media Uploads (Base64)</h3>
+                <div class="img-grid">
+                    <div class="form-group">
+                        <label>Thumbnail / Banner (16:9) *</label>
+                        <div class="img-upload-box">
+                            <div class="placeholder" id="bannerText"><i class="fas fa-image fa-2x"></i><br>Click to Select</div>
+                            <img id="bannerPreview">
+                            <input type="file" accept="image/*" required onchange="convertToBase64(this, 'bannerPreview', 'bannerText', 'bannerBase64')">
+                            <input type="hidden" id="bannerBase64">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>App Logo (1:1) *</label>
+                        <div class="img-upload-box">
+                            <div class="placeholder" id="logoText"><i class="fas fa-icons fa-2x"></i><br>Click to Select</div>
+                            <img id="logoPreview">
+                            <input type="file" accept="image/*" required onchange="convertToBase64(this, 'logoPreview', 'logoText', 'logoBase64')">
+                            <input type="hidden" id="logoBase64">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Preview Screenshots (Max 5 Images)</label>
+                    <div class="img-upload-box" style="padding: 10px;">
+                        <span style="color: var(--text-muted);"><i class="fas fa-images"></i> Click to add screenshots</span>
+                        <input type="file" accept="image/*" multiple onchange="handleMultipleScreenshots(this)">
+                    </div>
+                    <div class="preview-list" id="screenshotContainer"></div>
+                </div>
+
+                <h3 style="margin: 20px 0 10px; color: var(--primary); font-size: 1.1rem;">Download & Security</h3>
+                <div class="form-group">
+                    <label>Direct Download Link (Mediafire/Drive) *</label>
+                    <input type="url" id="downloadUrl" required placeholder="https://...">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>Password (Leave empty if none)</label>
+                        <input type="text" id="password" placeholder="e.g. MVX123">
+                    </div>
+                    <div class="form-group">
+                        <label>Password Video URL (YouTube)</label>
+                        <input type="url" id="videoUrl" placeholder="https://youtube.com/...">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Extra Links (Telegram, YouTube, etc.)</label>
+                    <div id="extraLinksContainer"></div>
+                    <button type="button" class="btn-add-link" onclick="addExtraLink()"><i class="fas fa-plus"></i> Add Extra Link</button>
+                </div>
+
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="description" placeholder="Write app features, mod menus, installation guide..."></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit" id="submitBtn"><i class="fas fa-cloud-upload-alt"></i> PUBLISH APP TO STORE</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <script>
+        // Security Check (Ensure they logged in via admin.html)
+        if (!sessionStorage.getItem('mvx_admin_token')) {
+            window.location.href = 'admin.html';
+        }
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAS3UXXrio_-c9uPbHwpDuTVrP-p8d903w",
+            authDomain: "white-2k-17-v4.firebaseapp.com",
+            databaseURL: "https://white-2k-17-v4-default-rtdb.firebaseio.com",
+            projectId: "white-2k-17-v4",
+            storageBucket: "white-2k-17-v4.firebasestorage.app",
+            messagingSenderId: "180909174928",
+            appId: "1:180909174928:android:148861a87d66c6980ca815"
+        };
+        
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+        const database = firebase.database();
+        const DB_PATH = "MVX_VIP_SERVER_V5";
+
+        let screenshotsArray = []; // To store base64 of 4-5 images
+
+        function showToast(msg, type='success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.style.borderLeftColor = type === 'error' ? 'var(--danger)' : 'var(--primary)';
+            toast.innerHTML = `<i class="fas fa-${type==='error'?'times':'check'}-circle" style="color:${type==='error'?'var(--danger)':'var(--primary)'}"></i> <span>${msg}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.style.opacity = '0'; setTimeout(()=>toast.remove(), 300); }, 3000);
+        }
+
+        function logoutAdmin() {
+            sessionStorage.removeItem('mvx_admin_token');
+            window.location.href = 'admin.html';
+        }
+
+        // --- Base64 Single Image Converter (Banner/Logo) ---
+        function convertToBase64(input, previewId, textId, hiddenInputId) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64String = e.target.result;
+                    document.getElementById(previewId).src = base64String;
+                    document.getElementById(previewId).style.display = 'block';
+                    document.getElementById(textId).style.display = 'none';
+                    document.getElementById(hiddenInputId).value = base64String;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // --- Base64 Multiple Images Converter (Screenshots) ---
+        function handleMultipleScreenshots(input) {
+            const files = input.files;
+            const container = document.getElementById('screenshotContainer');
+            
+            // Check limit (Max 5)
+            if (screenshotsArray.length + files.length > 5) {
+                showToast("Maximum 5 screenshots allowed!", "error");
+                return;
+            }
+
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64String = e.target.result;
+                    screenshotsArray.push(base64String);
+                    renderScreenshots();
+                };
+                reader.readAsDataURL(file);
+            });
+            input.value = ''; // Reset input
+        }
+
+        function renderScreenshots() {
+            const container = document.getElementById('screenshotContainer');
+            container.innerHTML = '';
+            screenshotsArray.forEach((b64, index) => {
+                container.innerHTML += `
+                    <div class="preview-item">
+                        <img src="${b64}">
+                        <button type="button" class="remove-btn" onclick="removeScreenshot(${index})">×</button>
+                    </div>
+                `;
+            });
+        }
+
+        function removeScreenshot(index) {
+            screenshotsArray.splice(index, 1);
+            renderScreenshots();
+        }
+
+        // --- Extra Links Logic ---
+        function addExtraLink() {
+            const container = document.getElementById('extraLinksContainer');
+            const div = document.createElement('div');
+            div.className = 'extra-link-row';
+            div.innerHTML = `
+                <input type="text" placeholder="Title (e.g. Telegram)" class="ex-title" required>
+                <input type="url" placeholder="URL Link" class="ex-url" required>
+                <button type="button" onclick="this.parentElement.remove()" style="background:var(--danger); border:none; color:#fff; padding:0 15px; border-radius:8px; cursor:pointer;"><i class="fas fa-trash"></i></button>
+            `;
+            container.appendChild(div);
+        }
+
+        // --- Submit Data to Firebase ---
+        function submitApp(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('submitBtn');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> UPLOADING...';
+            btn.disabled = true;
+
+            // Gather Extra Links
+            let extraLinks = [];
+            document.querySelectorAll('.extra-link-row').forEach(row => {
+                extraLinks.push({
+                    title: row.querySelector('.ex-title').value,
+                    url: row.querySelector('.ex-url').value
+                });
+            });
+
+            // Gather all data
+            const appData = {
+                appName: document.getElementById('appName').value,
+                version: document.getElementById('version').value || 'v1.0',
+                size: document.getElementById('size').value || 'N/A',
+                gameCategory: document.getElementById('category').value,
+                accessType: document.getElementById('accessType').value,
+                bannerBase64: document.getElementById('bannerBase64').value,
+                logoBase64: document.getElementById('logoBase64').value,
+                screenshots: screenshotsArray, // The 4-5 Base64 preview images array
+                downloadUrl: document.getElementById('downloadUrl').value,
+                password: document.getElementById('password').value,
+                passwordVideoUrl: document.getElementById('videoUrl').value,
+                description: document.getElementById('description').value,
+                extraLinks: extraLinks,
+                timestamp: Date.now(),
+                isHidden: false // useful if you want to temporarily hide an app later
+            };
+
+            // Push to Firebase Realtime Database
+            database.ref(DB_PATH).push(appData)
+                .then(() => {
+                    showToast('App Uploaded Successfully!');
+                    setTimeout(() => {
+                        window.location.reload(); // Refresh form
+                    }, 1500);
+                })
+                .catch(error => {
+                    showToast('Upload Failed: ' + error.message, 'error');
+                    btn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> PUBLISH APP TO STORE';
+                    btn.disabled = false;
+                });
+        }
+    </script>
+</body>
+</html>

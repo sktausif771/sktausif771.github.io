@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MVX PRO Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+</head>
+<body>
+
+    <div class="overlay" onclick="toggleSidebar()"></div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="brand">
+            MVX <span>PRO</span>
+            <i class="fas fa-times close-btn" onclick="toggleSidebar()"></i>
+        </div>
+        
+        <nav>
+            <div class="menu-item active" onclick="showTab('users')">
+                <i class="fas fa-users"></i> User Manager
+            </div>
+            <div class="menu-item" onclick="showTab('settings')">
+                <i class="fas fa-cogs"></i> Settings
+            </div>
+        </nav>
+    </aside>
+
+    <main class="content">
+        <div class="top-header">
+            <button class="menu-toggle" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h2 id="pageTitle">User Management</h2>
+        </div>
+
+        <div id="tab-users" class="tab-content">
+            <div class="toolbar">
+                <input type="text" id="searchBox" class="search" placeholder="Search key or device..." onkeyup="renderTable()">
+                <button class="btn btn-add" onclick="openModal()">
+                    <i class="fas fa-plus"></i> NEW KEY
+                </button>
+            </div>
+
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Key</th>
+                            <th>Status</th>
+                            <th>Expiry</th>
+                            <th>Device Info</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTable">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="tab-settings" class="tab-content" style="display: none;">
+            <div class="card">
+                <h3>⚠️ Global Version Control</h3>
+                <p>Set the active script version. Old versions will stop working.</p>
+                <div class="input-group">
+                    <input type="number" id="appVer" value="1.0" step="0.1">
+                    <button class="btn btn-add" onclick="updateVersion()">UPDATE</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal" id="keyModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Generate Key</h3>
+                <i class="fas fa-times" onclick="closeModal()" style="cursor:pointer;"></i>
+            </div>
+            
+            <div class="form-group">
+                <label>Key Name</label>
+                <input type="text" id="newKey" placeholder="Enter Name">
+            </div>
+            
+            <div class="form-group">
+                <label>Duration</label>
+                <select id="duration">
+                    <option value="1">1 Day</option>
+                    <option value="7">7 Days</option>
+                    <option value="30" selected>1 Month</option>
+                    <option value="365">1 Year</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Device Limit</label>
+                <select id="limit">
+                    <option value="1">1 Device</option>
+                    <option value="2">2 Devices</option>
+                    <option value="999">Unlimited</option>
+                </select>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-cancel" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-add" onclick="createKey()">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

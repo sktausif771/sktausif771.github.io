@@ -11,64 +11,125 @@
     
     <style>
         /* ==========================================================================
-           MVX 404 ERROR PAGE V4.0
+           MVX 404 ERROR PAGE V4.0 (GLITCH THEME)
            ========================================================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         :root {
             --primary: #00e6b8; --primary-dim: rgba(0, 230, 184, 0.15);
             --danger: #ff003c; --danger-dim: rgba(255, 0, 60, 0.15);
-            --bg-void: #000000; --bg-input: #1a1f2c;
-            --text-primary: #ffffff; --text-muted: #9ca3af;
-            --font-head: 'Orbitron', sans-serif; --font-body: 'Space Grotesk', sans-serif; --font-mono: 'Share Tech Mono', monospace;
+            --bg-void: #000000; 
+            --font-head: 'Orbitron', sans-serif; --font-body: 'Space Grotesk', sans-serif;
         }
 
-        body { background: var(--bg-void); color: var(--text-primary); font-family: var(--font-body); height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; text-align: center; }
+        body { 
+            background: var(--bg-void); 
+            color: #ffffff; 
+            font-family: var(--font-body); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh; 
+            overflow: hidden; 
+            text-align: center;
+        }
 
         /* Background Effects */
-        .grid-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(255, 0, 60, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 0, 60, 0.05) 1px, transparent 1px); background-size: 40px 40px; z-index: -1; animation: gridShift 10s linear infinite; }
-        .glow-orb { position: absolute; width: 50vmax; height: 50vmax; border-radius: 50%; background: radial-gradient(circle at center, rgba(255, 0, 60, 0.15) 0%, transparent 70%); filter: blur(60px); z-index: -1; animation: pulseOrb 4s infinite alternate; }
+        .grid-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(255, 0, 60, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 0, 60, 0.05) 1px, transparent 1px); background-size: 50px 50px; z-index: 1; pointer-events: none; }
+        .glow-orb { position: absolute; width: 50vmax; height: 50vmax; background: radial-gradient(circle, rgba(255, 0, 60, 0.15) 0%, transparent 70%); border-radius: 50%; filter: blur(60px); z-index: 1; pointer-events: none; animation: pulse 4s infinite alternate; }
         
-        @keyframes gridShift { 0% { background-position: 0 0; } 100% { background-position: 40px 40px; } }
-        @keyframes pulseOrb { 0% { transform: scale(1); opacity: 0.5; } 100% { transform: scale(1.1); opacity: 1; } }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(1.1); opacity: 1; }
+        }
 
         /* Container */
         .error-container { position: relative; z-index: 10; padding: 20px; }
 
-        /* Glitch Text 404 */
+        /* Glitch Text Effect */
         .glitch-wrapper { position: relative; margin-bottom: 20px; }
-        .glitch-text { font-family: var(--font-head); font-size: 8rem; font-weight: 900; color: var(--danger); text-shadow: 0 0 20px var(--danger); position: relative; display: inline-block; }
-        .glitch-text::before, .glitch-text::after { content: '404'; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-void); }
-        .glitch-text::before { left: 4px; text-shadow: -2px 0 #00ffea; clip: rect(44px, 450px, 56px, 0); animation: glitch-anim 5s infinite linear alternate-reverse; }
-        .glitch-text::after { left: -4px; text-shadow: -2px 0 #fe3a7f; clip: rect(44px, 450px, 56px, 0); animation: glitch-anim2 5s infinite linear alternate-reverse; }
+        .glitch-text { 
+            font-family: var(--font-head); 
+            font-size: 8rem; 
+            font-weight: 900; 
+            color: #fff; 
+            position: relative; 
+            text-shadow: 0 0 20px var(--danger-dim); 
+        }
+        
+        .glitch-text::before, .glitch-text::after {
+            content: "404";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-void);
+        }
+        
+        .glitch-text::before {
+            left: 4px;
+            text-shadow: -2px 0 var(--danger);
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+        
+        .glitch-text::after {
+            left: -4px;
+            text-shadow: -2px 0 var(--primary);
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
 
         @keyframes glitch-anim {
-            0% { clip: rect(38px, 9999px, 71px, 0); }
-            20% { clip: rect(12px, 9999px, 89px, 0); }
-            40% { clip: rect(76px, 9999px, 98px, 0); }
-            60% { clip: rect(10px, 9999px, 43px, 0); }
-            80% { clip: rect(56px, 9999px, 11px, 0); }
-            100% { clip: rect(22px, 9999px, 75px, 0); }
+            0% { clip: rect(21px, 9999px, 88px, 0); transform: skew(0.6deg); }
+            5% { clip: rect(51px, 9999px, 30px, 0); transform: skew(0.8deg); }
+            10% { clip: rect(83px, 9999px, 20px, 0); transform: skew(0.1deg); }
+            15% { clip: rect(65px, 9999px, 100px, 0); transform: skew(0.3deg); }
+            20% { clip: rect(100px, 9999px, 54px, 0); transform: skew(0.5deg); }
+            25% { clip: rect(32px, 9999px, 86px, 0); transform: skew(0.9deg); }
+            30% { clip: rect(11px, 9999px, 15px, 0); transform: skew(0.4deg); }
+            100% { clip: rect(21px, 9999px, 88px, 0); transform: skew(0.6deg); }
         }
         @keyframes glitch-anim2 {
-            0% { clip: rect(65px, 9999px, 100px, 0); }
-            20% { clip: rect(15px, 9999px, 45px, 0); }
-            40% { clip: rect(89px, 9999px, 23px, 0); }
-            60% { clip: rect(34px, 9999px, 88px, 0); }
-            80% { clip: rect(77px, 9999px, 12px, 0); }
-            100% { clip: rect(45px, 9999px, 67px, 0); }
+            0% { clip: rect(65px, 9999px, 100px, 0); transform: skew(0.3deg); }
+            5% { clip: rect(100px, 9999px, 54px, 0); transform: skew(0.5deg); }
+            10% { clip: rect(32px, 9999px, 86px, 0); transform: skew(0.9deg); }
+            15% { clip: rect(11px, 9999px, 15px, 0); transform: skew(0.4deg); }
+            20% { clip: rect(21px, 9999px, 88px, 0); transform: skew(0.6deg); }
+            25% { clip: rect(51px, 9999px, 30px, 0); transform: skew(0.8deg); }
+            30% { clip: rect(83px, 9999px, 20px, 0); transform: skew(0.1deg); }
+            100% { clip: rect(65px, 9999px, 100px, 0); transform: skew(0.3deg); }
         }
 
-        .error-title { font-family: var(--font-head); font-size: 2rem; letter-spacing: 3px; margin-bottom: 10px; color: #fff; }
-        .error-desc { font-family: var(--font-mono); font-size: 1rem; color: var(--text-muted); margin-bottom: 40px; max-width: 400px; margin-left: auto; margin-right: auto; line-height: 1.6; }
-        .error-desc span { color: var(--danger); }
+        .error-desc { font-family: 'Share Tech Mono', monospace; color: var(--text-muted); font-size: 1.1rem; margin-bottom: 30px; letter-spacing: 1px; }
 
         /* Button */
-        .btn-home { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 15px 30px; background: rgba(0, 230, 184, 0.1); border: 1px solid var(--primary); color: var(--primary); border-radius: 12px; font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; letter-spacing: 1px; text-decoration: none; transition: 0.3s; position: relative; overflow: hidden; }
-        .btn-home:hover { background: var(--primary); color: #000; box-shadow: 0 0 25px var(--primary-dim); transform: translateY(-2px); }
+        .btn-home { 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 10px; 
+            padding: 15px 30px; 
+            background: var(--danger-dim); 
+            border: 1px solid var(--danger); 
+            color: var(--danger); 
+            border-radius: 12px; 
+            font-family: var(--font-head); 
+            font-size: 1.1rem; 
+            font-weight: 700; 
+            letter-spacing: 1px; 
+            text-decoration: none; 
+            transition: 0.3s; 
+        }
+        .btn-home:hover { 
+            background: var(--danger); 
+            color: #fff; 
+            box-shadow: 0 0 25px var(--danger-dim); 
+            transform: translateY(-2px); 
+        }
 
-        /* Warning Icon */
-        .warning-icon { font-size: 3rem; color: var(--danger); margin-bottom: 10px; animation: blink 1.5s infinite; }
+        .warning-icon { font-size: 3.5rem; color: var(--danger); margin-bottom: 10px; animation: blink 1.5s infinite; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
     </style>
 </head>
@@ -77,21 +138,17 @@
     <div class="glow-orb"></div>
 
     <div class="error-container">
-        <i class="fas fa-exclamation-triangle warning-icon"></i>
+        <i class="fas fa-satellite-dish warning-icon"></i>
         
         <div class="glitch-wrapper">
             <div class="glitch-text">404</div>
         </div>
         
-        <h2 class="error-title">SYSTEM BREACH / NOT FOUND</h2>
-        <p class="error-desc">
-            The nexus link you are trying to access has been <span>deleted</span>, moved, or never existed in our database. 
-        </p>
+        <p class="error-desc">[SYSTEM ERROR]: CONNECTION TO NEXUS LOST.<br>THE REQUESTED PAGE DOES NOT EXIST.</p>
         
         <a href="index.html" class="btn-home">
-            <i class="fas fa-satellite-dish"></i> RETURN TO BASE
+            <i class="fas fa-home"></i> RETURN TO SAFE ZONE
         </a>
     </div>
-
 </body>
 </html>

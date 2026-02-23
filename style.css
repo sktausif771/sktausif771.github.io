@@ -30,96 +30,77 @@
 
     /* Backgrounds */
     --bg-void: #000000;
-    --bg-deep: #03050a;
-    --bg-dark: #080b12;
     --bg-card: #0c101a;
     --bg-input: #1a1f2c;
     
+    /* Glassmorphism settings */
+    --glass-bg: rgba(8, 11, 18, 0.85);
+    --glass-border: 1px solid rgba(0, 230, 184, 0.2);
+    --glass-blur: blur(12px);
+
     /* Text Colors */
     --text-primary: #ffffff;
     --text-muted: #9ca3af;
 
-    /* Glassmorphism */
-    --glass-bg: rgba(8, 11, 18, 0.7);
-    --glass-border: 1px solid rgba(0, 230, 184, 0.2);
-    --glass-blur: blur(20px);
-
-    /* Typography */
-    --font-head: 'Rajdhani', sans-serif;
+    /* Fonts */
+    --font-head: 'Orbitron', sans-serif;
+    --font-sub: 'Rajdhani', sans-serif;
     --font-body: 'Space Grotesk', sans-serif;
-    --font-mono: 'Share Tech Mono', monospace;
-    --font-logo: 'Orbitron', sans-serif;
 }
 
 /* ==========================================================================
-   2. BASE & RESET (বেসিক সেটআপ)
+   2. GLOBAL RESET
    ========================================================================== */
-*, *::before, *::after {
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
 }
 
-html {
+body {
+    background: var(--bg-void);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    overflow-x: hidden;
     scroll-behavior: smooth;
 }
 
-body {
-    background-color: var(--bg-void);
-    color: var(--text-primary);
-    font-family: var(--font-body);
-    line-height: 1.6;
-    min-height: 100vh;
-    overflow-x: hidden;
-}
-
-/* Custom Scrollbar */
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: var(--bg-dark); }
-::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: #00c49d; }
-
 /* ==========================================================================
-   3. GLOBAL ANIMATIONS (গ্লোবাল অ্যানিমেশন)
+   3. CUSTOM SCROLLBAR
    ========================================================================== */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
 }
-
-@keyframes slideInRight {
-    from { opacity: 0; transform: translateX(50px); }
-    to { opacity: 1; transform: translateX(0); }
+::-webkit-scrollbar-track {
+    background: var(--bg-void);
 }
-
-@keyframes spin {
-    100% { transform: rotate(360deg); }
+::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 10px;
 }
-
-@keyframes pulse {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.1); opacity: 0.8; }
+::-webkit-scrollbar-thumb:hover {
+    background: #00c49d;
 }
 
 /* ==========================================================================
-   4. GLOBAL COMPONENTS (বাটন এবং ইনপুট)
+   4. GLOBAL BUTTONS
    ========================================================================== */
-/* Buttons */
 .btn-global {
-    padding: 12px 20px;
-    border-radius: 8px;
-    font-family: var(--font-head);
-    font-weight: 700;
-    font-size: 1.1rem;
-    border: none;
-    cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
     transition: all 0.3s ease;
-    text-transform: uppercase;
+    border: none;
+    text-decoration: none;
 }
 
 .btn-primary-global {
@@ -131,34 +112,13 @@ body {
     transform: translateY(-2px);
 }
 
-.btn-danger-global {
-    background: var(--danger-dim);
-    border: 1px solid var(--danger);
-    color: var(--danger);
+.btn-outline-global {
+    background: transparent;
+    border: 1px solid var(--primary);
+    color: var(--primary);
 }
-.btn-danger-global:hover {
-    background: var(--danger);
-    color: #fff;
-    box-shadow: var(--danger-glow);
-}
-
-/* Inputs */
-.input-global {
-    width: 100%;
-    padding: 15px;
-    background: var(--bg-input);
-    border: 1px solid #333;
-    border-radius: 8px;
-    color: #fff;
-    font-family: var(--font-body);
-    font-size: 1rem;
-    outline: none;
-    transition: all 0.3s ease;
-}
-
-.input-global:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 15px var(--primary-dim);
+.btn-outline-global:hover {
+    background: var(--primary-dim);
 }
 
 /* ==========================================================================
@@ -199,12 +159,27 @@ body {
 .text-primary { color: var(--primary); }
 .text-danger { color: var(--danger); }
 .text-gold { color: var(--gold); }
-.text-muted { color: var(--text-muted); }
 
-.mt-1 { margin-top: 10px; }
-.mt-2 { margin-top: 20px; }
-.mb-1 { margin-bottom: 10px; }
-.mb-2 { margin-bottom: 20px; }
+.glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border: var(--glass-border);
+    border-radius: 16px;
+}
 
-.text-center { text-align: center; }
-.hidden { display: none !important; }
+/* ==========================================================================
+   7. ANIMATIONS
+   ========================================================================== */
+@keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fadeInGlobal {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.fade-in {
+    animation: fadeInGlobal 0.5s ease-in-out;
+}

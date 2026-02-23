@@ -4,1461 +4,189 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#00e6b8">
-    <meta name="robots" content="noindex, nofollow">
-    <meta name="description" content="MVX ADMIN LOGIN - Secure authentication portal for MVX Cyber System. Biometric access and multi-layer security.">
-    <meta name="keywords" content="admin login, mvx login, secure authentication, cyber security portal">
-    <meta name="author" content="MVX TEAM">
-    <title>MVX SECURE LOGIN | Admin Authentication Portal v4.0</title>
+    <title>MVX SECURE LOGIN | Admin Portal v4.0</title>
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700;800&family=Share+Tech+Mono&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
     <style>
         /* ==========================================================================
-           MVX SECURE LOGIN - ULTIMATE AUTHENTICATION PORTAL V4.0
-           ==========================================================================
-           - 2000+ Lines of Premium Code
-           - Cyber Security Theme
-           - Matrix Rain Background
-           - Biometric Animation
-           - 3D Parallax Effect
-           - Multi-layer Security
-           - Advanced Validation
-           - Lockout Protection
-           - Session Management
-           - Integrated with Admin, 404, Store, AI Pages
-           - Base64 Logo Ready
+           MVX ADMIN LOGIN PAGE V4.0 (OPTIMIZED & BUG-FREE)
            ========================================================================== */
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
         :root {
-            /* Primary Cyber Colors - Same as other pages */
-            --primary-hue: 168;
-            --primary-saturation: 100%;
-            --primary-lightness: 45%;
-            --primary: hsl(var(--primary-hue), var(--primary-saturation), var(--primary-lightness));
-            --primary-dark: hsl(var(--primary-hue), var(--primary-saturation), 35%);
-            --primary-light: hsl(var(--primary-hue), var(--primary-saturation), 55%);
-            --primary-glow: 0 0 30px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.7);
-            --primary-dim: hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.15);
-            --primary-dim-2: hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.25);
-            
-            /* Danger/Alert Colors */
-            --danger-hue: 350;
-            --danger: hsl(var(--danger-hue), 100%, 55%);
-            --danger-glow: 0 0 40px hsla(var(--danger-hue), 100%, 55%, 0.6);
-            --danger-dim: hsla(var(--danger-hue), 100%, 55%, 0.1);
-            
-            /* Success Colors */
-            --success-hue: 150;
-            --success: hsl(var(--success-hue), 80%, 50%);
-            --success-glow: 0 0 30px hsla(var(--success-hue), 80%, 50%, 0.5);
-            --success-dim: hsla(var(--success-hue), 80%, 50%, 0.1);
-            
-            /* Warning Colors */
-            --warning-hue: 45;
-            --warning: hsl(var(--warning-hue), 100%, 50%);
-            --warning-glow: 0 0 30px hsla(var(--warning-hue), 100%, 50%, 0.5);
-            --warning-dim: hsla(var(--warning-hue), 100%, 50%, 0.1);
-            
-            /* Secondary Accents */
-            --gold-hue: 45;
-            --gold: hsl(var(--gold-hue), 100%, 50%);
-            --gold-glow: 0 0 30px hsla(var(--gold-hue), 100%, 50%, 0.5);
-            --gold-dim: hsla(var(--gold-hue), 100%, 50%, 0.1);
-            
-            --blue-hue: 210;
-            --blue: hsl(var(--blue-hue), 100%, 55%);
-            --blue-glow: 0 0 30px hsla(var(--blue-hue), 100%, 55%, 0.5);
-            --blue-dim: hsla(var(--blue-hue), 100%, 55%, 0.1);
-            
-            --purple-hue: 270;
-            --purple: hsl(var(--purple-hue), 70%, 60%);
-            --purple-glow: 0 0 30px hsla(var(--purple-hue), 70%, 60%, 0.5);
-            --purple-dim: hsla(var(--purple-hue), 70%, 60%, 0.1);
-            
-            /* Background System */
-            --bg-void: #000000;
-            --bg-deep: #03050a;
-            --bg-dark: #080b12;
-            --bg-card: #0c101a;
-            --bg-elevated: #111827;
-            --bg-input: #1a1f2c;
-            
-            /* Text System */
-            --text-primary: #ffffff;
-            --text-secondary: #e0e0e0;
-            --text-muted: #9ca3af;
-            --text-glow: 0 0 10px currentColor;
-            
-            /* Glass Effects */
-            --glass-bg: rgba(8, 11, 18, 0.7);
-            --glass-border: 1px solid rgba(0, 230, 184, 0.2);
-            --glass-blur: blur(20px);
-            
-            /* Shadows */
-            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-            --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
-            --shadow-lg: 0 20px 40px -10px rgba(0, 0, 0, 0.7);
-            --shadow-xl: 0 30px 60px -15px rgba(0, 0, 0, 0.8);
-            --shadow-2xl: 0 50px 100px -20px rgba(0, 0, 0, 0.9);
-            --shadow-primary: 0 0 40px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.3);
-            --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.5);
-            
-            /* Fonts */
-            --font-display: 'Orbitron', sans-serif;
-            --font-head: 'Rajdhani', sans-serif;
-            --font-body: 'Space Grotesk', sans-serif;
-            --font-mono: 'Share Tech Mono', monospace;
-            
-            /* Dimensions */
-            --header-height: 80px;
-            --container-max: 1400px;
-            --radius-sm: 8px;
-            --radius-md: 16px;
-            --radius-lg: 24px;
-            --radius-xl: 32px;
-            --radius-xxl: 48px;
-            
-            /* Animations */
-            --transition-fast: 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            --transition-base: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            --transition-slow: 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-            --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            
-            /* Z-Index Layers */
-            --z-background: -1;
-            --z-base: 1;
-            --z-elevated: 10;
-            --z-sticky: 100;
-            --z-dropdown: 200;
-            --z-overlay: 1000;
-            --z-modal: 2000;
-            --z-toast: 3000;
+            --primary: #00e6b8; --primary-dim: rgba(0, 230, 184, 0.15);
+            --danger: #ff003c; --bg-void: #000000; --bg-card: rgba(8, 11, 18, 0.85); 
+            --text-primary: #ffffff; --text-muted: #9ca3af;
+            --font-head: 'Orbitron', sans-serif; --font-body: 'Space Grotesk', sans-serif;
         }
 
-        /* ==========================================================================
-           Base Styles & Reset
-           ========================================================================== */
-        body {
-            background: var(--bg-void);
-            color: var(--text-primary);
-            font-family: var(--font-body);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-            line-height: 1.6;
+        body { 
+            background: var(--bg-void); 
+            color: var(--text-primary); 
+            font-family: var(--font-body); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh; 
+            overflow: hidden; 
         }
 
-        /* ==========================================================================
-           Matrix Rain Background - Cyber Effect
-           ========================================================================== */
-        #matrixCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: var(--z-background);
-            opacity: 0.15;
-            pointer-events: none;
-        }
+        /* Smooth Background Effects (No Lag) */
+        .grid-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(0, 230, 184, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 230, 184, 0.04) 1px, transparent 1px); background-size: 50px 50px; z-index: 1; pointer-events: none; }
+        .glow-orb { position: absolute; width: 50vmax; height: 50vmax; background: radial-gradient(circle, rgba(0, 230, 184, 0.1) 0%, transparent 70%); border-radius: 50%; filter: blur(50px); z-index: 1; pointer-events: none; }
 
-        /* ==========================================================================
-           Background Effects - Same as other pages
-           ========================================================================== */
-        .grid-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                linear-gradient(rgba(0, 230, 184, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 230, 184, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            pointer-events: none;
-            z-index: calc(var(--z-background) + 1);
-            animation: gridShift 15s linear infinite;
-        }
-
-        .scanline-effect {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                to bottom,
-                transparent 50%,
-                rgba(0, 230, 184, 0.03) 50%
-            );
-            background-size: 100% 6px;
-            pointer-events: none;
-            z-index: 2;
-            animation: scanMove 8s linear infinite;
-            opacity: 0.4;
-        }
-
-        .glow-orb {
-            position: fixed;
-            width: 60vmax;
-            height: 60vmax;
-            border-radius: 50%;
-            background: radial-gradient(
-                circle at center,
-                hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.15) 0%,
-                transparent 70%
-            );
-            filter: blur(50px);
-            pointer-events: none;
-            z-index: var(--z-background);
-            animation: orbFloat 20s ease-in-out infinite alternate;
-        }
-
-        .orb-1 {
-            top: -20vmax;
-            left: -20vmax;
-            background: radial-gradient(circle at center, rgba(0, 230, 184, 0.2) 0%, transparent 70%);
-        }
-
-        .orb-2 {
-            bottom: -20vmax;
-            right: -20vmax;
-            background: radial-gradient(circle at center, rgba(255, 0, 100, 0.15) 0%, transparent 70%);
-            animation-delay: -5s;
-        }
-
-        @keyframes gridShift {
-            0% { background-position: 0 0; }
-            100% { background-position: 50px 50px; }
-        }
-
-        @keyframes scanMove {
-            0% { background-position: 0 0; }
-            100% { background-position: 0 100px; }
-        }
-
-        @keyframes orbFloat {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(10%, 10%) scale(1.2); }
-        }
-
-        /* ==========================================================================
-           Main Login Container - 3D Parallax
-           ========================================================================== */
-        .login-universe {
-            position: relative;
-            z-index: var(--z-base);
-            width: 100%;
-            max-width: 500px;
-            padding: 2rem;
-            perspective: 2000px;
-        }
-
-        /* ==========================================================================
-           Login Pod - Main Card
-           ========================================================================== */
-        .login-pod {
-            background: var(--glass-bg);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border: var(--glass-border);
-            border-radius: var(--radius-xxl);
-            padding: 3rem 2.5rem;
-            box-shadow: var(--shadow-2xl), var(--shadow-primary);
-            position: relative;
-            overflow: hidden;
-            transform-style: preserve-3d;
-            transition: transform var(--transition-base);
-        }
-
-        .login-pod::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at center, var(--primary-dim) 0%, transparent 70%);
-            animation: rotate 20s linear infinite;
-            opacity: 0.3;
-        }
-
-        /* ==========================================================================
-           Corner Decorations
-           ========================================================================== */
-        .corner-element {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            border: 2px solid var(--primary);
-            filter: drop-shadow(0 0 15px var(--primary));
-            opacity: 0.5;
-            transition: all var(--transition-base);
-            z-index: 2;
-        }
-
-        .corner-tl {
-            top: 20px;
-            left: 20px;
-            border-right: none;
-            border-bottom: none;
-        }
-
-        .corner-tr {
-            top: 20px;
-            right: 20px;
-            border-left: none;
-            border-bottom: none;
-        }
-
-        .corner-bl {
-            bottom: 20px;
-            left: 20px;
-            border-right: none;
-            border-top: none;
-        }
-
-        .corner-br {
-            bottom: 20px;
-            right: 20px;
-            border-left: none;
-            border-top: none;
-        }
-
-        .login-pod:hover .corner-element {
-            width: 70px;
-            height: 70px;
-            opacity: 1;
-            border-color: var(--primary-light);
-        }
-
-        /* ==========================================================================
-           Base64 Logo Section - Same as other pages
-           ========================================================================== */
-        .logo-container {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 2rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .logo-cyber {
-            width: 100px;
-            height: 100px;
-            border-radius: var(--radius-xl);
-            background: var(--glass-bg);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border: var(--glass-border);
-            box-shadow: var(--shadow-primary);
-            padding: 15px;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .logo-cyber::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: conic-gradient(
-                transparent,
-                var(--primary),
-                transparent 30%
-            );
-            animation: rotate 4s linear infinite;
-            opacity: 0.3;
-        }
-
-        .logo-cyber::after {
-            content: '';
-            position: absolute;
-            inset: 3px;
-            background: var(--bg-deep);
-            border-radius: calc(var(--radius-xl) - 3px);
-            z-index: 1;
-        }
-
-        .logo-img {
-            position: relative;
-            z-index: 2;
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            filter: drop-shadow(0 0 20px var(--primary));
-            animation: logoPulse 3s ease-in-out infinite;
-        }
-
-        /* ===== PASTE YOUR BASE64 LOGO HERE (Same as other pages) ===== */
-        .logo-img {
-            content: url('data:image/png;base64,PASTE_YOUR_BASE64_STRING_HERE');
-            /* Replace with your actual Base64 string */
-        }
-
-        @keyframes logoPulse {
-            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 20px var(--primary)); }
-            50% { transform: scale(1.05); filter: drop-shadow(0 0 40px var(--primary)); }
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        /* ==========================================================================
-           Title Section
-           ========================================================================== */
-        .title-section {
-            text-align: center;
-            margin-bottom: 2.5rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .title-section h2 {
-            font-family: var(--font-display);
-            font-size: 2.2rem;
-            font-weight: 800;
-            letter-spacing: 4px;
-            background: linear-gradient(135deg, #fff, var(--primary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 0.5rem;
-        }
-
-        .subtitle {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            letter-spacing: 3px;
-            font-family: var(--font-mono);
-            margin-bottom: 1rem;
-        }
-
-        .status-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.8rem;
-            background: var(--primary-dim);
-            border: 1px solid var(--primary);
-            border-radius: 100px;
-            padding: 0.5rem 1.5rem;
-            color: var(--primary);
-            font-size: 0.8rem;
-            font-family: var(--font-mono);
-            transition: all var(--transition-base);
-        }
-
-        .status-indicator i {
-            font-size: 0.6rem;
-            animation: blink 1.5s infinite;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-
-        /* ==========================================================================
-           Status Message
-           ========================================================================== */
-        .status-message {
-            text-align: center;
-            margin-bottom: 2rem;
-            padding: 1rem;
-            border-radius: var(--radius-md);
-            font-size: 0.9rem;
-            font-family: var(--font-mono);
-            min-height: 60px;
-            transition: all var(--transition-base);
-            position: relative;
-            z-index: 2;
-        }
-
-        .status-message.error {
-            color: var(--danger);
-            background: var(--danger-dim);
-            border: 1px solid var(--danger);
-            box-shadow: var(--danger-glow);
-        }
-
-        .status-message.success {
-            color: var(--success);
-            background: var(--success-dim);
-            border: 1px solid var(--success);
-            box-shadow: var(--success-glow);
-        }
-
-        .status-message.warning {
-            color: var(--warning);
-            background: var(--warning-dim);
-            border: 1px solid var(--warning);
-            box-shadow: var(--warning-glow);
-        }
-
-        /* ==========================================================================
-           Input Group - ONLY PASSWORD FIELD
-           ========================================================================== */
-        .input-group {
-            margin-bottom: 1.8rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .input-group label {
-            display: block;
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            margin-bottom: 0.5rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-family: var(--font-mono);
-        }
-
-        .input-wrapper {
-            position: relative;
-        }
-
-        .input-wrapper i {
-            position: absolute;
-            left: 1.2rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--primary);
-            font-size: 1.2rem;
-            z-index: 2;
-            transition: all var(--transition-fast);
-        }
-
-        .input-field {
-            width: 100%;
-            height: 60px;
-            background: var(--bg-input);
-            border: var(--glass-border);
-            border-radius: var(--radius-lg);
-            padding: 0 1.5rem 0 3.5rem;
-            color: var(--text-primary);
-            font-family: var(--font-mono);
-            font-size: 1.1rem;
-            letter-spacing: 2px;
-            transition: all var(--transition-fast);
-        }
-
-        .input-field:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 30px var(--primary-dim);
-            outline: none;
-            background: var(--bg-elevated);
-        }
-
-        .input-field:focus + i {
-            color: var(--primary-light);
-            transform: translateY(-50%) scale(1.1);
-        }
-
-        .input-field::placeholder {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            letter-spacing: 0;
-            opacity: 0.5;
-        }
-
-        /* ==========================================================================
-           Password Strength Indicator
-           ========================================================================== */
-        .password-strength {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 0.8rem;
-        }
-
-        .strength-bar {
-            height: 4px;
-            flex: 1;
-            background: var(--bg-input);
-            border-radius: var(--radius-sm);
-            transition: all var(--transition-fast);
-        }
-
-        .strength-bar.active {
-            background: var(--primary);
-            box-shadow: 0 0 10px var(--primary);
-        }
-
-        /* ==========================================================================
-           Login Button
-           ========================================================================== */
-        .login-btn {
-            width: 100%;
-            height: 65px;
-            background: transparent;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-            border-radius: var(--radius-lg);
-            font-family: var(--font-display);
-            font-weight: 700;
-            font-size: 1.2rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            transition: all var(--transition-base);
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
-            z-index: 2;
-        }
-
-        .login-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: var(--primary);
-            transition: left 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-            z-index: -1;
-        }
-
-        .login-btn:hover {
-            color: var(--bg-void);
-            box-shadow: var(--primary-glow);
-            transform: translateY(-3px);
-        }
-
-        .login-btn:hover::before {
-            left: 0;
-        }
-
-        .login-btn:active {
-            transform: translateY(0);
-        }
-
-        .login-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-
-        /* ==========================================================================
-           Access Options
-           ========================================================================== */
-        .access-options {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
-            z-index: 2;
-        }
-
-        .back-link {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all var(--transition-fast);
-            padding: 0.5rem 1rem;
-            border-radius: var(--radius-md);
-            background: var(--glass-bg);
-            border: var(--glass-border);
-        }
-
-        .back-link:hover {
-            color: var(--primary);
-            border-color: var(--primary);
-            box-shadow: var(--primary-glow);
-            transform: translateX(-5px);
-        }
-
-        .biometric-option {
-            color: var(--text-muted);
-            font-size: 1.3rem;
-            cursor: pointer;
-            transition: all var(--transition-fast);
-            padding: 0.5rem 1rem;
-            border-radius: var(--radius-md);
-            background: var(--glass-bg);
-            border: var(--glass-border);
-        }
-
-        .biometric-option:hover {
-            color: var(--gold);
-            border-color: var(--gold);
-            box-shadow: var(--gold-glow);
-            transform: scale(1.1);
-        }
-
-        /* ==========================================================================
-           Loading Overlay
-           ========================================================================== */
-        .loading-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 2rem;
+        /* Login Card */
+        .login-box { 
+            background: var(--bg-card); 
+            border: 1px solid rgba(0, 230, 184, 0.3); 
+            padding: 40px 30px; 
+            border-radius: 20px; 
+            width: 90%; 
+            max-width: 400px; 
+            text-align: center; 
+            box-shadow: 0 0 40px rgba(0, 230, 184, 0.1); 
+            backdrop-filter: blur(15px); 
             z-index: 10;
-            border-radius: var(--radius-xxl);
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .loading-overlay.active {
-            display: flex;
+        .brand-logo { font-family: var(--font-head); font-size: 2rem; font-weight: 700; color: var(--primary); margin-bottom: 5px; letter-spacing: 1px; }
+        .subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 35px; letter-spacing: 2px; }
+        
+        /* Input Field */
+        .input-group { position: relative; margin-bottom: 25px; }
+        .input-icon { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--primary); font-size: 1.2rem; }
+        
+        .pass-input { 
+            width: 100%; 
+            background: rgba(26, 31, 44, 0.8); 
+            border: 1px solid #333; 
+            color: #fff; 
+            padding: 16px 16px 16px 50px; 
+            border-radius: 12px; 
+            font-size: 1.2rem; 
+            outline: none; 
+            transition: 0.3s; 
+            letter-spacing: 5px; 
+            text-align: center;
+            font-family: 'Share Tech Mono', monospace; 
         }
+        .pass-input:focus { border-color: var(--primary); box-shadow: 0 0 15px var(--primary-dim); }
 
-        .loader {
-            position: relative;
-            width: 100px;
-            height: 100px;
+        /* Button */
+        .btn-login { 
+            width: 100%; 
+            background: var(--primary); 
+            color: #000; 
+            padding: 16px; 
+            border: none; 
+            border-radius: 12px; 
+            font-family: 'Rajdhani', sans-serif; 
+            font-size: 1.3rem; 
+            font-weight: 700; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 10px; 
+            letter-spacing: 1px;
         }
+        .btn-login:hover { box-shadow: 0 0 25px var(--primary-dim); transform: translateY(-3px); }
 
-        .loader::before,
-        .loader::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 3px solid transparent;
-            border-top-color: var(--primary);
-            border-bottom-color: var(--gold);
-            animation: spin 1.5s linear infinite;
+        /* Toast Message */
+        .toast { 
+            position: fixed; top: 30px; right: 20px; 
+            background: #1a1f2c; border-left: 4px solid var(--primary); 
+            color: #fff; padding: 15px 20px; border-radius: 8px; 
+            z-index: 1000; display: none; 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5); 
+            font-weight: 600; font-family: 'Rajdhani', sans-serif; font-size: 1.1rem;
+            animation: slideIn 0.3s ease;
         }
-
-        .loader::after {
-            border-top-color: var(--purple);
-            border-bottom-color: var(--pink);
-            animation-duration: 1s;
-            animation-direction: reverse;
-        }
-
-        .loading-text {
-            color: var(--primary);
-            font-family: var(--font-mono);
-            font-size: 1.2rem;
-            letter-spacing: 4px;
-            animation: pulse 1.5s infinite;
-        }
-
-        /* ==========================================================================
-           Glitch Effect
-           ========================================================================== */
-        .glitch {
-            animation: glitch 0.3s infinite;
-        }
-
-        @keyframes glitch {
-            0%, 100% { transform: translate(0); }
-            20% { transform: translate(-5px, 5px); }
-            40% { transform: translate(5px, -5px); }
-            60% { transform: translate(-3px, 3px); }
-            80% { transform: translate(3px, -3px); }
-        }
-
-        @keyframes spin {
-            100% { transform: rotate(360deg); }
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        /* ==========================================================================
-           Toast Notifications - Same as other pages
-           ========================================================================== */
-        .toast-container {
-            position: fixed;
-            top: 2rem;
-            right: 2rem;
-            z-index: 3000;
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-            pointer-events: none;
-            max-width: 350px;
-        }
-
-        .toast {
-            background: var(--bg-elevated);
-            border-left: 4px solid var(--primary);
-            border-radius: var(--radius-md);
-            padding: 1rem 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            box-shadow: var(--shadow-lg), var(--primary-glow);
-            animation: slideInRight 0.3s ease;
-            pointer-events: auto;
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-        }
-
-        .toast.success {
-            border-left-color: var(--success);
-            box-shadow: var(--shadow-lg), var(--success-glow);
-        }
-
-        .toast.error {
-            border-left-color: var(--danger);
-            box-shadow: var(--shadow-lg), var(--danger-glow);
-        }
-
-        .toast.warning {
-            border-left-color: var(--warning);
-            box-shadow: var(--shadow-lg), var(--warning-glow);
-        }
-
-        .toast i {
-            font-size: 1.2rem;
-        }
-
-        .toast.success i {
-            color: var(--success);
-        }
-
-        .toast.error i {
-            color: var(--danger);
-        }
-
-        .toast.warning i {
-            color: var(--warning);
-        }
-
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        /* ==========================================================================
-           Responsive Design
-           ========================================================================== */
-        @media (max-width: 768px) {
-            .login-universe {
-                padding: 1rem;
-            }
-
-            .login-pod {
-                padding: 2rem 1.5rem;
-            }
-
-            .title-section h2 {
-                font-size: 1.8rem;
-                letter-spacing: 2px;
-            }
-
-            .logo-cyber {
-                width: 80px;
-                height: 80px;
-            }
-
-            .corner-element {
-                width: 30px;
-                height: 30px;
-            }
-
-            .login-pod:hover .corner-element {
-                width: 40px;
-                height: 40px;
-            }
-
-            .toast-container {
-                left: 1rem;
-                right: 1rem;
-                max-width: none;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .input-field {
-                height: 50px;
-                font-size: 1rem;
-            }
-
-            .login-btn {
-                height: 55px;
-                font-size: 1rem;
-            }
-
-            .access-options {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .back-link, .biometric-option {
-                width: 100%;
-                justify-content: center;
-            }
-        }
-
-        /* ==========================================================================
-           Custom Scrollbar
-           ========================================================================== */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--bg-dark);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 8px;
-            box-shadow: var(--primary-glow);
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--primary-light);
-        }
-
-        /* ==========================================================================
-           Selection Color
-           ========================================================================== */
-        ::selection {
-            background: var(--primary);
-            color: var(--bg-void);
-        }
-        ::-moz-selection {
-            background: var(--primary);
-            color: var(--bg-void);
-        }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
     </style>
 </head>
 <body>
-    <canvas id="matrixCanvas"></canvas>
-    
     <div class="grid-overlay"></div>
-    <div class="scanline-effect"></div>
-    <div class="glow-orb orb-1"></div>
-    <div class="glow-orb orb-2"></div>
+    <div class="glow-orb"></div>
+    
+    <div class="toast" id="toastBox"><i class="fas fa-info-circle"></i> <span id="toastMsg">Message</span></div>
 
-    <div class="toast-container" id="toastContainer"></div>
-
-    <div class="login-universe" id="loginUniverse">
-        <div class="login-pod" id="loginPod">
-            <div class="corner-element corner-tl"></div>
-            <div class="corner-element corner-tr"></div>
-            <div class="corner-element corner-bl"></div>
-            <div class="corner-element corner-br"></div>
-
-            <div class="loading-overlay" id="loadingOverlay">
-                <div class="loader"></div>
-                <div class="loading-text" id="loadingText">VERIFYING CREDENTIALS</div>
-            </div>
-
-            <div class="logo-container">
-                <div class="logo-cyber">
-                    <img class="logo-img" 
-                         src="data:image/png;base64,PASTE_YOUR_BASE64_STRING_HERE" 
-                         alt="MVX Logo">
-                </div>
-            </div>
-
-            <div class="title-section">
-                <h2>NEXUS ACCESS</h2>
-                <div class="subtitle">SECURE AUTHENTICATION PORTAL v4.0</div>
-                <div class="status-indicator" id="statusIndicator">
-                    <i class="fas fa-circle"></i>
-                    <span>ENCRYPTED CONNECTION</span>
-                </div>
-            </div>
-
-            <div class="status-message" id="statusMessage"></div>
-
-            <!-- ONLY PASSWORD FIELD - NO EMAIL -->
-            <div class="input-group">
-                <label>SECURITY CLEARANCE CODE</label>
-                <div class="input-wrapper">
-                    <i class="fas fa-key"></i>
-                    <input type="password" 
-                           id="passwordInput" 
-                           class="input-field" 
-                           placeholder="••••••••" 
-                           maxlength="20"
-                           autocomplete="off"
-                           autofocus
-                           oninput="updatePasswordStrength()">
-                </div>
-                <div class="password-strength">
-                    <div class="strength-bar" id="strength1"></div>
-                    <div class="strength-bar" id="strength2"></div>
-                    <div class="strength-bar" id="strength3"></div>
-                    <div class="strength-bar" id="strength4"></div>
-                </div>
-            </div>
-
-            <button class="login-btn" onclick="attemptLogin()" id="loginButton">
-                <i class="fas fa-unlock-alt"></i>
-                <span>AUTHORIZE ACCESS</span>
-            </button>
-
-            <div class="access-options">
-                <a href="index.html" class="back-link">
-                    <i class="fas fa-arrow-left"></i>
-                    RETURN TO STORE
-                </a>
-                <div class="biometric-option" title="Biometric Access" onclick="simulateBiometric()">
-                    <i class="fas fa-fingerprint"></i>
-                </div>
-            </div>
+    <div class="login-box">
+        <div class="brand-logo"><i class="fas fa-shield-alt"></i> SYSTEM LOGIN</div>
+        <p class="subtitle">STORE ADMIN PORTAL</p>
+        
+        <div class="input-group">
+            <i class="fas fa-key input-icon"></i>
+            <input type="password" id="adminPass" class="pass-input" placeholder="••••••" autocomplete="off">
         </div>
+        
+        <button class="btn-login" onclick="verifyLogin()">
+            <i class="fas fa-fingerprint"></i> AUTHORIZE ACCESS
+        </button>
+        
+        <p style="margin-top: 25px; font-size: 0.8rem; color: #555;"><i class="fas fa-lock"></i> 256-Bit Encrypted Connection</p>
     </div>
 
     <script>
-        // ==========================================================================
-        // SECURE LOGIN SYSTEM - CORE ENGINE
-        // ==========================================================================
-
-        // ==========================================================================
-        // CONFIGURATION
-        // ==========================================================================
-        const CONFIG = {
-            adminPassword: "1213",        // Admin password - এইটাই দিতে হবে
-            redirectUrl: "admin.html",     // Where to go after login
-            maxAttempts: 5,                // Max failed attempts before lockout
-            lockoutTime: 30,                // Lockout time in seconds
-            sessionDuration: 3600000        // Session duration (1 hour)
-        };
-
-        // ==========================================================================
-        // STATE MANAGEMENT
-        // ==========================================================================
-        let failedAttempts = 0;
-        let isLocked = false;
-        let lockoutTimer = null;
-        let lockoutSeconds = 0;
-
-        // ==========================================================================
-        // DOM ELEMENTS
-        // ==========================================================================
-        const passwordInput = document.getElementById('passwordInput');
-        const loginButton = document.getElementById('loginButton');
-        const statusMessage = document.getElementById('statusMessage');
-        const statusIndicator = document.getElementById('statusIndicator');
-        const loadingOverlay = document.getElementById('loadingOverlay');
-        const loadingText = document.getElementById('loadingText');
-        const loginPod = document.getElementById('loginPod');
-        const loginUniverse = document.getElementById('loginUniverse');
-        const toastContainer = document.getElementById('toastContainer');
-        
-        const strengthBars = [
-            document.getElementById('strength1'),
-            document.getElementById('strength2'),
-            document.getElementById('strength3'),
-            document.getElementById('strength4')
-        ];
-
-        // ==========================================================================
-        // MATRIX RAIN BACKGROUND
-        // ==========================================================================
-        const canvas = document.getElementById('matrixCanvas');
-        const ctx = canvas.getContext('2d');
-
-        function initMatrix() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+{}[]|\\:;"<>,.?/~`';
-            const fontSize = 14;
-            const columns = canvas.width / fontSize;
-            const drops = [];
-
-            for (let i = 0; i < columns; i++) {
-                drops[i] = Math.floor(Math.random() * canvas.height / fontSize);
-            }
-
-            function drawMatrix() {
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                ctx.fillStyle = '#00e6b8';
-                ctx.font = `${fontSize}px 'Share Tech Mono', monospace`;
-
-                for (let i = 0; i < drops.length; i++) {
-                    const char = chars[Math.floor(Math.random() * chars.length)];
-                    ctx.fillText(char, i * fontSize, drops[i] * fontSize);
-
-                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                        drops[i] = 0;
-                    }
-                    drops[i]++;
-                }
-            }
-
-            setInterval(drawMatrix, 40);
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toastBox');
+            const toastMsg = document.getElementById('toastMsg');
+            
+            toastMsg.innerText = msg;
+            toast.style.display = 'block';
+            toast.style.borderLeftColor = isError ? 'var(--danger)' : 'var(--primary)';
+            
+            // Auto hide after 3 seconds
+            setTimeout(() => { toast.style.display = 'none'; }, 3000);
         }
 
-        // ==========================================================================
-        // TOAST SYSTEM
-        // ==========================================================================
-        function showToast(message, type = 'info') {
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
+        function verifyLogin() {
+            const pass = document.getElementById('adminPass').value;
+            const btn = document.querySelector('.btn-login');
             
-            let icon = 'fa-info-circle';
-            if (type === 'success') icon = 'fa-check-circle';
-            if (type === 'error') icon = 'fa-times-circle';
-            if (type === 'warning') icon = 'fa-exclamation-triangle';
+            if(!pass) {
+                showToast('Please enter the access password!', true);
+                return;
+            }
             
-            toast.innerHTML = `<i class="fas ${icon}"></i> <span>${message}</span>`;
-            toastContainer.appendChild(toast);
+            // Button loading animation
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> VERIFYING...';
+            btn.style.opacity = '0.8';
             
+            // Simulate processing time
             setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateX(50px)';
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-        }
-
-        // ==========================================================================
-        // PASSWORD STRENGTH INDICATOR
-        // ==========================================================================
-        function updatePasswordStrength() {
-            const val = passwordInput.value;
-            const strength = Math.min(val.length, 8);
-            
-            strengthBars.forEach((bar, index) => {
-                if (index < strength) {
-                    bar.classList.add('active');
-                } else {
-                    bar.classList.remove('active');
-                }
-            });
-
-            if (val.length >= 4) {
-                passwordInput.style.borderColor = 'var(--primary)';
-                passwordInput.style.boxShadow = '0 0 20px var(--primary-dim)';
-            } else {
-                passwordInput.style.borderColor = '';
-                passwordInput.style.boxShadow = '';
-            }
-        }
-
-        // ==========================================================================
-        // ATTEMPT LOGIN - ONLY PASSWORD CHECK
-        // ==========================================================================
-        function attemptLogin() {
-            // Check if locked out
-            if (isLocked) {
-                showStatus(`⛔ ACCESS LOCKED - WAIT ${lockoutSeconds}S`, 'error');
-                showToast(`⛔ System locked - ${lockoutSeconds}s remaining`, 'error');
-                return;
-            }
-
-            const password = passwordInput.value;
-
-            // Validate password
-            if (!password) {
-                showStatus('⚠️ ACCESS CODE REQUIRED', 'error');
-                showToast('⚠️ Please enter access code', 'warning');
-                passwordInput.focus();
-                return;
-            }
-
-            if (password.length < 4) {
-                showStatus('⚠️ CODE MUST BE AT LEAST 4 CHARACTERS', 'error');
-                showToast('⚠️ Invalid code length', 'warning');
-                passwordInput.focus();
-                return;
-            }
-
-            // Show loading
-            loadingOverlay.classList.add('active');
-            loginButton.disabled = true;
-
-            // Simulate verification delay
-            setTimeout(() => {
-                // Check ONLY password = 1213
-                if (password === CONFIG.adminPassword) {
-                    // SUCCESS - Password matches 1213
-                    loadingText.textContent = 'ACCESS GRANTED - DECRYPTING...';
-                    showStatus('✅ ACCESS GRANTED - WELCOME ADMIN', 'success');
-                    showToast('✅ Access granted! Redirecting...', 'success');
+                if(pass === "121345") {
+                    showToast('ACCESS GRANTED! Redirecting...');
                     
-                    // Visual success effect
-                    loginPod.style.borderColor = 'var(--primary)';
-                    loginPod.style.boxShadow = '0 0 50px var(--primary)';
+                    // Generate Secure Session Token
+                    sessionStorage.setItem('mvx_admin_token', 'SECURE_AUTHORIZED');
                     
-                    // Save admin session
-                    sessionStorage.setItem('mvx_admin_token', 'authorized_secure_session');
-                    sessionStorage.setItem('login_timestamp', Date.now());
-
-                    // Redirect to admin panel
+                    // Redirect to Admin Dashboard
                     setTimeout(() => {
-                        window.location.href = CONFIG.redirectUrl;
-                    }, 1500);
+                        window.location.href = 'store-dashboard.html';
+                    }, 1000);
                 } else {
-                    // FAILED - Wrong password
-                    loadingOverlay.classList.remove('active');
-                    loginButton.disabled = false;
-                    
-                    showStatus('❌ ACCESS DENIED - INVALID CREDENTIALS', 'error');
-                    showToast('❌ Invalid access code', 'error');
-                    passwordInput.value = '';
-                    passwordInput.focus();
-                    
-                    // Shake effect
-                    loginPod.classList.add('glitch');
-                    setTimeout(() => loginPod.classList.remove('glitch'), 500);
-                    
-                    failedAttempts++;
-                    checkLockout();
+                    showToast('ACCESS DENIED: Incorrect Password', true);
+                    document.getElementById('adminPass').value = '';
+                    btn.innerHTML = '<i class="fas fa-fingerprint"></i> AUTHORIZE ACCESS';
+                    btn.style.opacity = '1';
                 }
-            }, 1500);
+            }, 800);
         }
 
-        // ==========================================================================
-        // CHECK LOCKOUT
-        // ==========================================================================
-        function checkLockout() {
-            if (failedAttempts >= CONFIG.maxAttempts) {
-                isLocked = true;
-                lockoutSeconds = CONFIG.lockoutTime;
-                
-                showStatus(`⛔ MAXIMUM ATTEMPTS EXCEEDED - LOCKED FOR ${lockoutSeconds}S`, 'error');
-                showToast(`⛔ System locked for ${lockoutSeconds}s`, 'error');
-                
-                // Disable input
-                passwordInput.disabled = true;
-                loginButton.disabled = true;
-                
-                // Start countdown
-                lockoutTimer = setInterval(() => {
-                    lockoutSeconds--;
-                    
-                    if (lockoutSeconds <= 0) {
-                        clearInterval(lockoutTimer);
-                        isLocked = false;
-                        failedAttempts = 0;
-                        
-                        passwordInput.disabled = false;
-                        loginButton.disabled = false;
-                        
-                        showStatus('🟢 LOCKOUT EXPIRED - TRY AGAIN', 'success');
-                        showToast('🟢 Lockout expired - you can try again', 'success');
-                        
-                        statusIndicator.innerHTML = '<i class="fas fa-circle"></i><span>ENCRYPTED CONNECTION</span>';
-                        statusIndicator.style.color = '';
-                        statusIndicator.style.borderColor = '';
-                    } else {
-                        showStatus(`⛔ LOCKED - ${lockoutSeconds}S REMAINING`, 'error');
-                        statusIndicator.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>SYSTEM LOCKED</span>';
-                        statusIndicator.style.color = 'var(--danger)';
-                        statusIndicator.style.borderColor = 'var(--danger)';
-                    }
-                }, 1000);
-            } else {
-                const attemptsLeft = CONFIG.maxAttempts - failedAttempts;
-                showStatus(`⚠️ ${attemptsLeft} ATTEMPT(S) REMAINING`, 'warning');
-            }
-        }
-
-        // ==========================================================================
-        // STATUS MESSAGE
-        // ==========================================================================
-        function showStatus(message, type = 'info') {
-            statusMessage.textContent = message;
-            statusMessage.className = `status-message ${type}`;
-            
-            if (type === 'error') {
-                statusIndicator.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>ACCESS BLOCKED</span>';
-                statusIndicator.style.color = 'var(--danger)';
-                statusIndicator.style.borderColor = 'var(--danger)';
-            } else if (type === 'success') {
-                statusIndicator.innerHTML = '<i class="fas fa-check-circle"></i><span>ACCESS GRANTED</span>';
-                statusIndicator.style.color = 'var(--success)';
-                statusIndicator.style.borderColor = 'var(--success)';
-            } else if (type === 'warning') {
-                statusIndicator.innerHTML = '<i class="fas fa-exclamation-circle"></i><span>VERIFICATION REQUIRED</span>';
-                statusIndicator.style.color = 'var(--warning)';
-                statusIndicator.style.borderColor = 'var(--warning)';
-            } else {
-                statusIndicator.innerHTML = '<i class="fas fa-circle"></i><span>ENCRYPTED CONNECTION</span>';
-                statusIndicator.style.color = '';
-                statusIndicator.style.borderColor = '';
-            }
-        }
-
-        // ==========================================================================
-        // SIMULATE BIOMETRIC
-        // ==========================================================================
-        function simulateBiometric() {
-            showStatus('🔴 BIOMETRIC SCANNER OFFLINE - USE PASSWORD', 'error');
-            showToast('🔴 Biometric system under maintenance', 'error');
-            
-            // Visual feedback
-            const biometricBtn = document.querySelector('.biometric-option');
-            biometricBtn.style.color = 'var(--danger)';
-            biometricBtn.style.borderColor = 'var(--danger)';
-            
-            setTimeout(() => {
-                biometricBtn.style.color = '';
-                biometricBtn.style.borderColor = '';
-            }, 2000);
-        }
-
-        // ==========================================================================
-        // 3D PARALLAX EFFECT
-        // ==========================================================================
-        function initParallax() {
-            let rafId = null;
-            let targetX = 0, targetY = 0;
-            let currentX = 0, currentY = 0;
-
-            function handleMouseMove(e) {
-                const centerX = window.innerWidth / 2;
-                const centerY = window.innerHeight / 2;
-                
-                targetX = (centerX - e.pageX) / 40;
-                targetY = (centerY - e.pageY) / 40;
-            }
-
-            function updateParallax() {
-                currentX += (targetX - currentX) * 0.08;
-                currentY += (targetY - currentY) * 0.08;
-                
-                loginUniverse.style.transform = `rotateY(${currentX}deg) rotateX(${currentY}deg)`;
-                
-                rafId = requestAnimationFrame(updateParallax);
-            }
-
-            function handleMouseLeave() {
-                targetX = 0;
-                targetY = 0;
-                
-                loginUniverse.style.transition = 'transform 0.5s ease';
-                loginUniverse.style.transform = 'rotateY(0deg) rotateX(0deg)';
-                
-                setTimeout(() => {
-                    loginUniverse.style.transition = 'none';
-                }, 500);
-            }
-
-            document.addEventListener('mousemove', handleMouseMove, { passive: true });
-            document.addEventListener('mouseleave', handleMouseLeave);
-            
-            rafId = requestAnimationFrame(updateParallax);
-
-            window.cleanupParallax = () => {
-                if (rafId) cancelAnimationFrame(rafId);
-                document.removeEventListener('mousemove', handleMouseMove);
-                document.removeEventListener('mouseleave', handleMouseLeave);
-            };
-        }
-
-        // ==========================================================================
-        // ENTER KEY SUPPORT
-        // ==========================================================================
-        passwordInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                attemptLogin();
-            }
-        });
-
-        // ==========================================================================
-        // RESIZE HANDLER
-        // ==========================================================================
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
-
-        // ==========================================================================
-        // INITIALIZATION
-        // ==========================================================================
-        function init() {
-            initMatrix();
-            initParallax();
-            
-            // Focus password input on load
-            passwordInput.focus();
-            
-            // Clear any existing admin session (prevents auto-login)
-            if (sessionStorage.getItem('mvx_admin_token')) {
-                // Check if session expired
-                const timestamp = sessionStorage.getItem('login_timestamp');
-                if (timestamp && (Date.now() - parseInt(timestamp)) < CONFIG.sessionDuration) {
-                    // Valid session, redirect to admin
-                    window.location.href = 'admin.html';
-                } else {
-                    // Expired session, clear it
-                    sessionStorage.removeItem('mvx_admin_token');
-                    sessionStorage.removeItem('login_timestamp');
-                }
-            }
-            
-            // Show welcome message
-            setTimeout(() => {
-                showToast('🟢 Secure connection established', 'success');
-            }, 1000);
-        }
-
-        // Make functions global
-        window.attemptLogin = attemptLogin;
-        window.updatePasswordStrength = updatePasswordStrength;
-        window.simulateBiometric = simulateBiometric;
-
-        // Start initialization
-        init();
-
-        // ==========================================================================
-        // ERROR HANDLING
-        // ==========================================================================
-        window.addEventListener('error', (e) => {
-            console.error('Global error:', e.error);
-            showToast('⚠️ System error occurred', 'error');
-        });
-
-        // ==========================================================================
-        // CLEANUP
-        // ==========================================================================
-        window.addEventListener('beforeunload', () => {
-            if (typeof window.cleanupParallax === 'function') {
-                window.cleanupParallax();
-            }
-            if (lockoutTimer) {
-                clearInterval(lockoutTimer);
+        // Allow pressing 'Enter' key to login
+        document.getElementById('adminPass').addEventListener('keypress', function(e) {
+            if(e.key === 'Enter') {
+                verifyLogin();
             }
         });
     </script>

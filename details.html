@@ -11,7 +11,7 @@
     
     <style>
         /* ==========================================================================
-           MVX STORE V4.0 - APP DETAILS PAGE
+           MVX STORE V4.0 - APP DETAILS PAGE (UPDATED)
            ========================================================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
@@ -45,10 +45,10 @@
         .app-logo { width: 90px; height: 90px; border-radius: 20px; object-fit: cover; border: 2px solid var(--primary-dim); background: var(--bg-input); }
         .app-info { flex: 1; }
         .app-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 5px; color: var(--primary); }
-        .app-meta { display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.9rem; color: var(--text-muted); font-family: var(--font-mono); }
+        .app-meta { display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.9rem; color: var(--text-muted); font-family: 'Share Tech Mono', monospace; }
         .meta-tag { background: var(--bg-input); padding: 5px 10px; border-radius: 8px; border: 1px solid #333; display: flex; align-items: center; gap: 5px; }
 
-        /* Screenshots - Play Store Style */
+        /* Screenshots Slider */
         .screenshots-section { margin-bottom: 30px; }
         .section-title { font-family: var(--font-head); font-size: 1.2rem; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; color: var(--text-muted); }
         .screenshots-container { display: flex; gap: 15px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 15px; scrollbar-width: thin; scrollbar-color: var(--primary) var(--bg-input); }
@@ -58,22 +58,21 @@
         
         .screenshot-img { height: 350px; border-radius: 12px; object-fit: contain; background: var(--bg-card); border: var(--glass-border); scroll-snap-align: center; max-width: 80vw; }
 
-        /* Download & Password Section */
-        .download-section { background: var(--bg-card); padding: 20px; border-radius: 16px; border: var(--glass-border); margin-bottom: 30px; text-align: center; }
+        /* Download Section */
+        .download-section { background: var(--bg-card); padding: 25px 20px; border-radius: 16px; border: var(--glass-border); margin-bottom: 30px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         
-        .password-box { display: none; margin-bottom: 20px; }
         .video-btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 12px; background: rgba(255, 0, 0, 0.1); border: 1px solid #ff0000; color: #ff0000; border-radius: 8px; font-weight: 600; text-decoration: none; margin-bottom: 15px; transition: 0.3s; }
         .video-btn:hover { background: #ff0000; color: #fff; }
         
-        .pass-input-group { display: flex; gap: 10px; }
-        .pass-input { flex: 1; background: var(--bg-input); border: 1px solid #333; color: #fff; padding: 12px 15px; border-radius: 8px; font-size: 1rem; outline: none; transition: 0.3s; }
-        .pass-input:focus { border-color: var(--primary); }
+        .pass-input-group { display: flex; gap: 10px; margin-top: 15px; }
+        .pass-input { flex: 1; background: var(--bg-input); border: 1px solid #333; color: #fff; padding: 15px; border-radius: 8px; font-size: 1rem; outline: none; transition: 0.3s; text-align: center; letter-spacing: 2px; }
+        .pass-input:focus { border-color: var(--primary); box-shadow: 0 0 15px var(--primary-dim); }
         
         .btn { padding: 15px 20px; border-radius: 8px; font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; border: none; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; width: 100%; }
         .btn-primary { background: var(--primary); color: #000; }
         .btn-primary:hover { box-shadow: 0 0 20px var(--primary-dim); transform: translateY(-2px); }
         .btn-whatsapp { background: #25D366; color: #fff; }
-        .btn-whatsapp:hover { background: #128C7E; transform: translateY(-2px); }
+        .btn-whatsapp:hover { background: #128C7E; transform: translateY(-2px); box-shadow: 0 0 20px rgba(37, 211, 102, 0.3); }
         
         /* Extra Links */
         .extra-links { display: flex; flex-direction: column; gap: 10px; margin-bottom: 30px; }
@@ -81,7 +80,7 @@
         .extra-link-btn:hover { border-color: var(--primary); background: var(--primary-dim); padding-left: 20px; }
         .extra-link-btn i { color: var(--primary); }
 
-        /* Description Section */
+        /* Description Box */
         .description-box { background: var(--bg-card); padding: 25px; border-radius: 16px; border: var(--glass-border); line-height: 1.8; color: var(--text-secondary); white-space: pre-line; }
 
         /* Toast */
@@ -89,7 +88,7 @@
         .toast { background: var(--bg-input); border-left: 4px solid var(--primary); padding: 15px 20px; margin-bottom: 10px; border-radius: 8px; display: flex; gap: 10px; align-items: center; animation: slideIn 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.5); font-weight: 500; }
         @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
         
-        /* Loading Skeleton */
+        /* Loader */
         .loader { text-align: center; padding: 50px; color: var(--primary); font-family: var(--font-head); font-size: 1.5rem; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
     </style>
@@ -105,7 +104,7 @@
     </nav>
 
     <div class="container" id="mainContent">
-        <div class="loader">LOADING DATA...</div>
+        <div class="loader"><i class="fas fa-circle-notch fa-spin"></i> LOADING DATA...</div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -127,7 +126,6 @@
         const database = firebase.database();
         const DB_PATH = "MVX_VIP_SERVER_V5";
 
-        // Utilities
         const urlParams = new URLSearchParams(window.location.search);
         const appId = urlParams.get('id');
         let appData = null;
@@ -142,19 +140,18 @@
             setTimeout(() => { toast.style.opacity = '0'; setTimeout(()=>toast.remove(), 300); }, 3000);
         }
 
-        // Fetch Data
         if(!appId) {
-            document.getElementById('mainContent').innerHTML = `<div class="loader" style="color:var(--danger)">ERROR: APP ID NOT FOUND</div>`;
+            document.getElementById('mainContent').innerHTML = `<div class="loader" style="color:var(--danger)"><i class="fas fa-exclamation-triangle"></i> ERROR: APP ID NOT FOUND</div>`;
         } else {
             database.ref(`${DB_PATH}/${appId}`).once('value').then(snapshot => {
                 if(!snapshot.exists()) {
-                    document.getElementById('mainContent').innerHTML = `<div class="loader" style="color:var(--danger)">ERROR: APP NOT FOUND</div>`;
+                    document.getElementById('mainContent').innerHTML = `<div class="loader" style="color:var(--danger)"><i class="fas fa-search-minus"></i> ERROR: APP NOT FOUND</div>`;
                     return;
                 }
                 appData = snapshot.val();
                 renderPage();
             }).catch(err => {
-                document.getElementById('mainContent').innerHTML = `<div class="loader" style="color:var(--danger)">DATABASE ERROR</div>`;
+                document.getElementById('mainContent').innerHTML = `<div class="loader" style="color:var(--danger)"><i class="fas fa-wifi"></i> DATABASE ERROR</div>`;
             });
         }
 
@@ -162,46 +159,60 @@
             const container = document.getElementById('mainContent');
             const logoSrc = appData.logoBase64 || 'https://cdn-icons-png.flaticon.com/512/564/564619.png';
             
-            // Generate Screenshots HTML
+            // 1. Generate Screenshots HTML
             let screenshotsHTML = '';
             if(appData.screenshots && appData.screenshots.length > 0) {
-                const imagesHTML = appData.screenshots.map(img => `<img src="${img}" class="screenshot-img" alt="Preview">`).join('');
+                const imagesHTML = appData.screenshots.map(img => `<img src="${img}" class="screenshot-img" alt="Preview" loading="lazy">`).join('');
                 screenshotsHTML = `
                     <div class="screenshots-section">
-                        <div class="section-title"><i class="fas fa-images"></i> PREVIEW</div>
+                        <div class="section-title"><i class="fas fa-images"></i> APP PREVIEWS</div>
                         <div class="screenshots-container">${imagesHTML}</div>
                     </div>
                 `;
             }
 
-            // Generate Download Section HTML
+            // 2. Generate Download Section (Paid / Password / Direct)
             let downloadHTML = '';
+            
             if(appData.accessType === 'Paid') {
+                // PAID SYSTEM: WhatsApp + Password
                 downloadHTML = `
-                    <div class="download-section">
-                        <i class="fas fa-crown" style="font-size: 3rem; color: var(--gold); margin-bottom: 15px;"></i>
-                        <h3 style="margin-bottom: 15px;">PAID VIP APP</h3>
-                        <a href="${appData.downloadUrl}" target="_blank" class="btn btn-whatsapp"><i class="fab fa-whatsapp"></i> BUY VIA WHATSAPP</a>
+                    <div class="download-section" style="border-color: var(--gold);">
+                        <i class="fas fa-crown" style="font-size: 3.5rem; color: var(--gold); margin-bottom: 15px; text-shadow: 0 0 20px var(--gold-dim);"></i>
+                        <h3 style="margin-bottom: 15px; color: var(--gold); font-family: var(--font-head);">PREMIUM PAID APP</h3>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Contact admin via WhatsApp to purchase the access password.</p>
+                        
+                        <a href="https://wa.me/qr/3ZL3GSGN55QIO1" target="_blank" class="btn btn-whatsapp">
+                            <i class="fab fa-whatsapp" style="font-size: 1.3rem;"></i> BUY PASSWORD VIA WHATSAPP
+                        </a>
+                        
+                        <div style="margin-top: 30px; border-top: 1px solid #333; padding-top: 20px;">
+                            <p style="color: var(--text-primary); font-size: 0.95rem; margin-bottom: 10px;">Already bought it? Enter password below:</p>
+                            <div class="pass-input-group">
+                                <input type="text" id="passVerifyInput" class="pass-input" placeholder="••••••••" autocomplete="off">
+                                <button class="btn btn-primary" style="width: auto; padding: 0 25px;" onclick="verifyPassword()"><i class="fas fa-unlock"></i></button>
+                            </div>
+                        </div>
                     </div>
                 `;
             } 
             else if (appData.password && appData.password.trim() !== '') {
-                // Password Protected
-                const videoLink = appData.passwordVideoUrl ? `<a href="${appData.passwordVideoUrl}" target="_blank" class="video-btn"><i class="fab fa-youtube"></i> GET PASSWORD FROM VIDEO</a>` : '';
+                // PASSWORD PROTECTED (Free/Premium)
+                const videoLink = appData.passwordVideoUrl ? `<a href="${appData.passwordVideoUrl}" target="_blank" class="video-btn"><i class="fab fa-youtube"></i> WATCH VIDEO TO GET PASSWORD</a>` : '';
                 downloadHTML = `
                     <div class="download-section">
-                        <i class="fas fa-lock" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 15px;"></i>
-                        <h3 style="margin-bottom: 15px;">FILE IS ENCRYPTED</h3>
+                        <i class="fas fa-lock" style="font-size: 3rem; color: var(--primary); margin-bottom: 15px;"></i>
+                        <h3 style="margin-bottom: 20px; font-family: var(--font-head);">FILE IS ENCRYPTED</h3>
                         ${videoLink}
                         <div class="pass-input-group">
-                            <input type="text" id="passVerifyInput" class="pass-input" placeholder="Enter Password Here...">
-                            <button class="btn btn-primary" style="width: auto;" onclick="verifyPassword()"><i class="fas fa-unlock"></i></button>
+                            <input type="text" id="passVerifyInput" class="pass-input" placeholder="Enter Password Here..." autocomplete="off">
+                            <button class="btn btn-primary" style="width: auto; padding: 0 25px;" onclick="verifyPassword()"><i class="fas fa-unlock"></i></button>
                         </div>
                     </div>
                 `;
             } 
             else {
-                // Direct Download (No Password)
+                // DIRECT DOWNLOAD
                 downloadHTML = `
                     <div class="download-section">
                         <button class="btn btn-primary" onclick="startDownload()"><i class="fas fa-download"></i> DIRECT DOWNLOAD</button>
@@ -209,23 +220,23 @@
                 `;
             }
 
-            // Generate Extra Links HTML
+            // 3. Generate Extra Links HTML
             let extraLinksHTML = '';
             if(appData.extraLinks && appData.extraLinks.length > 0) {
                 const links = appData.extraLinks.map(link => `
                     <a href="${link.url}" target="_blank" class="extra-link-btn">
                         <span><i class="fas fa-link" style="margin-right: 10px;"></i> ${link.title}</span>
-                        <i class="fas fa-chevron-right"></i>
+                        <i class="fas fa-external-link-alt"></i>
                     </a>
                 `).join('');
-                extraLinksHTML = `<div class="extra-links"><div class="section-title" style="margin-bottom:5px;"><i class="fas fa-share-alt"></i> SOCIAL & BIO</div>${links}</div>`;
+                extraLinksHTML = `<div class="extra-links"><div class="section-title"><i class="fas fa-share-alt"></i> SOCIAL & USEFUL LINKS</div>${links}</div>`;
             }
 
-            // Description HTML
+            // 4. Description HTML
             let descriptionHTML = '';
             if(appData.description && appData.description.trim() !== '') {
                 descriptionHTML = `
-                    <div class="section-title"><i class="fas fa-align-left"></i> DESCRIPTION</div>
+                    <div class="section-title"><i class="fas fa-align-left"></i> DESCRIPTION & INFO</div>
                     <div class="description-box">${appData.description}</div>
                 `;
             }
@@ -239,7 +250,9 @@
                         <div class="app-meta">
                             <span class="meta-tag"><i class="fas fa-code-branch"></i> ${appData.version || 'v1.0'}</span>
                             <span class="meta-tag"><i class="fas fa-weight-hanging"></i> ${appData.size || 'N/A'}</span>
-                            <span class="meta-tag"><i class="fas fa-tag"></i> ${appData.accessType}</span>
+                            <span class="meta-tag" style="border-color: ${appData.accessType === 'Paid' ? 'var(--danger)' : (appData.accessType === 'Premium' ? 'var(--gold)' : 'var(--primary)')}; color: ${appData.accessType === 'Paid' ? 'var(--danger)' : (appData.accessType === 'Premium' ? 'var(--gold)' : 'var(--primary)')};">
+                                <i class="fas fa-tag"></i> ${appData.accessType}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -251,11 +264,11 @@
             `;
         }
 
-        // Action Functions
+        // --- Action Functions ---
         function verifyPassword() {
-            const input = document.getElementById('passVerifyInput').value;
+            const input = document.getElementById('passVerifyInput').value.trim();
             if(!input) {
-                showToast('Please enter password!', 'error');
+                showToast('Please enter the password!', 'error');
                 return;
             }
             if(input === appData.password) {
@@ -263,13 +276,14 @@
                 setTimeout(startDownload, 1000);
             } else {
                 showToast('Incorrect Password!', 'error');
+                document.getElementById('passVerifyInput').value = '';
             }
         }
 
         function startDownload() {
             let url = appData.downloadUrl;
             if(!url) {
-                showToast('Download link broken!', 'error');
+                showToast('Download link is broken or empty!', 'error');
                 return;
             }
             // Auto-convert Google Drive Links for direct download
