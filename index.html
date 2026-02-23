@@ -11,7 +11,7 @@
     
     <style>
         /* ==========================================================================
-           MVX STORE V4.0 - HOMEPAGE (UPDATED)
+           MVX STORE V4.0 - HOMEPAGE (UPDATED WITH AUTH LOGIC)
            ========================================================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
@@ -49,11 +49,12 @@
         .close-btn { position: absolute; top: 20px; right: 20px; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; }
         
         .sidebar-logo { text-align: center; margin-bottom: 30px; margin-top: 20px; font-family: 'Orbitron', sans-serif; font-size: 1.5rem; color: var(--primary); }
-        .sidebar-menu a { display: flex; align-items: center; gap: 15px; padding: 15px; color: var(--text-primary); text-decoration: none; border-radius: 8px; margin-bottom: 10px; transition: 0.3s; }
+        .sidebar-menu a { display: flex; align-items: center; gap: 15px; padding: 15px; color: var(--text-primary); text-decoration: none; border-radius: 8px; margin-bottom: 10px; transition: 0.3s; cursor: pointer; }
         .sidebar-menu a:hover { background: var(--bg-input); color: var(--primary); }
         
         .smooth-toggle { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--bg-input); border-radius: 8px; margin-top: 20px; }
-        .login-redirect-btn { width: 100%; padding: 15px; background: var(--primary); color: #000; border: none; border-radius: 8px; font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; cursor: pointer; margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .login-redirect-btn { width: 100%; padding: 15px; background: var(--primary); color: #000; border: none; border-radius: 8px; font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; cursor: pointer; margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s;}
+        .login-redirect-btn:hover { box-shadow: 0 0 15px var(--primary-dim); }
 
         /* Main Nav Tabs */
         .main-tabs { display: flex; gap: 10px; padding: 15px 20px; background: var(--bg-void); position: sticky; top: 70px; z-index: 90; overflow-x: auto; }
@@ -108,11 +109,18 @@
         .btn-verify { background: var(--primary); color: #000; }
         .btn-verify:hover { box-shadow: 0 0 15px var(--primary-dim); }
 
+        /* Custom Toast inside Page */
+        .local-toast { position: fixed; top: 80px; right: 20px; background: var(--bg-input); border-left: 4px solid var(--primary); padding: 15px 20px; border-radius: 8px; display: none; gap: 10px; align-items: center; color: #fff; z-index: 9999; box-shadow: 0 5px 15px rgba(0,0,0,0.5); font-weight: 500;}
+
     </style>
 </head>
 <body>
     <div class="grid-overlay"></div>
     <div class="glow-orb"></div>
+
+    <div class="local-toast" id="localToast">
+        <i class="fas fa-info-circle"></i> <span id="localToastMsg">Message</span>
+    </div>
 
     <header class="header">
         <div class="header-left">
@@ -134,7 +142,7 @@
         <div class="sidebar-logo">MVX SYSTEM</div>
         
         <button class="login-redirect-btn" onclick="window.location.href='user-login.html'">
-            <i class="fas fa-user-circle"></i> LOGIN / SETTINGS
+            <i class="fas fa-user-circle"></i> <span id="sidebarUserText">LOGIN / SETTINGS</span>
         </button>
 
         <div class="smooth-toggle">
@@ -150,11 +158,12 @@
             <hr style="border-color: #333; margin: 25px 0 15px;">
             
             <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 10px;">SYSTEM ADMIN</p>
-            <a href="lua-admin-free.html"><i class="fas fa-unlock" style="color: #00e6b8;"></i> Lua Admin (Free)</a>
             
-            <a href="#" onclick="openPassModal('lua-admin-owner.html')"><i class="fas fa-crown" style="color: #ffd700;"></i> Lua Admin (Owner)</a>
+            <a onclick="checkLoginAndGoFree()"><i class="fas fa-unlock" style="color: #00e6b8;"></i> Lua Admin (Free)</a>
             
-            <a href="#" onclick="openPassModal('store-dashboard.html')"><i class="fas fa-satellite-dish" style="color: #ff003c;"></i> Website Admin Panel</a>
+            <a onclick="openPassModal('lua-admin-owner.html')"><i class="fas fa-crown" style="color: #ffd700;"></i> Lua Admin (Owner)</a>
+            
+            <a onclick="openPassModal('store-dashboard.html')"><i class="fas fa-satellite-dish" style="color: #ff003c;"></i> Website Admin Panel</a>
         </div>
     </div>
 
@@ -189,6 +198,7 @@
     </main>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
@@ -205,13 +215,49 @@
         
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const database = firebase.database();
+        const auth = firebase.auth();
         const DB_PATH = "MVX_VIP_SERVER_V5";
 
         let allApps = [];
         let currentAccess = "Free";
         let currentCategory = "All";
         let searchQuery = "";
-        let targetAdminUrl = ""; // To store where the admin wants to go
+        let targetAdminUrl = ""; 
+        let currentLoggedUser = null;
+
+        // Custom Toast Message
+        function showMessage(msg, type='success') {
+            const toast = document.getElementById('localToast');
+            document.getElementById('localToastMsg').innerText = msg;
+            toast.style.borderLeftColor = type === 'error' ? 'var(--danger)' : 'var(--primary)';
+            toast.style.display = 'flex';
+            setTimeout(() => { toast.style.display = 'none'; }, 3000);
+        }
+
+        // --- Auth State Tracker ---
+        auth.onAuthStateChanged((user) => {
+            currentLoggedUser = user;
+            if(user) {
+                document.getElementById('sidebarUserText').innerText = "MY PROFILE";
+            } else {
+                document.getElementById('sidebarUserText').innerText = "LOGIN / SETTINGS";
+            }
+        });
+
+        // --- NEW: Free Lua Login Check ---
+        function checkLoginAndGoFree() {
+            if(currentLoggedUser) {
+                // User is logged in, grant access
+                window.location.href = 'lua-admin-free.html';
+            } else {
+                // Not logged in, show error and redirect
+                showMessage('লগইন ছাড়া ফ্রি এডমিনে ঢোকা নিষেধ! দয়া করে লগইন করুন।', 'error');
+                setTimeout(() => {
+                    // Redirecting to login page with a return path
+                    window.location.href = 'user-login.html?redirect=lua-admin-free.html';
+                }, 2000);
+            }
+        }
 
         // --- UI & Sidebar ---
         function toggleSidebar() {
@@ -256,16 +302,14 @@
         function verifyAdminPass() {
             const pass = document.getElementById('adminPassInput').value;
             if (pass === "121345") {
-                // Set session so they are authorized in the next page
                 sessionStorage.setItem('mvx_admin_token', 'SECURE_AUTHORIZED');
                 window.location.href = targetAdminUrl;
             } else {
-                alert("Incorrect Access Code!");
+                showMessage("Incorrect Access Code!", "error");
                 document.getElementById('adminPassInput').value = '';
             }
         }
 
-        // Allow pressing Enter key in password field
         document.getElementById('adminPassInput').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') verifyAdminPass();
         });
@@ -335,7 +379,6 @@
                 const bannerSrc = app.bannerBase64 || 'https://via.placeholder.com/800x450/1a1f2c/00e6b8?text=NO+BANNER';
                 const logoSrc = app.logoBase64 || 'https://cdn-icons-png.flaticon.com/512/564/564619.png';
                 
-                // Note: Fake views system has been removed as per your instruction. Only size and version remain.
                 feed.innerHTML += `
                     <div class="yt-card" onclick="goToDetails('${app.id}')">
                         <div class="yt-banner-wrapper">
