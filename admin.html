@@ -5,1406 +5,520 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#00e6b8">
     <meta name="robots" content="noindex, nofollow">
-    <meta name="description" content="MVX ADMIN LOGIN - Secure authentication portal for MVX Cyber System. Biometric access and multi-layer security.">
-    <meta name="keywords" content="admin login, mvx login, secure authentication, cyber security portal">
-    <meta name="author" content="MVX TEAM">
-    <title>MVX SECURE LOGIN | Admin Authentication Portal v4.0</title>
+    <title>MVX ADMIN NEXUS | Secure Control Panel v4.0</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700;800&family=Share+Tech+Mono&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
     <style>
         /* ==========================================================================
-           MVX SECURE LOGIN - ULTIMATE AUTHENTICATION PORTAL V4.0
+           MVX ADMIN NEXUS - V4.0 CSS (FULL FEATURES ENABLED)
            ========================================================================== */
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         :root {
-            /* Primary Cyber Colors - Same as other pages */
-            --primary-hue: 168;
-            --primary-saturation: 100%;
-            --primary-lightness: 45%;
-            --primary: hsl(var(--primary-hue), var(--primary-saturation), var(--primary-lightness));
-            --primary-dark: hsl(var(--primary-hue), var(--primary-saturation), 35%);
-            --primary-light: hsl(var(--primary-hue), var(--primary-saturation), 55%);
-            --primary-glow: 0 0 30px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.7);
-            --primary-dim: hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.15);
-            --primary-dim-2: hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.25);
-            
-            /* Danger/Alert Colors */
-            --danger-hue: 350;
-            --danger: hsl(var(--danger-hue), 100%, 55%);
-            --danger-glow: 0 0 40px hsla(var(--danger-hue), 100%, 55%, 0.6);
-            --danger-dim: hsla(var(--danger-hue), 100%, 55%, 0.1);
-            
-            /* Success Colors */
-            --success-hue: 150;
-            --success: hsl(var(--success-hue), 80%, 50%);
-            --success-glow: 0 0 30px hsla(var(--success-hue), 80%, 50%, 0.5);
-            --success-dim: hsla(var(--success-hue), 80%, 50%, 0.1);
-            
-            /* Warning Colors */
-            --warning-hue: 45;
-            --warning: hsl(var(--warning-hue), 100%, 50%);
-            --warning-glow: 0 0 30px hsla(var(--warning-hue), 100%, 50%, 0.5);
-            --warning-dim: hsla(var(--warning-hue), 100%, 50%, 0.1);
-            
-            /* Secondary Accents */
-            --gold-hue: 45;
-            --gold: hsl(var(--gold-hue), 100%, 50%);
-            --gold-glow: 0 0 30px hsla(var(--gold-hue), 100%, 50%, 0.5);
-            --gold-dim: hsla(var(--gold-hue), 100%, 50%, 0.1);
-            
-            --blue-hue: 210;
-            --blue: hsl(var(--blue-hue), 100%, 55%);
-            --blue-glow: 0 0 30px hsla(var(--blue-hue), 100%, 55%, 0.5);
-            --blue-dim: hsla(var(--blue-hue), 100%, 55%, 0.1);
-            
-            --purple-hue: 270;
-            --purple: hsl(var(--purple-hue), 70%, 60%);
-            --purple-glow: 0 0 30px hsla(var(--purple-hue), 70%, 60%, 0.5);
-            --purple-dim: hsla(var(--purple-hue), 70%, 60%, 0.1);
-            
-            /* Background System */
-            --bg-void: #000000;
-            --bg-deep: #03050a;
-            --bg-dark: #080b12;
-            --bg-card: #0c101a;
-            --bg-elevated: #111827;
-            --bg-input: #1a1f2c;
-            
-            /* Text System */
-            --text-primary: #ffffff;
-            --text-secondary: #e0e0e0;
-            --text-muted: #9ca3af;
-            --text-glow: 0 0 10px currentColor;
-            
-            /* Glass Effects */
-            --glass-bg: rgba(8, 11, 18, 0.7);
-            --glass-border: 1px solid rgba(0, 230, 184, 0.2);
-            --glass-blur: blur(20px);
-            
-            /* Shadows */
-            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-            --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
-            --shadow-lg: 0 20px 40px -10px rgba(0, 0, 0, 0.7);
-            --shadow-xl: 0 30px 60px -15px rgba(0, 0, 0, 0.8);
-            --shadow-2xl: 0 50px 100px -20px rgba(0, 0, 0, 0.9);
-            --shadow-primary: 0 0 40px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.3);
-            --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.5);
-            
-            /* Fonts */
-            --font-display: 'Orbitron', sans-serif;
-            --font-head: 'Rajdhani', sans-serif;
-            --font-body: 'Space Grotesk', sans-serif;
-            --font-mono: 'Share Tech Mono', monospace;
-            
-            /* Dimensions */
-            --header-height: 80px;
-            --container-max: 1400px;
-            --radius-sm: 8px;
-            --radius-md: 16px;
-            --radius-lg: 24px;
-            --radius-xl: 32px;
-            --radius-xxl: 48px;
-            
-            /* Animations */
-            --transition-fast: 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            --transition-base: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            --transition-slow: 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-            --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            
-            /* Z-Index Layers */
-            --z-background: -1;
-            --z-base: 1;
-            --z-elevated: 10;
-            --z-sticky: 100;
-            --z-dropdown: 200;
-            --z-overlay: 1000;
-            --z-modal: 2000;
-            --z-toast: 3000;
-        }
-
-        /* ==========================================================================
-           Base Styles & Reset
-           ========================================================================== */
-        body {
-            background: var(--bg-void);
-            color: var(--text-primary);
-            font-family: var(--font-body);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-            line-height: 1.6;
-        }
-
-        /* ==========================================================================
-           Matrix Rain Background - Cyber Effect
-           ========================================================================== */
-        #matrixCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: var(--z-background);
-            opacity: 0.15;
-            pointer-events: none;
-        }
-
-        /* ==========================================================================
-           Background Effects - Same as other pages
-           ========================================================================== */
-        .grid-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                linear-gradient(rgba(0, 230, 184, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 230, 184, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            pointer-events: none;
-            z-index: calc(var(--z-background) + 1);
-            animation: gridShift 15s linear infinite;
-        }
-
-        .scanline-effect {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                to bottom,
-                transparent 50%,
-                rgba(0, 230, 184, 0.03) 50%
-            );
-            background-size: 100% 6px;
-            pointer-events: none;
-            z-index: 2;
-            animation: scanMove 8s linear infinite;
-            opacity: 0.4;
-        }
-
-        .glow-orb {
-            position: fixed;
-            width: 60vmax;
-            height: 60vmax;
-            border-radius: 50%;
-            background: radial-gradient(
-                circle at center,
-                hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.15) 0%,
-                transparent 70%
-            );
-            filter: blur(50px);
-            pointer-events: none;
-            z-index: var(--z-background);
-            animation: orbFloat 20s ease-in-out infinite alternate;
-        }
-
-        .orb-1 {
-            top: -20vmax;
-            left: -20vmax;
-            background: radial-gradient(circle at center, rgba(0, 230, 184, 0.2) 0%, transparent 70%);
-        }
-
-        .orb-2 {
-            bottom: -20vmax;
-            right: -20vmax;
-            background: radial-gradient(circle at center, rgba(255, 0, 100, 0.15) 0%, transparent 70%);
-            animation-delay: -5s;
-        }
-
-        @keyframes gridShift {
-            0% { background-position: 0 0; }
-            100% { background-position: 50px 50px; }
-        }
-
-        @keyframes scanMove {
-            0% { background-position: 0 0; }
-            100% { background-position: 0 100px; }
-        }
-
-        @keyframes orbFloat {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(10%, 10%) scale(1.2); }
-        }
-
-        /* ==========================================================================
-           Main Login Container - 3D Parallax
-           ========================================================================== */
-        .login-universe {
-            position: relative;
-            z-index: var(--z-base);
-            width: 100%;
-            max-width: 500px;
-            padding: 2rem;
-            perspective: 2000px;
-        }
-
-        /* ==========================================================================
-           Login Pod - Main Card
-           ========================================================================== */
-        .login-pod {
-            background: var(--glass-bg);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border: var(--glass-border);
-            border-radius: var(--radius-xxl);
-            padding: 3rem 2.5rem;
-            box-shadow: var(--shadow-2xl), var(--shadow-primary);
-            position: relative;
-            overflow: hidden;
-            transform-style: preserve-3d;
-            transition: transform var(--transition-base);
-        }
-
-        .login-pod::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at center, var(--primary-dim) 0%, transparent 70%);
-            animation: rotate 20s linear infinite;
-            opacity: 0.3;
-        }
-
-        /* ==========================================================================
-           Corner Decorations
-           ========================================================================== */
-        .corner-element {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            border: 2px solid var(--primary);
-            filter: drop-shadow(0 0 15px var(--primary));
-            opacity: 0.5;
-            transition: all var(--transition-base);
-            z-index: 2;
-        }
-
-        .corner-tl {
-            top: 20px;
-            left: 20px;
-            border-right: none;
-            border-bottom: none;
-        }
-
-        .corner-tr {
-            top: 20px;
-            right: 20px;
-            border-left: none;
-            border-bottom: none;
-        }
-
-        .corner-bl {
-            bottom: 20px;
-            left: 20px;
-            border-right: none;
-            border-top: none;
-        }
-
-        .corner-br {
-            bottom: 20px;
-            right: 20px;
-            border-left: none;
-            border-top: none;
-        }
-
-        .login-pod:hover .corner-element {
-            width: 70px;
-            height: 70px;
-            opacity: 1;
-            border-color: var(--primary-light);
-        }
-
-        /* ==========================================================================
-           Base64 Logo Section
-           ========================================================================== */
-        .logo-container {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 2rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .logo-cyber {
-            width: 100px;
-            height: 100px;
-            border-radius: var(--radius-xl);
-            background: var(--glass-bg);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border: var(--glass-border);
-            box-shadow: var(--shadow-primary);
-            padding: 15px;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .logo-cyber::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: conic-gradient(
-                transparent,
-                var(--primary),
-                transparent 30%
-            );
-            animation: rotate 4s linear infinite;
-            opacity: 0.3;
-        }
-
-        .logo-cyber::after {
-            content: '';
-            position: absolute;
-            inset: 3px;
-            background: var(--bg-deep);
-            border-radius: calc(var(--radius-xl) - 3px);
-            z-index: 1;
-        }
-
-        .logo-img {
-            position: relative;
-            z-index: 2;
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            filter: drop-shadow(0 0 20px var(--primary));
-            animation: logoPulse 3s ease-in-out infinite;
-        }
-
-        .logo-img {
-            content: url('data:image/png;base64,PASTE_YOUR_BASE64_STRING_HERE');
-        }
-
-        @keyframes logoPulse {
-            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 20px var(--primary)); }
-            50% { transform: scale(1.05); filter: drop-shadow(0 0 40px var(--primary)); }
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        /* ==========================================================================
-           Title Section
-           ========================================================================== */
-        .title-section {
-            text-align: center;
-            margin-bottom: 2.5rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .title-section h2 {
-            font-family: var(--font-display);
-            font-size: 2.2rem;
-            font-weight: 800;
-            letter-spacing: 4px;
-            background: linear-gradient(135deg, #fff, var(--primary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 0.5rem;
-        }
-
-        .subtitle {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            letter-spacing: 3px;
-            font-family: var(--font-mono);
-            margin-bottom: 1rem;
-        }
-
-        .status-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.8rem;
-            background: var(--primary-dim);
-            border: 1px solid var(--primary);
-            border-radius: 100px;
-            padding: 0.5rem 1.5rem;
-            color: var(--primary);
-            font-size: 0.8rem;
-            font-family: var(--font-mono);
-            transition: all var(--transition-base);
-        }
-
-        .status-indicator i {
-            font-size: 0.6rem;
-            animation: blink 1.5s infinite;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-
-        /* ==========================================================================
-           Status Message
-           ========================================================================== */
-        .status-message {
-            text-align: center;
-            margin-bottom: 2rem;
-            padding: 1rem;
-            border-radius: var(--radius-md);
-            font-size: 0.9rem;
-            font-family: var(--font-mono);
-            min-height: 60px;
-            transition: all var(--transition-base);
-            position: relative;
-            z-index: 2;
-        }
-
-        .status-message.error {
-            color: var(--danger);
-            background: var(--danger-dim);
-            border: 1px solid var(--danger);
-            box-shadow: var(--danger-glow);
-        }
-
-        .status-message.success {
-            color: var(--success);
-            background: var(--success-dim);
-            border: 1px solid var(--success);
-            box-shadow: var(--success-glow);
-        }
-
-        .status-message.warning {
-            color: var(--warning);
-            background: var(--warning-dim);
-            border: 1px solid var(--warning);
-            box-shadow: var(--warning-glow);
-        }
-
-        /* ==========================================================================
-           Input Groups
-           ========================================================================== */
-        .input-group {
-            margin-bottom: 1.8rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .input-group label {
-            display: block;
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            margin-bottom: 0.5rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-family: var(--font-mono);
-        }
-
-        .input-wrapper {
-            position: relative;
-        }
-
-        .input-wrapper i {
-            position: absolute;
-            left: 1.2rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--primary);
-            font-size: 1.2rem;
-            z-index: 2;
-            transition: all var(--transition-fast);
-        }
-
-        .input-field {
-            width: 100%;
-            height: 60px;
-            background: var(--bg-input);
-            border: var(--glass-border);
-            border-radius: var(--radius-lg);
-            padding: 0 1.5rem 0 3.5rem;
-            color: var(--text-primary);
-            font-family: var(--font-mono);
-            font-size: 1.1rem;
-            letter-spacing: 2px;
-            transition: all var(--transition-fast);
-        }
-
-        .input-field:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 30px var(--primary-dim);
-            outline: none;
-            background: var(--bg-elevated);
-        }
-
-        .input-field:focus + i {
-            color: var(--primary-light);
-            transform: translateY(-50%) scale(1.1);
-        }
-
-        .input-field::placeholder {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            letter-spacing: 0;
-            opacity: 0.5;
-        }
-
-        /* ==========================================================================
-           Password Strength Indicator
-           ========================================================================== */
-        .password-strength {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 0.8rem;
-        }
-
-        .strength-bar {
-            height: 4px;
-            flex: 1;
-            background: var(--bg-input);
-            border-radius: var(--radius-sm);
-            transition: all var(--transition-fast);
-        }
-
-        .strength-bar.active {
-            background: var(--primary);
-            box-shadow: 0 0 10px var(--primary);
-        }
-
-        /* ==========================================================================
-           Login Button
-           ========================================================================== */
-        .login-btn {
-            width: 100%;
-            height: 65px;
-            background: transparent;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-            border-radius: var(--radius-lg);
-            font-family: var(--font-display);
-            font-weight: 700;
-            font-size: 1.2rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            transition: all var(--transition-base);
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
-            z-index: 2;
-        }
-
-        .login-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: var(--primary);
-            transition: left 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-            z-index: -1;
-        }
-
-        .login-btn:hover {
-            color: var(--bg-void);
-            box-shadow: var(--primary-glow);
-            transform: translateY(-3px);
-        }
-
-        .login-btn:hover::before {
-            left: 0;
-        }
-
-        .login-btn:active {
-            transform: translateY(0);
-        }
-
-        .login-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-
-        /* ==========================================================================
-           Access Options
-           ========================================================================== */
-        .access-options {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
-            z-index: 2;
-        }
-
-        .back-link {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all var(--transition-fast);
-            padding: 0.5rem 1rem;
-            border-radius: var(--radius-md);
-            background: var(--glass-bg);
-            border: var(--glass-border);
-        }
-
-        .back-link:hover {
-            color: var(--primary);
-            border-color: var(--primary);
-            box-shadow: var(--primary-glow);
-            transform: translateX(-5px);
-        }
-
-        .biometric-option {
-            color: var(--text-muted);
-            font-size: 1.3rem;
-            cursor: pointer;
-            transition: all var(--transition-fast);
-            padding: 0.5rem 1rem;
-            border-radius: var(--radius-md);
-            background: var(--glass-bg);
-            border: var(--glass-border);
-        }
-
-        .biometric-option:hover {
-            color: var(--gold);
-            border-color: var(--gold);
-            box-shadow: var(--gold-glow);
-            transform: scale(1.1);
-        }
-
-        /* ==========================================================================
-           Loading Overlay
-           ========================================================================== */
-        .loading-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 2rem;
-            z-index: 10;
-            border-radius: var(--radius-xxl);
-        }
-
-        .loading-overlay.active {
-            display: flex;
-        }
-
-        .loader {
-            position: relative;
-            width: 100px;
-            height: 100px;
-        }
-
-        .loader::before,
-        .loader::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 3px solid transparent;
-            border-top-color: var(--primary);
-            border-bottom-color: var(--gold);
-            animation: spin 1.5s linear infinite;
-        }
-
-        .loader::after {
-            border-top-color: var(--purple);
-            border-bottom-color: var(--pink);
-            animation-duration: 1s;
-            animation-direction: reverse;
-        }
-
-        .loading-text {
-            color: var(--primary);
-            font-family: var(--font-mono);
-            font-size: 1.2rem;
-            letter-spacing: 4px;
-            animation: pulse 1.5s infinite;
-        }
-
-        /* ==========================================================================
-           Glitch Effect
-           ========================================================================== */
-        .glitch {
-            animation: glitch 0.3s infinite;
-        }
-
-        @keyframes glitch {
-            0%, 100% { transform: translate(0); }
-            20% { transform: translate(-5px, 5px); }
-            40% { transform: translate(5px, -5px); }
-            60% { transform: translate(-3px, 3px); }
-            80% { transform: translate(3px, -3px); }
-        }
-
-        @keyframes spin {
-            100% { transform: rotate(360deg); }
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        /* ==========================================================================
-           Toast Notifications
-           ========================================================================== */
-        .toast-container {
-            position: fixed;
-            top: 2rem;
-            right: 2rem;
-            z-index: 3000;
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-            pointer-events: none;
-            max-width: 350px;
-        }
-
-        .toast {
-            background: var(--bg-elevated);
-            border-left: 4px solid var(--primary);
-            border-radius: var(--radius-md);
-            padding: 1rem 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            box-shadow: var(--shadow-lg), var(--primary-glow);
-            animation: slideInRight 0.3s ease;
-            pointer-events: auto;
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-        }
-
-        .toast.success {
-            border-left-color: var(--success);
-            box-shadow: var(--shadow-lg), var(--success-glow);
-        }
-
-        .toast.error {
-            border-left-color: var(--danger);
-            box-shadow: var(--shadow-lg), var(--danger-glow);
-        }
-
-        .toast.warning {
-            border-left-color: var(--warning);
-            box-shadow: var(--shadow-lg), var(--warning-glow);
-        }
-
-        .toast i {
-            font-size: 1.2rem;
-        }
-
-        .toast.success i {
-            color: var(--success);
-        }
-
-        .toast.error i {
-            color: var(--danger);
-        }
-
-        .toast.warning i {
-            color: var(--warning);
-        }
-
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        /* ==========================================================================
-           Responsive Design
-           ========================================================================== */
-        @media (max-width: 768px) {
-            .login-universe {
-                padding: 1rem;
-            }
-
-            .login-pod {
-                padding: 2rem 1.5rem;
-            }
-
-            .title-section h2 {
-                font-size: 1.8rem;
-                letter-spacing: 2px;
-            }
-
-            .logo-cyber {
-                width: 80px;
-                height: 80px;
-            }
-
-            .corner-element {
-                width: 30px;
-                height: 30px;
-            }
-
-            .login-pod:hover .corner-element {
-                width: 40px;
-                height: 40px;
-            }
-
-            .toast-container {
-                left: 1rem;
-                right: 1rem;
-                max-width: none;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .input-field {
-                height: 50px;
-                font-size: 1rem;
-            }
-
-            .login-btn {
-                height: 55px;
-                font-size: 1rem;
-            }
-
-            .access-options {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .back-link, .biometric-option {
-                width: 100%;
-                justify-content: center;
-            }
-        }
+            --primary: #00e6b8; --primary-dim: rgba(0, 230, 184, 0.15);
+            --danger: #ff003c; --danger-dim: rgba(255, 0, 60, 0.15);
+            --success: #00ff88; --warning: #ffb800; --gold: #ffd700; --gold-dim: rgba(255, 215, 0, 0.15);
+            --bg-void: #000000; --bg-dark: #080b12; --bg-card: #0c101a; --bg-elevated: #111827; --bg-input: #1a1f2c;
+            --text-primary: #ffffff; --text-muted: #9ca3af;
+            --glass-bg: rgba(8, 11, 18, 0.8); --glass-border: 1px solid rgba(0, 230, 184, 0.2);
+            --font-head: 'Rajdhani', sans-serif; --font-body: 'Space Grotesk', sans-serif; --font-mono: 'Share Tech Mono', monospace;
+        }
+
+        body { background: var(--bg-void); color: var(--text-primary); font-family: var(--font-body); min-height: 100vh; overflow-x: hidden; }
+
+        /* Background Effects */
+        .grid-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(0, 230, 184, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 230, 184, 0.03) 1px, transparent 1px); background-size: 50px 50px; pointer-events: none; z-index: -1; }
+        
+        /* Header */
+        .admin-header { position: fixed; top: 0; left: 0; width: 100%; height: 80px; background: var(--glass-bg); backdrop-filter: blur(15px); border-bottom: var(--glass-border); z-index: 100; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; }
+        .header-left, .header-right { display: flex; align-items: center; gap: 1.5rem; }
+        .brand-text { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--primary); }
+        .logout-btn { background: var(--danger-dim); border: 1px solid var(--danger); color: var(--danger); padding: 0.6rem 1.5rem; border-radius: 100px; cursor: pointer; font-family: var(--font-head); font-weight: 600; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .logout-btn:hover { background: var(--danger); color: #fff; }
+
+        /* Layout */
+        .admin-container { max-width: 1600px; margin: 100px auto 2rem; padding: 0 2rem; }
+        .workspace-grid { display: grid; grid-template-columns: 1.3fr 1.7fr; gap: 2rem; }
+        @media (max-width: 1200px) { .workspace-grid { grid-template-columns: 1fr; } }
+        
+        .admin-panel { background: var(--glass-bg); backdrop-filter: blur(15px); border: var(--glass-border); border-radius: 16px; padding: 2rem; }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: var(--glass-border); padding-bottom: 1rem; }
+        .panel-header h2 { font-family: var(--font-head); font-size: 1.5rem; display: flex; align-items: center; gap: 10px; }
+
+        /* Forms */
+        .form-group { margin-bottom: 1.2rem; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem; font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 1px; }
+        .form-control { width: 100%; background: var(--bg-input); border: var(--glass-border); border-radius: 8px; padding: 0.9rem; color: #fff; font-family: var(--font-body); outline: none; transition: 0.3s; }
+        .form-control:focus { border-color: var(--primary); box-shadow: 0 0 15px var(--primary-dim); }
+        textarea.form-control { resize: vertical; min-height: 100px; }
+
+        /* Dynamic Category Wrapper */
+        .dynamic-wrapper { display: none; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Image Upload Styling (Base64) */
+        .upload-area { border: 2px dashed #333; border-radius: 8px; padding: 1.5rem; text-align: center; background: var(--bg-input); cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; }
+        .upload-area:hover { border-color: var(--primary); background: var(--primary-dim); }
+        .upload-area input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 10; }
+        .upload-area i { font-size: 2rem; color: var(--primary); margin-bottom: 0.5rem; }
+        .preview-box { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+        .preview-img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid var(--primary); }
+        .preview-banner { width: 160px; height: 90px; object-fit: cover; border-radius: 8px; border: 1px solid var(--primary); }
+
+        /* Extra Links Container */
+        .extra-link-row { display: grid; grid-template-columns: 1fr 2fr; gap: 10px; margin-bottom: 10px; }
+
+        /* Hide Toggle Switch */
+        .toggle-container { display: flex; align-items: center; gap: 15px; background: var(--bg-input); padding: 15px; border-radius: 8px; border: var(--glass-border); margin-bottom: 1.2rem; }
+        .switch { position: relative; display: inline-block; width: 50px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--primary); }
+        input:checked + .slider:before { transform: translateX(26px); }
+
+        /* Buttons */
+        .btn { width: 100%; padding: 1rem; border-radius: 8px; font-family: var(--font-head); font-weight: 700; font-size: 1.1rem; border: none; cursor: pointer; transition: 0.3s; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-primary { background: var(--primary); color: #000; }
+        .btn-primary:hover { box-shadow: 0 0 20px var(--primary-dim); transform: translateY(-2px); }
+        .btn-update { background: var(--gold); color: #000; display: none; }
+        .btn-cancel { background: transparent; border: 1px solid var(--danger); color: var(--danger); display: none; }
+
+        /* Right Panel List */
+        .list-container { max-height: 800px; overflow-y: auto; padding-right: 5px; }
+        .list-item { background: var(--bg-card); border: var(--glass-border); border-radius: 12px; padding: 1rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; }
+        .list-item:hover { border-color: var(--primary); transform: translateX(5px); }
+        .item-info { display: flex; align-items: center; gap: 1rem; }
+        .item-icon { width: 50px; height: 50px; border-radius: 10px; object-fit: cover; border: 1px solid #333; }
+        .item-details h4 { font-size: 1.1rem; margin-bottom: 0.2rem; display: flex; align-items: center; gap: 0.8rem; }
+        .badge { font-size: 0.65rem; padding: 0.3rem 0.8rem; border-radius: 100px; font-weight: bold; text-transform: uppercase; }
+        .badge.Free { background: var(--primary-dim); color: var(--primary); border: 1px solid var(--primary); }
+        .badge.Premium { background: var(--gold-dim); color: var(--gold); border: 1px solid var(--gold); }
+        .badge.Paid { background: var(--danger-dim); color: var(--danger); border: 1px solid var(--danger); }
+        .badge.hidden { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid #555; }
+        
+        .action-btn { width: 35px; height: 35px; border-radius: 8px; background: var(--bg-dark); border: 1px solid var(--glass-border); color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; margin-left: 5px; }
+        .action-btn.edit:hover { background: var(--primary-dim); color: var(--primary); border-color: var(--primary); }
+        .action-btn.delete:hover { background: var(--danger-dim); color: var(--danger); border-color: var(--danger); }
+        .item-actions { display: flex; }
+
+        /* Toast */
+        .toast-container { position: fixed; top: 90px; right: 20px; z-index: 9999; }
+        .toast { background: var(--bg-elevated); border-left: 4px solid var(--primary); padding: 1rem 1.5rem; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); display: flex; gap: 10px; align-items: center; animation: slideIn 0.3s; font-family: var(--font-body); font-weight: 500; }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
     </style>
 </head>
 <body>
-    <canvas id="matrixCanvas"></canvas>
-    
     <div class="grid-overlay"></div>
-    <div class="scanline-effect"></div>
-    <div class="glow-orb orb-1"></div>
-    <div class="glow-orb orb-2"></div>
-
     <div class="toast-container" id="toastContainer"></div>
 
-    <div class="login-universe" id="loginUniverse">
-        <div class="login-pod" id="loginPod">
-            <div class="corner-element corner-tl"></div>
-            <div class="corner-element corner-tr"></div>
-            <div class="corner-element corner-bl"></div>
-            <div class="corner-element corner-br"></div>
-
-            <div class="loading-overlay" id="loadingOverlay">
-                <div class="loader"></div>
-                <div class="loading-text" id="loadingText">VERIFYING CREDENTIALS</div>
-            </div>
-
-            <div class="logo-container">
-                <div class="logo-cyber">
-                    <img class="logo-img" 
-                         src="data:image/png;base64,PASTE_YOUR_BASE64_STRING_HERE" 
-                         alt="MVX Logo">
-                </div>
-            </div>
-
-            <div class="title-section">
-                <h2>NEXUS ACCESS</h2>
-                <div class="subtitle">SECURE AUTHENTICATION PORTAL v4.0</div>
-                <div class="status-indicator" id="statusIndicator">
-                    <i class="fas fa-circle"></i>
-                    <span>ENCRYPTED CONNECTION</span>
-                </div>
-            </div>
-
-            <div class="status-message" id="statusMessage"></div>
-
-            <div class="input-group">
-                <label>SECURITY CLEARANCE CODE</label>
-                <div class="input-wrapper">
-                    <i class="fas fa-key"></i>
-                    <input type="password" 
-                           id="passwordInput" 
-                           class="input-field" 
-                           placeholder="••••••••••" 
-                           maxlength="20"
-                           autocomplete="off"
-                           autofocus
-                           oninput="updatePasswordStrength()">
-                </div>
-                <div class="password-strength">
-                    <div class="strength-bar" id="strength1"></div>
-                    <div class="strength-bar" id="strength2"></div>
-                    <div class="strength-bar" id="strength3"></div>
-                    <div class="strength-bar" id="strength4"></div>
-                </div>
-            </div>
-
-            <button class="login-btn" onclick="attemptLogin()" id="loginButton">
-                <i class="fas fa-unlock-alt"></i>
-                <span>AUTHORIZE ACCESS</span>
+    <header class="admin-header">
+        <div class="header-left">
+            <span class="brand-text">MVX ADMIN NEXUS</span>
+        </div>
+        <div class="header-right">
+            <button class="logout-btn" onclick="logoutSystem()">
+                <i class="fas fa-power-off"></i> TERMINATE
             </button>
+        </div>
+    </header>
 
-            <div class="access-options">
-                <a href="index.html" class="back-link">
-                    <i class="fas fa-arrow-left"></i>
-                    RETURN TO STORE
-                </a>
-                <div class="biometric-option" title="Biometric Access" onclick="simulateBiometric()">
-                    <i class="fas fa-fingerprint"></i>
+    <div class="admin-container">
+        <div class="workspace-grid">
+            
+            <div class="admin-panel">
+                <div class="panel-header">
+                    <h2 id="modeDisplay"><i class="fas fa-terminal"></i> UPLOAD NEW APP</h2>
+                </div>
+
+                <input type="hidden" id="editKey">
+
+                <div class="form-group">
+                    <label><i class="fas fa-tag"></i> APP NAME</label>
+                    <input type="text" id="appName" class="form-control" placeholder="e.g., Free Fire VIP Menu">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label><i class="fas fa-code-branch"></i> VERSION</label>
+                        <input type="text" id="appVersion" class="form-control" placeholder="v1.0">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-weight-hanging"></i> SIZE (MB)</label>
+                        <input type="text" id="appSize" class="form-control" placeholder="45 MB">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> ACCESS TYPE</label>
+                    <select id="accessType" class="form-control" onchange="handleAccessChange()">
+                        <option value="">-- Select Type --</option>
+                        <option value="Free">Free (Public)</option>
+                        <option value="Premium">Premium (Login)</option>
+                        <option value="Paid">Paid (VIP)</option>
+                    </select>
+                </div>
+
+                <div class="form-group dynamic-wrapper" id="categoryWrapper">
+                    <label><i class="fas fa-gamepad"></i> GAME CATEGORY</label>
+                    <select id="appCategory" class="form-control">
+                        <option value="Free Fire">Free Fire</option>
+                        <option value="PUBG">PUBG Mobile</option>
+                        <option value="Blood Strike">Blood Strike</option>
+                        <option value="Tools">Tools / Injectors</option>
+                        <option value="Other Game">Other Game</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label><i class="fas fa-image"></i> APP LOGO</label>
+                        <div class="upload-area">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p style="font-size: 0.8rem; color: var(--text-muted)">Select Logo</p>
+                            <input type="file" accept="image/*" onchange="convertImage(this, 'logoPreview', 'logo')">
+                        </div>
+                        <div class="preview-box" id="logoPreview"></div>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-tv"></i> YOUTUBE BANNER</label>
+                        <div class="upload-area">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p style="font-size: 0.8rem; color: var(--text-muted)">Select Banner</p>
+                            <input type="file" accept="image/*" onchange="convertImage(this, 'bannerPreview', 'banner')">
+                        </div>
+                        <div class="preview-box" id="bannerPreview"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-mobile-alt"></i> PREVIEW SCREENSHOTS (MAX 5)</label>
+                    <div class="upload-area" style="padding: 1rem;">
+                        <i class="fas fa-images"></i>
+                        <p style="font-size: 0.8rem; color: var(--text-muted)">Select up to 5 images</p>
+                        <input type="file" accept="image/*" multiple onchange="convertMultipleImages(this)">
+                    </div>
+                    <div class="preview-box" id="screenshotsPreview"></div>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-link"></i> DOWNLOAD LINK</label>
+                    <input type="url" id="downloadLink" class="form-control" placeholder="Direct Download URL">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label><i class="fas fa-key"></i> FILE PASSWORD</label>
+                        <input type="text" id="filePassword" class="form-control" placeholder="Leave empty if none">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fab fa-youtube"></i> PASSWORD VIDEO LINK</label>
+                        <input type="url" id="videoLink" class="form-control" placeholder="YouTube Video URL">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-share-alt"></i> EXTRA SOCIAL LINKS</label>
+                    <div id="extraLinksContainer">
+                        <div class="extra-link-row">
+                            <input type="text" class="form-control link-title" placeholder="Title (e.g. Telegram)">
+                            <input type="url" class="form-control link-url" placeholder="URL Link">
+                        </div>
+                        <div class="extra-link-row">
+                            <input type="text" class="form-control link-title" placeholder="Title (e.g. YouTube)">
+                            <input type="url" class="form-control link-url" placeholder="URL Link">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-align-left"></i> APP DESCRIPTION</label>
+                    <textarea id="appDescription" class="form-control" placeholder="Write app features, details..."></textarea>
+                </div>
+
+                <div class="toggle-container">
+                    <label style="margin: 0; font-size: 0.9rem;"><i class="fas fa-eye-slash"></i> HIDE APP FROM USERS?</label>
+                    <label class="switch">
+                        <input type="checkbox" id="isHidden">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <button class="btn btn-primary" id="btnAdd" onclick="saveData()"><i class="fas fa-save"></i> PUBLISH TO NEXUS</button>
+                <button class="btn btn-update" id="btnUpdate" onclick="saveData()"><i class="fas fa-sync"></i> SAVE CHANGES</button>
+                <button class="btn btn-cancel" id="btnCancel" onclick="resetForm()"><i class="fas fa-times"></i> CANCEL</button>
+            </div>
+
+            <div class="admin-panel">
+                <div class="panel-header">
+                    <h2><i class="fas fa-database"></i> LIVE DATABASE</h2>
+                    <input type="text" id="searchInput" class="form-control" style="width: 250px; padding: 0.6rem;" placeholder="Search App Name..." onkeyup="filterList()">
+                </div>
+                <div class="list-container" id="listContainer">
+                    <p style="text-align: center; color: var(--text-muted); margin-top: 2rem;">Loading Secure Data...</p>
                 </div>
             </div>
+
         </div>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
     <script>
         // ==========================================================================
-        // SECURE LOGIN SYSTEM - CORE ENGINE
+        // FIREBASE CONFIGURATION (MVX_VIP_SERVER_V5)
         // ==========================================================================
-
-        // ==========================================================================
-        // CONFIGURATION
-        // ==========================================================================
-        const CONFIG = {
-            adminPassword: "1213121345",   // Admin password updated
-            redirectUrl: "admin.html",     // Where to go after login
-            maxAttempts: 5,                // Max failed attempts before lockout
-            lockoutTime: 30,                // Lockout time in seconds
-            sessionDuration: 3600000        // Session duration (1 hour)
+        const firebaseConfig = {
+            apiKey: "AIzaSyAS3UXXrio_-c9uPbHwpDuTVrP-p8d903w",
+            authDomain: "white-2k-17-v4.firebaseapp.com",
+            databaseURL: "https://white-2k-17-v4-default-rtdb.firebaseio.com",
+            projectId: "white-2k-17-v4",
+            storageBucket: "white-2k-17-v4.firebasestorage.app",
+            messagingSenderId: "180909174928",
+            appId: "1:180909174928:android:148861a87d66c6980ca815"
         };
-
-        // ==========================================================================
-        // STATE MANAGEMENT
-        // ==========================================================================
-        let failedAttempts = 0;
-        let isLocked = false;
-        let lockoutTimer = null;
-        let lockoutSeconds = 0;
-
-        // ==========================================================================
-        // DOM ELEMENTS
-        // ==========================================================================
-        const passwordInput = document.getElementById('passwordInput');
-        const loginButton = document.getElementById('loginButton');
-        const statusMessage = document.getElementById('statusMessage');
-        const statusIndicator = document.getElementById('statusIndicator');
-        const loadingOverlay = document.getElementById('loadingOverlay');
-        const loadingText = document.getElementById('loadingText');
-        const loginPod = document.getElementById('loginPod');
-        const loginUniverse = document.getElementById('loginUniverse');
-        const toastContainer = document.getElementById('toastContainer');
         
-        const strengthBars = [
-            document.getElementById('strength1'),
-            document.getElementById('strength2'),
-            document.getElementById('strength3'),
-            document.getElementById('strength4')
-        ];
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+        const database = firebase.database();
+        const DB_PATH = "MVX_VIP_SERVER_V5";
 
-        // ==========================================================================
-        // MATRIX RAIN BACKGROUND
-        // ==========================================================================
-        const canvas = document.getElementById('matrixCanvas');
-        const ctx = canvas.getContext('2d');
-
-        function initMatrix() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+{}[]|\\:;"<>,.?/~`';
-            const fontSize = 14;
-            const columns = canvas.width / fontSize;
-            const drops = [];
-
-            for (let i = 0; i < columns; i++) {
-                drops[i] = Math.floor(Math.random() * canvas.height / fontSize);
-            }
-
-            function drawMatrix() {
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                ctx.fillStyle = '#00e6b8';
-                ctx.font = `${fontSize}px 'Share Tech Mono', monospace`;
-
-                for (let i = 0; i < drops.length; i++) {
-                    const char = chars[Math.floor(Math.random() * chars.length)];
-                    ctx.fillText(char, i * fontSize, drops[i] * fontSize);
-
-                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                        drops[i] = 0;
-                    }
-                    drops[i]++;
-                }
-            }
-
-            setInterval(drawMatrix, 40);
+        // Security Check
+        if (!sessionStorage.getItem('mvx_admin_token')) {
+            window.location.href = 'login.html';
         }
 
-        // ==========================================================================
-        // TOAST SYSTEM
-        // ==========================================================================
-        function showToast(message, type = 'info') {
+        // Global State Variables
+        let allApps = [];
+        let base64Logo = "";
+        let base64Banner = "";
+        let base64Screenshots = [];
+
+        // UI Helpers
+        function showToast(msg, type='success') {
             const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            
-            let icon = 'fa-info-circle';
-            if (type === 'success') icon = 'fa-check-circle';
-            if (type === 'error') icon = 'fa-times-circle';
-            if (type === 'warning') icon = 'fa-exclamation-triangle';
-            
-            toast.innerHTML = `<i class="fas ${icon}"></i> <span>${message}</span>`;
-            toastContainer.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateX(50px)';
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
+            toast.className = `toast`;
+            toast.style.borderLeftColor = type === 'error' ? 'var(--danger)' : 'var(--success)';
+            toast.innerHTML = `<i class="fas fa-${type==='error'?'times':'check'}-circle" style="color:${type==='error'?'var(--danger)':'var(--success)'}"></i> <span>${msg}</span>`;
+            document.getElementById('toastContainer').appendChild(toast);
+            setTimeout(() => { toast.style.opacity = '0'; setTimeout(()=>toast.remove(), 300); }, 3000);
         }
 
-        // ==========================================================================
-        // PASSWORD STRENGTH INDICATOR
-        // ==========================================================================
-        function updatePasswordStrength() {
-            const val = passwordInput.value;
-            // Adjusted logic to fit up to 10 characters smoothly across 4 bars
-            const strength = Math.min(Math.ceil(val.length / 2.5), 4);
-            
-            strengthBars.forEach((bar, index) => {
-                if (index < strength && val.length > 0) {
-                    bar.classList.add('active');
-                } else {
-                    bar.classList.remove('active');
-                }
-            });
-
-            if (val.length >= 8) {
-                passwordInput.style.borderColor = 'var(--primary)';
-                passwordInput.style.boxShadow = '0 0 20px var(--primary-dim)';
-            } else {
-                passwordInput.style.borderColor = '';
-                passwordInput.style.boxShadow = '';
-            }
+        function handleAccessChange() {
+            const accessType = document.getElementById('accessType').value;
+            const wrapper = document.getElementById('categoryWrapper');
+            if(accessType) { wrapper.style.display = 'block'; } else { wrapper.style.display = 'none'; }
         }
 
-        // ==========================================================================
-        // ATTEMPT LOGIN
-        // ==========================================================================
-        function attemptLogin() {
-            // Check if locked out
-            if (isLocked) {
-                showStatus(`⛔ ACCESS LOCKED - WAIT ${lockoutSeconds}S`, 'error');
-                showToast(`⛔ System locked - ${lockoutSeconds}s remaining`, 'error');
-                return;
-            }
-
-            const password = passwordInput.value;
-
-            // Validate input
-            if (!password) {
-                showStatus('⚠️ ACCESS CODE REQUIRED', 'error');
-                showToast('⚠️ Please enter access code', 'warning');
-                passwordInput.focus();
-                return;
-            }
-
-            // Show loading
-            loadingOverlay.classList.add('active');
-            loginButton.disabled = true;
-
-            // Simulate verification delay
-            setTimeout(() => {
-                if (password === CONFIG.adminPassword) {
-                    // SUCCESS
-                    loadingText.textContent = 'ACCESS GRANTED - DECRYPTING...';
-                    showStatus('✅ ACCESS GRANTED - WELCOME ADMIN', 'success');
-                    showToast('✅ Access granted! Redirecting...', 'success');
-                    
-                    // Visual success effect
-                    loginPod.style.borderColor = 'var(--primary)';
-                    loginPod.style.boxShadow = '0 0 50px var(--primary)';
-                    
-                    // Save admin session
-                    sessionStorage.setItem('mvx_admin_token', 'authorized_secure_session');
-                    sessionStorage.setItem('login_timestamp', Date.now());
-
-                    // Redirect to admin panel
-                    setTimeout(() => {
-                        window.location.href = CONFIG.redirectUrl;
-                    }, 1500);
-                } else {
-                    // FAILED
-                    loadingOverlay.classList.remove('active');
-                    loginButton.disabled = false;
-                    
-                    showStatus('❌ ACCESS DENIED - INVALID CREDENTIALS', 'error');
-                    showToast('❌ Invalid access code', 'error');
-                    passwordInput.value = '';
-                    passwordInput.focus();
-                    
-                    // Shake effect
-                    loginPod.classList.add('glitch');
-                    setTimeout(() => loginPod.classList.remove('glitch'), 500);
-                    
-                    failedAttempts++;
-                    checkLockout();
-                }
-            }, 1500);
-        }
-
-        // ==========================================================================
-        // CHECK LOCKOUT
-        // ==========================================================================
-        function checkLockout() {
-            if (failedAttempts >= CONFIG.maxAttempts) {
-                isLocked = true;
-                lockoutSeconds = CONFIG.lockoutTime;
-                
-                showStatus(`⛔ MAXIMUM ATTEMPTS EXCEEDED - LOCKED FOR ${lockoutSeconds}S`, 'error');
-                showToast(`⛔ System locked for ${lockoutSeconds}s`, 'error');
-                
-                // Disable input
-                passwordInput.disabled = true;
-                loginButton.disabled = true;
-                
-                // Start countdown
-                lockoutTimer = setInterval(() => {
-                    lockoutSeconds--;
-                    
-                    if (lockoutSeconds <= 0) {
-                        clearInterval(lockoutTimer);
-                        isLocked = false;
-                        failedAttempts = 0;
-                        
-                        passwordInput.disabled = false;
-                        loginButton.disabled = false;
-                        
-                        showStatus('🟢 LOCKOUT EXPIRED - TRY AGAIN', 'success');
-                        showToast('🟢 Lockout expired - you can try again', 'success');
-                        
-                        statusIndicator.innerHTML = '<i class="fas fa-circle"></i><span>ENCRYPTED CONNECTION</span>';
-                        statusIndicator.style.color = '';
-                        statusIndicator.style.borderColor = '';
-                    } else {
-                        showStatus(`⛔ LOCKED - ${lockoutSeconds}S REMAINING`, 'error');
-                        statusIndicator.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>SYSTEM LOCKED</span>';
-                        statusIndicator.style.color = 'var(--danger)';
-                        statusIndicator.style.borderColor = 'var(--danger)';
-                    }
-                }, 1000);
-            } else {
-                const attemptsLeft = CONFIG.maxAttempts - failedAttempts;
-                showStatus(`⚠️ ${attemptsLeft} ATTEMPT(S) REMAINING`, 'warning');
-            }
-        }
-
-        // ==========================================================================
-        // STATUS MESSAGE
-        // ==========================================================================
-        function showStatus(message, type = 'info') {
-            statusMessage.textContent = message;
-            statusMessage.className = `status-message ${type}`;
-            
-            if (type === 'error') {
-                statusIndicator.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>ACCESS BLOCKED</span>';
-                statusIndicator.style.color = 'var(--danger)';
-                statusIndicator.style.borderColor = 'var(--danger)';
-            } else if (type === 'success') {
-                statusIndicator.innerHTML = '<i class="fas fa-check-circle"></i><span>ACCESS GRANTED</span>';
-                statusIndicator.style.color = 'var(--success)';
-                statusIndicator.style.borderColor = 'var(--success)';
-            } else if (type === 'warning') {
-                statusIndicator.innerHTML = '<i class="fas fa-exclamation-circle"></i><span>VERIFICATION REQUIRED</span>';
-                statusIndicator.style.color = 'var(--warning)';
-                statusIndicator.style.borderColor = 'var(--warning)';
-            } else {
-                statusIndicator.innerHTML = '<i class="fas fa-circle"></i><span>ENCRYPTED CONNECTION</span>';
-                statusIndicator.style.color = '';
-                statusIndicator.style.borderColor = '';
-            }
-        }
-
-        // ==========================================================================
-        // SIMULATE BIOMETRIC
-        // ==========================================================================
-        function simulateBiometric() {
-            showStatus('🔴 BIOMETRIC SCANNER OFFLINE - USE PASSWORD', 'error');
-            showToast('🔴 Biometric system under maintenance', 'error');
-            
-            // Visual feedback
-            const biometricBtn = document.querySelector('.biometric-option');
-            biometricBtn.style.color = 'var(--danger)';
-            biometricBtn.style.borderColor = 'var(--danger)';
-            
-            setTimeout(() => {
-                biometricBtn.style.color = '';
-                biometricBtn.style.borderColor = '';
-            }, 2000);
-        }
-
-        // ==========================================================================
-        // 3D PARALLAX EFFECT
-        // ==========================================================================
-        function initParallax() {
-            let rafId = null;
-            let targetX = 0, targetY = 0;
-            let currentX = 0, currentY = 0;
-
-            function handleMouseMove(e) {
-                const centerX = window.innerWidth / 2;
-                const centerY = window.innerHeight / 2;
-                
-                targetX = (centerX - e.pageX) / 40;
-                targetY = (centerY - e.pageY) / 40;
-            }
-
-            function updateParallax() {
-                currentX += (targetX - currentX) * 0.08;
-                currentY += (targetY - currentY) * 0.08;
-                
-                loginUniverse.style.transform = `rotateY(${currentX}deg) rotateX(${currentY}deg)`;
-                
-                rafId = requestAnimationFrame(updateParallax);
-            }
-
-            function handleMouseLeave() {
-                targetX = 0;
-                targetY = 0;
-                
-                loginUniverse.style.transition = 'transform 0.5s ease';
-                loginUniverse.style.transform = 'rotateY(0deg) rotateX(0deg)';
-                
-                setTimeout(() => {
-                    loginUniverse.style.transition = 'none';
-                }, 500);
-            }
-
-            document.addEventListener('mousemove', handleMouseMove, { passive: true });
-            document.addEventListener('mouseleave', handleMouseLeave);
-            
-            rafId = requestAnimationFrame(updateParallax);
-
-            window.cleanupParallax = () => {
-                if (rafId) cancelAnimationFrame(rafId);
-                document.removeEventListener('mousemove', handleMouseMove);
-                document.removeEventListener('mouseleave', handleMouseLeave);
+        // Base64 Converters
+        function convertImage(input, previewId, type) {
+            const file = input.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const b64 = e.target.result;
+                const cssClass = type === 'banner' ? 'preview-banner' : 'preview-img';
+                document.getElementById(previewId).innerHTML = `<img src="${b64}" class="${cssClass}">`;
+                if(type === 'logo') base64Logo = b64;
+                if(type === 'banner') base64Banner = b64;
             };
+            reader.readAsDataURL(file);
         }
 
-        // ==========================================================================
-        // ENTER KEY SUPPORT
-        // ==========================================================================
-        passwordInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                attemptLogin();
+        function convertMultipleImages(input) {
+            const files = input.files;
+            if(files.length > 5) { showToast("Max 5 screenshots allowed!", "error"); return; }
+            base64Screenshots = [];
+            document.getElementById('screenshotsPreview').innerHTML = '';
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    base64Screenshots.push(e.target.result);
+                    document.getElementById('screenshotsPreview').innerHTML += `<img src="${e.target.result}" class="preview-img">`;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Extract Extra Links
+        function getExtraLinks() {
+            let links = [];
+            document.querySelectorAll('.extra-link-row').forEach(row => {
+                const title = row.querySelector('.link-title').value;
+                const url = row.querySelector('.link-url').value;
+                if(title && url) links.push({ title, url });
+            });
+            return links;
+        }
+
+        function setExtraLinks(links) {
+            const rows = document.querySelectorAll('.extra-link-row');
+            if(links && links[0]) { rows[0].querySelector('.link-title').value = links[0].title; rows[0].querySelector('.link-url').value = links[0].url; }
+            if(links && links[1]) { rows[1].querySelector('.link-title').value = links[1].title; rows[1].querySelector('.link-url').value = links[1].url; }
+        }
+
+        // SAVE OR UPDATE LOGIC
+        async function saveData() {
+            const appName = document.getElementById('appName').value;
+            const access = document.getElementById('accessType').value;
+            const dLink = document.getElementById('downloadLink').value;
+            
+            if(!appName || !access || !dLink) { showToast("Name, Access Type & Download Link required!", "error"); return; }
+
+            const editKey = document.getElementById('editKey').value;
+            let finalLogo = base64Logo;
+            let finalBanner = base64Banner;
+            let finalScreenshots = base64Screenshots;
+
+            // Retain old images if updating without new files
+            if(editKey) {
+                const oldData = allApps.find(a => a.key === editKey);
+                if(!finalLogo) finalLogo = oldData.logoBase64 || "";
+                if(!finalBanner) finalBanner = oldData.bannerBase64 || "";
+                if(finalScreenshots.length === 0) finalScreenshots = oldData.screenshots || [];
             }
-        });
 
-        // ==========================================================================
-        // RESIZE HANDLER
-        // ==========================================================================
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
+            const appData = {
+                appName: appName,
+                version: document.getElementById('appVersion').value || 'v1.0',
+                size: document.getElementById('appSize').value || 'N/A',
+                accessType: access,
+                gameCategory: document.getElementById('appCategory').value,
+                logoBase64: finalLogo,
+                bannerBase64: finalBanner,
+                screenshots: finalScreenshots,
+                downloadUrl: dLink,
+                password: document.getElementById('filePassword').value,
+                passwordVideoUrl: document.getElementById('videoLink').value,
+                description: document.getElementById('appDescription').value,
+                extraLinks: getExtraLinks(),
+                isHidden: document.getElementById('isHidden').checked,
+                timestamp: Date.now()
+            };
 
-        // ==========================================================================
-        // INITIALIZATION
-        // ==========================================================================
-        function init() {
-            initMatrix();
-            initParallax();
-            
-            // Focus password input on load
-            passwordInput.focus();
-            
-            // Clear any existing admin session (prevents auto-login)
-            if (sessionStorage.getItem('mvx_admin_token')) {
-                // Check if session expired
-                const timestamp = sessionStorage.getItem('login_timestamp');
-                if (timestamp && (Date.now() - parseInt(timestamp)) < CONFIG.sessionDuration) {
-                    // Valid session, redirect to admin
-                    window.location.href = 'admin.html';
+            try {
+                if(editKey) {
+                    await database.ref(`${DB_PATH}/${editKey}`).update(appData);
+                    showToast("App Updated Successfully!");
                 } else {
-                    // Expired session, clear it
-                    sessionStorage.removeItem('mvx_admin_token');
-                    sessionStorage.removeItem('login_timestamp');
+                    await database.ref(DB_PATH).push(appData);
+                    showToast("App Published to Nexus!");
                 }
-            }
-            
-            // Show welcome message
-            setTimeout(() => {
-                showToast('🟢 Secure connection established', 'success');
-            }, 1000);
+                resetForm();
+            } catch (error) { showToast(error.message, "error"); }
         }
 
-        // Make functions global
-        window.attemptLogin = attemptLogin;
-        window.updatePasswordStrength = updatePasswordStrength;
-        window.simulateBiometric = simulateBiometric;
-
-        // Start initialization
-        init();
-
-        // ==========================================================================
-        // ERROR HANDLING
-        // ==========================================================================
-        window.addEventListener('error', (e) => {
-            console.error('Global error:', e.error);
-            showToast('⚠️ System error occurred', 'error');
+        // LOAD DATA
+        database.ref(DB_PATH).on('value', (snap) => {
+            const data = snap.val();
+            const list = document.getElementById('listContainer');
+            allApps = [];
+            if(!data) { list.innerHTML = '<p style="text-align:center; color:gray; margin-top:20px;">No Apps Found</p>'; return; }
+            allApps = Object.entries(data).map(([key, val]) => ({key, ...val})).reverse();
+            renderList(allApps);
         });
 
-        // ==========================================================================
-        // CLEANUP
-        // ==========================================================================
-        window.addEventListener('beforeunload', () => {
-            if (typeof window.cleanupParallax === 'function') {
-                window.cleanupParallax();
+        function renderList(apps) {
+            const list = document.getElementById('listContainer');
+            list.innerHTML = '';
+            apps.forEach(app => {
+                const isHidden = app.isHidden ? '<span class="badge hidden"><i class="fas fa-eye-slash"></i> Hidden</span>' : '';
+                const logoSrc = app.logoBase64 || 'https://cdn-icons-png.flaticon.com/512/564/564619.png';
+                list.innerHTML += `
+                    <div class="list-item" style="${app.isHidden ? 'opacity:0.5;' : ''}">
+                        <div class="item-info">
+                            <img src="${logoSrc}" class="item-icon">
+                            <div class="item-details">
+                                <h4>${app.appName} <span class="badge ${app.accessType}">${app.accessType}</span> ${isHidden}</h4>
+                                <span>${app.gameCategory} • ${app.version}</span>
+                            </div>
+                        </div>
+                        <div class="item-actions">
+                            <div class="action-btn edit" onclick='editApp("${app.key}")'><i class="fas fa-edit"></i></div>
+                            <div class="action-btn delete" onclick='deleteApp("${app.key}")'><i class="fas fa-trash"></i></div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // EDIT, DELETE, RESET
+        function editApp(key) {
+            const app = allApps.find(a => a.key === key);
+            if(!app) return;
+
+            document.getElementById('editKey').value = key;
+            document.getElementById('appName').value = app.appName;
+            document.getElementById('appVersion').value = app.version || '';
+            document.getElementById('appSize').value = app.size || '';
+            
+            document.getElementById('accessType').value = app.accessType;
+            handleAccessChange();
+            setTimeout(() => { document.getElementById('appCategory').value = app.gameCategory; }, 50);
+
+            document.getElementById('downloadLink').value = app.downloadUrl || '';
+            document.getElementById('filePassword').value = app.password || '';
+            document.getElementById('videoLink').value = app.passwordVideoUrl || '';
+            document.getElementById('appDescription').value = app.description || '';
+            document.getElementById('isHidden').checked = app.isHidden || false;
+            setExtraLinks(app.extraLinks);
+
+            // Previews
+            base64Logo = ""; base64Banner = ""; base64Screenshots = [];
+            document.getElementById('logoPreview').innerHTML = app.logoBase64 ? `<img src="${app.logoBase64}" class="preview-img">` : '';
+            document.getElementById('bannerPreview').innerHTML = app.bannerBase64 ? `<img src="${app.bannerBase64}" class="preview-banner">` : '';
+            document.getElementById('screenshotsPreview').innerHTML = '';
+            if(app.screenshots) { app.screenshots.forEach(img => { document.getElementById('screenshotsPreview').innerHTML += `<img src="${img}" class="preview-img">`; }); }
+
+            document.getElementById('modeDisplay').innerHTML = '<i class="fas fa-edit"></i> EDITING APP';
+            document.getElementById('modeDisplay').style.color = 'var(--gold)';
+            document.getElementById('btnAdd').style.display = 'none';
+            document.getElementById('btnUpdate').style.display = 'flex';
+            document.getElementById('btnCancel').style.display = 'flex';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function deleteApp(key) {
+            if(confirm("Are you sure you want to delete this app permanently?")) {
+                database.ref(`${DB_PATH}/${key}`).remove();
+                showToast("App Deleted Successfully");
             }
-            if (lockoutTimer) {
-                clearInterval(lockoutTimer);
-            }
-        });
+        }
+
+        function resetForm() {
+            document.querySelectorAll('input, textarea, select').forEach(el => {
+                if(el.type === 'checkbox') el.checked = false; else el.value = '';
+            });
+            document.getElementById('logoPreview').innerHTML = ''; document.getElementById('bannerPreview').innerHTML = ''; document.getElementById('screenshotsPreview').innerHTML = '';
+            base64Logo = ""; base64Banner = ""; base64Screenshots = [];
+            
+            document.getElementById('categoryWrapper').style.display = 'none';
+            document.getElementById('modeDisplay').innerHTML = '<i class="fas fa-terminal"></i> UPLOAD NEW APP';
+            document.getElementById('modeDisplay').style.color = '';
+            document.getElementById('btnAdd').style.display = 'flex';
+            document.getElementById('btnUpdate').style.display = 'none';
+            document.getElementById('btnCancel').style.display = 'none';
+        }
+
+        function filterList() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allApps.filter(a => a.appName.toLowerCase().includes(term));
+            renderList(filtered);
+        }
+
+        function logoutSystem() {
+            sessionStorage.removeItem('mvx_admin_token');
+            window.location.href = 'login.html';
+        }
     </script>
 </body>
 </html>
