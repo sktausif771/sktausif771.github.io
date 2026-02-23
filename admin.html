@@ -515,7 +515,7 @@
         }
 
         /* ==========================================================================
-           Input Groups - UPDATED with Email Field
+           Input Group - ONLY PASSWORD FIELD
            ========================================================================== */
         .input-group {
             margin-bottom: 1.8rem;
@@ -579,11 +579,6 @@
             font-size: 0.9rem;
             letter-spacing: 0;
             opacity: 0.5;
-        }
-
-        /* Email field specific */
-        #emailInput {
-            text-transform: lowercase;
         }
 
         /* ==========================================================================
@@ -1011,22 +1006,7 @@
 
             <div class="status-message" id="statusMessage"></div>
 
-            <!-- NEW: Email Input Field -->
-            <div class="input-group">
-                <label>IDENTIFICATION CODE (EMAIL)</label>
-                <div class="input-wrapper">
-                    <i class="fas fa-envelope"></i>
-                    <input type="email" 
-                           id="emailInput" 
-                           class="input-field" 
-                           placeholder="admin@mvx.cyber" 
-                           maxlength="50"
-                           autocomplete="off"
-                           value="admin@mvx.cyber">
-                </div>
-            </div>
-
-            <!-- Password Input Field (modified) -->
+            <!-- ONLY PASSWORD FIELD - NO EMAIL -->
             <div class="input-group">
                 <label>SECURITY CLEARANCE CODE</label>
                 <div class="input-wrapper">
@@ -1074,7 +1054,7 @@
         // CONFIGURATION
         // ==========================================================================
         const CONFIG = {
-            adminPassword: "1213",        // Admin password (change this)
+            adminPassword: "1213",        // Admin password - এইটাই দিতে হবে
             redirectUrl: "admin.html",     // Where to go after login
             maxAttempts: 5,                // Max failed attempts before lockout
             lockoutTime: 30,                // Lockout time in seconds
@@ -1092,7 +1072,6 @@
         // ==========================================================================
         // DOM ELEMENTS
         // ==========================================================================
-        const emailInput = document.getElementById('emailInput');
         const passwordInput = document.getElementById('passwordInput');
         const loginButton = document.getElementById('loginButton');
         const statusMessage = document.getElementById('statusMessage');
@@ -1197,7 +1176,7 @@
         }
 
         // ==========================================================================
-        // ATTEMPT LOGIN - UPDATED with Email + Password 1213
+        // ATTEMPT LOGIN - ONLY PASSWORD CHECK
         // ==========================================================================
         function attemptLogin() {
             // Check if locked out
@@ -1207,17 +1186,9 @@
                 return;
             }
 
-            const email = emailInput.value;
             const password = passwordInput.value;
 
-            // Validate inputs
-            if (!email) {
-                showStatus('⚠️ IDENTIFICATION CODE REQUIRED', 'error');
-                showToast('⚠️ Please enter email', 'warning');
-                emailInput.focus();
-                return;
-            }
-
+            // Validate password
             if (!password) {
                 showStatus('⚠️ ACCESS CODE REQUIRED', 'error');
                 showToast('⚠️ Please enter access code', 'warning');
@@ -1232,21 +1203,13 @@
                 return;
             }
 
-            // Simple email validation (basic check)
-            if (!email.includes('@') || !email.includes('.')) {
-                showStatus('⚠️ INVALID IDENTIFICATION FORMAT', 'error');
-                showToast('⚠️ Please enter a valid email', 'warning');
-                emailInput.focus();
-                return;
-            }
-
             // Show loading
             loadingOverlay.classList.add('active');
             loginButton.disabled = true;
 
             // Simulate verification delay
             setTimeout(() => {
-                // Check ONLY password = 1213 (email can be anything)
+                // Check ONLY password = 1213
                 if (password === CONFIG.adminPassword) {
                     // SUCCESS - Password matches 1213
                     loadingText.textContent = 'ACCESS GRANTED - DECRYPTING...';
@@ -1260,7 +1223,6 @@
                     // Save admin session
                     sessionStorage.setItem('mvx_admin_token', 'authorized_secure_session');
                     sessionStorage.setItem('login_timestamp', Date.now());
-                    sessionStorage.setItem('user_email', email);
 
                     // Redirect to admin panel
                     setTimeout(() => {
@@ -1298,7 +1260,6 @@
                 showToast(`⛔ System locked for ${lockoutSeconds}s`, 'error');
                 
                 // Disable input
-                emailInput.disabled = true;
                 passwordInput.disabled = true;
                 loginButton.disabled = true;
                 
@@ -1311,7 +1272,6 @@
                         isLocked = false;
                         failedAttempts = 0;
                         
-                        emailInput.disabled = false;
                         passwordInput.disabled = false;
                         loginButton.disabled = false;
                         
@@ -1436,12 +1396,6 @@
             }
         });
 
-        emailInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                passwordInput.focus();
-            }
-        });
-
         // ==========================================================================
         // RESIZE HANDLER
         // ==========================================================================
@@ -1457,9 +1411,6 @@
             initMatrix();
             initParallax();
             
-            // Set default email
-            emailInput.value = 'admin@mvx.cyber';
-            
             // Focus password input on load
             passwordInput.focus();
             
@@ -1474,7 +1425,6 @@
                     // Expired session, clear it
                     sessionStorage.removeItem('mvx_admin_token');
                     sessionStorage.removeItem('login_timestamp');
-                    sessionStorage.removeItem('user_email');
                 }
             }
             
