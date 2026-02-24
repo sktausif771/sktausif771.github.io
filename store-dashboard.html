@@ -11,10 +11,13 @@
     
     <style>
         /* ==========================================================================
-           MVX STORE ADMIN DASHBOARD V4.0 (ALIGNED & MANAGED)
+           MVX STORE ADMIN DASHBOARD V4.0 (MOBILE FIXED)
            ========================================================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; }
         
+        /* ডানে-বামে স্ক্রল পুরোপুরি বন্ধ করার জন্য */
+        html, body { max-width: 100vw; overflow-x: hidden; }
+
         :root {
             --primary: #00e6b8; --primary-dim: rgba(0, 230, 184, 0.15);
             --danger: #ff003c; --warning: #ffd700;
@@ -27,30 +30,30 @@
         body { background: var(--bg-void); color: var(--text-primary); font-family: var(--font-body); padding-bottom: 50px; }
         
         /* Navbar */
-        .navbar { position: sticky; top: 0; background: var(--glass-bg); backdrop-filter: blur(10px); border-bottom: var(--glass-border); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+        .navbar { position: sticky; top: 0; background: var(--glass-bg); backdrop-filter: blur(10px); border-bottom: var(--glass-border); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 100; width: 100%; }
         .brand { font-family: var(--font-head); font-size: 1.5rem; color: var(--primary); }
         .nav-btns button { background: var(--danger); color: #fff; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
         .nav-btns button:hover { opacity: 0.8; }
 
         /* Container */
-        .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; display: grid; gap: 30px; grid-template-columns: 1fr; }
+        .container { width: 100%; max-width: 1100px; margin: 30px auto; padding: 0 20px; display: grid; gap: 30px; grid-template-columns: 1fr; }
 
         /* Card Setup */
-        .card { background: var(--bg-card); border: var(--glass-border); border-radius: 16px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .card { background: var(--bg-card); border: var(--glass-border); border-radius: 16px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; }
         .card-title { font-family: var(--font-head); color: var(--primary); margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
 
-        /* Form Layout (Fixed Alignment) */
+        /* Form Layout */
         .form-grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-bottom: 15px; }
         .form-grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; }
         
-        .form-group { display: flex; flex-direction: column; }
+        .form-group { display: flex; flex-direction: column; width: 100%; }
         label { margin-bottom: 8px; color: var(--text-muted); font-size: 0.9rem; font-weight: 600; }
-        input, select, textarea { width: 100%; height: 45px; background: var(--bg-input); border: 1px solid #333; color: #fff; padding: 0 15px; border-radius: 8px; font-family: var(--font-body); outline: none; transition: 0.3s; font-size: 16px !important; /* iOS Zoom Fix */ }
+        input, select, textarea { width: 100%; height: 45px; background: var(--bg-input); border: 1px solid #333; color: #fff; padding: 0 15px; border-radius: 8px; font-family: var(--font-body); outline: none; transition: 0.3s; font-size: 16px !important; }
         textarea { height: auto; min-height: 100px; padding: 15px; resize: vertical; }
         input:focus, select:focus, textarea:focus { border-color: var(--primary); }
 
         /* Image Upload Grid */
-        .img-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; }
+        .img-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; width: 100%; }
         .img-upload-box { background: var(--bg-input); border: 2px dashed #333; border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; height: 150px; display: flex; flex-direction: column; justify-content: center; }
         .img-upload-box:hover { border-color: var(--primary); }
         .img-upload-box img { max-width: 100%; max-height: 100%; border-radius: 8px; display: none; margin: 0 auto; object-fit: contain; }
@@ -58,21 +61,21 @@
         .img-upload-box input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
 
         /* Previews Section */
-        .preview-list { display: flex; gap: 10px; overflow-x: auto; margin-top: 10px; padding-bottom: 10px; }
+        .preview-list { display: flex; gap: 10px; overflow-x: auto; margin-top: 10px; padding-bottom: 10px; width: 100%; }
         .preview-item { position: relative; width: 80px; height: 120px; flex-shrink: 0; border-radius: 8px; overflow: hidden; border: 1px solid var(--primary); }
         .preview-item img { width: 100%; height: 100%; object-fit: cover; }
         .preview-item .remove-btn { position: absolute; top: 5px; right: 5px; background: red; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 12px; font-weight: bold; }
 
         /* Extra Links */
-        .extra-link-row { display: grid; grid-template-columns: 1fr 2fr auto; gap: 10px; margin-bottom: 10px; }
+        .extra-link-row { display: grid; grid-template-columns: 1fr 2fr auto; gap: 10px; margin-bottom: 10px; width: 100%; }
         .btn-add-link { background: var(--primary-dim); border: 1px dashed var(--primary); color: var(--primary); width: 100%; height: 45px; border-radius: 8px; cursor: pointer; font-weight: bold; }
 
         /* Submit Button */
         .btn-submit { width: 100%; height: 55px; background: var(--primary); color: #000; font-family: var(--font-head); font-size: 1.2rem; font-weight: 700; border: none; border-radius: 12px; cursor: pointer; margin-top: 20px; transition: 0.3s; }
         .btn-submit:hover { box-shadow: 0 0 20px var(--primary-dim); transform: translateY(-2px); }
 
-        /* App Management Table */
-        .table-responsive { overflow-x: auto; margin-top: 15px; border-radius: 8px; border: 1px solid #333; }
+        /* App Management Table (Desktop View) */
+        .table-responsive { width: 100%; overflow-x: auto; margin-top: 15px; border-radius: 8px; border: 1px solid #333; }
         table { width: 100%; border-collapse: collapse; text-align: left; background: var(--bg-input); }
         th, td { padding: 12px 15px; border-bottom: 1px solid #333; white-space: nowrap; }
         th { background: rgba(0,0,0,0.5); color: var(--primary); font-family: var(--font-head); font-size: 0.9rem; }
@@ -95,7 +98,7 @@
         @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
 
         /* ==========================================================================
-           মোবাইলের জন্য রেসপন্সিভ (Mobile Responsive Fix)
+           মোবাইলের জন্য স্পেশাল রেসপন্সিভ (Table to Card Fix)
            ========================================================================== */
         @media (max-width: 768px) {
             .navbar { padding: 10px 15px; }
@@ -104,16 +107,25 @@
             .container { margin: 15px auto; padding: 0 10px; gap: 20px; }
             .card { padding: 15px; border-radius: 12px; }
             
-            /* গ্রিডগুলো মোবাইলে ১ কলাম করে দেওয়া হলো */
             .form-grid-2, .form-grid-3, .img-grid { grid-template-columns: 1fr; }
             
-            /* এক্সট্রা লিংকগুলোর ডিজাইন মোবাইলে ফিক্স করা হলো */
             .extra-link-row { display: flex; flex-direction: column; gap: 8px; background: rgba(255,255,255,0.02); padding: 10px; border-radius: 8px; border: 1px solid #333; }
             .extra-link-row button { width: 100%; height: 40px; margin-top: 5px; }
-            
             .btn-submit { height: 50px; font-size: 1.1rem; }
             .card-title { font-size: 1.2rem; flex-direction: column; align-items: flex-start; gap: 10px; }
             #cancelEditBtn { width: 100%; padding: 10px; }
+
+            /* টেবিল ফিক্স: মোবাইলে টেবিলকে কার্ড বানিয়ে দেওয়া হলো যেন ডানে-বামে সরাতে না হয় */
+            .table-responsive { border: none; background: transparent; overflow: hidden; }
+            table, thead, tbody, tr, td { display: block; width: 100%; }
+            thead { display: none; /* মোবাইলে হেডিং হাইড করা হলো */ }
+            tr { background: rgba(255,255,255,0.03); border: 1px solid #333; border-radius: 12px; margin-bottom: 15px; padding: 15px; display: flex; flex-direction: column; gap: 8px; }
+            td { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(255,255,255,0.1); padding: 8px 0; white-space: normal; text-align: right; font-size: 0.9rem; }
+            td:last-child { border-bottom: none; padding-bottom: 0; }
+            
+            /* CSS দিয়ে লেবেল যুক্ত করা হলো */
+            td::before { content: attr(data-label); color: var(--text-muted); font-family: var(--font-head); font-size: 0.85rem; font-weight: bold; text-align: left; padding-right: 15px; flex-shrink: 0; }
+            .action-btns { justify-content: flex-end; width: auto; }
         }
     </style>
 </head>
@@ -313,7 +325,7 @@
 
                 const keys = Object.keys(allAppsData).reverse();
                 if(keys.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">No apps uploaded yet.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan=\"5\" style=\"text-align:center; color:var(--text-muted);\">No apps uploaded yet.</td></tr>`;
                     return;
                 }
 
@@ -326,13 +338,14 @@
                     const hideIcon = isHidden ? "fa-eye" : "fa-eye-slash";
                     const hideTitle = isHidden ? "Unhide App" : "Hide App";
 
+                    // JS এ data-label অ্যাড করা হয়েছে যেন মোবাইলে সুন্দরভাবে শো করে
                     tbody.innerHTML += `
                         <tr>
-                            <td style="font-weight:bold; color:var(--primary);">${app.appName}</td>
-                            <td>${app.gameCategory}</td>
-                            <td>${app.accessType}</td>
-                            <td>${statusBadge}</td>
-                            <td>
+                            <td data-label="App Name" style="font-weight:bold; color:var(--primary);">${app.appName}</td>
+                            <td data-label="Category">${app.gameCategory}</td>
+                            <td data-label="Type">${app.accessType}</td>
+                            <td data-label="Status">${statusBadge}</td>
+                            <td data-label="Actions">
                                 <div class="action-btns">
                                     <button type="button" class="act-btn act-edit" onclick="loadEditData('${id}')" title="Edit"><i class="fas fa-edit"></i></button>
                                     <button type="button" class="act-btn act-hide" onclick="toggleHide('${id}', ${isHidden})" title="${hideTitle}"><i class="fas ${hideIcon}"></i></button>
