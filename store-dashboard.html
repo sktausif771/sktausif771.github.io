@@ -13,7 +13,7 @@
         /* ==========================================================================
            MVX STORE ADMIN DASHBOARD V4.0 (ALIGNED & MANAGED)
            ========================================================================== */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; }
         
         :root {
             --primary: #00e6b8; --primary-dim: rgba(0, 230, 184, 0.15);
@@ -45,7 +45,7 @@
         
         .form-group { display: flex; flex-direction: column; }
         label { margin-bottom: 8px; color: var(--text-muted); font-size: 0.9rem; font-weight: 600; }
-        input, select, textarea { width: 100%; height: 45px; background: var(--bg-input); border: 1px solid #333; color: #fff; padding: 0 15px; border-radius: 8px; font-family: var(--font-body); outline: none; transition: 0.3s; }
+        input, select, textarea { width: 100%; height: 45px; background: var(--bg-input); border: 1px solid #333; color: #fff; padding: 0 15px; border-radius: 8px; font-family: var(--font-body); outline: none; transition: 0.3s; font-size: 16px !important; /* iOS Zoom Fix */ }
         textarea { height: auto; min-height: 100px; padding: 15px; resize: vertical; }
         input:focus, select:focus, textarea:focus { border-color: var(--primary); }
 
@@ -72,10 +72,10 @@
         .btn-submit:hover { box-shadow: 0 0 20px var(--primary-dim); transform: translateY(-2px); }
 
         /* App Management Table */
-        .table-responsive { overflow-x: auto; margin-top: 15px; }
-        table { width: 100%; border-collapse: collapse; text-align: left; }
+        .table-responsive { overflow-x: auto; margin-top: 15px; border-radius: 8px; border: 1px solid #333; }
+        table { width: 100%; border-collapse: collapse; text-align: left; background: var(--bg-input); }
         th, td { padding: 12px 15px; border-bottom: 1px solid #333; white-space: nowrap; }
-        th { background: var(--bg-input); color: var(--primary); font-family: var(--font-head); font-size: 0.9rem; }
+        th { background: rgba(0,0,0,0.5); color: var(--primary); font-family: var(--font-head); font-size: 0.9rem; }
         td { font-size: 0.95rem; }
         
         .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
@@ -93,6 +93,28 @@
         .toast-container { position: fixed; top: 80px; right: 20px; z-index: 9999; }
         .toast { background: var(--bg-input); border-left: 4px solid var(--primary); padding: 15px 20px; margin-bottom: 10px; border-radius: 8px; display: flex; gap: 10px; align-items: center; color: #fff; animation: slideIn 0.3s; }
         @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+
+        /* ==========================================================================
+           মোবাইলের জন্য রেসপন্সিভ (Mobile Responsive Fix)
+           ========================================================================== */
+        @media (max-width: 768px) {
+            .navbar { padding: 10px 15px; }
+            .brand { font-size: 1.1rem; }
+            .nav-btns button { padding: 6px 10px; font-size: 0.8rem; margin-right: 5px !important; }
+            .container { margin: 15px auto; padding: 0 10px; gap: 20px; }
+            .card { padding: 15px; border-radius: 12px; }
+            
+            /* গ্রিডগুলো মোবাইলে ১ কলাম করে দেওয়া হলো */
+            .form-grid-2, .form-grid-3, .img-grid { grid-template-columns: 1fr; }
+            
+            /* এক্সট্রা লিংকগুলোর ডিজাইন মোবাইলে ফিক্স করা হলো */
+            .extra-link-row { display: flex; flex-direction: column; gap: 8px; background: rgba(255,255,255,0.02); padding: 10px; border-radius: 8px; border: 1px solid #333; }
+            .extra-link-row button { width: 100%; height: 40px; margin-top: 5px; }
+            
+            .btn-submit { height: 50px; font-size: 1.1rem; }
+            .card-title { font-size: 1.2rem; flex-direction: column; align-items: flex-start; gap: 10px; }
+            #cancelEditBtn { width: 100%; padding: 10px; }
+        }
     </style>
 </head>
 <body>

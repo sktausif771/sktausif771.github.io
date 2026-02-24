@@ -108,6 +108,10 @@
             </div>
             <button class="btn btn-primary" onclick="login()"><i class="fas fa-sign-in-alt"></i> SECURE LOGIN</button>
             
+            <button class="btn" style="background: #db4437; color: white;" onclick="googleLogin()">
+                <i class="fab fa-google"></i> LOGIN WITH GOOGLE
+            </button>
+            
             <p style="margin-top: 20px; color: var(--text-muted); font-size: 0.9rem;">
                 Don't have an account? <span class="toggle-link" onclick="toggleView('registerForm')">Create one</span>
             </p>
@@ -127,6 +131,10 @@
                 <input type="password" id="regPassword" class="form-control" placeholder="Create Password (Min 6 characters)" autocomplete="off">
             </div>
             <button class="btn btn-primary" onclick="register()"><i class="fas fa-user-plus"></i> REGISTER ACCOUNT</button>
+            
+            <button class="btn" style="background: #db4437; color: white;" onclick="googleLogin()">
+                <i class="fab fa-google"></i> CONTINUE WITH GOOGLE
+            </button>
             
             <p style="margin-top: 20px; color: var(--text-muted); font-size: 0.9rem;">
                 Already registered? <span class="toggle-link" onclick="toggleView('loginForm')">Login here</span>
@@ -155,6 +163,7 @@
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
         // Firebase Config
@@ -203,7 +212,15 @@
         auth.onAuthStateChanged((user) => {
             showLoader(false);
             if (user) {
-                // User is logged in
+                // NEW: ইমেইল ভেরিফাই করা আছে কি না চেক করা হচ্ছে
+                if (!user.emailVerified) {
+                    showToast('আপনার ইমেইল ভেরিফাই করা নেই! দয়া করে মেইল চেক করুন।', 'error');
+                    auth.signOut();
+                    toggleView('loginForm');
+                    return;
+                }
+
+                // User is logged in and verified
                 document.getElementById('userName').innerText = user.displayName || 'MVX User';
                 document.getElementById('userEmail').innerText = user.email;
                 toggleView('profileSection');
@@ -228,7 +245,8 @@
             
             showLoader(true);
             auth.signInWithEmailAndPassword(email, pass)
-                .then(() => {
+                .then((userCredential) => {
+                    // ভেরিফিকেশন চেক onAuthStateChanged-এ করা আছে, তাই এখানে কিছু করতে হবে না
                     showToast('Login Successful!');
                 })
                 .catch(err => {
@@ -248,26 +266,53 @@
             showLoader(true);
             auth.createUserWithEmailAndPassword(email, pass)
                 .then((result) => {
-                    return result.user.updateProfile({ displayName: name });
+                    return result.user.updateProfile({ displayName: name }).then(() => result.user);
                 })
-                .then(() => {
-                    showToast('Account Created Successfully!');
-                    // Save user basic info to database if needed later
-                    firebase.database().ref('registered_users/' + auth.currentUser.uid).set({
+                .then((user) => {
+                    // NEW: একাউন্ট খোলার পর ভেরিফিকেশন মেইল পাঠানো হচ্ছে
+                    user.sendEmailVerification();
+                    
+                    showToast('একাউন্ট তৈরি হয়েছে! দয়া করে আপনার মেইল চেক করে ভেরিফাই করুন।');
+                    
+                    // Save user basic info to database
+                    firebase.database().ref('registered_users/' + user.uid).set({
                         name: name,
                         email: email,
                         joinedAt: Date.now()
                     });
+
+                    // NEW: লগআউট করে লগইন পেজে পাঠানো হচ্ছে, যাতে ভেরিফাই করে তারপর ঢুকতে পারে
+                    auth.signOut();
+                    setTimeout(() => toggleView('loginForm'), 2000);
                 })
                 .catch(err => {
                     showLoader(false);
-                    // DUPICATE EMAIL CHECK LOGIC HERE
                     if(err.code === 'auth/email-already-in-use') {
                         showToast('এই ইমেইল দিয়ে আগে থেকেই অ্যাকাউন্ট খোলা আছে, দয়া করে লগইন করুন।', 'error');
                         setTimeout(() => toggleView('loginForm'), 1500);
                     } else {
                         showToast(err.message, 'error');
                     }
+                });
+        }
+
+        // NEW: GOOGLE LOGIN FUNCTION
+        function googleLogin() {
+            showLoader(true);
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider)
+                .then((result) => {
+                    showToast('Google Login Successful!');
+                    // Database-এ সেভ করা (যদি নতুন ইউজার হয়)
+                    firebase.database().ref('registered_users/' + result.user.uid).set({
+                        name: result.user.displayName,
+                        email: result.user.email,
+                        joinedAt: Date.now()
+                    });
+                })
+                .catch((error) => {
+                    showLoader(false);
+                    showToast('গুগল লগইন বাতিল হয়েছে বা সমস্যা হয়েছে।', 'error');
                 });
         }
 
