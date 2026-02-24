@@ -11,7 +11,7 @@
     
     <style>
         /* ==========================================================================
-           MVX STORE ADMIN DASHBOARD V4.0 (MOBILE FIXED & POLISHED)
+           MVX STORE ADMIN DASHBOARD V4.0 (FINAL POLISHED)
            ========================================================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; }
         
@@ -35,22 +35,21 @@
 
         .container { width: 100%; max-width: 1100px; margin: 30px auto; padding: 0 20px; display: grid; gap: 30px; grid-template-columns: 1fr; }
 
-        .card { background: var(--bg-card); border: var(--glass-border); border-radius: 16px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; }
+        .card { background: var(--bg-card); border: var(--glass-border); border-radius: 16px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; max-width: 100%; overflow: hidden; }
+        
+        .card-title { font-family: var(--font-head); color: var(--primary); margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; width: 100%; }
         
         /* Edit Title Fix */
-        .card-title { font-family: var(--font-head); color: var(--primary); margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-        #formTitleText { flex: 1; word-break: break-word; line-height: 1.4; }
+        #formTitleText { flex: 1; min-width: 0; word-break: break-word; line-height: 1.4; display: block; }
 
-        .form-grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-bottom: 15px; }
-        .form-grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; }
+        .form-grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-bottom: 15px; width: 100%; }
+        .form-grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; width: 100%; }
         
-        .form-group { display: flex; flex-direction: column; width: 100%; }
+        .form-group { display: flex; flex-direction: column; width: 100%; max-width: 100%; }
         label { margin-bottom: 8px; color: var(--text-muted); font-size: 0.9rem; font-weight: 600; }
-        input, select, textarea { width: 100%; height: 45px; background: var(--bg-input); border: 1px solid #333; color: #fff; padding: 0 15px; border-radius: 8px; font-family: var(--font-body); outline: none; transition: 0.3s; font-size: 16px !important; }
+        input, select, textarea { width: 100%; max-width: 100%; height: 45px; background: var(--bg-input); border: 1px solid #333; color: #fff; padding: 0 15px; border-radius: 8px; font-family: var(--font-body); outline: none; transition: 0.3s; font-size: 16px !important; box-sizing: border-box; }
         textarea { height: auto; min-height: 100px; padding: 15px; resize: vertical; }
         input:focus, select:focus, textarea:focus { border-color: var(--primary); }
-        
-        /* Placeholder Color Fix */
         ::placeholder { color: #64748b; opacity: 1; }
 
         .img-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; width: 100%; }
@@ -77,6 +76,11 @@
         th { background: rgba(0,0,0,0.5); color: var(--primary); font-family: var(--font-head); font-size: 0.9rem; }
         td { font-size: 0.95rem; }
         
+        /* App Title & Logo Wrapper for List */
+        .app-title-wrapper { display: flex; align-items: center; gap: 10px; max-width: 250px; }
+        .app-title-wrapper img { width: 35px; height: 35px; border-radius: 8px; object-fit: cover; flex-shrink: 0; border: 1px solid #333; background: var(--bg-card); }
+        .app-title-text { font-weight: bold; color: var(--primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; width: 100%; }
+
         .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
         .status-active { background: rgba(0, 230, 184, 0.2); color: var(--primary); }
         .status-hidden { background: rgba(255, 0, 60, 0.2); color: var(--danger); }
@@ -93,7 +97,7 @@
         @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
 
         /* ==========================================================================
-           MOBILE RESPONSIVE 
+           MOBILE RESPONSIVE (Strict Layout Fixes)
            ========================================================================== */
         @media (max-width: 768px) {
             .navbar { padding: 10px 15px; }
@@ -108,7 +112,6 @@
             .extra-link-row button { width: 100%; height: 40px; margin-top: 5px; }
             .btn-submit { height: 50px; font-size: 1.1rem; }
             
-            /* Edit Layout Fixes for Mobile */
             .card-title { font-size: 1.1rem; flex-direction: column; align-items: flex-start; gap: 10px; }
             #cancelEditBtn { width: 100%; padding: 12px; font-size: 1rem; font-weight: bold; }
 
@@ -121,6 +124,10 @@
             
             td::before { content: attr(data-label); color: var(--text-muted); font-family: var(--font-head); font-size: 0.85rem; font-weight: bold; text-align: left; padding-right: 15px; flex-shrink: 0; }
             .action-btns { justify-content: flex-end; width: auto; }
+
+            /* Mobile Specific Logo & Title Layout */
+            .app-title-wrapper { justify-content: flex-end; width: 100%; max-width: 100%; }
+            .app-title-text { max-width: 140px; text-align: right; }
         }
     </style>
 </head>
@@ -253,7 +260,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>App Name</th>
+                            <th>App / Logo</th>
                             <th>Category</th>
                             <th>Type</th>
                             <th>Status</th>
@@ -332,10 +339,18 @@
                         : `<span class="status-badge status-active">Active</span>`;
                     const hideIcon = isHidden ? "fa-eye" : "fa-eye-slash";
                     const hideTitle = isHidden ? "Unhide App" : "Hide App";
+                    
+                    // Logo Setup with fallback
+                    const logoSrc = app.logoBase64 || 'https://cdn-icons-png.flaticon.com/512/564/564619.png';
 
                     tbody.innerHTML += `
                         <tr>
-                            <td data-label="App Name" style="font-weight:bold; color:var(--primary);">${app.appName}</td>
+                            <td data-label="App Name">
+                                <div class="app-title-wrapper">
+                                    <img src="${logoSrc}" alt="Logo">
+                                    <span class="app-title-text" title="${app.appName}">${app.appName}</span>
+                                </div>
+                            </td>
                             <td data-label="Category">${app.gameCategory}</td>
                             <td data-label="Type">${app.accessType}</td>
                             <td data-label="Status">${statusBadge}</td>
