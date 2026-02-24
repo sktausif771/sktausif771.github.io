@@ -11,11 +11,10 @@
     
     <style>
         /* ==========================================================================
-           MVX STORE ADMIN DASHBOARD V4.0 (MOBILE FIXED)
+           MVX STORE ADMIN DASHBOARD V4.0 (MOBILE FIXED & POLISHED)
            ========================================================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; }
         
-        /* ডানে-বামে স্ক্রল পুরোপুরি বন্ধ করার জন্য */
         html, body { max-width: 100vw; overflow-x: hidden; }
 
         :root {
@@ -29,20 +28,19 @@
 
         body { background: var(--bg-void); color: var(--text-primary); font-family: var(--font-body); padding-bottom: 50px; }
         
-        /* Navbar */
         .navbar { position: sticky; top: 0; background: var(--glass-bg); backdrop-filter: blur(10px); border-bottom: var(--glass-border); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 100; width: 100%; }
         .brand { font-family: var(--font-head); font-size: 1.5rem; color: var(--primary); }
         .nav-btns button { background: var(--danger); color: #fff; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
         .nav-btns button:hover { opacity: 0.8; }
 
-        /* Container */
         .container { width: 100%; max-width: 1100px; margin: 30px auto; padding: 0 20px; display: grid; gap: 30px; grid-template-columns: 1fr; }
 
-        /* Card Setup */
         .card { background: var(--bg-card); border: var(--glass-border); border-radius: 16px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; }
-        .card-title { font-family: var(--font-head); color: var(--primary); margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        
+        /* Edit Title Fix */
+        .card-title { font-family: var(--font-head); color: var(--primary); margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        #formTitleText { flex: 1; word-break: break-word; line-height: 1.4; }
 
-        /* Form Layout */
         .form-grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-bottom: 15px; }
         .form-grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; }
         
@@ -51,8 +49,10 @@
         input, select, textarea { width: 100%; height: 45px; background: var(--bg-input); border: 1px solid #333; color: #fff; padding: 0 15px; border-radius: 8px; font-family: var(--font-body); outline: none; transition: 0.3s; font-size: 16px !important; }
         textarea { height: auto; min-height: 100px; padding: 15px; resize: vertical; }
         input:focus, select:focus, textarea:focus { border-color: var(--primary); }
+        
+        /* Placeholder Color Fix */
+        ::placeholder { color: #64748b; opacity: 1; }
 
-        /* Image Upload Grid */
         .img-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; width: 100%; }
         .img-upload-box { background: var(--bg-input); border: 2px dashed #333; border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; height: 150px; display: flex; flex-direction: column; justify-content: center; }
         .img-upload-box:hover { border-color: var(--primary); }
@@ -60,21 +60,17 @@
         .img-upload-box .placeholder { color: var(--text-muted); font-size: 0.9rem; }
         .img-upload-box input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
 
-        /* Previews Section */
         .preview-list { display: flex; gap: 10px; overflow-x: auto; margin-top: 10px; padding-bottom: 10px; width: 100%; }
         .preview-item { position: relative; width: 80px; height: 120px; flex-shrink: 0; border-radius: 8px; overflow: hidden; border: 1px solid var(--primary); }
         .preview-item img { width: 100%; height: 100%; object-fit: cover; }
         .preview-item .remove-btn { position: absolute; top: 5px; right: 5px; background: red; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 12px; font-weight: bold; }
 
-        /* Extra Links */
         .extra-link-row { display: grid; grid-template-columns: 1fr 2fr auto; gap: 10px; margin-bottom: 10px; width: 100%; }
         .btn-add-link { background: var(--primary-dim); border: 1px dashed var(--primary); color: var(--primary); width: 100%; height: 45px; border-radius: 8px; cursor: pointer; font-weight: bold; }
 
-        /* Submit Button */
         .btn-submit { width: 100%; height: 55px; background: var(--primary); color: #000; font-family: var(--font-head); font-size: 1.2rem; font-weight: 700; border: none; border-radius: 12px; cursor: pointer; margin-top: 20px; transition: 0.3s; }
         .btn-submit:hover { box-shadow: 0 0 20px var(--primary-dim); transform: translateY(-2px); }
 
-        /* App Management Table (Desktop View) */
         .table-responsive { width: 100%; overflow-x: auto; margin-top: 15px; border-radius: 8px; border: 1px solid #333; }
         table { width: 100%; border-collapse: collapse; text-align: left; background: var(--bg-input); }
         th, td { padding: 12px 15px; border-bottom: 1px solid #333; white-space: nowrap; }
@@ -92,13 +88,12 @@
         .act-del { background: var(--danger); }
         .act-btn:hover { transform: scale(1.1); }
 
-        /* Toast */
         .toast-container { position: fixed; top: 80px; right: 20px; z-index: 9999; }
         .toast { background: var(--bg-input); border-left: 4px solid var(--primary); padding: 15px 20px; margin-bottom: 10px; border-radius: 8px; display: flex; gap: 10px; align-items: center; color: #fff; animation: slideIn 0.3s; }
         @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
 
         /* ==========================================================================
-           মোবাইলের জন্য স্পেশাল রেসপন্সিভ (Table to Card Fix)
+           MOBILE RESPONSIVE 
            ========================================================================== */
         @media (max-width: 768px) {
             .navbar { padding: 10px 15px; }
@@ -112,18 +107,18 @@
             .extra-link-row { display: flex; flex-direction: column; gap: 8px; background: rgba(255,255,255,0.02); padding: 10px; border-radius: 8px; border: 1px solid #333; }
             .extra-link-row button { width: 100%; height: 40px; margin-top: 5px; }
             .btn-submit { height: 50px; font-size: 1.1rem; }
-            .card-title { font-size: 1.2rem; flex-direction: column; align-items: flex-start; gap: 10px; }
-            #cancelEditBtn { width: 100%; padding: 10px; }
+            
+            /* Edit Layout Fixes for Mobile */
+            .card-title { font-size: 1.1rem; flex-direction: column; align-items: flex-start; gap: 10px; }
+            #cancelEditBtn { width: 100%; padding: 12px; font-size: 1rem; font-weight: bold; }
 
-            /* টেবিল ফিক্স: মোবাইলে টেবিলকে কার্ড বানিয়ে দেওয়া হলো যেন ডানে-বামে সরাতে না হয় */
             .table-responsive { border: none; background: transparent; overflow: hidden; }
             table, thead, tbody, tr, td { display: block; width: 100%; }
-            thead { display: none; /* মোবাইলে হেডিং হাইড করা হলো */ }
+            thead { display: none; }
             tr { background: rgba(255,255,255,0.03); border: 1px solid #333; border-radius: 12px; margin-bottom: 15px; padding: 15px; display: flex; flex-direction: column; gap: 8px; }
             td { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(255,255,255,0.1); padding: 8px 0; white-space: normal; text-align: right; font-size: 0.9rem; }
             td:last-child { border-bottom: none; padding-bottom: 0; }
             
-            /* CSS দিয়ে লেবেল যুক্ত করা হলো */
             td::before { content: attr(data-label); color: var(--text-muted); font-family: var(--font-head); font-size: 0.85rem; font-weight: bold; text-align: left; padding-right: 15px; flex-shrink: 0; }
             .action-btns { justify-content: flex-end; width: auto; }
         }
@@ -146,7 +141,7 @@
         <div class="card" id="formCard">
             <h2 class="card-title">
                 <span id="formTitleText"><i class="fas fa-upload"></i> UPLOAD NEW APP</span>
-                <button id="cancelEditBtn" style="display:none; background:var(--danger); color:#fff; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;" onclick="cancelEdit()">Cancel Edit</button>
+                <button id="cancelEditBtn" style="display:none; background:var(--danger); color:#fff; border:none; padding:8px 15px; border-radius:8px; cursor:pointer;" onclick="cancelEdit()"><i class="fas fa-times"></i> Cancel Edit</button>
             </h2>
             
             <form id="uploadForm" onsubmit="submitApp(event)">
@@ -155,18 +150,18 @@
                 <div class="form-grid-2">
                     <div class="form-group">
                         <label>App / Game Name *</label>
-                        <input type="text" id="appName" required placeholder="e.g. Free Fire Mod VIP">
+                        <input type="text" id="appName" required placeholder="Enter App Name">
                     </div>
                     <div class="form-group">
                         <label>Version</label>
-                        <input type="text" id="version" placeholder="e.g. v1.100.1">
+                        <input type="text" id="version" placeholder="Enter Version">
                     </div>
                 </div>
 
                 <div class="form-grid-3">
                     <div class="form-group">
                         <label>Size</label>
-                        <input type="text" id="size" placeholder="e.g. 150 MB">
+                        <input type="text" id="size" placeholder="Enter File Size">
                     </div>
                     <div class="form-group">
                         <label>Category *</label>
@@ -222,17 +217,17 @@
                 <h3 style="margin: 20px 0 10px; color: var(--primary); font-size: 1rem;">DOWNLOAD & SECURITY</h3>
                 <div class="form-group" style="margin-bottom: 15px;">
                     <label>Direct Download Link (Mediafire/Drive) *</label>
-                    <input type="url" id="downloadUrl" required placeholder="https://...">
+                    <input type="url" id="downloadUrl" required placeholder="Paste Download Link Here">
                 </div>
 
                 <div class="form-grid-2">
                     <div class="form-group">
                         <label>Password (Leave empty if none)</label>
-                        <input type="text" id="password" placeholder="e.g. MVX123">
+                        <input type="text" id="password" placeholder="Enter Password">
                     </div>
                     <div class="form-group">
                         <label>Password Video URL (YouTube)</label>
-                        <input type="url" id="videoUrl" placeholder="https://youtube.com/...">
+                        <input type="url" id="videoUrl" placeholder="Paste YouTube Link">
                     </div>
                 </div>
 
@@ -338,7 +333,6 @@
                     const hideIcon = isHidden ? "fa-eye" : "fa-eye-slash";
                     const hideTitle = isHidden ? "Unhide App" : "Hide App";
 
-                    // JS এ data-label অ্যাড করা হয়েছে যেন মোবাইলে সুন্দরভাবে শো করে
                     tbody.innerHTML += `
                         <tr>
                             <td data-label="App Name" style="font-weight:bold; color:var(--primary);">${app.appName}</td>
@@ -415,8 +409,8 @@
             const div = document.createElement('div');
             div.className = 'extra-link-row';
             div.innerHTML = `
-                <input type="text" placeholder="Title (e.g. Telegram)" class="ex-title" value="${title}" required>
-                <input type="url" placeholder="URL Link" class="ex-url" value="${url}" required>
+                <input type="text" placeholder="Link Title" class="ex-title" value="${title}" required>
+                <input type="url" placeholder="Enter URL Link" class="ex-url" value="${url}" required>
                 <button type="button" onclick="this.parentElement.remove()" style="background:var(--danger); border:none; color:#fff; border-radius:8px; cursor:pointer;"><i class="fas fa-trash"></i></button>
             `;
             container.appendChild(div);
