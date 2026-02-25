@@ -9,7 +9,7 @@
     
     <style>
         /* ==========================================================================
-           FREE ADMIN PANEL - COMBINED LUA & LIBRARY (2 KEYS / 24H)
+           FREE ADMIN PANEL - COMBINED LUA & LIBRARY (UPDATED WITH DOWNLOADS)
            ========================================================================== */
         :root {
             --bg-body: #0f172a; --bg-panel: #1e293b; --primary: #00e6b8; 
@@ -44,13 +44,13 @@
 
         /* MAIN CONTENT */
         .content { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
-        .top-header { padding: 15px 20px; border-bottom: 1px solid var(--border); background: var(--bg-body); display: flex; align-items: center; justify-content: space-between; }
+        .top-header { padding: 15px 20px; border-bottom: 1px solid var(--border); background: var(--bg-body); display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;}
         .top-header-left { display: flex; align-items: center; gap: 15px; }
         .menu-toggle { background: none; border: none; color: white; font-size: 24px; cursor: pointer; display: none; }
         .btn-home { background: var(--border); color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; text-decoration: none; display: flex; align-items: center; gap: 5px; }
         .btn-home:hover { background: var(--primary); color: #000; }
 
-        .tab-content { padding: 20px; overflow-y: auto; height: 100%; display: none; }
+        .tab-content { padding: 0 20px 20px; overflow-y: auto; height: 100%; display: none; }
         .tab-content.active { display: block; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
@@ -97,6 +97,13 @@
         
         .free-notice { background: rgba(0, 230, 184, 0.1); border: 1px solid var(--primary); color: var(--primary); padding: 10px; border-radius: 8px; font-size: 13px; margin-bottom: 15px; text-align: center; }
         .locked-notice { background: rgba(239, 68, 68, 0.1); border: 1px solid var(--red); color: #fca5a5; padding: 10px; border-radius: 8px; font-size: 13px; margin-bottom: 15px; text-align: center; display: none; }
+
+        /* DOWNLOAD LINKS PANEL */
+        .download-box { background: var(--bg-panel); border: 1px solid var(--primary); border-radius: 8px; padding: 15px; margin-bottom: 15px; display: none; animation: fadeIn 0.5s; }
+        .download-title { color: var(--primary); font-size: 1.1rem; margin-bottom: 10px; font-weight: bold; }
+        .download-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+        .dl-btn { background: rgba(0, 230, 184, 0.1); border: 1px solid var(--primary); color: var(--primary); padding: 8px 15px; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .dl-btn:hover { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary-dim); }
 
         @media (max-width: 768px) {
             .sidebar { position: fixed; left: -260px; top: 0; height: 100%; }
@@ -154,7 +161,16 @@
             <a href="index.html" class="btn-home"><i class="fas fa-arrow-left"></i> Store</a>
         </div>
 
-        <div style="padding: 20px 20px 0;">
+        <div style="padding: 0 20px;">
+            <div class="download-box" id="downloadSection">
+                <div class="download-title"><i class="fas fa-cloud-download-alt"></i> Download Latest Files</div>
+                <div class="download-btns">
+                    <a href="#" id="dlLuaBtn" target="_blank" class="dl-btn" style="display: none;"><i class="fas fa-file-code"></i> LUA SCRIPT</a>
+                    <a href="#" id="dlLib32Btn" target="_blank" class="dl-btn" style="display: none;"><i class="fas fa-microchip"></i> LIB 32-BIT</a>
+                    <a href="#" id="dlLib64Btn" target="_blank" class="dl-btn" style="display: none;"><i class="fas fa-microchip"></i> LIB 64-BIT</a>
+                </div>
+            </div>
+
             <div class="locked-notice" id="timerNotice">
                 <i class="fas fa-clock"></i> You have reached the limit of 2 Keys per 24H.<br>
                 Next key unlocks in: <strong id="countdownTimer" style="font-size: 1.2rem; color: #fff;">00h 00m 00s</strong>
@@ -298,7 +314,6 @@
         auth.onAuthStateChanged((user) => {
             if (user) {
                 currentUser = user;
-                // Fetch user info from registered_users to get the updated profile pic/name
                 db.ref('registered_users/' + user.uid).once('value', snap => {
                     const data = snap.val() || {};
                     document.getElementById('sidebarName').innerText = data.name || user.displayName || 'User';
@@ -314,31 +329,47 @@
             }
         });
 
-        // --- INIT DATA & LIMIT CHECK ---
+        // --- INIT DATA & DOWNLOAD LINKS ---
         function initData() {
-            // 1. Fetch 24H Limit Data (2 Keys max)
+            // Fetch Download Links set by Master Admin
+            db.ref('config/downloads').on('value', snap => {
+                const dl = snap.val() || {};
+                let hasLinks = false;
+                
+                const btnLua = document.getElementById('dlLuaBtn');
+                const btnLib32 = document.getElementById('dlLib32Btn');
+                const btnLib64 = document.getElementById('dlLib64Btn');
+                
+                if(dl.lua) { btnLua.href = dl.lua; btnLua.style.display = 'inline-flex'; hasLinks = true; } else { btnLua.style.display = 'none'; }
+                if(dl.lib32) { btnLib32.href = dl.lib32; btnLib32.style.display = 'inline-flex'; hasLinks = true; } else { btnLib32.style.display = 'none'; }
+                if(dl.lib64) { btnLib64.href = dl.lib64; btnLib64.style.display = 'inline-flex'; hasLinks = true; } else { btnLib64.style.display = 'none'; }
+                
+                document.getElementById('downloadSection').style.display = hasLinks ? 'block' : 'none';
+            });
+
+            // Fetch 24H Limit Data
             db.ref('free_users_data/' + currentUser.uid).on('value', (snap) => {
                 limitData = snap.val() || { firstKeyTime: 0, count: 0 };
                 check24HourLimit();
             });
 
-            // 2. Fetch LUA Keys
+            // Fetch LUA Keys
             db.ref('users').on('value', (snap) => {
                 allLuaUsers = snap.val() || {};
                 renderLuaTable();
             });
 
-            // 3. Fetch LIBRARY Keys
+            // Fetch LIBRARY Keys
             db.ref('licenses').on('value', (snap) => {
                 allLibKeys = snap.val() || {};
                 renderLibTable();
             });
         }
 
+        // --- LIMIT CHECK ---
         function check24HourLimit() {
             const now = Date.now();
             
-            // Reset logic if 24 hours passed since first key
             if (limitData.firstKeyTime !== 0 && (now - limitData.firstKeyTime) >= TWENTY_FOUR_HOURS) {
                 limitData.count = 0;
                 limitData.firstKeyTime = 0;
@@ -348,7 +379,6 @@
             document.getElementById('keysLeftText').innerText = keysLeft > 0 ? keysLeft : 0;
 
             if (limitData.count >= 2) {
-                // Locked
                 document.getElementById('btnCreateLua').classList.add('btn-disabled');
                 document.getElementById('btnCreateLib').classList.add('btn-disabled');
                 
@@ -357,7 +387,6 @@
                 
                 startCountdown((limitData.firstKeyTime + TWENTY_FOUR_HOURS) - now);
             } else {
-                // Unlocked
                 document.getElementById('btnCreateLua').classList.remove('btn-disabled');
                 document.getElementById('btnCreateLib').classList.remove('btn-disabled');
                 
@@ -373,7 +402,7 @@
                 remainingTime -= 1000;
                 if(remainingTime <= 0) {
                     clearInterval(timerInterval);
-                    check24HourLimit(); // Re-check to auto unlock
+                    check24HourLimit(); 
                     return;
                 }
                 const hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -383,7 +412,7 @@
             }, 1000);
         }
 
-        // --- RENDER LUA TABLE ---
+        // --- RENDER TABLES ---
         function renderLuaTable() {
             const tbody = document.getElementById('luaTable');
             const search = document.getElementById('searchLua').value.toLowerCase();
@@ -392,7 +421,7 @@
 
             Object.keys(allLuaUsers).reverse().forEach(key => {
                 const user = allLuaUsers[key];
-                if (user.creatorUid !== currentUser.uid) return; // Privacy Check
+                if (user.creatorUid !== currentUser.uid) return; 
 
                 hasKeys = true;
                 let deviceText = '<span style="color:#555; font-size:12px;">No Device Connected</span>';
@@ -427,7 +456,6 @@
             if(!hasKeys) tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#555; padding:30px;">No Lua keys generated yet.</td></tr>`;
         }
 
-        // --- RENDER LIBRARY TABLE ---
         function renderLibTable() {
             const tbody = document.getElementById('libTable');
             const search = document.getElementById('searchLib').value.toLowerCase();
@@ -436,13 +464,12 @@
 
             Object.keys(allLibKeys).reverse().forEach(key => {
                 const item = allLibKeys[key];
-                if (item.creatorUid !== currentUser.uid) return; // Privacy Check
+                if (item.creatorUid !== currentUser.uid) return; 
 
                 hasKeys = true;
                 if (item.key.toLowerCase().includes(search) || (item.note && item.note.toLowerCase().includes(search))) {
                     const statusBadge = item.status === 'Active' ? '<span class="badge b-active">ACTIVE</span>' : '<span class="badge b-banned">LOCKED</span>';
                     
-                    // Format Expire Date based on creation + duration (1 day = 24h)
                     const expireMs = item.createdAt + (24 * 60 * 60 * 1000);
                     const expireDate = new Date(expireMs).toLocaleDateString();
 
@@ -475,12 +502,10 @@
             document.getElementById('noteGroup').style.display = type === 'lib' ? 'block' : 'none';
             document.getElementById('keyNote').value = '';
 
-            // Generate Random String based on type
             let rnd = "";
             if(type === 'lua') {
                 rnd = "MVX_FREE_" + Math.floor(Math.random() * 9000 + 1000);
             } else {
-                // 10 Digit Numeric for Library
                 for (let i = 0; i < 10; i++) rnd += Math.floor(Math.random() * 10);
             }
             
@@ -500,7 +525,6 @@
             btn.disabled = true;
             const now = Date.now();
 
-            // 1. Update Limit Data
             if(limitData.count === 0 || (now - limitData.firstKeyTime) >= TWENTY_FOUR_HOURS) {
                 limitData.firstKeyTime = now;
                 limitData.count = 1;
@@ -508,7 +532,6 @@
                 limitData.count++;
             }
 
-            // 2. Prepare Data to Save
             let savePromise;
             if(type === 'lua') {
                 const date = new Date(); date.setDate(date.getDate() + 1);
@@ -522,11 +545,11 @@
                 });
             } else {
                 const note = document.getElementById('keyNote').value || "Free User";
-                const libKeyId = db.ref('licenses').push().key; // Generate unique ID
+                const libKeyId = db.ref('licenses').push().key; 
                 savePromise = db.ref('licenses/' + libKeyId).set({
                     key: keyName,
                     note: note,
-                    duration: 1, // 1 Day
+                    duration: 1,
                     maxDevices: 1,
                     status: 'Active',
                     createdAt: now,
@@ -535,7 +558,6 @@
                 });
             }
 
-            // 3. Execute Save
             savePromise.then(() => {
                 return db.ref('free_users_data/' + currentUser.uid).set(limitData);
             }).then(() => {

@@ -11,7 +11,7 @@
     
     <style>
         /* ==========================================================================
-           MVX STORE - USER LOGIN & PROFILE PAGE (UPDATED WITH EDIT PROFILE)
+           MVX STORE - USER LOGIN & PROFILE (DB SYNC FIX)
            ========================================================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
@@ -19,7 +19,7 @@
             --primary: #00e6b8; --primary-dim: rgba(0, 230, 184, 0.15);
             --danger: #ff003c; --bg-void: #000000; --bg-card: #0c101a; --bg-input: #1a1f2c;
             --text-primary: #ffffff; --text-muted: #9ca3af;
-            --glass-bg: rgba(8, 11, 18, 0.8); --glass-border: 1px solid rgba(0, 230, 184, 0.2);
+            --glass-bg: rgba(8, 11, 18, 0.95); --glass-border: 1px solid rgba(0, 230, 184, 0.2);
             --font-head: 'Rajdhani', sans-serif; --font-body: 'Space Grotesk', sans-serif;
         }
 
@@ -54,7 +54,7 @@
         .btn-primary:hover { box-shadow: 0 0 20px var(--primary-dim); transform: translateY(-2px); }
         .toggle-link { color: var(--primary); cursor: pointer; text-decoration: underline; font-weight: 600; }
 
-        /* Custom Profile UI */
+        /* Profile UI */
         .profile-section { display: none; text-align: center; animation: fadeIn 0.4s ease; }
         
         .profile-avatar-container { position: relative; width: 110px; height: 110px; margin: 0 auto 15px; }
@@ -69,7 +69,7 @@
         .edit-name-btn:hover { color: #fff; }
 
         .edit-name-box { display: none; margin-bottom: 15px; }
-        .edit-name-box input { padding: 10px 15px 10px 15px; margin-bottom: 10px; }
+        .edit-name-box input { padding: 10px 15px; margin-bottom: 10px; }
         .edit-name-box .btn { padding: 10px; font-size: 1rem; margin-bottom: 5px; }
 
         .profile-email { color: var(--primary); font-family: 'Share Tech Mono', monospace; font-size: 0.9rem; background: var(--primary-dim); padding: 5px 15px; border-radius: 100px; display: inline-block; margin-bottom: 30px; }
@@ -98,7 +98,7 @@
     <div class="auth-container">
         <div class="loading-overlay" id="loadingOverlay">
             <i class="fas fa-circle-notch"></i>
-            <p style="font-family: var(--font-head); font-weight: bold; margin-top: 10px;">Please wait...</p>
+            <p style="font-family: var(--font-head); font-weight: bold; margin-top: 10px;">Processing...</p>
         </div>
 
         <div class="brand-logo">MVX SYSTEM</div>
@@ -192,6 +192,7 @@
         const firebaseConfig = {
             apiKey: "AIzaSyAS3UXXrio_-c9uPbHwpDuTVrP-p8d903w",
             authDomain: "white-2k-17-v4.firebaseapp.com",
+            databaseURL: "https://white-2k-17-v4-default-rtdb.firebaseio.com",
             projectId: "white-2k-17-v4",
             storageBucket: "white-2k-17-v4.firebasestorage.app",
             messagingSenderId: "180909174928",
@@ -232,12 +233,12 @@
             document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
         }
 
-        // Auth State Listener
+        // Auth State Listener (FIXED: Fetches Data from DB)
         auth.onAuthStateChanged((user) => {
             showLoader(false);
             if (user) {
                 if (!user.emailVerified) {
-                    showToast('আপনার ইমেইল ভেরিফাই করা নেই! দয়া করে মেইল চেক করুন।', 'error');
+                    showToast('ইমেইল ভেরিফাই করা নেই! দয়া করে মেইল চেক করুন।', 'error');
                     auth.signOut();
                     toggleView('loginForm');
                     return;
@@ -245,17 +246,22 @@
 
                 currentUserData = user;
                 
-                // Profile Setups
-                document.getElementById('userName').innerText = user.displayName || 'MVX User';
-                document.getElementById('userEmail').innerText = user.email;
-                
-                if(user.photoURL) {
-                    document.getElementById('profileImage').src = user.photoURL;
-                    document.getElementById('btnRemoveAvatar').style.display = 'inline-block';
-                } else {
-                    document.getElementById('profileImage').src = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
-                    document.getElementById('btnRemoveAvatar').style.display = 'none';
-                }
+                // Fetch User Data from Realtime DB (For Profile Pic & Name)
+                db.ref('registered_users/' + user.uid).once('value', snap => {
+                    const data = snap.val() || {};
+                    const dbName = data.name || user.displayName || 'MVX User';
+                    const dbPhoto = data.photoURL || user.photoURL || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+                    
+                    document.getElementById('userName').innerText = dbName;
+                    document.getElementById('userEmail').innerText = user.email;
+                    document.getElementById('profileImage').src = dbPhoto;
+                    
+                    if(dbPhoto !== "https://cdn-icons-png.flaticon.com/512/149/149071.png") {
+                        document.getElementById('btnRemoveAvatar').style.display = 'inline-block';
+                    } else {
+                        document.getElementById('btnRemoveAvatar').style.display = 'none';
+                    }
+                });
 
                 toggleView('profileSection');
                 
@@ -268,22 +274,31 @@
             }
         });
 
-        // --- NEW: EDIT PROFILE LOGIC ---
+        // --- PROFILE PICTURE LOGIC (DB FIX) ---
         function uploadAvatar(input) {
             const file = input.files[0];
             if(file) {
-                if(file.size > 2 * 1024 * 1024) return showToast("Image is too large! (Max 2MB)", "error");
+                if(file.size > 2 * 1024 * 1024) {
+                    input.value = "";
+                    return showToast("ছবি ২MB এর বেশি হতে পারবে না!", "error");
+                }
                 
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const b64 = e.target.result;
                     showLoader(true);
-                    currentUserData.updateProfile({ photoURL: b64 }).then(() => {
-                        db.ref('registered_users/' + currentUserData.uid).update({ photoURL: b64 });
+                    
+                    // Save to Realtime Database instead of Auth Profile
+                    db.ref('registered_users/' + currentUserData.uid).update({ 
+                        photoURL: b64 
+                    }).then(() => {
                         document.getElementById('profileImage').src = b64;
                         document.getElementById('btnRemoveAvatar').style.display = 'inline-block';
                         showLoader(false);
-                        showToast("Profile Picture Updated!");
+                        showToast("প্রোফাইল ছবি আপডেট হয়েছে!");
+                    }).catch(err => {
+                        showLoader(false);
+                        showToast("Error: " + err.message, "error");
                     });
                 };
                 reader.readAsDataURL(file);
@@ -292,19 +307,20 @@
 
         function removeAvatar() {
             showLoader(true);
-            currentUserData.updateProfile({ photoURL: "" }).then(() => {
-                db.ref('registered_users/' + currentUserData.uid).update({ photoURL: null });
+            db.ref('registered_users/' + currentUserData.uid).update({ 
+                photoURL: null 
+            }).then(() => {
                 document.getElementById('profileImage').src = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
                 document.getElementById('btnRemoveAvatar').style.display = 'none';
                 showLoader(false);
-                showToast("Profile Picture Removed!");
+                showToast("ছবি রিমুভ করা হয়েছে!");
             });
         }
 
         function openNameEdit() {
             document.getElementById('nameDisplayBox').style.display = 'none';
             document.getElementById('editNameBox').style.display = 'block';
-            document.getElementById('editNameInput').value = currentUserData.displayName || "";
+            document.getElementById('editNameInput').value = document.getElementById('userName').innerText;
             document.getElementById('editNameInput').focus();
         }
 
@@ -315,23 +331,30 @@
 
         function saveNewName() {
             const newName = document.getElementById('editNameInput').value.trim();
-            if(!newName) return showToast("Name cannot be empty", "error");
+            if(!newName) return showToast("নাম খালি রাখা যাবে না!", "error");
             
             showLoader(true);
-            currentUserData.updateProfile({ displayName: newName }).then(() => {
-                db.ref('registered_users/' + currentUserData.uid).update({ name: newName });
+            
+            // Update in DB and Auth
+            const updates = {};
+            updates['registered_users/' + currentUserData.uid + '/name'] = newName;
+            
+            db.ref().update(updates).then(() => {
+                // Also update Auth profile for consistency
+                return currentUserData.updateProfile({ displayName: newName });
+            }).then(() => {
                 document.getElementById('userName').innerText = newName;
                 closeNameEdit();
                 showLoader(false);
-                showToast("Name Updated Successfully!");
+                showToast("নাম পরিবর্তন সফল হয়েছে!");
             });
         }
 
-        // --- Auth Core Logic ---
+        // --- AUTH FUNCTIONS ---
         function login() {
             const email = document.getElementById('loginEmail').value;
             const pass = document.getElementById('loginPassword').value;
-            if(!email || !pass) return showToast('Please enter email and password', 'error');
+            if(!email || !pass) return showToast('ইমেইল এবং পাসওয়ার্ড দিন', 'error');
             
             showLoader(true);
             auth.signInWithEmailAndPassword(email, pass).catch(err => {
@@ -345,7 +368,7 @@
             const email = document.getElementById('regEmail').value;
             const pass = document.getElementById('regPassword').value;
             
-            if(!name || !email || !pass) return showToast('Please fill all fields', 'error');
+            if(!name || !email || !pass) return showToast('সব তথ্য পূরণ করুন', 'error');
             if(pass.length < 6) return showToast('পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে!', 'error');
             
             showLoader(true);
@@ -355,15 +378,21 @@
                 })
                 .then((user) => {
                     user.sendEmailVerification();
-                    showToast('একাউন্ট তৈরি হয়েছে! দয়া করে আপনার মেইল চেক করে ভেরিফাই করুন।');
-                    db.ref('registered_users/' + user.uid).set({ name: name, email: email, joinedAt: Date.now() });
+                    showToast('একাউন্ট তৈরি হয়েছে! ভেরিফিকেশন মেইল পাঠানো হয়েছে।');
+                    
+                    db.ref('registered_users/' + user.uid).set({
+                        name: name,
+                        email: email,
+                        joinedAt: Date.now()
+                    });
+
                     auth.signOut();
                     setTimeout(() => toggleView('loginForm'), 2000);
                 })
                 .catch(err => {
                     showLoader(false);
                     if(err.code === 'auth/email-already-in-use') {
-                        showToast('এই ইমেইল দিয়ে আগে থেকেই অ্যাকাউন্ট খোলা আছে, দয়া করে লগইন করুন।', 'error');
+                        showToast('এই ইমেইল দিয়ে আগে থেকেই অ্যাকাউন্ট আছে।', 'error');
                         setTimeout(() => toggleView('loginForm'), 1500);
                     } else { showToast(err.message, 'error'); }
                 });
@@ -379,13 +408,13 @@
                 });
             }).catch(() => {
                 showLoader(false);
-                showToast('গুগল লগইন বাতিল হয়েছে বা সমস্যা হয়েছে।', 'error');
+                showToast('গুগল লগইন বাতিল হয়েছে।', 'error');
             });
         }
 
         function logout() {
             showLoader(true);
-            auth.signOut().then(() => showToast('Logged out successfully'));
+            auth.signOut().then(() => showToast('লগআউট সফল হয়েছে!'));
         }
     </script>
 </body>

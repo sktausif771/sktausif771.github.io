@@ -17,58 +17,68 @@
             --gold: #ffd700; --danger: #ff003c; 
             --bg-void: #000000; --bg-card: #0c101a; --bg-input: #1a1f2c;
             --text-primary: #ffffff; --text-muted: #9ca3af;
-            --glass-bg: rgba(8, 11, 18, 0.85); --glass-border: 1px solid rgba(0, 230, 184, 0.2);
+            --glass-bg: rgba(8, 11, 18, 0.95); --glass-border: 1px solid rgba(0, 230, 184, 0.2);
             --font-head: 'Rajdhani', sans-serif; --font-body: 'Space Grotesk', sans-serif;
         }
 
         body { background: var(--bg-void); color: var(--text-primary); font-family: var(--font-body); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
         /* Navbar */
-        .navbar { background: var(--glass-bg); backdrop-filter: blur(10px); border-bottom: var(--glass-border); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+        .navbar { position: fixed; top: 0; left: 0; width: 100%; background: var(--glass-bg); backdrop-filter: blur(10px); border-bottom: var(--glass-border); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; height: 60px; }
         .back-btn { color: #fff; text-decoration: none; font-size: 1.2rem; }
         .brand { font-family: var(--font-head); font-size: 1.3rem; font-weight: 700; color: var(--primary); }
 
         /* Chat Container */
-        .chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; scroll-behavior: smooth; }
-        .chat-container::-webkit-scrollbar { width: 5px; }
+        .chat-container { flex: 1; overflow-y: auto; padding: 80px 20px 100px; display: flex; flex-direction: column; gap: 15px; scroll-behavior: smooth; height: 100%; }
+        .chat-container::-webkit-scrollbar { width: 4px; }
         .chat-container::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
 
-        .message-box { max-width: 85%; padding: 15px; border-radius: 12px; position: relative; animation: fadeIn 0.3s ease; word-wrap: break-word; }
+        .message-box { max-width: 85%; padding: 12px 15px; border-radius: 12px; position: relative; animation: fadeIn 0.3s ease; word-wrap: break-word; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Other's Message */
+        /* Message Types */
         .msg-others { align-self: flex-start; background: var(--bg-card); border: 1px solid #333; border-bottom-left-radius: 0; }
-        /* My Message */
         .msg-mine { align-self: flex-end; background: var(--primary-dim); border: 1px solid var(--primary); border-bottom-right-radius: 0; }
 
-        .msg-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 0.85rem; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 5px; gap: 10px;}
+        .msg-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 0.8rem; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 5px; gap: 10px;}
         .msg-name { font-weight: bold; color: var(--text-muted); }
         .msg-mine .msg-name { color: var(--primary); }
         
-        .owner-badge { background: var(--gold); color: #000; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: 800; font-family: var(--font-head); letter-spacing: 1px; }
+        .owner-badge { background: var(--gold); color: #000; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: 800; font-family: var(--font-head); letter-spacing: 1px; }
         .msg-time { font-size: 0.7rem; color: #666; }
 
         .msg-text { font-size: 0.95rem; line-height: 1.4; white-space: pre-wrap; }
-        .msg-image { max-width: 100%; max-height: 200px; border-radius: 8px; margin-top: 10px; border: 1px solid #333; object-fit: contain; display: block; cursor: pointer;}
+        
+        /* Image Preview in Chat */
+        .msg-image { max-width: 100%; height: auto; max-height: 200px; border-radius: 8px; margin-top: 8px; border: 1px solid #333; object-fit: cover; display: block; cursor: pointer; transition: 0.2s; }
+        .msg-image:hover { opacity: 0.8; }
 
-        .msg-actions { display: flex; gap: 10px; margin-top: 10px; justify-content: flex-end; }
+        .msg-actions { display: flex; gap: 12px; margin-top: 8px; justify-content: flex-end; opacity: 0.7; }
         .msg-actions button { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.9rem; transition: 0.2s; }
-        .msg-actions button:hover { color: var(--primary); }
+        .msg-actions button:hover { color: var(--primary); opacity: 1; }
         .btn-del:hover { color: var(--danger) !important; }
 
-        /* Input Area */
-        .input-area { background: var(--bg-card); padding: 15px; border-top: var(--glass-border); display: flex; gap: 10px; align-items: flex-end; z-index: 100; }
-        .attach-btn { background: var(--bg-input); border: 1px solid #333; color: var(--primary); width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; cursor: pointer; flex-shrink: 0; }
+        /* Fixed Input Area (UI Fix) */
+        .input-area { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--bg-card); padding: 10px 15px; border-top: var(--glass-border); display: flex; gap: 10px; align-items: flex-end; z-index: 1000; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); }
         
-        .textarea-wrapper { flex: 1; background: var(--bg-input); border: 1px solid #333; border-radius: 12px; padding: 5px 10px; position: relative; }
-        textarea { width: 100%; background: transparent; border: none; color: #fff; font-family: var(--font-body); resize: none; outline: none; padding: 10px 0; max-height: 100px; min-height: 45px; }
+        .attach-btn { background: var(--bg-input); border: 1px solid #333; color: var(--primary); width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; cursor: pointer; flex-shrink: 0; transition: 0.2s; }
+        .attach-btn:active { transform: scale(0.95); }
         
-        .img-preview-box { display: none; position: relative; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #333; }
-        .img-preview-box img { height: 60px; border-radius: 8px; border: 1px solid var(--primary); }
-        .img-preview-box .remove-img { position: absolute; top: -5px; left: 50px; background: var(--danger); color: #fff; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 12px; }
+        .textarea-wrapper { flex: 1; background: var(--bg-input); border: 1px solid #333; border-radius: 20px; padding: 5px 15px; position: relative; display: flex; flex-direction: column; justify-content: center; }
+        textarea { width: 100%; background: transparent; border: none; color: #fff; font-family: var(--font-body); resize: none; outline: none; padding: 10px 0; max-height: 100px; min-height: 24px; font-size: 1rem; }
+        
+        .img-preview-box { display: none; position: relative; margin-bottom: 5px; padding-bottom: 5px; border-bottom: 1px dashed #444; width: fit-content; }
+        .img-preview-box img { height: 50px; border-radius: 6px; border: 1px solid var(--primary); }
+        .img-preview-box .remove-img { position: absolute; top: -8px; right: -8px; background: var(--danger); color: #fff; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 12px; font-weight: bold; display: flex; justify-content: center; align-items: center; }
 
         .send-btn { background: var(--primary); border: none; color: #000; width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; cursor: pointer; flex-shrink: 0; transition: 0.3s; }
         .send-btn:hover { box-shadow: 0 0 15px var(--primary-dim); transform: scale(1.05); }
+        .send-btn:active { transform: scale(0.95); }
+
+        /* Lightbox (Image Viewer Fix) */
+        .lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; z-index: 9999; animation: fadeIn 0.2s ease; }
+        .lightbox img { max-width: 95%; max-height: 90%; border-radius: 8px; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
+        .lightbox-close { position: absolute; top: 20px; right: 20px; color: #fff; font-size: 2rem; cursor: pointer; background: rgba(255,255,255,0.1); width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
 
         /* Loader */
         .loader-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-void); display: flex; align-items: center; justify-content: center; z-index: 2000; flex-direction: column; }
@@ -85,8 +95,9 @@
 
     <nav class="navbar">
         <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
-        <div class="brand"><i class="fas fa-comments"></i> COMMUNITY FEEDBACK</div>
-        <div style="width: 20px;"></div> </nav>
+        <div class="brand"><i class="fas fa-comments"></i> FEEDBACK & BUGS</div>
+        <div style="width: 20px;"></div>
+    </nav>
 
     <div class="chat-container" id="chatContainer">
         </div>
@@ -100,11 +111,15 @@
                 <img id="imgPreview" src="">
                 <button class="remove-img" onclick="removeImage()">×</button>
             </div>
-            <textarea id="messageInput" placeholder="Write your feedback/report here..." oninput="autoResize(this)"></textarea>
+            <textarea id="messageInput" placeholder="Write message..." oninput="autoResize(this)" rows="1"></textarea>
         </div>
         
         <button class="send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
     </div>
+
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <span class="lightbox-close">&times;</span>
+        <img id="lightboxImg" src="" onclick="event.stopPropagation()"> </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -136,7 +151,7 @@
         auth.onAuthStateChanged((user) => {
             if (user) {
                 currentUser = user;
-                // Check if Owner
+                // Owner Logic
                 if(user.email === "sktausif771@gmail.com") {
                     isOwner = true;
                 }
@@ -167,16 +182,15 @@
                     const isMine = (msg.uid === currentUser.uid);
                     const msgClass = isMine ? 'msg-mine' : 'msg-others';
                     
-                    // User Name logic (Owner Check)
                     let displayName = msg.name || "Unknown User";
                     if(msg.email === "sktausif771@gmail.com") {
                         displayName = `<span class="owner-badge"><i class="fas fa-crown"></i> OWNER</span>`;
                     }
 
-                    // Image HTML
-                    const imgHtml = msg.imageBase64 ? `<img src="${msg.imageBase64}" class="msg-image" onclick="window.open('${msg.imageBase64}', '_blank')">` : '';
+                    // FIX: Image Click Event -> opens Lightbox
+                    const imgHtml = msg.imageBase64 ? 
+                        `<img src="${msg.imageBase64}" class="msg-image" onclick="openLightbox('${msg.imageBase64}')">` : '';
 
-                    // Edit/Delete Buttons (Only for own messages)
                     let actionHtml = '';
                     if(isMine) {
                         actionHtml = `
@@ -187,7 +201,6 @@
                         `;
                     }
 
-                    // Time Format
                     const dateObj = new Date(msg.timestamp);
                     const timeString = dateObj.toLocaleDateString() + ' ' + dateObj.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
@@ -205,8 +218,17 @@
                 });
 
                 // Auto scroll to bottom
-                container.scrollTop = container.scrollHeight;
+                setTimeout(() => { container.scrollTop = container.scrollHeight; }, 100);
             });
+        }
+
+        // --- LIGHTBOX LOGIC (NEW) ---
+        function openLightbox(src) {
+            document.getElementById('lightboxImg').src = src;
+            document.getElementById('lightbox').style.display = 'flex';
+        }
+        function closeLightbox() {
+            document.getElementById('lightbox').style.display = 'none';
         }
 
         // --- SEND MESSAGE ---
@@ -215,10 +237,10 @@
             const text = textInput.value.trim();
 
             if(!text && !selectedBase64Image) {
-                return alert("Please write something or attach an image.");
+                return; // Do nothing if empty
             }
 
-            // 1. Check Daily Limit (If not owner)
+            // Check Daily Limit (User: 10, Owner: Unlimited)
             if(!isOwner && !editMessageId) {
                 const now = Date.now();
                 const past24h = now - (24 * 60 * 60 * 1000);
@@ -231,14 +253,10 @@
                     Object.values(myMessages).forEach(m => {
                         if(m.timestamp > past24h) count++;
                     });
-
-                    if(count >= 10) {
-                        return alert("You have reached the limit of 10 messages per 24 hours.");
-                    }
+                    if(count >= 10) return alert("দৈনিক ১০টি মেসেজের লিমিট শেষ!");
                 }
             }
 
-            // Disable input while sending
             textInput.disabled = true;
 
             const msgData = {
@@ -251,29 +269,20 @@
             };
 
             if(editMessageId) {
-                // Update existing
-                db.ref(`${DB_PATH}/${editMessageId}`).update({
-                    text: text,
-                    isEdited: true
-                }).then(() => {
-                    resetInput();
-                });
+                db.ref(`${DB_PATH}/${editMessageId}`).update({ text: text, isEdited: true })
+                .then(() => resetInput());
             } else {
-                // Send new
-                db.ref(DB_PATH).push(msgData).then(() => {
-                    resetInput();
-                }).catch(err => {
+                db.ref(DB_PATH).push(msgData)
+                .then(() => resetInput())
+                .catch(err => {
                     alert("Error: " + err.message);
                     textInput.disabled = false;
                 });
             }
         }
 
-        // --- EDIT & DELETE ---
         function deleteMsg(id) {
-            if(confirm("Are you sure you want to delete this message?")) {
-                db.ref(`${DB_PATH}/${id}`).remove();
-            }
+            if(confirm("মেসেজটি ডিলিট করতে চান?")) db.ref(`${DB_PATH}/${id}`).remove();
         }
 
         function editMsg(id, encodedText) {
@@ -284,12 +293,12 @@
             autoResize(textInput);
         }
 
-        // --- IMAGE HANDLING (BASE64) ---
+        // --- IMAGE HANDLING ---
         function handleImageSelect(input) {
             const file = input.files[0];
             if(file) {
-                if(file.size > 2 * 1024 * 1024) { // 2MB Limit
-                    alert("Image is too large! Please upload under 2MB.");
+                if(file.size > 2 * 1024 * 1024) {
+                    alert("ছবির সাইজ ২MB এর বেশি হতে পারবে না!");
                     input.value = "";
                     return;
                 }
@@ -307,7 +316,6 @@
             selectedBase64Image = "";
             document.getElementById('imageInput').value = "";
             document.getElementById('imgPreviewBox').style.display = 'none';
-            document.getElementById('imgPreview').src = "";
         }
 
         function resetInput() {
