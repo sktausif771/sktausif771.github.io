@@ -11,7 +11,7 @@
     
     <style>
         /* ==========================================================================
-           MASTER ADMIN PANEL - UPDATED (LUA GOLD THEME + DOWNLOAD MGR)
+           MASTER ADMIN PANEL - 100% FIXED UI (MOBILE OPTIMIZED)
            ========================================================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; }
         
@@ -25,10 +25,15 @@
             --font-head: 'Orbitron', sans-serif; --font-body: 'Space Grotesk', sans-serif;
         }
 
-        body { background: var(--bg-void); color: var(--text-primary); font-family: var(--font-body); display: flex; height: 100vh; overflow: hidden; }
+        body { background: var(--bg-void); color: var(--text-primary); font-family: var(--font-body); display: flex; height: 100vh; overflow: hidden; width: 100vw; }
+
+        /* Loader */
+        .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-void); display: flex; align-items: center; justify-content: center; z-index: 9999; flex-direction: column; }
+        .loading-overlay i { font-size: 3rem; color: var(--primary); animation: spin 1s linear infinite; margin-bottom: 10px; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
 
         /* Sidebar */
-        .sidebar { width: 260px; background: var(--glass-bg); height: 100%; padding: 20px; border-right: var(--glass-border); transition: 0.3s ease; z-index: 1000; display: flex; flex-direction: column; }
+        .sidebar { width: 260px; background: var(--glass-bg); height: 100%; padding: 20px; border-right: var(--glass-border); transition: 0.3s ease; z-index: 1000; display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; }
         .brand { font-family: var(--font-head); font-size: 1.5rem; color: #fff; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
         .brand span { color: var(--primary); }
         .brand small { display: block; font-size: 10px; color: var(--gold); letter-spacing: 2px; font-family: 'Rajdhani', sans-serif;}
@@ -39,335 +44,124 @@
         .menu-item:hover:not(.active) { background: var(--primary-dim); color: var(--primary); }
 
         /* Main Content */
-        .content { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
-        .top-header { padding: 15px 20px; border-bottom: 1px solid #333; background: var(--glass-bg); display: flex; align-items: center; justify-content: space-between; }
+        .content { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow-y: auto; overflow-x: hidden; position: relative; width: calc(100vw - 260px); }
+        .top-header { padding: 15px 20px; border-bottom: 1px solid #333; background: var(--glass-bg); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50;}
         .menu-toggle { background: none; border: none; color: white; font-size: 24px; cursor: pointer; display: none; }
         .btn-home { background: var(--bg-input); border: 1px solid #333; color: white; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; }
         .btn-home:hover { background: var(--primary); color: #000; border-color: var(--primary); }
 
-        .tab-content { padding: 20px; overflow-y: auto; height: 100%; display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.3s; }
+        .tab-content { padding: 20px; display: none; animation: fadeIn 0.3s; }
+        .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Common Cards & Inputs */
-        .card { background: var(--bg-card); border: 1px solid #333; border-radius: 12px; padding: 20px; margin-bottom: 20px; }
-        .card-title { font-family: var(--font-head); color: var(--primary); margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; font-size: 1.2rem; display: flex; justify-content: space-between; align-items: center; }
+        /* Cards & Forms */
+        .card { background: var(--bg-card); border: 1px solid #333; border-radius: 12px; padding: 20px; margin-bottom: 20px; width: 100%; }
+        .card-title { font-family: var(--font-head); color: var(--primary); margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; font-size: 1.2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap:10px;}
         
-        .form-group { margin-bottom: 15px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; }
+        .form-group { margin-bottom: 15px; width: 100%; }
         label { display: block; margin-bottom: 8px; color: var(--text-muted); font-size: 0.9rem; font-weight: 600; }
-        input, select, textarea { width: 100%; height: 45px; background: var(--bg-input); border: 1px solid #333; color: #fff; padding: 0 15px; border-radius: 8px; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--primary); }
+        input, select, textarea { width: 100%; height: 45px; background: var(--bg-input); border: 1px solid #333; color: #fff; padding: 0 15px; border-radius: 8px; outline: none; transition: 0.3s; font-family: var(--font-body);}
+        textarea { height: auto; min-height: 80px; padding: 15px; resize: vertical; }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary); }
 
-        /* Tables */
+        .img-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 15px; }
+        .img-upload-box { background: var(--bg-input); border: 2px dashed #333; border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; position: relative; overflow: hidden; height: 120px; display: flex; flex-direction: column; justify-content: center; }
+        .img-upload-box img { max-width: 100%; max-height: 100%; display: none; margin: 0 auto; object-fit: contain; }
+        .img-upload-box input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+        .preview-list { display: flex; gap: 10px; overflow-x: auto; margin-top: 10px; }
+        .preview-item { position: relative; width: 60px; height: 90px; flex-shrink: 0; border-radius: 8px; overflow: hidden; border: 1px solid var(--primary); }
+        .preview-item img { width: 100%; height: 100%; object-fit: cover; }
+        .preview-item .remove-btn { position: absolute; top: 2px; right: 2px; background: red; color: white; border: none; border-radius: 50%; width: 18px; height: 18px; cursor: pointer; font-size: 10px; }
+        
+        .extra-link-row { display: grid; grid-template-columns: 1fr 2fr auto; gap: 10px; margin-bottom: 10px; }
+        .btn-submit { width: 100%; height: 50px; background: var(--primary); color: #000; font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; margin-top: 15px; transition: 0.3s; }
+
+        /* Tables & Lists */
+        .toolbar { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        .search { flex: 1; min-width: 200px; }
+        .btn-add { background: var(--primary); color: #000; font-weight: bold; border: none; padding: 0 15px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 5px; height: 45px;}
+        
         .table-responsive { width: 100%; overflow-x: auto; border-radius: 8px; border: 1px solid #333; background: var(--bg-input); }
         table { width: 100%; border-collapse: collapse; text-align: left; }
         th, td { padding: 12px 15px; border-bottom: 1px solid #333; white-space: nowrap; font-size: 0.9rem; }
         th { background: rgba(0,0,0,0.5); color: var(--text-muted); font-family: var(--font-head); text-transform: uppercase; font-size: 0.8rem; }
         
-        /* Badges & Actions */
         .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
         .b-active { background: rgba(0, 230, 184, 0.2); color: var(--cyan); }
         .b-banned { background: rgba(255, 0, 60, 0.2); color: var(--danger); }
+        
+        .app-title-wrapper { display: flex; align-items: center; gap: 10px; max-width: 200px; }
+        .app-title-wrapper img { width: 30px; height: 30px; border-radius: 6px; object-fit: cover; flex-shrink: 0; }
+        .app-title-text { font-weight: bold; color: var(--cyan); overflow: hidden; text-overflow: ellipsis; }
+
         .actions { display: flex; gap: 5px; }
         .act-btn { width: 28px; height: 28px; border-radius: 4px; border: none; cursor: pointer; color: #fff; display: flex; justify-content: center; align-items: center; transition: 0.2s;}
-        .act-edit { background: var(--cyan); color: #000; } 
+        .act-edit { background: var(--cyan); color: #000; }
+        .act-reset { background: var(--gold); color: #000; }
+        .act-ban { background: #475569; }
+        .act-ban.is-banned { background: var(--warning); color: #000; }
         .act-del { background: var(--danger); }
 
-        /* GOLD THEME FOR LUA TAB (Owner Style) */
+        /* GOLD THEME (LUA TAB) */
         .gold-theme .card { border-color: var(--gold-dim); }
         .gold-theme .card-title { color: var(--gold); border-bottom-color: var(--gold-dim); }
         .gold-theme .btn-add { background: var(--gold); color: #000; }
         .gold-theme th { color: var(--gold); }
         .gold-theme strong { color: #fff; }
         .gold-theme .act-reset { background: var(--gold); color: #000; }
-
-        /* Modal */
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 20px; }
-        .modal-box { background: var(--bg-card); width: 100%; max-width: 400px; padding: 20px; border-radius: 12px; border: 1px solid var(--primary); box-shadow: 0 0 30px var(--primary-dim); }
-
-        /* Toast */
-        .toast-container { position: fixed; top: 80px; right: 20px; z-index: 9999; }
-        .toast { background: var(--bg-input); border-left: 4px solid var(--cyan); padding: 15px 20px; margin-bottom: 10px; border-radius: 8px; display: flex; gap: 10px; align-items: center; color: #fff; animation: slideIn 0.3s; }
-        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
-
-        /* Mobile */
-        @media (max-width: 768px) {
-            .sidebar { position: fixed; left: -260px; top: 0; height: 100%; }
-            .sidebar.active { left: 0; }
-            .menu-toggle, .close-btn { display: block; }
-            table, thead, tbody, tr, td { display: block; width: 100%; }
-            thead { display: none; }
-            tr { margin-bottom: 10px; border: 1px solid #333; padding: 10px; border-radius: 8px; }
-            td { display: flex; justify-content: space-between; text-align: right; border-bottom: 1px dashed #333; }
-            td::before { content: attr(data-label); font-weight: bold; color: var(--text-muted); }
-        }
-    </style>
-</head>
-<body>
-
-    <div class="toast-container" id="toastContainer"></div>
-    <div class="overlay" onclick="toggleSidebar()" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:none; z-index:900;"></div>
-
-    <aside class="sidebar" id="sidebar">
-        <div class="brand">
-            <div>MVX <span>OWNER</span></div>
-            <i class="fas fa-times close-btn" onclick="toggleSidebar()"></i>
-        </div>
-        <nav style="flex: 1;">
-            <div class="menu-item active" onclick="switchTab('store')" id="nav-store"><i class="fas fa-store"></i> Store Admin</div>
-            <div class="menu-item" onclick="switchTab('lua')" id="nav-lua"><i class="fas fa-crown"></i> Lua Owner</div>
-            <div class="menu-item" onclick="switchTab('library')" id="nav-library"><i class="fas fa-book"></i> Library Owner</div>
-            <div class="menu-item" onclick="switchTab('feedback')" id="nav-feedback"><i class="fas fa-comments"></i> Feedbacks</div>
-            <div class="menu-item" onclick="switchTab('settings')" id="nav-settings"><i class="fas fa-cogs"></i> Settings & Links</div>
-        </nav>
-    </aside>
-
-    <main class="content">
-        <div class="top-header">
-            <button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-            <h2 id="pageTitle" style="color: #fff; font-family: var(--font-head);">Store Admin Panel</h2>
-            <button class="btn-home" onclick="logoutAdmin()">LOGOUT</button>
-        </div>
-
-        <div id="tab-store" class="tab-content active">
-            <div class="card">
-                <h2 class="card-title">Manage Store Apps</h2>
-                <div style="text-align:center; padding:20px; border:1px dashed #333; margin-bottom:20px; cursor:pointer;" onclick="window.location.href='index.html'">
-                    <i class="fas fa-external-link-alt"></i> Go to Store Page to View/Test
-                </div>
-                <div class="table-responsive">
-                    <table>
-                        <thead><tr><th>App Name</th><th>Category</th><th>Type</th><th>Status</th><th>Actions</th></tr></thead>
-                        <tbody id="appTableBody"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div id="tab-lua" class="tab-content gold-theme">
-            <div class="card">
-                <div class="card-title">
-                    <span><i class="fas fa-crown"></i> LUA OWNER PANEL</span>
-                    <button class="btn-home btn-add" style="border:none;" onclick="openModal('lua')"><i class="fas fa-plus"></i> NEW KEY</button>
-                </div>
-                <div class="form-group">
-                    <input type="text" id="searchLua" placeholder="Search Owner Keys..." onkeyup="renderLuaTable()" style="border-color:var(--gold-dim);">
-                </div>
-                <div class="table-responsive" style="border-color:var(--gold-dim);">
-                    <table>
-                        <thead><tr><th>Key</th><th>Status</th><th>Expiry</th><th>Device</th><th>Actions</th></tr></thead>
-                        <tbody id="luaTableBody"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div id="tab-library" class="tab-content">
-            <div class="card">
-                <div class="card-title">
-                    <span><i class="fas fa-book"></i> LIBRARY OWNER PANEL</span>
-                    <button class="btn-home" style="background:var(--cyan); color:#000; border:none;" onclick="openModal('lib')"><i class="fas fa-plus"></i> NEW CODE</button>
-                </div>
-                <div class="form-group"><input type="text" id="searchLib" placeholder="Search Library Codes..." onkeyup="renderLibTable()"></div>
-                <div class="table-responsive">
-                    <table>
-                        <thead><tr><th>Code</th><th>Note</th><th>Status</th><th>Expiry</th><th>Actions</th></tr></thead>
-                        <tbody id="libTableBody"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div id="tab-feedback" class="tab-content">
-            <div class="card">
-                <h2 class="card-title">User Reports</h2>
-                <div class="table-responsive">
-                    <table>
-                        <thead><tr><th>User</th><th>Message</th><th>Time</th><th>Action</th></tr></thead>
-                        <tbody id="feedbackTableBody"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div id="tab-settings" class="tab-content">
-            <div class="card">
-                <h2 class="card-title"><i class="fas fa-code-branch"></i> GLOBAL VERSION</h2>
-                <div class="form-group" style="display:flex; gap:10px;">
-                    <input type="text" id="globalAppVer" placeholder="v4.0">
-                    <button class="btn-home" style="background:var(--primary);" onclick="updateGlobalVersion()">UPDATE</button>
-                </div>
-            </div>
-
-            <div class="card" style="border-color: var(--cyan);">
-                <h2 class="card-title" style="color:var(--cyan); border-bottom-color:var(--cyan-dim);"><i class="fas fa-download"></i> FREE PANEL DOWNLOAD LINKS</h2>
-                <p style="color:var(--text-muted); font-size:0.8rem; margin-bottom:15px;">Set links here to show them in the Free Admin Panel.</p>
-                
-                <div class="form-group">
-                    <label>Lua Script Link (Direct)</label>
-                    <input type="url" id="linkLua" placeholder="https://example.com/script.lua">
-                </div>
-                
-                <div class="form-group">
-                    <label>Library (32-bit) Link</label>
-                    <input type="url" id="linkLib32" placeholder="https://example.com/lib-v7a.so">
-                </div>
-
-                <div class="form-group">
-                    <label>Library (64-bit) Link</label>
-                    <input type="url" id="linkLib64" placeholder="https://example.com/lib-v8a.so">
-                </div>
-
-                <button class="btn-home" style="width:100%; background:var(--cyan); color:#000; font-weight:bold;" onclick="updateDownloadLinks()">
-                    <i class="fas fa-save"></i> SAVE DOWNLOAD LINKS
-                </button>
-            </div>
-        </div>
-    </main>
-
-    <div class="modal" id="keyModal">
-        <div class="modal-box">
-            <h3 style="color:var(--primary); margin-bottom:15px;" id="modalTitle">Generate</h3>
-            <input type="hidden" id="modalType">
-            <div class="form-group"><label>Key Name</label><input type="text" id="newKey"></div>
-            <div class="form-group" id="noteGroup" style="display:none;"><label>Note</label><input type="text" id="keyNote"></div>
-            <div class="form-group">
-                <label>Duration</label>
-                <select id="durationSelect">
-                    <option value="1">1 Day</option><option value="7">7 Days</option><option value="30" selected>30 Days</option><option value="365">1 Year</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Max Devices</label>
-                <select id="limitSelect">
-                    <option value="1">1 Device</option><option value="2">2 Devices</option><option value="999">Unlimited</option>
-                </select>
-            </div>
-            <div style="display:flex; justify-content:flex-end; gap:10px;">
-                <button class="btn-home" style="background:transparent;" onclick="document.getElementById('keyModal').style.display='none'">Cancel</button>
-                <button class="btn-home" style="background:var(--primary);" onclick="createMasterKey()">Generate</button>
-            </div>
-        </div>
-    </div>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#ff003c">
-    <title>MASTER OWNER PANEL | MVX SYSTEM</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    
-    <style>
-        /* ==========================================================================
-           MASTER ADMIN PANEL - UPDATED (LUA GOLD THEME + DOWNLOAD MGR)
-           ========================================================================== */
-        * { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; }
-        
-        :root {
-            --primary: #ff003c; --primary-dim: rgba(255, 0, 60, 0.15);
-            --gold: #ffd700; --gold-dim: rgba(255, 215, 0, 0.15);
-            --cyan: #00e6b8; --cyan-dim: rgba(0, 230, 184, 0.15);
-            --bg-void: #000000; --bg-card: #0c101a; --bg-input: #1a1f2c;
-            --text-primary: #ffffff; --text-muted: #9ca3af;
-            --glass-bg: rgba(8, 11, 18, 0.95); --glass-border: 1px solid rgba(255, 0, 60, 0.3);
-            --font-head: 'Orbitron', sans-serif; --font-body: 'Space Grotesk', sans-serif;
-        }
-
-        body { background: var(--bg-void); color: var(--text-primary); font-family: var(--font-body); display: flex; height: 100vh; overflow: hidden; }
-
-        /* Sidebar */
-        .sidebar { width: 260px; background: var(--glass-bg); height: 100%; padding: 20px; border-right: var(--glass-border); transition: 0.3s ease; z-index: 1000; display: flex; flex-direction: column; }
-        .brand { font-family: var(--font-head); font-size: 1.5rem; color: #fff; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .brand span { color: var(--primary); }
-        .brand small { display: block; font-size: 10px; color: var(--gold); letter-spacing: 2px; font-family: 'Rajdhani', sans-serif;}
-        .close-btn { display: none; color: var(--text-muted); cursor: pointer; font-size: 20px; }
-
-        .menu-item { padding: 12px 15px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; color: var(--text-muted); font-weight: 600; transition: 0.2s; display: flex; align-items: center; gap: 10px; }
-        .menu-item.active { background: var(--primary); color: #000; }
-        .menu-item:hover:not(.active) { background: var(--primary-dim); color: var(--primary); }
-
-        /* Main Content */
-        .content { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
-        .top-header { padding: 15px 20px; border-bottom: 1px solid #333; background: var(--glass-bg); display: flex; align-items: center; justify-content: space-between; }
-        .menu-toggle { background: none; border: none; color: white; font-size: 24px; cursor: pointer; display: none; }
-        .btn-home { background: var(--bg-input); border: 1px solid #333; color: white; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-home:hover { background: var(--primary); color: #000; border-color: var(--primary); }
-
-        .tab-content { padding: 20px; overflow-y: auto; height: 100%; display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* Common Cards & Inputs */
-        .card { background: var(--bg-card); border: 1px solid #333; border-radius: 12px; padding: 20px; margin-bottom: 20px; }
-        .card-title { font-family: var(--font-head); color: var(--primary); margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; font-size: 1.2rem; display: flex; justify-content: space-between; align-items: center; }
-        
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 8px; color: var(--text-muted); font-size: 0.9rem; font-weight: 600; }
-        input, select, textarea { width: 100%; height: 45px; background: var(--bg-input); border: 1px solid #333; color: #fff; padding: 0 15px; border-radius: 8px; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--primary); }
-        
-        /* Store Image Uploads */
-        .img-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
-        .img-upload-box { border: 2px dashed #333; padding: 20px; text-align: center; cursor: pointer; border-radius: 8px; }
-        .img-upload-box img { max-width: 100%; display: none; }
-
-        /* Tables */
-        .table-responsive { width: 100%; overflow-x: auto; border-radius: 8px; border: 1px solid #333; background: var(--bg-input); }
-        table { width: 100%; border-collapse: collapse; text-align: left; }
-        th, td { padding: 12px 15px; border-bottom: 1px solid #333; white-space: nowrap; font-size: 0.9rem; }
-        th { background: rgba(0,0,0,0.5); color: var(--text-muted); font-family: var(--font-head); text-transform: uppercase; font-size: 0.8rem; }
-        
-        /* Badges & Actions */
-        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
-        .b-active { background: rgba(0, 230, 184, 0.2); color: var(--cyan); }
-        .b-banned { background: rgba(255, 0, 60, 0.2); color: var(--danger); }
-        .actions { display: flex; gap: 5px; }
-        .act-btn { width: 28px; height: 28px; border-radius: 4px; border: none; cursor: pointer; color: #fff; display: flex; justify-content: center; align-items: center; transition: 0.2s;}
-        .act-edit { background: var(--cyan); color: #000; } 
-        .act-del { background: var(--danger); }
-
-        /* GOLD THEME FOR LUA TAB (Owner Style) */
-        .gold-theme .card { border-color: var(--gold-dim); }
-        .gold-theme .card-title { color: var(--gold); border-bottom-color: var(--gold-dim); }
-        .gold-theme .btn-add { background: var(--gold); color: #000; font-weight: bold; padding: 5px 15px; border-radius: 5px; border: none; cursor: pointer;}
-        .gold-theme th { color: var(--gold); }
-        .gold-theme strong { color: #fff; }
-        .gold-theme .act-reset { background: var(--gold); color: #000; }
         .gold-theme .badge.b-active { background: rgba(255, 215, 0, 0.2); color: var(--gold); }
 
-        /* Modal */
+        /* Modal & Toast */
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 20px; }
         .modal-box { background: var(--bg-card); width: 100%; max-width: 400px; padding: 20px; border-radius: 12px; border: 1px solid var(--primary); box-shadow: 0 0 30px var(--primary-dim); }
+        .modal-header { display: flex; justify-content: space-between; margin-bottom: 15px; color: var(--primary); font-family: var(--font-head); font-size: 1.2rem; }
 
-        /* Toast */
         .toast-container { position: fixed; top: 80px; right: 20px; z-index: 9999; }
         .toast { background: var(--bg-input); border-left: 4px solid var(--cyan); padding: 15px 20px; margin-bottom: 10px; border-radius: 8px; display: flex; gap: 10px; align-items: center; color: #fff; animation: slideIn 0.3s; }
+        .toast.error { border-left-color: var(--danger); }
         @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
 
-        /* Mobile */
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; z-index: 900; }
+
+        /* ==========================================================================
+           MOBILE RESPONSIVE FIXES
+           ========================================================================== */
         @media (max-width: 768px) {
-            .sidebar { position: fixed; left: -260px; top: 0; height: 100%; }
+            body { flex-direction: column; }
+            .sidebar { position: fixed; left: -300px; top: 0; height: 100%; z-index: 2000; }
             .sidebar.active { left: 0; }
+            .content { width: 100vw; }
             .menu-toggle, .close-btn { display: block; }
+            .overlay.active { display: block; }
+            
+            .extra-link-row { display: flex; flex-direction: column; gap: 5px; background: rgba(255,255,255,0.02); padding: 10px; border-radius: 8px; }
+            
+            /* Table to Card View for Mobile */
+            .table-responsive { border: none; background: transparent; }
             table, thead, tbody, tr, td { display: block; width: 100%; }
             thead { display: none; }
-            tr { margin-bottom: 10px; border: 1px solid #333; padding: 10px; border-radius: 8px; }
-            td { display: flex; justify-content: space-between; text-align: right; border-bottom: 1px dashed #333; }
-            td::before { content: attr(data-label); font-weight: bold; color: var(--text-muted); }
+            tr { background: var(--bg-input); border: 1px solid #333; border-radius: 8px; margin-bottom: 10px; padding: 10px; display: flex; flex-direction: column; gap: 5px; }
+            td { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(255,255,255,0.1); padding: 5px 0; font-size: 0.85rem; text-align: right; }
+            td:last-child { border-bottom: none; }
+            td::before { content: attr(data-label); color: var(--text-muted); font-weight: bold; text-align: left; padding-right: 15px; }
+            .actions { justify-content: flex-end; }
         }
     </style>
 </head>
 <body>
 
+    <div class="loading-overlay" id="loadingOverlay">
+        <i class="fas fa-satellite-dish"></i>
+        <h3 style="font-family: var(--font-head); color: var(--primary);">Authenticating...</h3>
+    </div>
+
     <div class="toast-container" id="toastContainer"></div>
-    <div class="overlay" onclick="toggleSidebar()" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:none; z-index:900;"></div>
+    <div class="overlay" onclick="toggleSidebar()"></div>
 
     <aside class="sidebar" id="sidebar">
         <div class="brand">
-            <div>MVX <span>OWNER</span></div>
+            <div>MVX <span>OWNER</span><small>MASTER CONTROL PANEL</small></div>
             <i class="fas fa-times close-btn" onclick="toggleSidebar()"></i>
         </div>
         <nav style="flex: 1;">
@@ -375,51 +169,85 @@
             <div class="menu-item" onclick="switchTab('lua')" id="nav-lua"><i class="fas fa-crown"></i> Lua Owner</div>
             <div class="menu-item" onclick="switchTab('library')" id="nav-library"><i class="fas fa-book"></i> Library Owner</div>
             <div class="menu-item" onclick="switchTab('feedback')" id="nav-feedback"><i class="fas fa-comments"></i> Feedbacks</div>
-            <div class="menu-item" onclick="switchTab('settings')" id="nav-settings"><i class="fas fa-cogs"></i> Settings & Links</div>
+            <div class="menu-item" onclick="switchTab('settings')" id="nav-settings"><i class="fas fa-cogs"></i> Global Settings</div>
         </nav>
     </aside>
 
     <main class="content">
-        <div class="top-header">
-            <button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-            <h2 id="pageTitle" style="color: #fff; font-family: var(--font-head);">Store Admin Panel</h2>
-            <button class="btn-home" onclick="logoutAdmin()">LOGOUT</button>
-        </div>
+        <header class="top-header">
+            <div style="display:flex; align-items:center; gap:15px;">
+                <button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <h2 id="pageTitle" style="color: #fff; font-family: var(--font-head); margin:0; font-size: 1.2rem;">Store Admin Panel</h2>
+            </div>
+            <button class="btn-home" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i> LOGOUT</button>
+        </header>
 
         <div id="tab-store" class="tab-content active">
-            <div class="card">
-                <h2 class="card-title">Upload / Manage Store Apps</h2>
-                <button class="btn-home" style="width:100%; margin-bottom:15px;" onclick="document.getElementById('uploadFormSection').style.display = document.getElementById('uploadFormSection').style.display === 'none' ? 'block' : 'none'">
-                    <i class="fas fa-plus"></i> TOGGLE UPLOAD FORM
-                </button>
+            <div class="card" id="formCard">
+                <h2 class="card-title">
+                    <span id="formTitleText"><i class="fas fa-upload"></i> UPLOAD NEW APP</span>
+                    <button id="cancelEditBtn" style="display:none; background:var(--danger); color:#fff; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;" onclick="cancelEdit()"><i class="fas fa-times"></i> Cancel Edit</button>
+                </h2>
+                
+                <form id="uploadForm" onsubmit="submitApp(event)">
+                    <input type="hidden" id="editAppId" value="">
+                    <div class="form-grid">
+                        <div class="form-group"><label>App Name *</label><input type="text" id="appName" required></div>
+                        <div class="form-group"><label>Version</label><input type="text" id="version"></div>
+                        <div class="form-group"><label>Size</label><input type="text" id="size"></div>
+                        <div class="form-group"><label>Category *</label><select id="category" required><option>Free Fire</option><option>PUBG</option><option>Blood Strike</option><option>Tools</option><option>Other Game</option></select></div>
+                        <div class="form-group"><label>Type *</label><select id="accessType" required><option>Free</option><option>Premium</option><option>Paid</option></select></div>
+                    </div>
 
-                <div id="uploadFormSection" style="display:none; margin-bottom:20px;">
-                    <form id="uploadForm" onsubmit="submitApp(event)">
-                        <input type="hidden" id="editAppId">
-                        <div class="form-group"><label>App Name</label><input type="text" id="appName" required></div>
-                        <div class="form-group"><label>Category</label><select id="category"><option>Free Fire</option><option>PUBG</option><option>Tools</option><option>Other Game</option></select></div>
-                        <div class="form-group"><label>Type</label><select id="accessType"><option>Free</option><option>Premium</option><option>Paid</option></select></div>
-                        <div class="form-group"><label>Download Link</label><input type="url" id="downloadUrl" required></div>
-                        
-                        <div class="img-grid">
+                    <div class="img-grid">
+                        <div class="form-group">
+                            <label>Banner (16:9) *</label>
                             <div class="img-upload-box">
-                                <label>Banner</label>
-                                <input type="file" accept="image/*" onchange="convertToBase64(this, 'bannerPreview', 'bannerBase64')">
+                                <span id="bannerText" style="color:var(--text-muted);"><i class="fas fa-image"></i> Add Banner</span>
                                 <img id="bannerPreview">
-                                <input type="hidden" id="bannerBase64">
-                            </div>
-                            <div class="img-upload-box">
-                                <label>Logo</label>
-                                <input type="file" accept="image/*" onchange="convertToBase64(this, 'logoPreview', 'logoBase64')">
-                                <img id="logoPreview">
-                                <input type="hidden" id="logoBase64">
+                                <input type="file" accept="image/*" id="bannerInput" onchange="convertToBase64(this, 'bannerPreview', 'bannerText', 'bannerBase64')">
+                                <input type="hidden" id="bannerBase64" required>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label>Logo (1:1) *</label>
+                            <div class="img-upload-box">
+                                <span id="logoText" style="color:var(--text-muted);"><i class="fas fa-icons"></i> Add Logo</span>
+                                <img id="logoPreview">
+                                <input type="file" accept="image/*" id="logoInput" onchange="convertToBase64(this, 'logoPreview', 'logoText', 'logoBase64')">
+                                <input type="hidden" id="logoBase64" required>
+                            </div>
+                        </div>
+                    </div>
 
-                        <button type="submit" class="btn-home" style="width:100%; margin-top:15px; background:var(--primary);">PUBLISH APP</button>
-                    </form>
-                </div>
+                    <div class="form-group">
+                        <label>Preview Screenshots (Max 5)</label>
+                        <div class="img-upload-box" style="height: auto; padding: 10px;">
+                            <span style="color: var(--text-muted);"><i class="fas fa-images"></i> Click to add screenshots</span>
+                            <input type="file" accept="image/*" multiple onchange="handleMultipleScreenshots(this)">
+                        </div>
+                        <div class="preview-list" id="screenshotContainer"></div>
+                    </div>
 
+                    <div class="form-group"><label>Download Link *</label><input type="url" id="downloadUrl" required></div>
+                    <div class="form-grid">
+                        <div class="form-group"><label>Password (Optional)</label><input type="text" id="password"></div>
+                        <div class="form-group"><label>Password Video URL</label><input type="url" id="videoUrl"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Extra Links</label>
+                        <div id="extraLinksContainer"></div>
+                        <button type="button" class="btn-home" style="width:100%; margin-top:5px;" onclick="addExtraLink()"><i class="fas fa-plus"></i> Add Link</button>
+                    </div>
+
+                    <div class="form-group"><label>Description</label><textarea id="description"></textarea></div>
+                    <button type="submit" class="btn-submit" id="submitBtn"><i class="fas fa-cloud-upload-alt"></i> PUBLISH TO STORE</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-server"></i> MANAGE STORE APPS</h2>
                 <div class="table-responsive">
                     <table>
                         <thead><tr><th>App Name</th><th>Category</th><th>Type</th><th>Status</th><th>Actions</th></tr></thead>
@@ -431,16 +259,13 @@
 
         <div id="tab-lua" class="tab-content gold-theme">
             <div class="card">
-                <div class="card-title">
-                    <span><i class="fas fa-crown"></i> LUA OWNER PANEL</span>
-                    <button class="btn-add" onclick="openModal('lua')"><i class="fas fa-plus"></i> NEW KEY</button>
-                </div>
-                <div class="form-group">
-                    <input type="text" id="searchLua" placeholder="Search Owner Keys..." onkeyup="renderLuaTable()" style="border-color:var(--gold-dim);">
+                <div class="toolbar">
+                    <input type="text" id="searchLua" class="search" placeholder="Search Lua Key..." onkeyup="renderLuaTable()" style="border-color:var(--gold-dim);">
+                    <button class="btn-add" onclick="openModal('lua')"><i class="fas fa-plus"></i> NEW LUA KEY</button>
                 </div>
                 <div class="table-responsive" style="border-color:var(--gold-dim);">
                     <table>
-                        <thead><tr><th>Key</th><th>Status</th><th>Expiry</th><th>Device</th><th>Actions</th></tr></thead>
+                        <thead><tr><th>Key / Creator</th><th>Status</th><th>Expiry Date</th><th>Device Info</th><th>Actions</th></tr></thead>
                         <tbody id="luaTableBody"></tbody>
                     </table>
                 </div>
@@ -449,14 +274,13 @@
 
         <div id="tab-library" class="tab-content">
             <div class="card">
-                <div class="card-title">
-                    <span><i class="fas fa-book"></i> LIBRARY OWNER PANEL</span>
-                    <button class="btn-home" style="background:var(--cyan); color:#000; border:none;" onclick="openModal('lib')"><i class="fas fa-plus"></i> NEW CODE</button>
+                <div class="toolbar">
+                    <input type="text" id="searchLib" class="search" placeholder="Search Library Code..." onkeyup="renderLibTable()">
+                    <button class="btn-add" style="background:var(--cyan);" onclick="openModal('lib')"><i class="fas fa-plus"></i> NEW LIB CODE</button>
                 </div>
-                <div class="form-group"><input type="text" id="searchLib" placeholder="Search Library Codes..." onkeyup="renderLibTable()"></div>
                 <div class="table-responsive">
                     <table>
-                        <thead><tr><th>Code</th><th>Note</th><th>Status</th><th>Expiry</th><th>Actions</th></tr></thead>
+                        <thead><tr><th>Code (10-Digit)</th><th>Note / Creator</th><th>Status</th><th>Expiry Date</th><th>Actions</th></tr></thead>
                         <tbody id="libTableBody"></tbody>
                     </table>
                 </div>
@@ -465,10 +289,10 @@
 
         <div id="tab-feedback" class="tab-content">
             <div class="card">
-                <h2 class="card-title">User Reports</h2>
+                <h2 class="card-title"><i class="fas fa-comments"></i> User Feedbacks</h2>
                 <div class="table-responsive">
                     <table>
-                        <thead><tr><th>User</th><th>Message</th><th>Time</th><th>Action</th></tr></thead>
+                        <thead><tr><th>User Info</th><th>Message</th><th>Time</th><th>Image</th><th>Actions</th></tr></thead>
                         <tbody id="feedbackTableBody"></tbody>
                     </table>
                 </div>
@@ -477,60 +301,175 @@
 
         <div id="tab-settings" class="tab-content">
             <div class="card">
-                <h2 class="card-title"><i class="fas fa-code-branch"></i> GLOBAL VERSION</h2>
-                <div class="form-group" style="display:flex; gap:10px;">
-                    <input type="text" id="globalAppVer" placeholder="v4.0">
-                    <button class="btn-home" style="background:var(--primary);" onclick="updateGlobalVersion()">UPDATE</button>
+                <h2 class="card-title"><i class="fas fa-cogs"></i> SYSTEM CONFIGURATION</h2>
+                <div class="form-group" style="max-width: 300px;">
+                    <label>Global App Version</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="globalAppVer" placeholder="e.g. 4.0">
+                        <button class="btn-home" style="background:var(--primary); margin:0;" onclick="updateGlobalVersion()">UPDATE</button>
+                    </div>
                 </div>
             </div>
-
+            
             <div class="card" style="border-color: var(--cyan);">
                 <h2 class="card-title" style="color:var(--cyan); border-bottom-color:var(--cyan-dim);"><i class="fas fa-download"></i> FREE PANEL DOWNLOAD LINKS</h2>
                 <p style="color:var(--text-muted); font-size:0.8rem; margin-bottom:15px;">Set links here to show them in the Free Admin Panel.</p>
-                
-                <div class="form-group">
-                    <label>Lua Script Link (Direct)</label>
-                    <input type="url" id="linkLua" placeholder="https://example.com/script.lua">
-                </div>
-                
-                <div class="form-group">
-                    <label>Library (32-bit) Link</label>
-                    <input type="url" id="linkLib32" placeholder="https://example.com/lib-v7a.so">
-                </div>
-
-                <div class="form-group">
-                    <label>Library (64-bit) Link</label>
-                    <input type="url" id="linkLib64" placeholder="https://example.com/lib-v8a.so">
-                </div>
-
-                <button class="btn-home" style="width:100%; background:var(--cyan); color:#000; font-weight:bold;" onclick="updateDownloadLinks()">
-                    <i class="fas fa-save"></i> SAVE DOWNLOAD LINKS
-                </button>
+                <div class="form-group"><label>Lua Script Link</label><input type="url" id="linkLua" placeholder="https://..."></div>
+                <div class="form-group"><label>Library (32-bit) Link</label><input type="url" id="linkLib32" placeholder="https://..."></div>
+                <div class="form-group"><label>Library (64-bit) Link</label><input type="url" id="linkLib64" placeholder="https://..."></div>
+                <button class="btn-home" style="width:100%; background:var(--cyan); color:#000;" onclick="updateDownloadLinks()"><i class="fas fa-save"></i> SAVE LINKS</button>
             </div>
         </div>
     </main>
 
     <div class="modal" id="keyModal">
         <div class="modal-box">
-            <h3 style="color:var(--primary); margin-bottom:15px;" id="modalTitle">Generate</h3>
-            <input type="hidden" id="modalType">
+            <div class="modal-header"><h3 id="modalTitle">Generate</h3><i class="fas fa-times" onclick="closeModal()" style="cursor:pointer; color:var(--text-muted);"></i></div>
+            <input type="hidden" id="modalType" value="lua">
             <div class="form-group"><label>Key Name</label><input type="text" id="newKey"></div>
             <div class="form-group" id="noteGroup" style="display:none;"><label>Note</label><input type="text" id="keyNote"></div>
             <div class="form-group">
                 <label>Duration</label>
-                <select id="durationSelect">
-                    <option value="1">1 Day</option><option value="7">7 Days</option><option value="30" selected>30 Days</option><option value="365">1 Year</option>
-                </select>
+                <select id="durationSelect"><option value="1">1 Day</option><option value="7">7 Days</option><option value="30" selected>30 Days</option><option value="365">1 Year</option></select>
             </div>
             <div class="form-group">
-                <label>Max Devices</label>
-                <select id="limitSelect">
-                    <option value="1">1 Device</option><option value="2">2 Devices</option><option value="999">Unlimited</option>
-                </select>
+                <label>Device Limit</label>
+                <select id="limitSelect"><option value="1">1 Device</option><option value="2">2 Devices</option><option value="999">Unlimited</option></select>
             </div>
-            <div style="display:flex; justify-content:flex-end; gap:10px;">
-                <button class="btn-home" style="background:transparent;" onclick="document.getElementById('keyModal').style.display='none'">Cancel</button>
-                <button class="btn-home" style="background:var(--primary);" onclick="createMasterKey()">Generate</button>
+            <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:15px;">
+                <button class="btn-home" style="background: transparent;" onclick="closeModal()">Cancel</button>
+                <button class="btn-add" style="padding: 0 20px;" onclick="createMasterKey()">Generate</button>
             </div>
         </div>
     </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <script>
+        // SECURITY CHECK
+        if (sessionStorage.getItem('mvx_admin_token') !== 'SECURE_AUTHORIZED') window.location.href = 'index.html';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAS3UXXrio_-c9uPbHwpDuTVrP-p8d903w",
+            authDomain: "white-2k-17-v4.firebaseapp.com",
+            databaseURL: "https://white-2k-17-v4-default-rtdb.firebaseio.com",
+            projectId: "white-2k-17-v4",
+            storageBucket: "white-2k-17-v4.firebasestorage.app",
+            messagingSenderId: "180909174928",
+            appId: "1:180909174928:android:148861a87d66c6980ca815"
+        };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        let allAppsData = {}; let allLuaUsers = {}; let allLibKeys = {}; let allFeedbacks = {}; let screenshotsArray = [];
+
+        function showToast(msg, type='success') {
+            const c = document.getElementById('toastContainer');
+            const t = document.createElement('div');
+            t.className = type === 'error' ? 'toast error' : 'toast';
+            t.innerHTML = `<i class="fas fa-${type==='error'?'times':'check'}-circle"></i> <span>${msg}</span>`;
+            c.appendChild(t);
+            setTimeout(() => { t.style.opacity = '0'; setTimeout(()=>t.remove(), 300); }, 3000);
+        }
+
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); document.querySelector('.overlay').classList.toggle('active'); }
+        function logoutAdmin() { sessionStorage.removeItem('mvx_admin_token'); window.location.href = 'index.html'; }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+            document.getElementById(`tab-${tab}`).classList.add('active');
+            document.getElementById(`nav-${tab}`).classList.add('active');
+            const titles = {'store': 'Store Admin Panel', 'lua': 'Lua Owner Panel', 'library': 'Library Owner Panel', 'feedback': 'User Feedbacks', 'settings': 'System Settings'};
+            document.getElementById('pageTitle').innerText = titles[tab];
+            if(window.innerWidth <= 768) toggleSidebar();
+        }
+
+        function initMasterAdmin() {
+            db.ref("MVX_VIP_SERVER_V5").on('value', snap => { allAppsData = snap.val() || {}; renderStoreTable(); });
+            db.ref('users').on('value', snap => { allLuaUsers = snap.val() || {}; renderLuaTable(); });
+            db.ref('licenses').on('value', snap => { allLibKeys = snap.val() || {}; renderLibTable(); });
+            db.ref('community_feedbacks').on('value', snap => { allFeedbacks = snap.val() || {}; renderFeedbackTable(); });
+            db.ref('config').on('value', snap => {
+                const conf = snap.val() || {};
+                if(conf.version) document.getElementById('globalAppVer').value = conf.version;
+                if(conf.downloads) {
+                    document.getElementById('linkLua').value = conf.downloads.lua || '';
+                    document.getElementById('linkLib32').value = conf.downloads.lib32 || '';
+                    document.getElementById('linkLib64').value = conf.downloads.lib64 || '';
+                }
+            });
+            setTimeout(() => { document.getElementById('loadingOverlay').style.display = 'none'; }, 1000);
+        }
+
+        // --- STORE LOGIC ---
+        function renderStoreTable() {
+            const tbody = document.getElementById('appTableBody'); tbody.innerHTML = '';
+            const keys = Object.keys(allAppsData).reverse();
+            if(keys.length === 0) return tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No apps found.</td></tr>`;
+            keys.forEach(id => {
+                const app = allAppsData[id];
+                const isHidden = app.isHidden || false;
+                const badge = isHidden ? `<span class="badge b-banned">Hidden</span>` : `<span class="badge b-active">Active</span>`;
+                const icon = isHidden ? "fa-eye" : "fa-eye-slash";
+                const logo = app.logoBase64 || 'https://via.placeholder.com/50';
+                tbody.innerHTML += `<tr><td data-label="App"><div class="app-title-wrapper"><img src="${logo}"><span class="app-title-text">${app.appName}</span></div></td><td data-label="Cat">${app.gameCategory}</td><td data-label="Type">${app.accessType}</td><td data-label="Status">${badge}</td><td data-label="Act"><div class="actions"><button type="button" class="act-btn act-edit" onclick="loadEditData('${id}')"><i class="fas fa-edit"></i></button><button type="button" class="act-btn act-reset" onclick="toggleHideStore('${id}', ${isHidden})"><i class="fas ${icon}"></i></button><button type="button" class="act-btn act-del" onclick="deleteStoreApp('${id}')"><i class="fas fa-trash"></i></button></div></td></tr>`;
+            });
+        }
+
+        function convertToBase64(input, previewId, textId, hiddenId) {
+            const file = input.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => { document.getElementById(previewId).src = e.target.result; document.getElementById(previewId).style.display = 'block'; document.getElementById(textId).style.display = 'none'; document.getElementById(hiddenId).value = e.target.result; };
+            reader.readAsDataURL(file);
+        }
+        function handleMultipleScreenshots(input) { Array.from(input.files).forEach(file => { const r = new FileReader(); r.onload = e => { screenshotsArray.push(e.target.result); renderScreenshots(); }; r.readAsDataURL(file); }); input.value = ''; }
+        function renderScreenshots() { const c = document.getElementById('screenshotContainer'); c.innerHTML = ''; screenshotsArray.forEach((b, i) => { c.innerHTML += `<div class="preview-item"><img src="${b}"><button type="button" class="remove-btn" onclick="removeScreenshot(${i})">×</button></div>`; }); }
+        function removeScreenshot(i) { screenshotsArray.splice(i, 1); renderScreenshots(); }
+        function addExtraLink(t='', u='') { const d = document.createElement('div'); d.className = 'extra-link-row'; d.innerHTML = `<input type="text" placeholder="Title" class="ex-title" value="${t}"><input type="url" placeholder="URL" class="ex-url" value="${u}"><button type="button" onclick="this.parentElement.remove()" style="background:var(--danger); border:none; color:#fff; border-radius:8px; cursor:pointer;"><i class="fas fa-trash"></i></button>`; document.getElementById('extraLinksContainer').appendChild(d); }
+
+        function submitApp(e) {
+            e.preventDefault(); const editId = document.getElementById('editAppId').value;
+            let ext = []; document.querySelectorAll('.extra-link-row').forEach(r => { ext.push({ title: r.querySelector('.ex-title').value, url: r.querySelector('.ex-url').value }); });
+            const data = { appName: document.getElementById('appName').value, version: document.getElementById('version').value, size: document.getElementById('size').value, gameCategory: document.getElementById('category').value, accessType: document.getElementById('accessType').value, bannerBase64: document.getElementById('bannerBase64').value, logoBase64: document.getElementById('logoBase64').value, screenshots: screenshotsArray, downloadUrl: document.getElementById('downloadUrl').value, password: document.getElementById('password').value, passwordVideoUrl: document.getElementById('videoUrl').value, description: document.getElementById('description').value, extraLinks: ext, timestamp: Date.now() };
+            data.isHidden = (editId && allAppsData[editId]) ? allAppsData[editId].isHidden : false;
+            const ref = editId ? db.ref(`MVX_VIP_SERVER_V5/${editId}`) : db.ref("MVX_VIP_SERVER_V5").push();
+            ref.set(data).then(() => { showToast('Store Updated Successfully!'); cancelEdit(); });
+        }
+
+        function loadEditData(id) {
+            const a = allAppsData[id]; if(!a) return;
+            document.getElementById('editAppId').value = id; document.getElementById('formTitleText').innerHTML = `<i class="fas fa-edit"></i> EDITING`; document.getElementById('submitBtn').innerHTML = 'UPDATE APP'; document.getElementById('cancelEditBtn').style.display = 'inline-block';
+            document.getElementById('appName').value = a.appName; document.getElementById('version').value = a.version||''; document.getElementById('size').value = a.size||''; document.getElementById('category').value = a.gameCategory; document.getElementById('accessType').value = a.accessType; document.getElementById('downloadUrl').value = a.downloadUrl; document.getElementById('password').value = a.password||''; document.getElementById('videoUrl').value = a.passwordVideoUrl||''; document.getElementById('description').value = a.description||'';
+            document.getElementById('bannerBase64').value = a.bannerBase64; document.getElementById('bannerPreview').src = a.bannerBase64; document.getElementById('bannerPreview').style.display = 'block'; document.getElementById('bannerText').style.display = 'none'; document.getElementById('bannerInput').removeAttribute('required');
+            document.getElementById('logoBase64').value = a.logoBase64; document.getElementById('logoPreview').src = a.logoBase64; document.getElementById('logoPreview').style.display = 'block'; document.getElementById('logoText').style.display = 'none'; document.getElementById('logoInput').removeAttribute('required');
+            screenshotsArray = a.screenshots?[...a.screenshots]:[]; renderScreenshots(); document.getElementById('extraLinksContainer').innerHTML = ''; if(a.extraLinks) a.extraLinks.forEach(l => addExtraLink(l.title, l.url)); window.scrollTo({top:0, behavior:'smooth'});
+        }
+
+        function cancelEdit() { document.getElementById('uploadForm').reset(); document.getElementById('editAppId').value = ''; document.getElementById('formTitleText').innerHTML = `<i class="fas fa-upload"></i> UPLOAD NEW APP`; document.getElementById('submitBtn').innerHTML = 'PUBLISH TO STORE'; document.getElementById('cancelEditBtn').style.display = 'none'; document.getElementById('bannerPreview').style.display = 'none'; document.getElementById('bannerText').style.display = 'block'; document.getElementById('bannerInput').setAttribute('required','true'); document.getElementById('logoPreview').style.display = 'none'; document.getElementById('logoText').style.display = 'block'; document.getElementById('logoInput').setAttribute('required','true'); screenshotsArray = []; renderScreenshots(); document.getElementById('extraLinksContainer').innerHTML = ''; }
+        function toggleHideStore(id, cur) { db.ref(`MVX_VIP_SERVER_V5/${id}/isHidden`).set(!cur); }
+        function deleteStoreApp(id) { if(confirm("Delete App from Store?")) db.ref(`MVX_VIP_SERVER_V5/${id}`).remove(); }
+
+        // --- MODAL LOGIC ---
+        function openModal(type) { document.getElementById('modalType').value = type; document.getElementById('modalTitle').innerText = type==='lua'?'Generate Lua':'Generate Lib'; document.getElementById('noteGroup').style.display = type==='lib'?'block':'none'; document.getElementById('newKey').value = type==='lua'?"MVX_VIP_"+Math.floor(Math.random()*10000) : Math.floor(Math.random()*10000000000).toString().padStart(10,'0'); document.getElementById('keyModal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('keyModal').style.display = 'none'; }
+        function createMasterKey() { const type = document.getElementById('modalType').value; const k = document.getElementById('newKey').value; const days = parseInt(document.getElementById('durationSelect').value); const limit = parseInt(document.getElementById('limitSelect').value); if(!k)return; const date = new Date(); date.setDate(date.getDate() + days); if(type==='lua') db.ref('users/'+k).set({expiry:date.toISOString().split('T')[0], maxDevices:limit, status:'active', creatorEmail:"Owner", createdAt:Date.now()}); else db.ref('licenses').push().set({key:k, note:document.getElementById('keyNote').value||"User", duration:days, maxDevices:limit, status:'Active', creatorEmail:"Owner", createdAt:Date.now()}); showToast("Code Generated Successfully!"); closeModal(); }
+
+        // --- LUA, LIB & FEEDBACK LOGIC ---
+        function renderLuaTable() { const b=document.getElementById('luaTableBody'); const s=document.getElementById('searchLua').value.toLowerCase(); b.innerHTML=''; Object.keys(allLuaUsers).reverse().forEach(k=>{ const u=allLuaUsers[k]; if(k.toLowerCase().includes(s)|| (u.creatorEmail||'').toLowerCase().includes(s)) b.innerHTML+=`<tr><td data-label="Key"><strong>${k}</strong><br><small>${u.creatorEmail||'Admin'}</small></td><td data-label="Stat"><span class="badge ${u.status==='active'?'b-active':'b-banned'}">${u.status}</span></td><td data-label="Exp">${u.expiry}</td><td data-label="Dev">${u.hwids?Object.keys(u.hwids).length:0}/${u.maxDevices==999?'∞':u.maxDevices}</td><td data-label="Act"><div class="actions"><button class="act-btn act-reset" onclick="resetLua('${k}')"><i class="fas fa-sync"></i></button><button class="act-btn act-ban" onclick="toggleLuaBan('${k}','${u.status}')"><i class="fas fa-ban"></i></button><button class="act-btn act-del" onclick="db.ref('users/${k}').remove()"><i class="fas fa-trash"></i></button></div></td></tr>`; }); }
+        function resetLua(k) { if(confirm("Reset Device?")) db.ref(`users/${k}/hwids`).remove(); }
+        function toggleLuaBan(k, s) { db.ref(`users/${k}/status`).set(s==='active'?'banned':'active'); }
+
+        function renderLibTable() { const b=document.getElementById('libTableBody'); const s=document.getElementById('searchLib').value.toLowerCase(); b.innerHTML=''; Object.keys(allLibKeys).reverse().forEach(k=>{ const i=allLibKeys[k]; if(i.key.toLowerCase().includes(s)||(i.note||'').toLowerCase().includes(s)) b.innerHTML+=`<tr><td data-label="Code" style="color:var(--cyan);font-family:monospace;">${i.key}</td><td data-label="Info">${i.note||'User'}</td><td data-label="Stat"><span class="badge b-active">Active</span></td><td data-label="Exp">${new Date(i.createdAt+(i.duration*86400000)).toLocaleDateString()}</td><td data-label="Act"><button class="act-btn act-del" onclick="db.ref('licenses/${k}').remove()"><i class="fas fa-trash"></i></button></td></tr>`; }); }
+        
+        function renderFeedbackTable() { const b=document.getElementById('feedbackTableBody'); b.innerHTML=''; Object.keys(allFeedbacks).reverse().forEach(k=>{ const m=allFeedbacks[k]; const img=m.imageBase64?`<img src="${m.imageBase64}" style="width:40px;height:40px;object-fit:cover;border-radius:4px;cursor:pointer;" onclick="window.open('${m.imageBase64}')">`:'No Image'; b.innerHTML+=`<tr><td data-label="User"><strong>${m.name}</strong><br><small>${m.email}</small></td><td data-label="Msg" style="white-space:normal;font-size:0.8rem;">${m.text}</td><td data-label="Time"><small>${new Date(m.timestamp).toLocaleString()}</small></td><td data-label="Img">${img}</td><td data-label="Act"><button class="act-btn act-del" onclick="db.ref('community_feedbacks/${k}').remove()"><i class="fas fa-trash"></i></button></td></tr>`; }); }
+
+        // --- SETTINGS ---
+        function updateGlobalVersion() { db.ref('config/version').set(document.getElementById('globalAppVer').value).then(()=>showToast("Version Updated!")); }
+        function updateDownloadLinks() { db.ref('config/downloads').set({ lua: document.getElementById('linkLua').value, lib32: document.getElementById('linkLib32').value, lib64: document.getElementById('linkLib64').value }).then(()=>showToast("Links Saved Successfully!")); }
+
+        initMasterAdmin();
+    </script>
+</body>
+</html>
