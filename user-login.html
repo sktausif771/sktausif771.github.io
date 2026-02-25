@@ -11,7 +11,7 @@
     
     <style>
         /* ==========================================================================
-           MVX STORE - USER LOGIN & PROFILE (DB SYNC FIX)
+           MVX STORE - USER LOGIN & PROFILE PAGE (UPDATED)
            ========================================================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
@@ -19,27 +19,30 @@
             --primary: #00e6b8; --primary-dim: rgba(0, 230, 184, 0.15);
             --danger: #ff003c; --bg-void: #000000; --bg-card: #0c101a; --bg-input: #1a1f2c;
             --text-primary: #ffffff; --text-muted: #9ca3af;
-            --glass-bg: rgba(8, 11, 18, 0.95); --glass-border: 1px solid rgba(0, 230, 184, 0.2);
+            --glass-bg: rgba(8, 11, 18, 0.8); --glass-border: 1px solid rgba(0, 230, 184, 0.2);
             --font-head: 'Rajdhani', sans-serif; --font-body: 'Space Grotesk', sans-serif;
         }
 
         body { background: var(--bg-void); color: var(--text-primary); font-family: var(--font-body); min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
 
+        /* Background Effects */
         .grid-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(0, 230, 184, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 230, 184, 0.03) 1px, transparent 1px); background-size: 50px 50px; z-index: -1; animation: gridShift 15s linear infinite; }
         .glow-orb { position: absolute; width: 60vmax; height: 60vmax; border-radius: 50%; background: radial-gradient(circle at center, rgba(0, 230, 184, 0.1) 0%, transparent 70%); filter: blur(50px); z-index: -1; animation: orbFloat 10s ease-in-out infinite alternate; }
         @keyframes gridShift { 0% { background-position: 0 0; } 100% { background-position: 50px 50px; } }
         @keyframes orbFloat { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
 
+        /* Top Bar */
         .top-bar { position: absolute; top: 0; left: 0; width: 100%; padding: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 10; }
         .back-btn { background: var(--glass-bg); border: var(--glass-border); color: var(--text-primary); padding: 10px 20px; border-radius: 8px; text-decoration: none; font-family: var(--font-head); font-weight: 600; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
         .back-btn:hover { background: var(--primary-dim); color: var(--primary); border-color: var(--primary); }
 
-        .auth-container { width: 100%; max-width: 450px; padding: 30px; background: var(--glass-bg); backdrop-filter: blur(15px); border: var(--glass-border); border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); z-index: 5; text-align: center; position: relative; overflow-y: auto; max-height: 90vh; }
-        .auth-container::-webkit-scrollbar { display: none; }
+        /* Auth Container */
+        .auth-container { width: 100%; max-width: 450px; padding: 30px; background: var(--glass-bg); backdrop-filter: blur(15px); border: var(--glass-border); border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); z-index: 5; text-align: center; position: relative; overflow: hidden; }
         
         .brand-logo { font-family: 'Orbitron', sans-serif; font-size: 2rem; color: var(--primary); margin-bottom: 5px; }
         .subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 30px; }
 
+        /* Forms */
         .form-section { display: none; animation: fadeIn 0.4s ease; }
         .form-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -49,38 +52,28 @@
         .form-control { width: 100%; padding: 15px 15px 15px 45px; background: var(--bg-input); border: 1px solid #333; border-radius: 10px; color: #fff; font-family: var(--font-body); font-size: 1rem; outline: none; transition: 0.3s; }
         .form-control:focus { border-color: var(--primary); box-shadow: 0 0 15px var(--primary-dim); }
 
+        /* Buttons */
         .btn { width: 100%; padding: 15px; border-radius: 10px; font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; border: none; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; }
         .btn-primary { background: var(--primary); color: #000; }
         .btn-primary:hover { box-shadow: 0 0 20px var(--primary-dim); transform: translateY(-2px); }
+        
         .toggle-link { color: var(--primary); cursor: pointer; text-decoration: underline; font-weight: 600; }
 
-        /* Profile UI */
+        /* Profile Section */
         .profile-section { display: none; text-align: center; animation: fadeIn 0.4s ease; }
-        
-        .profile-avatar-container { position: relative; width: 110px; height: 110px; margin: 0 auto 15px; }
-        .profile-avatar-img { width: 100%; height: 100%; border-radius: 50%; border: 3px solid var(--primary); padding: 3px; background: var(--bg-input); object-fit: cover; }
-        .avatar-edit-overlay { position: absolute; bottom: 0; right: 0; background: var(--primary); color: #000; width: 35px; height: 35px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; border: 3px solid var(--bg-card); transition: 0.3s; }
-        .avatar-edit-overlay:hover { transform: scale(1.1); box-shadow: 0 0 10px var(--primary); }
-        .btn-remove-photo { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 0.85rem; margin-bottom: 15px; text-decoration: underline; display: none; }
-
-        .name-container { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 5px; }
-        .profile-name { font-family: var(--font-head); font-size: 1.8rem; font-weight: 700; }
-        .edit-name-btn { background: none; border: none; color: var(--primary); cursor: pointer; font-size: 1.2rem; transition: 0.3s; }
-        .edit-name-btn:hover { color: #fff; }
-
-        .edit-name-box { display: none; margin-bottom: 15px; }
-        .edit-name-box input { padding: 10px 15px; margin-bottom: 10px; }
-        .edit-name-box .btn { padding: 10px; font-size: 1rem; margin-bottom: 5px; }
-
+        .profile-avatar { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--primary); padding: 5px; margin: 0 auto 20px; background: var(--bg-input); display: flex; align-items: center; justify-content: center; font-size: 3rem; color: var(--primary); }
+        .profile-name { font-family: var(--font-head); font-size: 1.8rem; font-weight: 700; margin-bottom: 5px; }
         .profile-email { color: var(--primary); font-family: 'Share Tech Mono', monospace; font-size: 0.9rem; background: var(--primary-dim); padding: 5px 15px; border-radius: 100px; display: inline-block; margin-bottom: 30px; }
         
         .btn-danger { background: var(--bg-input); border: 1px solid var(--danger); color: var(--danger); }
         .btn-danger:hover { background: var(--danger); color: #fff; box-shadow: 0 0 20px rgba(255,0,60,0.3); transform: translateY(-2px); }
 
+        /* Toast */
         .toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; }
         .toast { background: var(--bg-input); border-left: 4px solid var(--primary); padding: 15px 20px; margin-bottom: 10px; border-radius: 8px; display: flex; gap: 10px; align-items: center; animation: slideIn 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.5); font-weight: 500; }
         @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
 
+        /* Loading Overlay */
         .loading-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--glass-bg); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 20; border-radius: 20px; flex-direction: column; }
         .loading-overlay i { font-size: 3rem; color: var(--primary); animation: spin 1s linear infinite; margin-bottom: 10px; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
@@ -98,7 +91,7 @@
     <div class="auth-container">
         <div class="loading-overlay" id="loadingOverlay">
             <i class="fas fa-circle-notch"></i>
-            <p style="font-family: var(--font-head); font-weight: bold; margin-top: 10px;">Processing...</p>
+            <p style="font-family: var(--font-head); font-weight: bold; margin-top: 10px;">Please wait...</p>
         </div>
 
         <div class="brand-logo">MVX SYSTEM</div>
@@ -114,9 +107,11 @@
                 <input type="password" id="loginPassword" class="form-control" placeholder="Password" autocomplete="off">
             </div>
             <button class="btn btn-primary" onclick="login()"><i class="fas fa-sign-in-alt"></i> SECURE LOGIN</button>
+            
             <button class="btn" style="background: #db4437; color: white;" onclick="googleLogin()">
                 <i class="fab fa-google"></i> LOGIN WITH GOOGLE
             </button>
+            
             <p style="margin-top: 20px; color: var(--text-muted); font-size: 0.9rem;">
                 Don't have an account? <span class="toggle-link" onclick="toggleView('registerForm')">Create one</span>
             </p>
@@ -133,39 +128,22 @@
             </div>
             <div class="input-group">
                 <i class="fas fa-lock"></i>
-                <input type="password" id="regPassword" class="form-control" placeholder="Create Password (Min 6 chars)" autocomplete="off">
+                <input type="password" id="regPassword" class="form-control" placeholder="Create Password (Min 6 characters)" autocomplete="off">
             </div>
             <button class="btn btn-primary" onclick="register()"><i class="fas fa-user-plus"></i> REGISTER ACCOUNT</button>
+            
             <button class="btn" style="background: #db4437; color: white;" onclick="googleLogin()">
                 <i class="fab fa-google"></i> CONTINUE WITH GOOGLE
             </button>
+            
             <p style="margin-top: 20px; color: var(--text-muted); font-size: 0.9rem;">
                 Already registered? <span class="toggle-link" onclick="toggleView('loginForm')">Login here</span>
             </p>
         </div>
 
         <div class="profile-section" id="profileSection">
-            
-            <div class="profile-avatar-container">
-                <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" id="profileImage" class="profile-avatar-img">
-                <div class="avatar-edit-overlay" onclick="document.getElementById('avatarInput').click()">
-                    <i class="fas fa-camera"></i>
-                </div>
-            </div>
-            <input type="file" id="avatarInput" accept="image/*" hidden onchange="uploadAvatar(this)">
-            <button class="btn-remove-photo" id="btnRemoveAvatar" onclick="removeAvatar()">Remove Photo</button>
-
-            <div class="name-container" id="nameDisplayBox">
-                <h2 class="profile-name" id="userName">User Name</h2>
-                <button class="edit-name-btn" onclick="openNameEdit()"><i class="fas fa-edit"></i></button>
-            </div>
-
-            <div class="edit-name-box" id="editNameBox">
-                <input type="text" id="editNameInput" class="form-control" placeholder="New Name">
-                <button class="btn btn-primary" onclick="saveNewName()">Save Name</button>
-                <button class="btn" style="background: #333; color: #fff;" onclick="closeNameEdit()">Cancel</button>
-            </div>
-
+            <div class="profile-avatar"><i class="fas fa-user-astronaut"></i></div>
+            <h2 class="profile-name" id="userName">User Name</h2>
             <div class="profile-email" id="userEmail">user@email.com</div>
             
             <button class="btn btn-primary" onclick="window.location.href='index.html'">
@@ -192,7 +170,6 @@
         const firebaseConfig = {
             apiKey: "AIzaSyAS3UXXrio_-c9uPbHwpDuTVrP-p8d903w",
             authDomain: "white-2k-17-v4.firebaseapp.com",
-            databaseURL: "https://white-2k-17-v4-default-rtdb.firebaseio.com",
             projectId: "white-2k-17-v4",
             storageBucket: "white-2k-17-v4.firebasestorage.app",
             messagingSenderId: "180909174928",
@@ -201,8 +178,6 @@
         
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const auth = firebase.auth();
-        const db = firebase.database();
-        let currentUserData = null;
 
         // UI Controls
         function showToast(msg, type='success') {
@@ -233,134 +208,51 @@
             document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
         }
 
-        // Auth State Listener (FIXED: Fetches Data from DB)
+        // Auth State Listener
         auth.onAuthStateChanged((user) => {
             showLoader(false);
             if (user) {
+                // NEW: ইমেইল ভেরিফাই করা আছে কি না চেক করা হচ্ছে
                 if (!user.emailVerified) {
-                    showToast('ইমেইল ভেরিফাই করা নেই! দয়া করে মেইল চেক করুন।', 'error');
+                    showToast('আপনার ইমেইল ভেরিফাই করা নেই! দয়া করে মেইল চেক করুন।', 'error');
                     auth.signOut();
                     toggleView('loginForm');
                     return;
                 }
 
-                currentUserData = user;
-                
-                // Fetch User Data from Realtime DB (For Profile Pic & Name)
-                db.ref('registered_users/' + user.uid).once('value', snap => {
-                    const data = snap.val() || {};
-                    const dbName = data.name || user.displayName || 'MVX User';
-                    const dbPhoto = data.photoURL || user.photoURL || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
-                    
-                    document.getElementById('userName').innerText = dbName;
-                    document.getElementById('userEmail').innerText = user.email;
-                    document.getElementById('profileImage').src = dbPhoto;
-                    
-                    if(dbPhoto !== "https://cdn-icons-png.flaticon.com/512/149/149071.png") {
-                        document.getElementById('btnRemoveAvatar').style.display = 'inline-block';
-                    } else {
-                        document.getElementById('btnRemoveAvatar').style.display = 'none';
-                    }
-                });
-
+                // User is logged in and verified
+                document.getElementById('userName').innerText = user.displayName || 'MVX User';
+                document.getElementById('userEmail').innerText = user.email;
                 toggleView('profileSection');
                 
+                // If they came from a redirect link, send them back
                 const urlParams = new URLSearchParams(window.location.search);
                 const redirect = urlParams.get('redirect');
-                if(redirect) window.location.href = redirect;
-
+                if(redirect) {
+                    window.location.href = redirect;
+                }
             } else {
+                // User is logged out
                 toggleView('loginForm');
             }
         });
 
-        // --- PROFILE PICTURE LOGIC (DB FIX) ---
-        function uploadAvatar(input) {
-            const file = input.files[0];
-            if(file) {
-                if(file.size > 2 * 1024 * 1024) {
-                    input.value = "";
-                    return showToast("ছবি ২MB এর বেশি হতে পারবে না!", "error");
-                }
-                
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const b64 = e.target.result;
-                    showLoader(true);
-                    
-                    // Save to Realtime Database instead of Auth Profile
-                    db.ref('registered_users/' + currentUserData.uid).update({ 
-                        photoURL: b64 
-                    }).then(() => {
-                        document.getElementById('profileImage').src = b64;
-                        document.getElementById('btnRemoveAvatar').style.display = 'inline-block';
-                        showLoader(false);
-                        showToast("প্রোফাইল ছবি আপডেট হয়েছে!");
-                    }).catch(err => {
-                        showLoader(false);
-                        showToast("Error: " + err.message, "error");
-                    });
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function removeAvatar() {
-            showLoader(true);
-            db.ref('registered_users/' + currentUserData.uid).update({ 
-                photoURL: null 
-            }).then(() => {
-                document.getElementById('profileImage').src = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
-                document.getElementById('btnRemoveAvatar').style.display = 'none';
-                showLoader(false);
-                showToast("ছবি রিমুভ করা হয়েছে!");
-            });
-        }
-
-        function openNameEdit() {
-            document.getElementById('nameDisplayBox').style.display = 'none';
-            document.getElementById('editNameBox').style.display = 'block';
-            document.getElementById('editNameInput').value = document.getElementById('userName').innerText;
-            document.getElementById('editNameInput').focus();
-        }
-
-        function closeNameEdit() {
-            document.getElementById('nameDisplayBox').style.display = 'flex';
-            document.getElementById('editNameBox').style.display = 'none';
-        }
-
-        function saveNewName() {
-            const newName = document.getElementById('editNameInput').value.trim();
-            if(!newName) return showToast("নাম খালি রাখা যাবে না!", "error");
-            
-            showLoader(true);
-            
-            // Update in DB and Auth
-            const updates = {};
-            updates['registered_users/' + currentUserData.uid + '/name'] = newName;
-            
-            db.ref().update(updates).then(() => {
-                // Also update Auth profile for consistency
-                return currentUserData.updateProfile({ displayName: newName });
-            }).then(() => {
-                document.getElementById('userName').innerText = newName;
-                closeNameEdit();
-                showLoader(false);
-                showToast("নাম পরিবর্তন সফল হয়েছে!");
-            });
-        }
-
-        // --- AUTH FUNCTIONS ---
+        // Authentication Functions
         function login() {
             const email = document.getElementById('loginEmail').value;
             const pass = document.getElementById('loginPassword').value;
-            if(!email || !pass) return showToast('ইমেইল এবং পাসওয়ার্ড দিন', 'error');
+            if(!email || !pass) return showToast('Please enter email and password', 'error');
             
             showLoader(true);
-            auth.signInWithEmailAndPassword(email, pass).catch(err => {
-                showLoader(false);
-                showToast('লগইন ব্যর্থ হয়েছে: ইমেইল বা পাসওয়ার্ড ভুল।', 'error');
-            });
+            auth.signInWithEmailAndPassword(email, pass)
+                .then((userCredential) => {
+                    // ভেরিফিকেশন চেক onAuthStateChanged-এ করা আছে, তাই এখানে কিছু করতে হবে না
+                    showToast('Login Successful!');
+                })
+                .catch(err => {
+                    showLoader(false);
+                    showToast('লগইন ব্যর্থ হয়েছে: ইমেইল বা পাসওয়ার্ড ভুল।', 'error');
+                });
         }
 
         function register() {
@@ -368,7 +260,7 @@
             const email = document.getElementById('regEmail').value;
             const pass = document.getElementById('regPassword').value;
             
-            if(!name || !email || !pass) return showToast('সব তথ্য পূরণ করুন', 'error');
+            if(!name || !email || !pass) return showToast('Please fill all fields', 'error');
             if(pass.length < 6) return showToast('পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে!', 'error');
             
             showLoader(true);
@@ -377,44 +269,56 @@
                     return result.user.updateProfile({ displayName: name }).then(() => result.user);
                 })
                 .then((user) => {
+                    // NEW: একাউন্ট খোলার পর ভেরিফিকেশন মেইল পাঠানো হচ্ছে
                     user.sendEmailVerification();
-                    showToast('একাউন্ট তৈরি হয়েছে! ভেরিফিকেশন মেইল পাঠানো হয়েছে।');
                     
-                    db.ref('registered_users/' + user.uid).set({
+                    showToast('একাউন্ট তৈরি হয়েছে! দয়া করে আপনার মেইল চেক করে ভেরিফাই করুন।');
+                    
+                    // Save user basic info to database
+                    firebase.database().ref('registered_users/' + user.uid).set({
                         name: name,
                         email: email,
                         joinedAt: Date.now()
                     });
 
+                    // NEW: লগআউট করে লগইন পেজে পাঠানো হচ্ছে, যাতে ভেরিফাই করে তারপর ঢুকতে পারে
                     auth.signOut();
                     setTimeout(() => toggleView('loginForm'), 2000);
                 })
                 .catch(err => {
                     showLoader(false);
                     if(err.code === 'auth/email-already-in-use') {
-                        showToast('এই ইমেইল দিয়ে আগে থেকেই অ্যাকাউন্ট আছে।', 'error');
+                        showToast('এই ইমেইল দিয়ে আগে থেকেই অ্যাকাউন্ট খোলা আছে, দয়া করে লগইন করুন।', 'error');
                         setTimeout(() => toggleView('loginForm'), 1500);
-                    } else { showToast(err.message, 'error'); }
+                    } else {
+                        showToast(err.message, 'error');
+                    }
                 });
         }
 
+        // NEW: GOOGLE LOGIN FUNCTION
         function googleLogin() {
             showLoader(true);
             const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider).then((result) => {
-                showToast('Google Login Successful!');
-                db.ref('registered_users/' + result.user.uid).update({
-                    name: result.user.displayName, email: result.user.email, joinedAt: Date.now()
+            auth.signInWithPopup(provider)
+                .then((result) => {
+                    showToast('Google Login Successful!');
+                    // Database-এ সেভ করা (যদি নতুন ইউজার হয়)
+                    firebase.database().ref('registered_users/' + result.user.uid).set({
+                        name: result.user.displayName,
+                        email: result.user.email,
+                        joinedAt: Date.now()
+                    });
+                })
+                .catch((error) => {
+                    showLoader(false);
+                    showToast('গুগল লগইন বাতিল হয়েছে বা সমস্যা হয়েছে।', 'error');
                 });
-            }).catch(() => {
-                showLoader(false);
-                showToast('গুগল লগইন বাতিল হয়েছে।', 'error');
-            });
         }
 
         function logout() {
             showLoader(true);
-            auth.signOut().then(() => showToast('লগআউট সফল হয়েছে!'));
+            auth.signOut().then(() => showToast('Logged out successfully'));
         }
     </script>
 </body>
