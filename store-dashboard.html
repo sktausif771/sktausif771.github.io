@@ -3,289 +3,376 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#00e6b8">
-    <title>STORE ADMIN DASHBOARD | MVX SYSTEM v4.0</title>
+    <meta name="theme-color" content="#ff003c">
+    <title>MASTER OWNER PANEL | MVX SYSTEM</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
     <style>
         /* ==========================================================================
-           MVX STORE ADMIN DASHBOARD V4.0 (FINAL POLISHED)
+           MASTER ADMIN PANEL - ALL IN ONE (STORE + LUA + LIBRARY + FEEDBACK)
            ========================================================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; }
         
-        html, body { max-width: 100vw; overflow-x: hidden; }
-
         :root {
-            --primary: #00e6b8; --primary-dim: rgba(0, 230, 184, 0.15);
-            --danger: #ff003c; --warning: #ffd700;
+            --primary: #ff003c; --primary-dim: rgba(255, 0, 60, 0.15); /* Red for Owner */
+            --gold: #ffd700; --cyan: #00e6b8; --danger: #ff003c; --warning: #ffb800;
             --bg-void: #000000; --bg-card: #0c101a; --bg-input: #1a1f2c;
             --text-primary: #ffffff; --text-muted: #9ca3af;
-            --glass-bg: rgba(8, 11, 18, 0.8); --glass-border: 1px solid rgba(0, 230, 184, 0.2);
+            --glass-bg: rgba(8, 11, 18, 0.95); --glass-border: 1px solid rgba(255, 0, 60, 0.3);
             --font-head: 'Orbitron', sans-serif; --font-body: 'Space Grotesk', sans-serif;
         }
 
-        body { background: var(--bg-void); color: var(--text-primary); font-family: var(--font-body); padding-bottom: 50px; }
-        
-        .navbar { position: sticky; top: 0; background: var(--glass-bg); backdrop-filter: blur(10px); border-bottom: var(--glass-border); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 100; width: 100%; }
-        .brand { font-family: var(--font-head); font-size: 1.5rem; color: var(--primary); }
-        .nav-btns button { background: var(--danger); color: #fff; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .nav-btns button:hover { opacity: 0.8; }
+        body { background: var(--bg-void); color: var(--text-primary); font-family: var(--font-body); display: flex; height: 100vh; overflow: hidden; }
 
-        .container { width: 100%; max-width: 1100px; margin: 30px auto; padding: 0 20px; display: grid; gap: 30px; grid-template-columns: 1fr; }
+        /* Loader */
+        .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-void); display: flex; align-items: center; justify-content: center; z-index: 9999; flex-direction: column; }
+        .loading-overlay i { font-size: 3rem; color: var(--primary); animation: spin 1s linear infinite; margin-bottom: 10px; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        .card { background: var(--bg-card); border: var(--glass-border); border-radius: 16px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; max-width: 100%; overflow: hidden; }
-        
-        .card-title { font-family: var(--font-head); color: var(--primary); margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; width: 100%; }
-        
-        /* Edit Title Fix */
-        #formTitleText { flex: 1; min-width: 0; word-break: break-word; line-height: 1.4; display: block; }
+        /* SIDEBAR */
+        .sidebar { width: 260px; background: var(--glass-bg); height: 100%; padding: 20px; border-right: var(--glass-border); transition: 0.3s ease; z-index: 1000; display: flex; flex-direction: column; overflow-y: auto; }
+        .brand { font-family: var(--font-head); font-size: 1.5rem; color: #fff; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .brand span { color: var(--primary); }
+        .brand small { display: block; font-size: 10px; color: var(--gold); letter-spacing: 2px; font-family: 'Rajdhani', sans-serif;}
+        .close-btn { display: none; color: var(--text-muted); cursor: pointer; font-size: 20px; }
 
-        .form-grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-bottom: 15px; width: 100%; }
-        .form-grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; width: 100%; }
+        .menu-item { padding: 12px 15px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; color: var(--text-muted); font-weight: 600; transition: 0.2s; display: flex; align-items: center; gap: 10px; }
+        .menu-item.active { background: var(--primary); color: #000; }
+        .menu-item:hover:not(.active) { background: var(--primary-dim); color: var(--primary); }
+
+        /* MAIN CONTENT */
+        .content { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+        .top-header { padding: 15px 20px; border-bottom: 1px solid #333; background: var(--glass-bg); display: flex; align-items: center; justify-content: space-between; }
+        .top-header-left { display: flex; align-items: center; gap: 15px; }
+        .menu-toggle { background: none; border: none; color: white; font-size: 24px; cursor: pointer; display: none; }
+        .btn-home { background: var(--bg-input); border: 1px solid #333; color: white; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-home:hover { background: var(--primary); color: #000; border-color: var(--primary); }
+
+        .tab-content { padding: 20px; overflow-y: auto; height: 100%; display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* FORMS & INPUTS (From Store Dashboard) */
+        .card { background: var(--bg-card); border: 1px solid #333; border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+        .card-title { font-family: var(--font-head); color: var(--primary); margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; font-size: 1.2rem; display: flex; justify-content: space-between; align-items: center; }
         
-        .form-group { display: flex; flex-direction: column; width: 100%; max-width: 100%; }
+        .form-grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 15px; }
+        .form-grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 15px; }
+        
+        .form-group { display: flex; flex-direction: column; width: 100%; }
         label { margin-bottom: 8px; color: var(--text-muted); font-size: 0.9rem; font-weight: 600; }
-        input, select, textarea { width: 100%; max-width: 100%; height: 45px; background: var(--bg-input); border: 1px solid #333; color: #fff; padding: 0 15px; border-radius: 8px; font-family: var(--font-body); outline: none; transition: 0.3s; font-size: 16px !important; box-sizing: border-box; }
-        textarea { height: auto; min-height: 100px; padding: 15px; resize: vertical; }
+        input, select, textarea { width: 100%; height: 45px; background: var(--bg-input); border: 1px solid #333; color: #fff; padding: 0 15px; border-radius: 8px; font-family: var(--font-body); outline: none; transition: 0.3s; }
+        textarea { height: auto; min-height: 80px; padding: 15px; resize: vertical; }
         input:focus, select:focus, textarea:focus { border-color: var(--primary); }
-        ::placeholder { color: #64748b; opacity: 1; }
 
-        .img-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; width: 100%; }
-        .img-upload-box { background: var(--bg-input); border: 2px dashed #333; border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; height: 150px; display: flex; flex-direction: column; justify-content: center; }
-        .img-upload-box:hover { border-color: var(--primary); }
-        .img-upload-box img { max-width: 100%; max-height: 100%; border-radius: 8px; display: none; margin: 0 auto; object-fit: contain; }
-        .img-upload-box .placeholder { color: var(--text-muted); font-size: 0.9rem; }
+        .img-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; }
+        .img-upload-box { background: var(--bg-input); border: 2px dashed #333; border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; position: relative; overflow: hidden; height: 120px; display: flex; flex-direction: column; justify-content: center; }
+        .img-upload-box img { max-width: 100%; max-height: 100%; display: none; margin: 0 auto; object-fit: contain; }
         .img-upload-box input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
 
-        .preview-list { display: flex; gap: 10px; overflow-x: auto; margin-top: 10px; padding-bottom: 10px; width: 100%; }
-        .preview-item { position: relative; width: 80px; height: 120px; flex-shrink: 0; border-radius: 8px; overflow: hidden; border: 1px solid var(--primary); }
+        .preview-list { display: flex; gap: 10px; overflow-x: auto; margin-top: 10px; }
+        .preview-item { position: relative; width: 60px; height: 90px; flex-shrink: 0; border-radius: 8px; overflow: hidden; border: 1px solid var(--primary); }
         .preview-item img { width: 100%; height: 100%; object-fit: cover; }
-        .preview-item .remove-btn { position: absolute; top: 5px; right: 5px; background: red; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 12px; font-weight: bold; }
+        .preview-item .remove-btn { position: absolute; top: 2px; right: 2px; background: red; color: white; border: none; border-radius: 50%; width: 18px; height: 18px; cursor: pointer; font-size: 10px; }
 
-        .extra-link-row { display: grid; grid-template-columns: 1fr 2fr auto; gap: 10px; margin-bottom: 10px; width: 100%; }
-        .btn-add-link { background: var(--primary-dim); border: 1px dashed var(--primary); color: var(--primary); width: 100%; height: 45px; border-radius: 8px; cursor: pointer; font-weight: bold; }
-
-        .btn-submit { width: 100%; height: 55px; background: var(--primary); color: #000; font-family: var(--font-head); font-size: 1.2rem; font-weight: 700; border: none; border-radius: 12px; cursor: pointer; margin-top: 20px; transition: 0.3s; }
-        .btn-submit:hover { box-shadow: 0 0 20px var(--primary-dim); transform: translateY(-2px); }
-
-        .table-responsive { width: 100%; overflow-x: auto; margin-top: 15px; border-radius: 8px; border: 1px solid #333; }
-        table { width: 100%; border-collapse: collapse; text-align: left; background: var(--bg-input); }
-        th, td { padding: 12px 15px; border-bottom: 1px solid #333; white-space: nowrap; }
-        th { background: rgba(0,0,0,0.5); color: var(--primary); font-family: var(--font-head); font-size: 0.9rem; }
-        td { font-size: 0.95rem; }
+        .extra-link-row { display: grid; grid-template-columns: 1fr 2fr auto; gap: 10px; margin-bottom: 10px; }
         
-        /* App Title & Logo Wrapper for List */
-        .app-title-wrapper { display: flex; align-items: center; gap: 10px; max-width: 250px; }
-        .app-title-wrapper img { width: 35px; height: 35px; border-radius: 8px; object-fit: cover; flex-shrink: 0; border: 1px solid #333; background: var(--bg-card); }
-        .app-title-text { font-weight: bold; color: var(--primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; width: 100%; }
+        .btn-submit { width: 100%; height: 50px; background: var(--primary); color: #000; font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; margin-top: 15px; transition: 0.3s; }
+        .btn-submit:hover { box-shadow: 0 0 20px var(--primary-dim); }
 
-        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
-        .status-active { background: rgba(0, 230, 184, 0.2); color: var(--primary); }
-        .status-hidden { background: rgba(255, 0, 60, 0.2); color: var(--danger); }
+        /* TABLES */
+        .toolbar { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        .search { flex: 1; min-width: 200px; }
+        .btn-add { background: var(--primary); color: #000; font-weight: bold; border: none; padding: 0 15px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        
+        .table-responsive { width: 100%; overflow-x: auto; border-radius: 8px; border: 1px solid #333; background: var(--bg-input); }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 12px 15px; border-bottom: 1px solid #333; white-space: nowrap; font-size: 0.9rem; }
+        th { background: rgba(0,0,0,0.5); color: var(--text-muted); font-family: var(--font-head); text-transform: uppercase; font-size: 0.8rem; }
+        
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+        .b-active { background: rgba(0, 230, 184, 0.2); color: var(--cyan); }
+        .b-banned { background: rgba(255, 0, 60, 0.2); color: var(--danger); }
+        
+        .app-title-wrapper { display: flex; align-items: center; gap: 10px; max-width: 200px; }
+        .app-title-wrapper img { width: 30px; height: 30px; border-radius: 6px; object-fit: cover; flex-shrink: 0; }
+        .app-title-text { font-weight: bold; color: var(--cyan); overflow: hidden; text-overflow: ellipsis; }
 
-        .action-btns { display: flex; gap: 8px; }
-        .act-btn { width: 32px; height: 32px; border-radius: 6px; border: none; cursor: pointer; color: #fff; display: flex; justify-content: center; align-items: center; transition: 0.2s; }
-        .act-edit { background: var(--primary); color: #000; }
-        .act-hide { background: var(--warning); color: #000; }
+        .actions { display: flex; gap: 5px; }
+        .act-btn { width: 28px; height: 28px; border-radius: 4px; border: none; cursor: pointer; color: #fff; display: flex; justify-content: center; align-items: center; transition: 0.2s;}
+        .act-edit { background: var(--cyan); color: #000; }
+        .act-reset { background: var(--gold); color: #000; }
+        .act-ban { background: #475569; }
+        .act-ban.is-banned { background: var(--warning); color: #000; }
         .act-del { background: var(--danger); }
-        .act-btn:hover { transform: scale(1.1); }
 
+        /* MODAL */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 20px; }
+        .modal-box { background: var(--bg-card); width: 100%; max-width: 400px; padding: 20px; border-radius: 12px; border: 1px solid var(--primary); box-shadow: 0 0 30px var(--primary-dim); }
+        .modal-header { display: flex; justify-content: space-between; margin-bottom: 15px; color: var(--primary); font-family: var(--font-head); font-size: 1.2rem; }
+        .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; }
+
+        /* TOAST */
         .toast-container { position: fixed; top: 80px; right: 20px; z-index: 9999; }
-        .toast { background: var(--bg-input); border-left: 4px solid var(--primary); padding: 15px 20px; margin-bottom: 10px; border-radius: 8px; display: flex; gap: 10px; align-items: center; color: #fff; animation: slideIn 0.3s; }
+        .toast { background: var(--bg-input); border-left: 4px solid var(--cyan); padding: 15px 20px; margin-bottom: 10px; border-radius: 8px; display: flex; gap: 10px; align-items: center; color: #fff; animation: slideIn 0.3s; }
+        .toast.error { border-left-color: var(--danger); }
         @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
 
-        /* ==========================================================================
-           MOBILE RESPONSIVE (Strict Layout Fixes)
-           ========================================================================== */
-        @media (max-width: 768px) {
-            .navbar { padding: 10px 15px; }
-            .brand { font-size: 1.1rem; }
-            .nav-btns button { padding: 6px 10px; font-size: 0.8rem; margin-right: 5px !important; }
-            .container { margin: 15px auto; padding: 0 10px; gap: 20px; }
-            .card { padding: 15px; border-radius: 12px; }
-            
-            .form-grid-2, .form-grid-3, .img-grid { grid-template-columns: 1fr; }
-            
-            .extra-link-row { display: flex; flex-direction: column; gap: 8px; background: rgba(255,255,255,0.02); padding: 10px; border-radius: 8px; border: 1px solid #333; }
-            .extra-link-row button { width: 100%; height: 40px; margin-top: 5px; }
-            .btn-submit { height: 50px; font-size: 1.1rem; }
-            
-            .card-title { font-size: 1.1rem; flex-direction: column; align-items: flex-start; gap: 10px; }
-            #cancelEditBtn { width: 100%; padding: 12px; font-size: 1rem; font-weight: bold; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; z-index: 900; }
 
-            .table-responsive { border: none; background: transparent; overflow: hidden; }
+        /* MOBILE FIXES */
+        @media (max-width: 768px) {
+            .sidebar { position: fixed; left: -260px; top: 0; height: 100%; }
+            .sidebar.active { left: 0; }
+            .menu-toggle { display: block; }
+            .overlay.active { display: block; }
+            .close-btn { display: block; }
+            
+            .extra-link-row { display: flex; flex-direction: column; gap: 5px; background: rgba(255,255,255,0.02); padding: 10px; border-radius: 8px; }
+            
+            .table-responsive { border: none; background: transparent; }
             table, thead, tbody, tr, td { display: block; width: 100%; }
             thead { display: none; }
-            tr { background: rgba(255,255,255,0.03); border: 1px solid #333; border-radius: 12px; margin-bottom: 15px; padding: 15px; display: flex; flex-direction: column; gap: 8px; }
-            td { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(255,255,255,0.1); padding: 8px 0; white-space: normal; text-align: right; font-size: 0.9rem; }
-            td:last-child { border-bottom: none; padding-bottom: 0; }
-            
-            td::before { content: attr(data-label); color: var(--text-muted); font-family: var(--font-head); font-size: 0.85rem; font-weight: bold; text-align: left; padding-right: 15px; flex-shrink: 0; }
-            .action-btns { justify-content: flex-end; width: auto; }
-
-            /* Mobile Specific Logo & Title Layout */
-            .app-title-wrapper { justify-content: flex-end; width: 100%; max-width: 100%; }
-            .app-title-text { max-width: 140px; text-align: right; }
+            tr { background: var(--bg-input); border: 1px solid #333; border-radius: 8px; margin-bottom: 10px; padding: 10px; display: flex; flex-direction: column; gap: 5px; }
+            td { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(255,255,255,0.1); padding: 5px 0; font-size: 0.85rem; text-align: right; }
+            td:last-child { border-bottom: none; }
+            td::before { content: attr(data-label); color: var(--text-muted); font-weight: bold; text-align: left; padding-right: 15px; }
+            .actions { justify-content: flex-end; }
         }
     </style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="brand"><i class="fas fa-satellite-dish"></i> STORE ADMIN</div>
-        <div class="nav-btns">
-            <button onclick="window.location.href='index.html'" style="background: var(--bg-input); border: 1px solid #333; margin-right: 10px;"><i class="fas fa-home"></i> STORE</button>
-            <button onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i> LOGOUT</button>
-        </div>
-    </nav>
+    <div class="loading-overlay" id="loadingOverlay">
+        <i class="fas fa-satellite-dish"></i>
+        <h3 style="font-family: var(--font-head); color: var(--primary);">Authenticating Master...</h3>
+    </div>
 
     <div class="toast-container" id="toastContainer"></div>
+    <div class="overlay" onclick="toggleSidebar()"></div>
 
-    <div class="container">
+    <aside class="sidebar" id="sidebar">
+        <div class="brand">
+            <div>
+                MVX <span>OWNER</span>
+                <small>MASTER CONTROL PANEL</small>
+            </div>
+            <i class="fas fa-times close-btn" onclick="toggleSidebar()"></i>
+        </div>
         
-        <div class="card" id="formCard">
-            <h2 class="card-title">
-                <span id="formTitleText"><i class="fas fa-upload"></i> UPLOAD NEW APP</span>
-                <button id="cancelEditBtn" style="display:none; background:var(--danger); color:#fff; border:none; padding:8px 15px; border-radius:8px; cursor:pointer;" onclick="cancelEdit()"><i class="fas fa-times"></i> Cancel Edit</button>
-            </h2>
-            
-            <form id="uploadForm" onsubmit="submitApp(event)">
-                <input type="hidden" id="editAppId" value="">
+        <nav style="flex: 1;">
+            <div class="menu-item active" onclick="switchTab('store')" id="nav-store">
+                <i class="fas fa-store"></i> Store Admin
+            </div>
+            <div class="menu-item" onclick="switchTab('lua')" id="nav-lua">
+                <i class="fas fa-unlock-alt"></i> Lua Admin
+            </div>
+            <div class="menu-item" onclick="switchTab('library')" id="nav-library">
+                <i class="fas fa-book"></i> Library Admin
+            </div>
+            <div class="menu-item" onclick="switchTab('feedback')" id="nav-feedback">
+                <i class="fas fa-comments"></i> User Feedbacks
+            </div>
+            <div class="menu-item" onclick="switchTab('settings')" id="nav-settings">
+                <i class="fas fa-cogs"></i> Global Settings
+            </div>
+        </nav>
+    </aside>
 
-                <div class="form-grid-2">
-                    <div class="form-group">
-                        <label>App / Game Name *</label>
-                        <input type="text" id="appName" required placeholder="Enter App Name">
-                    </div>
-                    <div class="form-group">
-                        <label>Version</label>
-                        <input type="text" id="version" placeholder="Enter Version">
-                    </div>
-                </div>
-
-                <div class="form-grid-3">
-                    <div class="form-group">
-                        <label>Size</label>
-                        <input type="text" id="size" placeholder="Enter File Size">
-                    </div>
-                    <div class="form-group">
-                        <label>Category *</label>
-                        <select id="category" required>
-                            <option value="Free Fire">Free Fire</option>
-                            <option value="PUBG">PUBG</option>
-                            <option value="Blood Strike">Blood Strike</option>
-                            <option value="Tools">Tools</option>
-                            <option value="Other Game">Others</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Access Type *</label>
-                        <select id="accessType" required>
-                            <option value="Free">Free</option>
-                            <option value="Premium">Premium</option>
-                            <option value="Paid">Paid</option>
-                        </select>
-                    </div>
-                </div>
-
-                <h3 style="margin: 20px 0 10px; color: var(--primary); font-size: 1rem;">MEDIA UPLOADS (BASE64)</h3>
-                <div class="img-grid">
-                    <div class="form-group">
-                        <label>Thumbnail / Banner (16:9) *</label>
-                        <div class="img-upload-box">
-                            <div class="placeholder" id="bannerText"><i class="fas fa-image fa-2x"></i><br>Select Banner</div>
-                            <img id="bannerPreview">
-                            <input type="file" accept="image/*" id="bannerInput" onchange="convertToBase64(this, 'bannerPreview', 'bannerText', 'bannerBase64')">
-                            <input type="hidden" id="bannerBase64" required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>App Logo (1:1) *</label>
-                        <div class="img-upload-box">
-                            <div class="placeholder" id="logoText"><i class="fas fa-icons fa-2x"></i><br>Select Logo</div>
-                            <img id="logoPreview">
-                            <input type="file" accept="image/*" id="logoInput" onchange="convertToBase64(this, 'logoPreview', 'logoText', 'logoBase64')">
-                            <input type="hidden" id="logoBase64" required>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Preview Screenshots (Max 5 Images)</label>
-                    <div class="img-upload-box" style="height: auto; padding: 10px;">
-                        <span style="color: var(--text-muted);"><i class="fas fa-images"></i> Click to add screenshots</span>
-                        <input type="file" accept="image/*" multiple onchange="handleMultipleScreenshots(this)">
-                    </div>
-                    <div class="preview-list" id="screenshotContainer"></div>
-                </div>
-
-                <h3 style="margin: 20px 0 10px; color: var(--primary); font-size: 1rem;">DOWNLOAD & SECURITY</h3>
-                <div class="form-group" style="margin-bottom: 15px;">
-                    <label>Direct Download Link (Mediafire/Drive) *</label>
-                    <input type="url" id="downloadUrl" required placeholder="Paste Download Link Here">
-                </div>
-
-                <div class="form-grid-2">
-                    <div class="form-group">
-                        <label>Password (Leave empty if none)</label>
-                        <input type="text" id="password" placeholder="Enter Password">
-                    </div>
-                    <div class="form-group">
-                        <label>Password Video URL (YouTube)</label>
-                        <input type="url" id="videoUrl" placeholder="Paste YouTube Link">
-                    </div>
-                </div>
-
-                <div class="form-group" style="margin-bottom: 15px;">
-                    <label>Extra Links (Telegram, YouTube, etc.)</label>
-                    <div id="extraLinksContainer"></div>
-                    <button type="button" class="btn-add-link" onclick="addExtraLink()"><i class="fas fa-plus"></i> Add Extra Link</button>
-                </div>
-
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea id="description" placeholder="Write app features, mod menus, installation guide..."></textarea>
-                </div>
-
-                <button type="submit" class="btn-submit" id="submitBtn"><i class="fas fa-cloud-upload-alt"></i> PUBLISH TO STORE</button>
-            </form>
+    <main class="content">
+        <div class="top-header">
+            <div class="top-header-left">
+                <button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <h2 id="pageTitle" style="color: #fff; font-family: var(--font-head);">Store Admin Panel</h2>
+            </div>
+            <button class="btn-home" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i> LOGOUT</button>
         </div>
 
-        <div class="card">
-            <h2 class="card-title"><i class="fas fa-server"></i> MANAGE UPLOADED APPS</h2>
-            
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>App / Logo</th>
-                            <th>Category</th>
-                            <th>Type</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="appTableBody">
-                        <tr><td colspan="5" style="text-align:center;">Loading...</td></tr>
-                    </tbody>
-                </table>
+        <div id="tab-store" class="tab-content active">
+            <div class="card" id="formCard">
+                <h2 class="card-title">
+                    <span id="formTitleText"><i class="fas fa-upload"></i> UPLOAD NEW APP</span>
+                    <button id="cancelEditBtn" style="display:none; background:var(--danger); color:#fff; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;" onclick="cancelEdit()"><i class="fas fa-times"></i> Cancel Edit</button>
+                </h2>
+                
+                <form id="uploadForm" onsubmit="submitApp(event)">
+                    <input type="hidden" id="editAppId" value="">
+                    
+                    <div class="form-grid-2">
+                        <div class="form-group"><label>App / Game Name *</label><input type="text" id="appName" required placeholder="Enter App Name"></div>
+                        <div class="form-group"><label>Version</label><input type="text" id="version" placeholder="Enter Version"></div>
+                    </div>
+                    <div class="form-grid-3">
+                        <div class="form-group"><label>Size</label><input type="text" id="size" placeholder="Enter File Size"></div>
+                        <div class="form-group"><label>Category *</label><select id="category" required><option value="Free Fire">Free Fire</option><option value="PUBG">PUBG</option><option value="Blood Strike">Blood Strike</option><option value="Tools">Tools</option><option value="Other Game">Others</option></select></div>
+                        <div class="form-group"><label>Access Type *</label><select id="accessType" required><option value="Free">Free</option><option value="Premium">Premium</option><option value="Paid">Paid</option></select></div>
+                    </div>
+
+                    <div class="img-grid">
+                        <div class="form-group">
+                            <label>Banner (16:9) *</label>
+                            <div class="img-upload-box">
+                                <span id="bannerText" style="color:var(--text-muted);"><i class="fas fa-image"></i> Add Banner</span>
+                                <img id="bannerPreview">
+                                <input type="file" accept="image/*" id="bannerInput" onchange="convertToBase64(this, 'bannerPreview', 'bannerText', 'bannerBase64')">
+                                <input type="hidden" id="bannerBase64" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Logo (1:1) *</label>
+                            <div class="img-upload-box">
+                                <span id="logoText" style="color:var(--text-muted);"><i class="fas fa-icons"></i> Add Logo</span>
+                                <img id="logoPreview">
+                                <input type="file" accept="image/*" id="logoInput" onchange="convertToBase64(this, 'logoPreview', 'logoText', 'logoBase64')">
+                                <input type="hidden" id="logoBase64" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Preview Screenshots (Max 5)</label>
+                        <div class="img-upload-box" style="height: auto; padding: 10px;">
+                            <span style="color: var(--text-muted);"><i class="fas fa-images"></i> Click to add screenshots</span>
+                            <input type="file" accept="image/*" multiple onchange="handleMultipleScreenshots(this)">
+                        </div>
+                        <div class="preview-list" id="screenshotContainer"></div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 15px;"><label>Direct Download Link *</label><input type="url" id="downloadUrl" required placeholder="Paste Link Here"></div>
+                    <div class="form-grid-2">
+                        <div class="form-group"><label>Password (Optional)</label><input type="text" id="password" placeholder="Enter Password"></div>
+                        <div class="form-group"><label>Password Video URL</label><input type="url" id="videoUrl" placeholder="Paste YouTube Link"></div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label>Extra Links</label>
+                        <div id="extraLinksContainer"></div>
+                        <button type="button" class="btn-home" style="width:100%; margin-top:5px;" onclick="addExtraLink()"><i class="fas fa-plus"></i> Add Link</button>
+                    </div>
+
+                    <div class="form-group"><label>Description</label><textarea id="description" placeholder="Write app features..."></textarea></div>
+                    <button type="submit" class="btn-submit" id="submitBtn"><i class="fas fa-cloud-upload-alt"></i> PUBLISH TO STORE</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-server"></i> MANAGE STORE APPS</h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead><tr><th>App / Logo</th><th>Category</th><th>Type</th><th>Status</th><th>Actions</th></tr></thead>
+                        <tbody id="appTableBody"><tr><td colspan="5" style="text-align:center;">Loading...</td></tr></tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
-    </div>
+        <div id="tab-lua" class="tab-content">
+            <div class="card">
+                <div class="toolbar">
+                    <input type="text" id="searchLua" class="search" placeholder="Search Lua Key..." onkeyup="renderLuaTable()">
+                    <button class="btn-add" onclick="openModal('lua')"><i class="fas fa-plus"></i> NEW LUA KEY</button>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead><tr><th>Key Name / Creator</th><th>Status</th><th>Expiry Date</th><th>Device Info</th><th>Actions</th></tr></thead>
+                        <tbody id="luaTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
+        <div id="tab-library" class="tab-content">
+            <div class="card">
+                <div class="toolbar">
+                    <input type="text" id="searchLib" class="search" placeholder="Search Library Code..." onkeyup="renderLibTable()">
+                    <button class="btn-add" onclick="openModal('lib')"><i class="fas fa-plus"></i> NEW LIBRARY CODE</button>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead><tr><th>Code (10-Digit)</th><th>Note / Creator</th><th>Status</th><th>Expiry Date</th><th>Actions</th></tr></thead>
+                        <tbody id="libTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-feedback" class="tab-content">
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-comments"></i> User Feedbacks & Bug Reports</h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead><tr><th>User Info</th><th>Message</th><th>Time</th><th>Image</th><th>Actions</th></tr></thead>
+                        <tbody id="feedbackTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-settings" class="tab-content">
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-cogs"></i> SYSTEM CONFIGURATION</h2>
+                <div class="form-group" style="max-width: 300px;">
+                    <label>Global App Version (For Updater)</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="globalAppVer" placeholder="e.g. 4.0">
+                        <button class="btn-submit" style="margin:0; width:auto; padding:0 20px;" onclick="updateGlobalVersion()">UPDATE</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal" id="keyModal">
+        <div class="modal-box">
+            <div class="modal-header"><h3 id="modalTitle">Generate Key</h3><i class="fas fa-times" onclick="closeModal()" style="cursor:pointer; color:var(--text-muted);"></i></div>
+            <input type="hidden" id="modalType" value="lua">
+            
+            <div class="form-group">
+                <label id="keyLabel">Key Name</label>
+                <input type="text" id="newKey" placeholder="Enter Name">
+            </div>
+            
+            <div class="form-group" id="noteGroup" style="display:none;">
+                <label>Note / User Name</label>
+                <input type="text" id="keyNote" placeholder="e.g. Paid Customer">
+            </div>
+
+            <div class="form-group">
+                <label>Duration</label>
+                <select id="durationSelect">
+                    <option value="1">1 Day</option>
+                    <option value="7">7 Days</option>
+                    <option value="30" selected>1 Month (30 Days)</option>
+                    <option value="365">1 Year (365 Days)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Device Limit</label>
+                <select id="limitSelect">
+                    <option value="1">1 Device</option>
+                    <option value="2">2 Devices</option>
+                    <option value="999">Unlimited</option>
+                </select>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-home" style="background: transparent;" onclick="closeModal()">Cancel</button>
+                <button class="btn-add" style="padding: 10px 20px;" id="btnSubmitKey" onclick="createMasterKey()">Generate</button>
+            </div>
+        </div>
+    </div>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
-        // Security Check
+        // --- 1. SECURITY & CONFIG ---
         if (sessionStorage.getItem('mvx_admin_token') !== 'SECURE_AUTHORIZED') {
-            window.location.href = 'admin.html';
+            window.location.href = 'index.html'; // Fallback
         }
 
-        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyAS3UXXrio_-c9uPbHwpDuTVrP-p8d903w",
             authDomain: "white-2k-17-v4.firebaseapp.com",
@@ -296,106 +383,151 @@
             appId: "1:180909174928:android:148861a87d66c6980ca815"
         };
         
-        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
-        const database = firebase.database();
-        const DB_PATH = "MVX_VIP_SERVER_V5";
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
-        let screenshotsArray = [];
+        // --- GLOBAL VARIABLES ---
         let allAppsData = {};
+        let allLuaUsers = {};
+        let allLibKeys = {};
+        let allFeedbacks = {};
+        let screenshotsArray = [];
 
+        // --- 2. GLOBAL UI FUNCTIONS ---
         function showToast(msg, type='success') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.style.borderLeftColor = type === 'error' ? 'var(--danger)' : 'var(--primary)';
-            toast.innerHTML = `<i class="fas fa-${type==='error'?'times':'check'}-circle" style="color:${type==='error'?'var(--danger)':'var(--primary)'}"></i> <span>${msg}</span>`;
+            toast.className = type === 'error' ? 'toast error' : 'toast';
+            toast.innerHTML = `<i class="fas fa-${type==='error'?'times':'check'}-circle"></i> <span>${msg}</span>`;
             container.appendChild(toast);
             setTimeout(() => { toast.style.opacity = '0'; setTimeout(()=>toast.remove(), 300); }, 3000);
         }
 
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.querySelector('.overlay').classList.toggle('active');
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(`tab-${tab}`).classList.add('active');
+            document.getElementById(`nav-${tab}`).classList.add('active');
+            
+            const titles = {
+                'store': 'Store Admin Panel',
+                'lua': 'Lua Master Admin',
+                'library': 'Library Master Admin',
+                'feedback': 'User Feedbacks & Reports',
+                'settings': 'Global System Settings'
+            };
+            document.getElementById('pageTitle').innerText = titles[tab];
+            
+            if(window.innerWidth <= 768) toggleSidebar();
+        }
+
         function logoutAdmin() {
             sessionStorage.removeItem('mvx_admin_token');
-            window.location.href = 'admin.html';
+            window.location.href = 'index.html';
         }
 
-        // --- Fetch & Display Apps ---
-        function loadApps() {
-            database.ref(DB_PATH).on('value', snap => {
+        // --- 3. INIT ALL DATA ---
+        function initMasterAdmin() {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            
+            // Fetch Store Apps
+            db.ref("MVX_VIP_SERVER_V5").on('value', snap => {
                 allAppsData = snap.val() || {};
-                const tbody = document.getElementById('appTableBody');
-                tbody.innerHTML = '';
+                renderStoreTable();
+            });
 
-                const keys = Object.keys(allAppsData).reverse();
-                if(keys.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan=\"5\" style=\"text-align:center; color:var(--text-muted);\">No apps uploaded yet.</td></tr>`;
-                    return;
-                }
+            // Fetch Lua Users
+            db.ref('users').on('value', snap => {
+                allLuaUsers = snap.val() || {};
+                renderLuaTable();
+            });
 
-                keys.forEach(id => {
-                    const app = allAppsData[id];
-                    const isHidden = app.isHidden || false;
-                    const statusBadge = isHidden 
-                        ? `<span class="status-badge status-hidden">Hidden</span>` 
-                        : `<span class="status-badge status-active">Active</span>`;
-                    const hideIcon = isHidden ? "fa-eye" : "fa-eye-slash";
-                    const hideTitle = isHidden ? "Unhide App" : "Hide App";
-                    
-                    // Logo Setup with fallback
-                    const logoSrc = app.logoBase64 || 'https://cdn-icons-png.flaticon.com/512/564/564619.png';
+            // Fetch Library Keys
+            db.ref('licenses').on('value', snap => {
+                allLibKeys = snap.val() || {};
+                renderLibTable();
+            });
 
-                    tbody.innerHTML += `
-                        <tr>
-                            <td data-label="App Name">
-                                <div class="app-title-wrapper">
-                                    <img src="${logoSrc}" alt="Logo">
-                                    <span class="app-title-text" title="${app.appName}">${app.appName}</span>
-                                </div>
-                            </td>
-                            <td data-label="Category">${app.gameCategory}</td>
-                            <td data-label="Type">${app.accessType}</td>
-                            <td data-label="Status">${statusBadge}</td>
-                            <td data-label="Actions">
-                                <div class="action-btns">
-                                    <button type="button" class="act-btn act-edit" onclick="loadEditData('${id}')" title="Edit"><i class="fas fa-edit"></i></button>
-                                    <button type="button" class="act-btn act-hide" onclick="toggleHide('${id}', ${isHidden})" title="${hideTitle}"><i class="fas ${hideIcon}"></i></button>
-                                    <button type="button" class="act-btn act-del" onclick="deleteApp('${id}')" title="Delete"><i class="fas fa-trash"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-                });
+            // Fetch Feedbacks
+            db.ref('community_feedbacks').on('value', snap => {
+                allFeedbacks = snap.val() || {};
+                renderFeedbackTable();
+            });
+
+            // Fetch Global Version
+            db.ref('config/version').on('value', snap => {
+                if(snap.val()) document.getElementById('globalAppVer').value = snap.val();
+            });
+
+            setTimeout(() => { document.getElementById('loadingOverlay').style.display = 'none'; }, 1500);
+        }
+
+        // ==========================================================================
+        // 4. STORE ADMIN LOGIC
+        // ==========================================================================
+        function renderStoreTable() {
+            const tbody = document.getElementById('appTableBody');
+            tbody.innerHTML = '';
+            const keys = Object.keys(allAppsData).reverse();
+            
+            if(keys.length === 0) return tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No apps uploaded yet.</td></tr>`;
+
+            keys.forEach(id => {
+                const app = allAppsData[id];
+                const isHidden = app.isHidden || false;
+                const statusBadge = isHidden ? `<span class="badge b-banned">Hidden</span>` : `<span class="badge b-active">Active</span>`;
+                const hideIcon = isHidden ? "fa-eye" : "fa-eye-slash";
+                const logoSrc = app.logoBase64 || 'https://cdn-icons-png.flaticon.com/512/564/564619.png';
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td data-label="App Name">
+                            <div class="app-title-wrapper">
+                                <img src="${logoSrc}">
+                                <span class="app-title-text" title="${app.appName}">${app.appName}</span>
+                            </div>
+                        </td>
+                        <td data-label="Category">${app.gameCategory}</td>
+                        <td data-label="Type">${app.accessType}</td>
+                        <td data-label="Status">${statusBadge}</td>
+                        <td data-label="Actions">
+                            <div class="actions">
+                                <button type="button" class="act-btn act-edit" onclick="loadEditData('${id}')" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button type="button" class="act-btn act-reset" onclick="toggleHideStore('${id}', ${isHidden})" title="Visibility"><i class="fas ${hideIcon}"></i></button>
+                                <button type="button" class="act-btn act-del" onclick="deleteStoreApp('${id}')" title="Delete"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
             });
         }
-        loadApps();
 
-        // --- Image Convert Logic ---
+        // Store App Images & Submit
         function convertToBase64(input, previewId, textId, hiddenInputId) {
             const file = input.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const base64String = e.target.result;
-                    document.getElementById(previewId).src = base64String;
+                    document.getElementById(previewId).src = e.target.result;
                     document.getElementById(previewId).style.display = 'block';
                     document.getElementById(textId).style.display = 'none';
-                    document.getElementById(hiddenInputId).value = base64String;
+                    document.getElementById(hiddenInputId).value = e.target.result;
                 };
                 reader.readAsDataURL(file);
             }
         }
 
         function handleMultipleScreenshots(input) {
-            const files = input.files;
-            if (screenshotsArray.length + files.length > 5) {
-                showToast("Maximum 5 screenshots allowed!", "error");
-                return;
-            }
-            Array.from(files).forEach(file => {
+            Array.from(input.files).forEach(file => {
+                if (screenshotsArray.length >= 5) return showToast("Max 5 screenshots!", "error");
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    screenshotsArray.push(e.target.result);
-                    renderScreenshots();
-                };
+                reader.onload = e => { screenshotsArray.push(e.target.result); renderScreenshots(); };
                 reader.readAsDataURL(file);
             });
             input.value = '';
@@ -404,174 +536,238 @@
         function renderScreenshots() {
             const container = document.getElementById('screenshotContainer');
             container.innerHTML = '';
-            screenshotsArray.forEach((b64, index) => {
-                container.innerHTML += `
-                    <div class="preview-item">
-                        <img src="${b64}">
-                        <button type="button" class="remove-btn" onclick="removeScreenshot(${index})">×</button>
-                    </div>
-                `;
+            screenshotsArray.forEach((b64, idx) => {
+                container.innerHTML += `<div class="preview-item"><img src="${b64}"><button type="button" class="remove-btn" onclick="removeScreenshot(${idx})">×</button></div>`;
             });
         }
-
-        function removeScreenshot(index) {
-            screenshotsArray.splice(index, 1);
-            renderScreenshots();
-        }
-
+        function removeScreenshot(idx) { screenshotsArray.splice(idx, 1); renderScreenshots(); }
         function addExtraLink(title='', url='') {
-            const container = document.getElementById('extraLinksContainer');
-            const div = document.createElement('div');
-            div.className = 'extra-link-row';
-            div.innerHTML = `
-                <input type="text" placeholder="Link Title" class="ex-title" value="${title}" required>
-                <input type="url" placeholder="Enter URL Link" class="ex-url" value="${url}" required>
-                <button type="button" onclick="this.parentElement.remove()" style="background:var(--danger); border:none; color:#fff; border-radius:8px; cursor:pointer;"><i class="fas fa-trash"></i></button>
-            `;
-            container.appendChild(div);
+            const div = document.createElement('div'); div.className = 'extra-link-row';
+            div.innerHTML = `<input type="text" placeholder="Title" class="ex-title" value="${title}"><input type="url" placeholder="URL Link" class="ex-url" value="${url}"><button type="button" onclick="this.parentElement.remove()" style="background:var(--danger); border:none; color:#fff; border-radius:8px; cursor:pointer;"><i class="fas fa-trash"></i></button>`;
+            document.getElementById('extraLinksContainer').appendChild(div);
         }
 
-        // --- MANAGE APP ACTIONS ---
-        function toggleHide(id, currentStatus) {
-            database.ref(`${DB_PATH}/${id}/isHidden`).set(!currentStatus)
-                .then(() => showToast(`App ${!currentStatus ? 'Hidden' : 'Visible'} Successfully!`))
-                .catch(err => showToast("Error: " + err.message, "error"));
-        }
-
-        function deleteApp(id) {
-            if(confirm("Are you sure you want to permanently delete this app?")) {
-                database.ref(`${DB_PATH}/${id}`).remove()
-                    .then(() => showToast("App Deleted Successfully!"))
-                    .catch(err => showToast("Error: " + err.message, "error"));
-            }
-        }
-
-        // --- EDIT LOGIC ---
         function loadEditData(id) {
-            const app = allAppsData[id];
-            if(!app) return;
-
+            const app = allAppsData[id]; if(!app) return;
             document.getElementById('editAppId').value = id;
             document.getElementById('formTitleText').innerHTML = `<i class="fas fa-edit"></i> EDITING: ${app.appName}`;
-            document.getElementById('submitBtn').innerHTML = `<i class="fas fa-save"></i> UPDATE APP DATA`;
+            document.getElementById('submitBtn').innerHTML = `<i class="fas fa-save"></i> UPDATE APP`;
             document.getElementById('cancelEditBtn').style.display = 'inline-block';
 
-            // Populate Text Fields
-            document.getElementById('appName').value = app.appName;
-            document.getElementById('version').value = app.version || '';
-            document.getElementById('size').value = app.size || '';
-            document.getElementById('category').value = app.gameCategory;
-            document.getElementById('accessType').value = app.accessType;
-            document.getElementById('downloadUrl').value = app.downloadUrl;
-            document.getElementById('password').value = app.password || '';
-            document.getElementById('videoUrl').value = app.passwordVideoUrl || '';
+            document.getElementById('appName').value = app.appName; document.getElementById('version').value = app.version || '';
+            document.getElementById('size').value = app.size || ''; document.getElementById('category').value = app.gameCategory;
+            document.getElementById('accessType').value = app.accessType; document.getElementById('downloadUrl').value = app.downloadUrl;
+            document.getElementById('password').value = app.password || ''; document.getElementById('videoUrl').value = app.passwordVideoUrl || '';
             document.getElementById('description').value = app.description || '';
 
-            // Populate Banner
-            document.getElementById('bannerBase64').value = app.bannerBase64;
-            document.getElementById('bannerPreview').src = app.bannerBase64;
-            document.getElementById('bannerPreview').style.display = 'block';
-            document.getElementById('bannerText').style.display = 'none';
-            document.getElementById('bannerInput').removeAttribute('required');
+            document.getElementById('bannerBase64').value = app.bannerBase64; document.getElementById('bannerPreview').src = app.bannerBase64;
+            document.getElementById('bannerPreview').style.display = 'block'; document.getElementById('bannerText').style.display = 'none'; document.getElementById('bannerInput').removeAttribute('required');
+            
+            document.getElementById('logoBase64').value = app.logoBase64; document.getElementById('logoPreview').src = app.logoBase64;
+            document.getElementById('logoPreview').style.display = 'block'; document.getElementById('logoText').style.display = 'none'; document.getElementById('logoInput').removeAttribute('required');
 
-            // Populate Logo
-            document.getElementById('logoBase64').value = app.logoBase64;
-            document.getElementById('logoPreview').src = app.logoBase64;
-            document.getElementById('logoPreview').style.display = 'block';
-            document.getElementById('logoText').style.display = 'none';
-            document.getElementById('logoInput').removeAttribute('required');
-
-            // Populate Screenshots
-            screenshotsArray = app.screenshots ? [...app.screenshots] : [];
-            renderScreenshots();
-
-            // Populate Extra Links
+            screenshotsArray = app.screenshots ? [...app.screenshots] : []; renderScreenshots();
             document.getElementById('extraLinksContainer').innerHTML = '';
-            if(app.extraLinks) {
-                app.extraLinks.forEach(link => addExtraLink(link.title, link.url));
-            }
-
-            // Scroll to top
+            if(app.extraLinks) app.extraLinks.forEach(l => addExtraLink(l.title, l.url));
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function cancelEdit() {
-            document.getElementById('uploadForm').reset();
-            document.getElementById('editAppId').value = '';
+            document.getElementById('uploadForm').reset(); document.getElementById('editAppId').value = '';
             document.getElementById('formTitleText').innerHTML = `<i class="fas fa-upload"></i> UPLOAD NEW APP`;
             document.getElementById('submitBtn').innerHTML = `<i class="fas fa-cloud-upload-alt"></i> PUBLISH TO STORE`;
             document.getElementById('cancelEditBtn').style.display = 'none';
-
-            // Reset Images
-            document.getElementById('bannerPreview').style.display = 'none';
-            document.getElementById('bannerText').style.display = 'block';
-            document.getElementById('bannerBase64').value = '';
-            document.getElementById('bannerInput').setAttribute('required', 'true');
-
-            document.getElementById('logoPreview').style.display = 'none';
-            document.getElementById('logoText').style.display = 'block';
-            document.getElementById('logoBase64').value = '';
-            document.getElementById('logoInput').setAttribute('required', 'true');
-
-            screenshotsArray = [];
-            renderScreenshots();
-            document.getElementById('extraLinksContainer').innerHTML = '';
+            document.getElementById('bannerPreview').style.display = 'none'; document.getElementById('bannerText').style.display = 'block'; document.getElementById('bannerInput').setAttribute('required', 'true');
+            document.getElementById('logoPreview').style.display = 'none'; document.getElementById('logoText').style.display = 'block'; document.getElementById('logoInput').setAttribute('required', 'true');
+            screenshotsArray = []; renderScreenshots(); document.getElementById('extraLinksContainer').innerHTML = '';
         }
 
-        // --- SUBMIT (Upload / Update) ---
         function submitApp(e) {
             e.preventDefault();
-            const btn = document.getElementById('submitBtn');
             const editId = document.getElementById('editAppId').value;
+            const btn = document.getElementById('submitBtn'); btn.innerHTML = 'PROCESSING...'; btn.disabled = true;
             
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PROCESSING...';
-            btn.disabled = true;
-
             let extraLinks = [];
-            document.querySelectorAll('.extra-link-row').forEach(row => {
-                extraLinks.push({
-                    title: row.querySelector('.ex-title').value,
-                    url: row.querySelector('.ex-url').value
-                });
-            });
+            document.querySelectorAll('.extra-link-row').forEach(row => { extraLinks.push({ title: row.querySelector('.ex-title').value, url: row.querySelector('.ex-url').value }); });
 
             const appData = {
-                appName: document.getElementById('appName').value,
-                version: document.getElementById('version').value || 'v1.0',
-                size: document.getElementById('size').value || 'N/A',
-                gameCategory: document.getElementById('category').value,
-                accessType: document.getElementById('accessType').value,
-                bannerBase64: document.getElementById('bannerBase64').value,
-                logoBase64: document.getElementById('logoBase64').value,
-                screenshots: screenshotsArray,
-                downloadUrl: document.getElementById('downloadUrl').value,
-                password: document.getElementById('password').value,
-                passwordVideoUrl: document.getElementById('videoUrl').value,
-                description: document.getElementById('description').value,
-                extraLinks: extraLinks,
-                timestamp: Date.now()
+                appName: document.getElementById('appName').value, version: document.getElementById('version').value || 'v1.0',
+                size: document.getElementById('size').value || 'N/A', gameCategory: document.getElementById('category').value,
+                accessType: document.getElementById('accessType').value, bannerBase64: document.getElementById('bannerBase64').value,
+                logoBase64: document.getElementById('logoBase64').value, screenshots: screenshotsArray, downloadUrl: document.getElementById('downloadUrl').value,
+                password: document.getElementById('password').value, passwordVideoUrl: document.getElementById('videoUrl').value,
+                description: document.getElementById('description').value, extraLinks: extraLinks, timestamp: Date.now()
             };
 
-            // Maintain hidden status if updating
-            if(editId && allAppsData[editId]) {
-                appData.isHidden = allAppsData[editId].isHidden || false;
+            appData.isHidden = (editId && allAppsData[editId]) ? allAppsData[editId].isHidden : false;
+            const dbRef = editId ? db.ref(`MVX_VIP_SERVER_V5/${editId}`) : db.ref("MVX_VIP_SERVER_V5").push();
+
+            dbRef.set(appData).then(() => {
+                showToast(`App ${editId ? 'Updated' : 'Uploaded'}!`);
+                setTimeout(() => { cancelEdit(); btn.disabled = false; }, 1000);
+            }).catch(err => { showToast(err.message, 'error'); btn.disabled = false; });
+        }
+
+        function toggleHideStore(id, current) { db.ref(`MVX_VIP_SERVER_V5/${id}/isHidden`).set(!current); }
+        function deleteStoreApp(id) { if(confirm("Permanently delete this app?")) db.ref(`MVX_VIP_SERVER_V5/${id}`).remove(); }
+
+
+        // ==========================================================================
+        // 5. MASTER MODAL (LUA & LIBRARY GENERATOR)
+        // ==========================================================================
+        function openModal(type) {
+            document.getElementById('modalType').value = type;
+            document.getElementById('modalTitle').innerText = type === 'lua' ? 'Generate Lua Key' : 'Generate Library Code';
+            document.getElementById('noteGroup').style.display = type === 'lib' ? 'block' : 'none';
+            document.getElementById('keyNote').value = '';
+            
+            // Random Master Code
+            let rnd = "";
+            if(type === 'lua') rnd = "MVX_VIP_" + Math.floor(Math.random() * 9000 + 1000);
+            else for(let i=0; i<10; i++) rnd += Math.floor(Math.random() * 10);
+            
+            document.getElementById('newKey').value = rnd;
+            document.getElementById('keyModal').style.display = 'flex';
+        }
+        function closeModal() { document.getElementById('keyModal').style.display = 'none'; }
+
+        function createMasterKey() {
+            const type = document.getElementById('modalType').value;
+            const key = document.getElementById('newKey').value.trim();
+            const days = parseInt(document.getElementById('durationSelect').value);
+            const limit = parseInt(document.getElementById('limitSelect').value);
+            if(!key) return showToast("Key cannot be empty!", "error");
+
+            const now = Date.now();
+            let savePromise;
+
+            if(type === 'lua') {
+                const date = new Date(); date.setDate(date.getDate() + days);
+                savePromise = db.ref('users/' + key).set({
+                    expiry: date.toISOString().split('T')[0], maxDevices: limit, status: 'active', creatorEmail: "Owner (Master)", createdAt: now
+                });
             } else {
-                appData.isHidden = false;
+                const note = document.getElementById('keyNote').value || "Paid Customer";
+                const libKeyId = db.ref('licenses').push().key;
+                savePromise = db.ref('licenses/' + libKeyId).set({
+                    key: key, note: note, duration: days, maxDevices: limit, status: 'Active', createdAt: now, creatorEmail: "Owner (Master)"
+                });
             }
 
-            const dbRef = editId ? database.ref(`${DB_PATH}/${editId}`) : database.ref(DB_PATH).push();
-
-            dbRef.set(appData)
-                .then(() => {
-                    showToast(`App ${editId ? 'Updated' : 'Uploaded'} Successfully!`);
-                    setTimeout(() => { cancelEdit(); btn.disabled = false; }, 1500);
-                })
-                .catch(error => {
-                    showToast('Failed: ' + error.message, 'error');
-                    btn.innerHTML = editId ? '<i class="fas fa-save"></i> UPDATE APP DATA' : '<i class="fas fa-cloud-upload-alt"></i> PUBLISH TO STORE';
-                    btn.disabled = false;
-                });
+            savePromise.then(() => {
+                showToast(`${type === 'lua' ? 'Lua Key' : 'Library Code'} Generated!`);
+                closeModal();
+            });
         }
+
+        // ==========================================================================
+        // 6. LUA ADMIN LOGIC
+        // ==========================================================================
+        function renderLuaTable() {
+            const tbody = document.getElementById('luaTableBody');
+            const search = document.getElementById('searchLua').value.toLowerCase();
+            tbody.innerHTML = '';
+            Object.keys(allLuaUsers).reverse().forEach(key => {
+                const user = allLuaUsers[key];
+                const creator = user.creatorEmail || "Admin";
+                if (key.toLowerCase().includes(search) || creator.toLowerCase().includes(search)) {
+                    const badge = user.status === 'banned' ? '<span class="badge b-banned">BANNED</span>' : '<span class="badge b-active">ACTIVE</span>';
+                    const used = user.hwids ? Object.keys(user.hwids).length : 0;
+                    const max = user.maxDevices == 999 ? '∞' : user.maxDevices;
+                    
+                    tbody.innerHTML += `
+                        <tr>
+                            <td data-label="Key"><strong>${key}</strong><br><small style="color:var(--text-muted)">By: ${creator}</small></td>
+                            <td data-label="Status">${badge}</td>
+                            <td data-label="Expiry">${user.expiry}</td>
+                            <td data-label="Devices">Used: ${used}/${max}</td>
+                            <td data-label="Actions">
+                                <div class="actions">
+                                    <button class="act-btn act-reset" onclick="resetLua('${key}')" title="Reset HWID"><i class="fas fa-sync"></i></button>
+                                    <button class="act-btn act-ban ${user.status === 'banned' ? 'is-banned' : ''}" onclick="toggleLuaBan('${key}', '${user.status}')"><i class="fas fa-ban"></i></button>
+                                    <button class="act-btn act-del" onclick="deleteLua('${key}')"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>`;
+                }
+            });
+        }
+        function resetLua(key) { if(confirm("Reset HWID?")) db.ref(`users/${key}/hwids`).remove(); }
+        function toggleLuaBan(key, status) { db.ref(`users/${key}/status`).set(status === 'active' ? 'banned' : 'active'); }
+        function deleteLua(key) { if(confirm("Delete Key?")) db.ref(`users/${key}`).remove(); }
+
+        // ==========================================================================
+        // 7. LIBRARY ADMIN LOGIC
+        // ==========================================================================
+        function renderLibTable() {
+            const tbody = document.getElementById('libTableBody');
+            const search = document.getElementById('searchLib').value.toLowerCase();
+            tbody.innerHTML = '';
+            Object.keys(allLibKeys).reverse().forEach(key => {
+                const item = allLibKeys[key];
+                const note = item.note || "User";
+                if (item.key.toLowerCase().includes(search) || note.toLowerCase().includes(search)) {
+                    const badge = item.status === 'Active' ? '<span class="badge b-active">ACTIVE</span>' : '<span class="badge b-banned">LOCKED</span>';
+                    const expireDate = new Date(item.createdAt + (item.duration * 24 * 60 * 60 * 1000)).toLocaleDateString();
+                    
+                    tbody.innerHTML += `
+                        <tr>
+                            <td data-label="Code" style="font-family:monospace; color:var(--cyan); font-weight:bold; font-size:16px;">${item.key}</td>
+                            <td data-label="Info">${note}<br><small style="color:var(--text-muted)">${item.creatorEmail || "Admin"}</small></td>
+                            <td data-label="Status">${badge}</td>
+                            <td data-label="Expiry">${expireDate}</td>
+                            <td data-label="Actions">
+                                <div class="actions">
+                                    <button class="act-btn act-del" onclick="deleteLib('${key}')"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>`;
+                }
+            });
+        }
+        function deleteLib(key) { if(confirm("Delete Library Code?")) db.ref(`licenses/${key}`).remove(); }
+
+        // ==========================================================================
+        // 8. FEEDBACK ADMIN LOGIC
+        // ==========================================================================
+        function renderFeedbackTable() {
+            const tbody = document.getElementById('feedbackTableBody');
+            tbody.innerHTML = '';
+            
+            const msgs = Object.entries(allFeedbacks).map(([id, val]) => ({id, ...val})).sort((a,b) => b.timestamp - a.timestamp);
+            if(msgs.length === 0) return tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No Feedbacks Yet.</td></tr>`;
+
+            msgs.forEach(msg => {
+                const date = new Date(msg.timestamp).toLocaleString();
+                const imgHTML = msg.imageBase64 ? `<img src="${msg.imageBase64}" style="width:40px; height:40px; border-radius:4px; cursor:pointer; object-fit:cover;" onclick="window.open('${msg.imageBase64}', '_blank')">` : 'No Image';
+                const ownerBadge = msg.email === "sktausif771@gmail.com" ? `<span class="badge b-active" style="background:var(--gold); color:#000;">OWNER</span>` : '';
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td data-label="User Info"><strong>${msg.name}</strong> ${ownerBadge}<br><small style="color:var(--text-muted)">${msg.email}</small></td>
+                        <td data-label="Message" style="max-width:250px; white-space:normal; font-size:0.85rem;">${msg.text}</td>
+                        <td data-label="Time"><small>${date}</small></td>
+                        <td data-label="Image">${imgHTML}</td>
+                        <td data-label="Actions">
+                            <div class="actions">
+                                <button class="act-btn act-del" onclick="deleteFeedback('${msg.id}')"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>`;
+            });
+        }
+        function deleteFeedback(id) { if(confirm("Delete this user message?")) db.ref(`community_feedbacks/${id}`).remove(); }
+
+        // ==========================================================================
+        // 9. SETTINGS LOGIC
+        // ==========================================================================
+        function updateGlobalVersion() {
+            const ver = document.getElementById('globalAppVer').value;
+            db.ref('config/version').set(ver).then(() => showToast("Global Version Updated!"));
+        }
+
+        // Initialize Everything
+        initMasterAdmin();
     </script>
 </body>
 </html>

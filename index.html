@@ -11,7 +11,7 @@
     
     <style>
         /* ==========================================================================
-           MVX STORE V4.0 - HOMEPAGE (UPDATED WITH AUTH LOGIC)
+           MVX STORE V4.0 - HOMEPAGE (UPDATED)
            ========================================================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
@@ -26,8 +26,6 @@
         }
 
         body { background: var(--bg-void); color: var(--text-primary); font-family: var(--font-body); min-height: 100vh; overflow-x: hidden; }
-        
-        body.smooth-mode .grid-overlay, body.smooth-mode .glow-orb, body.smooth-mode .yt-card:hover { animation: none; transform: none; box-shadow: none; filter: none; }
 
         /* Background Effects */
         .grid-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(0, 230, 184, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 230, 184, 0.03) 1px, transparent 1px); background-size: 50px 50px; pointer-events: none; z-index: -1; animation: gridShift 15s linear infinite; }
@@ -52,7 +50,6 @@
         .sidebar-menu a { display: flex; align-items: center; gap: 15px; padding: 15px; color: var(--text-primary); text-decoration: none; border-radius: 8px; margin-bottom: 10px; transition: 0.3s; cursor: pointer; }
         .sidebar-menu a:hover { background: var(--bg-input); color: var(--primary); }
         
-        .smooth-toggle { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--bg-input); border-radius: 8px; margin-top: 20px; }
         .login-redirect-btn { width: 100%; padding: 15px; background: var(--primary); color: #000; border: none; border-radius: 8px; font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; cursor: pointer; margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s;}
         .login-redirect-btn:hover { box-shadow: 0 0 15px var(--primary-dim); }
 
@@ -145,15 +142,12 @@
             <i class="fas fa-user-circle"></i> <span id="sidebarUserText">LOGIN / SETTINGS</span>
         </button>
 
-        <div class="smooth-toggle">
-            <span>Low-end Device Mode</span>
-            <input type="checkbox" id="smoothModeToggle" onchange="toggleSmoothMode()">
-        </div>
-
         <div class="sidebar-menu" style="margin-top: 30px;">
-            <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 10px;">COMMUNITY</p>
+            <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 10px;">COMMUNITY & SUPPORT</p>
             <a href="#"><i class="fab fa-telegram" style="color: #0088cc;"></i> Telegram Channel</a>
             <a href="#"><i class="fab fa-youtube" style="color: #ff0000;"></i> YouTube Channel</a>
+            
+            <a href="feedback.html"><i class="fas fa-comment-dots" style="color: #ffb800;"></i> Feedback / Bug Report</a>
 
             <hr style="border-color: #333; margin: 25px 0 15px;">
             
@@ -271,21 +265,6 @@
             if(box.style.display === 'block') document.getElementById('searchInput').focus();
         }
 
-        function toggleSmoothMode() {
-            const isChecked = document.getElementById('smoothModeToggle').checked;
-            if(isChecked) {
-                document.body.classList.add('smooth-mode');
-                localStorage.setItem('smoothMode', 'true');
-            } else {
-                document.body.classList.remove('smooth-mode');
-                localStorage.setItem('smoothMode', 'false');
-            }
-        }
-        if(localStorage.getItem('smoothMode') === 'true') {
-            document.getElementById('smoothModeToggle').checked = true;
-            document.body.classList.add('smooth-mode');
-        }
-
         // --- Admin Password Security ---
         function openPassModal(url) {
             targetAdminUrl = url;
@@ -301,6 +280,14 @@
 
         function verifyAdminPass() {
             const pass = document.getElementById('adminPassInput').value;
+            
+            // NEW: sktausif771@gmail.com দিয়ে লগইন থাকলে সরাসরি ঢুকতে পারবে (পাসওয়ার্ড ছাড়াই কাজ করবে)
+            if (currentLoggedUser && currentLoggedUser.email === "sktausif771@gmail.com") {
+                sessionStorage.setItem('mvx_admin_token', 'SECURE_AUTHORIZED');
+                window.location.href = targetAdminUrl;
+                return;
+            }
+            
             if (pass === "121345") {
                 sessionStorage.setItem('mvx_admin_token', 'SECURE_AUTHORIZED');
                 window.location.href = targetAdminUrl;

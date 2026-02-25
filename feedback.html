@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#00e6b8">
+    <title>Community Feedback | MVX STORE</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        :root {
+            --primary: #00e6b8; --primary-dim: rgba(0, 230, 184, 0.15);
+            --gold: #ffd700; --danger: #ff003c; 
+            --bg-void: #000000; --bg-card: #0c101a; --bg-input: #1a1f2c;
+            --text-primary: #ffffff; --text-muted: #9ca3af;
+            --glass-bg: rgba(8, 11, 18, 0.85); --glass-border: 1px solid rgba(0, 230, 184, 0.2);
+            --font-head: 'Rajdhani', sans-serif; --font-body: 'Space Grotesk', sans-serif;
+        }
+
+        body { background: var(--bg-void); color: var(--text-primary); font-family: var(--font-body); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
+        /* Navbar */
+        .navbar { background: var(--glass-bg); backdrop-filter: blur(10px); border-bottom: var(--glass-border); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+        .back-btn { color: #fff; text-decoration: none; font-size: 1.2rem; }
+        .brand { font-family: var(--font-head); font-size: 1.3rem; font-weight: 700; color: var(--primary); }
+
+        /* Chat Container */
+        .chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; scroll-behavior: smooth; }
+        .chat-container::-webkit-scrollbar { width: 5px; }
+        .chat-container::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+
+        .message-box { max-width: 85%; padding: 15px; border-radius: 12px; position: relative; animation: fadeIn 0.3s ease; word-wrap: break-word; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Other's Message */
+        .msg-others { align-self: flex-start; background: var(--bg-card); border: 1px solid #333; border-bottom-left-radius: 0; }
+        /* My Message */
+        .msg-mine { align-self: flex-end; background: var(--primary-dim); border: 1px solid var(--primary); border-bottom-right-radius: 0; }
+
+        .msg-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 0.85rem; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 5px; gap: 10px;}
+        .msg-name { font-weight: bold; color: var(--text-muted); }
+        .msg-mine .msg-name { color: var(--primary); }
+        
+        .owner-badge { background: var(--gold); color: #000; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: 800; font-family: var(--font-head); letter-spacing: 1px; }
+        .msg-time { font-size: 0.7rem; color: #666; }
+
+        .msg-text { font-size: 0.95rem; line-height: 1.4; white-space: pre-wrap; }
+        .msg-image { max-width: 100%; max-height: 200px; border-radius: 8px; margin-top: 10px; border: 1px solid #333; object-fit: contain; display: block; cursor: pointer;}
+
+        .msg-actions { display: flex; gap: 10px; margin-top: 10px; justify-content: flex-end; }
+        .msg-actions button { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.9rem; transition: 0.2s; }
+        .msg-actions button:hover { color: var(--primary); }
+        .btn-del:hover { color: var(--danger) !important; }
+
+        /* Input Area */
+        .input-area { background: var(--bg-card); padding: 15px; border-top: var(--glass-border); display: flex; gap: 10px; align-items: flex-end; z-index: 100; }
+        .attach-btn { background: var(--bg-input); border: 1px solid #333; color: var(--primary); width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; cursor: pointer; flex-shrink: 0; }
+        
+        .textarea-wrapper { flex: 1; background: var(--bg-input); border: 1px solid #333; border-radius: 12px; padding: 5px 10px; position: relative; }
+        textarea { width: 100%; background: transparent; border: none; color: #fff; font-family: var(--font-body); resize: none; outline: none; padding: 10px 0; max-height: 100px; min-height: 45px; }
+        
+        .img-preview-box { display: none; position: relative; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #333; }
+        .img-preview-box img { height: 60px; border-radius: 8px; border: 1px solid var(--primary); }
+        .img-preview-box .remove-img { position: absolute; top: -5px; left: 50px; background: var(--danger); color: #fff; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 12px; }
+
+        .send-btn { background: var(--primary); border: none; color: #000; width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; cursor: pointer; flex-shrink: 0; transition: 0.3s; }
+        .send-btn:hover { box-shadow: 0 0 15px var(--primary-dim); transform: scale(1.05); }
+
+        /* Loader */
+        .loader-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-void); display: flex; align-items: center; justify-content: center; z-index: 2000; flex-direction: column; }
+        .loader-overlay i { font-size: 3rem; color: var(--primary); animation: spin 1s linear infinite; margin-bottom: 15px; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div class="loader-overlay" id="loader">
+        <i class="fas fa-circle-notch"></i>
+        <h3 style="font-family: var(--font-head); color: var(--primary);">Loading Feedback...</h3>
+    </div>
+
+    <nav class="navbar">
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+        <div class="brand"><i class="fas fa-comments"></i> COMMUNITY FEEDBACK</div>
+        <div style="width: 20px;"></div> </nav>
+
+    <div class="chat-container" id="chatContainer">
+        </div>
+
+    <div class="input-area">
+        <input type="file" id="imageInput" accept="image/*" hidden onchange="handleImageSelect(this)">
+        <button class="attach-btn" onclick="document.getElementById('imageInput').click()"><i class="fas fa-image"></i></button>
+        
+        <div class="textarea-wrapper">
+            <div class="img-preview-box" id="imgPreviewBox">
+                <img id="imgPreview" src="">
+                <button class="remove-img" onclick="removeImage()">×</button>
+            </div>
+            <textarea id="messageInput" placeholder="Write your feedback/report here..." oninput="autoResize(this)"></textarea>
+        </div>
+        
+        <button class="send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAS3UXXrio_-c9uPbHwpDuTVrP-p8d903w",
+            authDomain: "white-2k-17-v4.firebaseapp.com",
+            databaseURL: "https://white-2k-17-v4-default-rtdb.firebaseio.com",
+            projectId: "white-2k-17-v4",
+            storageBucket: "white-2k-17-v4.firebasestorage.app",
+            messagingSenderId: "180909174928",
+            appId: "1:180909174928:android:148861a87d66c6980ca815"
+        };
+        
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+        const auth = firebase.auth();
+        const db = firebase.database();
+        const DB_PATH = "community_feedbacks";
+
+        let currentUser = null;
+        let isOwner = false;
+        let selectedBase64Image = "";
+        let editMessageId = null;
+
+        // --- AUTH CHECK ---
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                currentUser = user;
+                // Check if Owner
+                if(user.email === "sktausif771@gmail.com") {
+                    isOwner = true;
+                }
+                loadMessages();
+            } else {
+                alert("লগইন ছাড়া ফিডব্যাক পেজে প্রবেশ করা নিষেধ!");
+                window.location.href = "user-login.html?redirect=feedback.html";
+            }
+        });
+
+        // --- LOAD MESSAGES ---
+        function loadMessages() {
+            db.ref(DB_PATH).on('value', (snap) => {
+                const data = snap.val();
+                const container = document.getElementById('chatContainer');
+                container.innerHTML = '';
+                document.getElementById('loader').style.display = 'none';
+
+                if(!data) {
+                    container.innerHTML = `<p style="text-align:center; color:gray; margin-top:50px;">No feedbacks yet. Be the first to write!</p>`;
+                    return;
+                }
+
+                // Sort by timestamp
+                const msgArray = Object.entries(data).map(([id, val]) => ({ id, ...val })).sort((a,b) => a.timestamp - b.timestamp);
+
+                msgArray.forEach(msg => {
+                    const isMine = (msg.uid === currentUser.uid);
+                    const msgClass = isMine ? 'msg-mine' : 'msg-others';
+                    
+                    // User Name logic (Owner Check)
+                    let displayName = msg.name || "Unknown User";
+                    if(msg.email === "sktausif771@gmail.com") {
+                        displayName = `<span class="owner-badge"><i class="fas fa-crown"></i> OWNER</span>`;
+                    }
+
+                    // Image HTML
+                    const imgHtml = msg.imageBase64 ? `<img src="${msg.imageBase64}" class="msg-image" onclick="window.open('${msg.imageBase64}', '_blank')">` : '';
+
+                    // Edit/Delete Buttons (Only for own messages)
+                    let actionHtml = '';
+                    if(isMine) {
+                        actionHtml = `
+                            <div class="msg-actions">
+                                <button onclick="editMsg('${msg.id}', '${encodeURIComponent(msg.text)}')"><i class="fas fa-edit"></i></button>
+                                <button class="btn-del" onclick="deleteMsg('${msg.id}')"><i class="fas fa-trash"></i></button>
+                            </div>
+                        `;
+                    }
+
+                    // Time Format
+                    const dateObj = new Date(msg.timestamp);
+                    const timeString = dateObj.toLocaleDateString() + ' ' + dateObj.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+                    container.innerHTML += `
+                        <div class="message-box ${msgClass}" id="msg-${msg.id}">
+                            <div class="msg-header">
+                                <span class="msg-name">${displayName}</span>
+                                <span class="msg-time">${timeString} ${msg.isEdited ? '(Edited)' : ''}</span>
+                            </div>
+                            <div class="msg-text">${msg.text}</div>
+                            ${imgHtml}
+                            ${actionHtml}
+                        </div>
+                    `;
+                });
+
+                // Auto scroll to bottom
+                container.scrollTop = container.scrollHeight;
+            });
+        }
+
+        // --- SEND MESSAGE ---
+        async function sendMessage() {
+            const textInput = document.getElementById('messageInput');
+            const text = textInput.value.trim();
+
+            if(!text && !selectedBase64Image) {
+                return alert("Please write something or attach an image.");
+            }
+
+            // 1. Check Daily Limit (If not owner)
+            if(!isOwner && !editMessageId) {
+                const now = Date.now();
+                const past24h = now - (24 * 60 * 60 * 1000);
+                
+                const snap = await db.ref(DB_PATH).orderByChild('uid').equalTo(currentUser.uid).once('value');
+                const myMessages = snap.val();
+                
+                if(myMessages) {
+                    let count = 0;
+                    Object.values(myMessages).forEach(m => {
+                        if(m.timestamp > past24h) count++;
+                    });
+
+                    if(count >= 10) {
+                        return alert("You have reached the limit of 10 messages per 24 hours.");
+                    }
+                }
+            }
+
+            // Disable input while sending
+            textInput.disabled = true;
+
+            const msgData = {
+                uid: currentUser.uid,
+                email: currentUser.email,
+                name: currentUser.displayName || "MVX User",
+                text: text,
+                imageBase64: selectedBase64Image,
+                timestamp: Date.now()
+            };
+
+            if(editMessageId) {
+                // Update existing
+                db.ref(`${DB_PATH}/${editMessageId}`).update({
+                    text: text,
+                    isEdited: true
+                }).then(() => {
+                    resetInput();
+                });
+            } else {
+                // Send new
+                db.ref(DB_PATH).push(msgData).then(() => {
+                    resetInput();
+                }).catch(err => {
+                    alert("Error: " + err.message);
+                    textInput.disabled = false;
+                });
+            }
+        }
+
+        // --- EDIT & DELETE ---
+        function deleteMsg(id) {
+            if(confirm("Are you sure you want to delete this message?")) {
+                db.ref(`${DB_PATH}/${id}`).remove();
+            }
+        }
+
+        function editMsg(id, encodedText) {
+            editMessageId = id;
+            const textInput = document.getElementById('messageInput');
+            textInput.value = decodeURIComponent(encodedText);
+            textInput.focus();
+            autoResize(textInput);
+        }
+
+        // --- IMAGE HANDLING (BASE64) ---
+        function handleImageSelect(input) {
+            const file = input.files[0];
+            if(file) {
+                if(file.size > 2 * 1024 * 1024) { // 2MB Limit
+                    alert("Image is too large! Please upload under 2MB.");
+                    input.value = "";
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    selectedBase64Image = e.target.result;
+                    document.getElementById('imgPreview').src = selectedBase64Image;
+                    document.getElementById('imgPreviewBox').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function removeImage() {
+            selectedBase64Image = "";
+            document.getElementById('imageInput').value = "";
+            document.getElementById('imgPreviewBox').style.display = 'none';
+            document.getElementById('imgPreview').src = "";
+        }
+
+        function resetInput() {
+            const textInput = document.getElementById('messageInput');
+            textInput.value = "";
+            textInput.disabled = false;
+            textInput.style.height = 'auto';
+            editMessageId = null;
+            removeImage();
+            textInput.focus();
+        }
+
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+        }
+    </script>
+</body>
+</html>

@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MVX PRO Lua Admin (FREE)</title>
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <title>FREE ADMIN PANEL | MVX SYSTEM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         /* ==========================================================================
-           LUA ADMIN FREE TIER - STYLE WITH 24H LOGIC
+           FREE ADMIN PANEL - COMBINED LUA & LIBRARY (2 KEYS / 24H)
            ========================================================================== */
         :root {
             --bg-body: #0f172a; --bg-panel: #1e293b; --primary: #00e6b8; 
@@ -27,19 +27,20 @@
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
         /* SIDEBAR */
-        .sidebar { width: 260px; background: var(--bg-panel); height: 100%; padding: 20px; border-right: 1px solid var(--border); transition: transform 0.3s ease; z-index: 1000; }
-        .brand { font-size: 24px; font-weight: 800; color: var(--primary); margin-bottom: 40px; display: flex; justify-content: space-between; align-items: center; }
-        .brand span { color: white; }
-        .brand small { display: block; font-size: 12px; color: var(--green); letter-spacing: 2px; }
+        .sidebar { width: 260px; background: var(--bg-panel); height: 100%; padding: 20px; border-right: 1px solid var(--border); transition: transform 0.3s ease; z-index: 1000; display: flex; flex-direction: column; }
+        .brand { font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .brand span { color: var(--primary); }
+        .brand small { display: block; font-size: 11px; color: var(--green); letter-spacing: 2px; }
         .close-btn { display: none; color: var(--text-sub); cursor: pointer; font-size: 20px; }
+
+        .user-profile-box { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--border); text-align: center; }
+        .user-profile-box img { width: 50px; height: 50px; border-radius: 50%; margin-bottom: 10px; border: 2px solid var(--primary); object-fit: cover;}
+        .user-profile-box h4 { font-size: 1.1rem; color: var(--text-main); }
+        .user-profile-box p { font-size: 0.8rem; color: var(--primary); }
 
         .menu-item { padding: 12px 15px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; color: var(--text-sub); font-weight: 600; transition: 0.2s; display: flex; align-items: center; gap: 10px; }
         .menu-item.active { background: var(--primary); color: #000; }
-        
-        .user-profile-box { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; margin-top: 30px; border: 1px solid var(--border); text-align: center; }
-        .user-profile-box img { width: 50px; height: 50px; border-radius: 50%; margin-bottom: 10px; border: 2px solid var(--primary); }
-        .user-profile-box h4 { font-size: 1.1rem; color: var(--text-main); }
-        .user-profile-box p { font-size: 0.8rem; color: var(--primary); }
+        .menu-item:hover:not(.active) { background: rgba(0, 230, 184, 0.1); color: var(--primary); }
 
         /* MAIN CONTENT */
         .content { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
@@ -49,7 +50,9 @@
         .btn-home { background: var(--border); color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; text-decoration: none; display: flex; align-items: center; gap: 5px; }
         .btn-home:hover { background: var(--primary); color: #000; }
 
-        .tab-content { padding: 20px; overflow-y: auto; height: 100%; }
+        .tab-content { padding: 20px; overflow-y: auto; height: 100%; display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         /* TOOLBAR & INPUTS */
         .toolbar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
@@ -77,8 +80,6 @@
         .actions { display: flex; gap: 5px; }
         .act-btn { width: 28px; height: 28px; border-radius: 4px; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; color: white; transition: 0.2s;}
         .act-reset { background: var(--yellow); color: black; }
-        .act-ban { background: #475569; }
-        .act-ban.is-banned { background: var(--red); }
         .act-del { background: var(--red); }
         .act-btn:hover { transform: scale(1.1); }
 
@@ -110,7 +111,7 @@
 
     <div class="loading-overlay" id="loadingOverlay">
         <i class="fas fa-circle-notch"></i>
-        <h3 style="font-family: var(--font-head); color: var(--primary);">Authenticating User...</h3>
+        <h3 style="font-family: 'Rajdhani', sans-serif; color: var(--primary);">Authenticating User...</h3>
     </div>
 
     <div class="overlay" onclick="toggleSidebar()"></div>
@@ -118,8 +119,8 @@
     <aside class="sidebar" id="sidebar">
         <div class="brand">
             <div>
-                MVX <span>LUA</span>
-                <small>FREE TIER</small>
+                FREE <span>ADMIN</span>
+                <small>MVX SYSTEM</small>
             </div>
             <i class="fas fa-times close-btn" onclick="toggleSidebar()"></i>
         </div>
@@ -130,36 +131,46 @@
             <p id="sidebarEmail">Loading...</p>
         </div>
 
-        <nav style="margin-top: 20px;">
-            <div class="menu-item active">
-                <i class="fas fa-users"></i> My Keys
+        <nav style="flex: 1;">
+            <div class="menu-item active" onclick="switchTab('lua')" id="nav-lua">
+                <i class="fas fa-unlock-alt"></i> Free Lua Panel
+            </div>
+            <div class="menu-item" onclick="switchTab('library')" id="nav-library">
+                <i class="fas fa-book"></i> Free Library Panel
             </div>
         </nav>
+        
+        <div style="text-align: center; color: var(--text-sub); font-size: 12px;">
+            Max 2 Keys / 24 Hours
+        </div>
     </aside>
 
     <main class="content">
         <div class="top-header">
             <div class="top-header-left">
                 <button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-                <h2 id="pageTitle" style="color: var(--primary);">Key Generator (Free Access)</h2>
+                <h2 id="pageTitle" style="color: var(--primary);">Free Lua Generator</h2>
             </div>
             <a href="index.html" class="btn-home"><i class="fas fa-arrow-left"></i> Store</a>
         </div>
 
-        <div id="tab-users" class="tab-content">
-            
+        <div style="padding: 20px 20px 0;">
             <div class="locked-notice" id="timerNotice">
-                <i class="fas fa-clock"></i> You have already created a key. You can create a new key after: <br>
-                <strong id="countdownTimer" style="font-size: 1.2rem; color: #fff;">00h 00m 00s</strong>
+                <i class="fas fa-clock"></i> You have reached the limit of 2 Keys per 24H.<br>
+                Next key unlocks in: <strong id="countdownTimer" style="font-size: 1.2rem; color: #fff;">00h 00m 00s</strong>
             </div>
+            <div class="free-notice" id="keysLeftNotice">
+                <i class="fas fa-info-circle"></i> You can generate <strong id="keysLeftText" style="color:#fff;">2</strong> more keys in the next 24 hours.
+            </div>
+        </div>
 
+        <div id="tab-lua" class="tab-content active">
             <div class="toolbar">
-                <input type="text" id="searchBox" class="search" placeholder="Search your keys..." onkeyup="renderTable()">
-                <button class="btn btn-add" id="btnCreateKey" onclick="openModal()">
-                    <i class="fas fa-plus"></i> NEW FREE KEY
+                <input type="text" id="searchLua" class="search" placeholder="Search your Lua keys..." onkeyup="renderLuaTable()">
+                <button class="btn btn-add" id="btnCreateLua" onclick="openModal('lua')">
+                    <i class="fas fa-plus"></i> NEW LUA KEY
                 </button>
             </div>
-
             <div class="table-responsive">
                 <table>
                     <thead>
@@ -171,8 +182,30 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="userTable">
-                        </tbody>
+                    <tbody id="luaTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="tab-library" class="tab-content">
+            <div class="toolbar">
+                <input type="text" id="searchLib" class="search" placeholder="Search your Library codes..." onkeyup="renderLibTable()">
+                <button class="btn btn-add" id="btnCreateLib" onclick="openModal('lib')">
+                    <i class="fas fa-plus"></i> NEW LIBRARY CODE
+                </button>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Code (10-Digit)</th>
+                            <th>Note / Name</th>
+                            <th>Status</th>
+                            <th>Expiry</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="libTable"></tbody>
                 </table>
             </div>
         </div>
@@ -181,30 +214,33 @@
     <div class="modal" id="keyModal">
         <div class="modal-box">
             <div class="modal-header">
-                <h3><i class="fas fa-unlock"></i> Generate Free Key</h3>
+                <h3 id="modalTitle"><i class="fas fa-unlock"></i> Generate Key</h3>
                 <i class="fas fa-times" onclick="closeModal()" style="cursor:pointer;"></i>
             </div>
             
-            <div class="free-notice">
-                <i class="fas fa-info-circle"></i> Free tier is limited to 1 Key per 24 Hours. Max 1 Device.
+            <input type="hidden" id="modalType" value="lua">
+
+            <div class="form-group">
+                <label id="keyLabel">Key Name</label>
+                <input type="text" id="newKey" placeholder="Auto Generated" readonly>
+            </div>
+            
+            <div class="form-group" id="noteGroup" style="display:none;">
+                <label>Note / User Name</label>
+                <input type="text" id="keyNote" placeholder="e.g. For my friend">
             </div>
 
             <div class="form-group">
-                <label>Key Name</label>
-                <input type="text" id="newKey" placeholder="e.g. MVX_FREE_888">
-            </div>
-            
-            <div class="form-group">
                 <label>Duration</label>
-                <select id="duration" disabled>
-                    <option value="1" selected>1 Day (24 Hours) - MAX</option>
+                <select disabled>
+                    <option selected>1 Day (24 Hours) - MAX</option>
                 </select>
             </div>
 
             <div class="form-group">
                 <label>Device Limit</label>
-                <select id="limit" disabled>
-                    <option value="1" selected>1 Device - MAX</option>
+                <select disabled>
+                    <option selected>1 Device - MAX</option>
                 </select>
             </div>
 
@@ -220,15 +256,11 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
-        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyAS3UXXrio_-c9uPbHwpDuTVrP-p8d903w",
             authDomain: "white-2k-17-v4.firebaseapp.com",
             databaseURL: "https://white-2k-17-v4-default-rtdb.firebaseio.com",
-            projectId: "white-2k-17-v4",
-            storageBucket: "white-2k-17-v4.firebasestorage.app",
-            messagingSenderId: "180909174928",
-            appId: "1:180909174928:android:148861a87d66c6980ca815"
+            projectId: "white-2k-17-v4"
         };
 
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
@@ -236,60 +268,100 @@
         const db = firebase.database();
         
         let currentUser = null;
-        let allUsers = {};
-        let lastKeyTime = 0;
+        let limitData = { firstKeyTime: 0, count: 0 };
         const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
         let timerInterval = null;
 
-        // --- AUTHENTICATION CHECK ---
+        let allLuaUsers = {};
+        let allLibKeys = {};
+
+        // --- UI SWITCHING ---
+        function switchTab(tab) {
+            document.getElementById('tab-lua').classList.remove('active');
+            document.getElementById('tab-library').classList.remove('active');
+            document.getElementById('nav-lua').classList.remove('active');
+            document.getElementById('nav-library').classList.remove('active');
+
+            document.getElementById(`tab-${tab}`).classList.add('active');
+            document.getElementById(`nav-${tab}`).classList.add('active');
+            
+            document.getElementById('pageTitle').innerText = tab === 'lua' ? 'Free Lua Generator' : 'Free Library Generator';
+            if(window.innerWidth <= 768) toggleSidebar();
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.querySelector('.overlay').classList.toggle('active');
+        }
+
+        // --- AUTH CHECK ---
         auth.onAuthStateChanged((user) => {
             if (user) {
-                // Logged In
                 currentUser = user;
-                document.getElementById('sidebarName').innerText = user.displayName || 'User';
-                document.getElementById('sidebarEmail').innerText = user.email;
-                if(user.photoURL) document.getElementById('sidebarAvatar').src = user.photoURL;
+                // Fetch user info from registered_users to get the updated profile pic/name
+                db.ref('registered_users/' + user.uid).once('value', snap => {
+                    const data = snap.val() || {};
+                    document.getElementById('sidebarName').innerText = data.name || user.displayName || 'User';
+                    document.getElementById('sidebarEmail').innerText = data.email || user.email;
+                    document.getElementById('sidebarAvatar').src = data.photoURL || user.photoURL || 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+                });
                 
                 document.getElementById('loadingOverlay').style.display = 'none';
                 initData();
             } else {
-                // Not Logged In - Force Redirect
                 alert("লগইন ছাড়া ফ্রি এডমিনে প্রবেশ করা নিষেধ!");
                 window.location.href = 'user-login.html?redirect=lua-admin-free.html';
             }
         });
 
-        // --- INITIALIZE DATA ---
+        // --- INIT DATA & LIMIT CHECK ---
         function initData() {
-            // 1. Fetch only this user's 24H timing
-            db.ref('free_users_data/' + currentUser.uid + '/lastKeyTime').on('value', (snap) => {
-                lastKeyTime = snap.val() || 0;
+            // 1. Fetch 24H Limit Data (2 Keys max)
+            db.ref('free_users_data/' + currentUser.uid).on('value', (snap) => {
+                limitData = snap.val() || { firstKeyTime: 0, count: 0 };
                 check24HourLimit();
             });
 
-            // 2. Fetch all keys but filter later for this user only
+            // 2. Fetch LUA Keys
             db.ref('users').on('value', (snap) => {
-                allUsers = snap.val() || {};
-                renderTable();
+                allLuaUsers = snap.val() || {};
+                renderLuaTable();
+            });
+
+            // 3. Fetch LIBRARY Keys
+            db.ref('licenses').on('value', (snap) => {
+                allLibKeys = snap.val() || {};
+                renderLibTable();
             });
         }
 
-        // --- 24 HOUR LIMIT CHECKER ---
         function check24HourLimit() {
             const now = Date.now();
-            const timePassed = now - lastKeyTime;
             
-            if (lastKeyTime !== 0 && timePassed < TWENTY_FOUR_HOURS) {
+            // Reset logic if 24 hours passed since first key
+            if (limitData.firstKeyTime !== 0 && (now - limitData.firstKeyTime) >= TWENTY_FOUR_HOURS) {
+                limitData.count = 0;
+                limitData.firstKeyTime = 0;
+            }
+
+            const keysLeft = 2 - limitData.count;
+            document.getElementById('keysLeftText').innerText = keysLeft > 0 ? keysLeft : 0;
+
+            if (limitData.count >= 2) {
                 // Locked
-                document.getElementById('btnCreateKey').classList.add('btn-disabled');
-                document.getElementById('btnCreateKey').onclick = () => alert("You must wait 24 hours to generate a new key!");
+                document.getElementById('btnCreateLua').classList.add('btn-disabled');
+                document.getElementById('btnCreateLib').classList.add('btn-disabled');
+                
+                document.getElementById('keysLeftNotice').style.display = 'none';
                 document.getElementById('timerNotice').style.display = 'block';
                 
-                startCountdown(TWENTY_FOUR_HOURS - timePassed);
+                startCountdown((limitData.firstKeyTime + TWENTY_FOUR_HOURS) - now);
             } else {
                 // Unlocked
-                document.getElementById('btnCreateKey').classList.remove('btn-disabled');
-                document.getElementById('btnCreateKey').onclick = openModal;
+                document.getElementById('btnCreateLua').classList.remove('btn-disabled');
+                document.getElementById('btnCreateLib').classList.remove('btn-disabled');
+                
+                document.getElementById('keysLeftNotice').style.display = 'block';
                 document.getElementById('timerNotice').style.display = 'none';
                 if(timerInterval) clearInterval(timerInterval);
             }
@@ -297,40 +369,32 @@
 
         function startCountdown(remainingTime) {
             if(timerInterval) clearInterval(timerInterval);
-            
             timerInterval = setInterval(() => {
                 remainingTime -= 1000;
                 if(remainingTime <= 0) {
                     clearInterval(timerInterval);
-                    check24HourLimit();
+                    check24HourLimit(); // Re-check to auto unlock
                     return;
                 }
-
                 const hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
-                
-                document.getElementById('countdownTimer').innerText = 
-                    `${hours.toString().padStart(2, '0')}h ${minutes.toString().padStart(2, '0')}m ${seconds.toString().padStart(2, '0')}s`;
+                document.getElementById('countdownTimer').innerText = `${hours.toString().padStart(2, '0')}h ${minutes.toString().padStart(2, '0')}m ${seconds.toString().padStart(2, '0')}s`;
             }, 1000);
         }
 
-        // --- RENDER TABLE (Filter by UID) ---
-        function renderTable() {
-            const tbody = document.getElementById('userTable');
-            const search = document.getElementById('searchBox').value.toLowerCase();
+        // --- RENDER LUA TABLE ---
+        function renderLuaTable() {
+            const tbody = document.getElementById('luaTable');
+            const search = document.getElementById('searchLua').value.toLowerCase();
             tbody.innerHTML = '';
-
             let hasKeys = false;
 
-            Object.keys(allUsers).reverse().forEach(key => {
-                const user = allUsers[key];
-                
-                // Privacy Check: Only show keys created by THIS logged-in user
-                if (user.creatorUid !== currentUser.uid) return;
+            Object.keys(allLuaUsers).reverse().forEach(key => {
+                const user = allLuaUsers[key];
+                if (user.creatorUid !== currentUser.uid) return; // Privacy Check
 
                 hasKeys = true;
-                
                 let deviceText = '<span style="color:#555; font-size:12px;">No Device Connected</span>';
                 let deviceSearch = "";
 
@@ -338,21 +402,12 @@
                     const models = Object.values(user.hwids).map(d => d.model || "Unknown").join(", ");
                     deviceSearch = models.toLowerCase();
                     const used = Object.keys(user.hwids).length;
-                    
-                    deviceText = `
-                        <div style="font-size:12px; color:#94a3b8;">
-                            <i class="fas fa-mobile-alt" style="color:var(--primary)"></i> ${models}
-                            <br><span style="color:var(--green)">[${used} / 1]</span>
-                        </div>
-                    `;
+                    deviceText = `<div style="font-size:12px; color:#94a3b8;"><i class="fas fa-mobile-alt" style="color:var(--primary)"></i> ${models}<br><span style="color:var(--green)">[${used} / 1]</span></div>`;
                 }
 
                 if (key.toLowerCase().includes(search) || deviceSearch.includes(search)) {
-                    const statusBadge = user.status === 'banned' 
-                        ? '<span class="badge b-banned">BANNED</span>' 
-                        : '<span class="badge b-active">ACTIVE</span>';
-
-                    const row = `
+                    const statusBadge = user.status === 'banned' ? '<span class="badge b-banned">BANNED</span>' : '<span class="badge b-active">ACTIVE</span>';
+                    tbody.innerHTML += `
                         <tr>
                             <td style="font-weight:bold; color:var(--text-main)">${key}</td>
                             <td>${statusBadge}</td>
@@ -360,89 +415,147 @@
                             <td>${deviceText}</td>
                             <td>
                                 <div class="actions">
-                                    <button class="act-btn act-reset" onclick="resetDevice('${key}')" title="Reset Device"><i class="fas fa-sync"></i></button>
-                                    <button class="act-btn act-del" onclick="deleteUser('${key}')" title="Delete Key"><i class="fas fa-trash"></i></button>
+                                    <button class="act-btn act-reset" onclick="resetLuaDevice('${key}')" title="Reset Device"><i class="fas fa-sync"></i></button>
+                                    <button class="act-btn act-del" onclick="deleteItem('users', '${key}')" title="Delete Key"><i class="fas fa-trash"></i></button>
                                 </div>
                             </td>
                         </tr>
                     `;
-                    tbody.innerHTML += row;
                 }
             });
 
-            if(!hasKeys) {
-                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#555; padding:30px;">You haven't generated any keys yet.</td></tr>`;
-            }
+            if(!hasKeys) tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#555; padding:30px;">No Lua keys generated yet.</td></tr>`;
         }
 
-        // --- ACTIONS ---
-        function createKey() {
-            const key = document.getElementById('newKey').value.trim();
-            const days = 1; // Strict 1 Day
-            const limit = 1; // Strict 1 Device
+        // --- RENDER LIBRARY TABLE ---
+        function renderLibTable() {
+            const tbody = document.getElementById('libTable');
+            const search = document.getElementById('searchLib').value.toLowerCase();
+            tbody.innerHTML = '';
+            let hasKeys = false;
 
-            if(!key) return alert("Enter Key Name!");
-            if(allUsers[key]) return alert("This Key name already exists. Try another!");
+            Object.keys(allLibKeys).reverse().forEach(key => {
+                const item = allLibKeys[key];
+                if (item.creatorUid !== currentUser.uid) return; // Privacy Check
 
-            // Prevent double click
-            document.getElementById('btnSubmitKey').disabled = true;
+                hasKeys = true;
+                if (item.key.toLowerCase().includes(search) || (item.note && item.note.toLowerCase().includes(search))) {
+                    const statusBadge = item.status === 'Active' ? '<span class="badge b-active">ACTIVE</span>' : '<span class="badge b-banned">LOCKED</span>';
+                    
+                    // Format Expire Date based on creation + duration (1 day = 24h)
+                    const expireMs = item.createdAt + (24 * 60 * 60 * 1000);
+                    const expireDate = new Date(expireMs).toLocaleDateString();
 
-            const date = new Date();
-            date.setDate(date.getDate() + days);
-            const expiry = date.toISOString().split('T')[0];
-            const now = Date.now();
-
-            // 1. Save Key Info (Attached with user's UID and Email for Owner Tracking)
-            db.ref('users/' + key).set({
-                expiry: expiry,
-                maxDevices: limit,
-                status: 'active',
-                hwids: null,
-                creatorUid: currentUser.uid,
-                creatorName: currentUser.displayName || "Unknown User",
-                creatorEmail: currentUser.email,
-                createdAt: now
-            }).then(() => {
-                // 2. Save Timing to start 24h block
-                return db.ref('free_users_data/' + currentUser.uid).set({
-                    lastKeyTime: now
-                });
-            }).then(() => {
-                alert("Free Key Generated Successfully! Wait 24H for next key.");
-                closeModal();
-                document.getElementById('btnSubmitKey').disabled = false;
-            }).catch(err => {
-                alert("Error: " + err.message);
-                document.getElementById('btnSubmitKey').disabled = false;
+                    tbody.innerHTML += `
+                        <tr>
+                            <td style="font-weight:bold; color:var(--primary); font-family:monospace; font-size:16px;">${item.key}</td>
+                            <td>${item.note || 'User'}</td>
+                            <td>${statusBadge}</td>
+                            <td>${expireDate}</td>
+                            <td>
+                                <div class="actions" style="justify-content:flex-start;">
+                                    <button class="act-btn act-del" onclick="deleteItem('licenses', '${key}')" title="Delete Code"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }
             });
+
+            if(!hasKeys) tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#555; padding:30px;">No Library codes generated yet.</td></tr>`;
         }
 
-        function resetDevice(key) {
-            if(confirm("Reset Device Lock for: " + key + "?")) {
-                db.ref('users/' + key + '/hwids').remove();
+        // --- MODAL AND GENERATION ---
+        function openModal(type) {
+            if(limitData.count >= 2) return alert("You reached the 2 keys/24h limit!");
+
+            document.getElementById('modalType').value = type;
+            document.getElementById('modalTitle').innerHTML = type === 'lua' ? '<i class="fas fa-unlock"></i> Generate Lua Key' : '<i class="fas fa-book"></i> Generate Library Code';
+            
+            document.getElementById('noteGroup').style.display = type === 'lib' ? 'block' : 'none';
+            document.getElementById('keyNote').value = '';
+
+            // Generate Random String based on type
+            let rnd = "";
+            if(type === 'lua') {
+                rnd = "MVX_FREE_" + Math.floor(Math.random() * 9000 + 1000);
+            } else {
+                // 10 Digit Numeric for Library
+                for (let i = 0; i < 10; i++) rnd += Math.floor(Math.random() * 10);
             }
-        }
-
-        function deleteUser(key) {
-            if(confirm("Permanently Delete Key: " + key + "? (Warning: 24h limit will NOT reset!)")) {
-                db.ref('users/' + key).remove();
-            }
-        }
-
-        // --- UI FUNCTIONS ---
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
-            document.querySelector('.overlay').classList.toggle('active');
-        }
-
-        function openModal() {
-            const rnd = "MVX_FREE_" + Math.floor(Math.random() * 9000 + 1000);
+            
             document.getElementById('newKey').value = rnd;
             document.getElementById('keyModal').style.display = 'flex';
         }
 
         function closeModal() {
             document.getElementById('keyModal').style.display = 'none';
+        }
+
+        function createKey() {
+            const type = document.getElementById('modalType').value;
+            const keyName = document.getElementById('newKey').value.trim();
+            const btn = document.getElementById('btnSubmitKey');
+            
+            btn.disabled = true;
+            const now = Date.now();
+
+            // 1. Update Limit Data
+            if(limitData.count === 0 || (now - limitData.firstKeyTime) >= TWENTY_FOUR_HOURS) {
+                limitData.firstKeyTime = now;
+                limitData.count = 1;
+            } else {
+                limitData.count++;
+            }
+
+            // 2. Prepare Data to Save
+            let savePromise;
+            if(type === 'lua') {
+                const date = new Date(); date.setDate(date.getDate() + 1);
+                savePromise = db.ref('users/' + keyName).set({
+                    expiry: date.toISOString().split('T')[0],
+                    maxDevices: 1,
+                    status: 'active',
+                    creatorUid: currentUser.uid,
+                    creatorEmail: currentUser.email,
+                    createdAt: now
+                });
+            } else {
+                const note = document.getElementById('keyNote').value || "Free User";
+                const libKeyId = db.ref('licenses').push().key; // Generate unique ID
+                savePromise = db.ref('licenses/' + libKeyId).set({
+                    key: keyName,
+                    note: note,
+                    duration: 1, // 1 Day
+                    maxDevices: 1,
+                    status: 'Active',
+                    createdAt: now,
+                    creatorUid: currentUser.uid,
+                    creatorEmail: currentUser.email
+                });
+            }
+
+            // 3. Execute Save
+            savePromise.then(() => {
+                return db.ref('free_users_data/' + currentUser.uid).set(limitData);
+            }).then(() => {
+                closeModal();
+                btn.disabled = false;
+            }).catch(err => {
+                alert("Error: " + err.message);
+                btn.disabled = false;
+            });
+        }
+
+        // --- ACTIONS ---
+        function resetLuaDevice(key) {
+            if(confirm("Reset Device Lock for: " + key + "?")) db.ref('users/' + key + '/hwids').remove();
+        }
+
+        function deleteItem(node, key) {
+            if(confirm("Permanently Delete? (Warning: 24h limit will NOT reset!)")) {
+                db.ref(node + '/' + key).remove();
+            }
         }
     </script>
 </body>
