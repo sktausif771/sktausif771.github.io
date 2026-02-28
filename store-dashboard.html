@@ -11,7 +11,7 @@
     
     <style>
         /* ==========================================================================
-           MVX STORE ADMIN DASHBOARD V4.0 (FULL & CLEAN)
+           MVX STORE ADMIN DASHBOARD V4.0 (PREMIUM UI UPDATE)
            ========================================================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; }
         
@@ -41,6 +41,67 @@
         
         #formTitleText { flex: 1; min-width: 0; word-break: break-word; line-height: 1.4; display: block; }
 
+        /* --- NEW PREMIUM UPLOAD METHOD SELECTOR UI --- */
+        .upload-engine-box {
+            background: rgba(0, 230, 184, 0.05);
+            border: 1px solid rgba(0, 230, 184, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+            transition: 0.3s;
+        }
+        .upload-engine-box:hover {
+            border-color: var(--primary);
+            background: rgba(0, 230, 184, 0.1);
+        }
+        .upload-engine-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            text-shadow: 0 0 15px var(--primary-dim);
+        }
+        .upload-engine-info {
+            flex: 1;
+        }
+        .upload-engine-info h4 {
+            color: var(--text-primary);
+            margin-bottom: 5px;
+            font-family: var(--font-head);
+            letter-spacing: 1px;
+            font-size: 1.1rem;
+        }
+        .upload-engine-info p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin: 0;
+            line-height: 1.4;
+        }
+        .upload-engine-select {
+            background: var(--bg-input);
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            outline: none;
+            cursor: pointer;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+        .upload-engine-select:focus {
+            box-shadow: 0 0 15px var(--primary-dim);
+        }
+        .upload-engine-select option {
+            background: var(--bg-card);
+            color: #fff;
+            font-weight: bold;
+        }
+        /* --------------------------------------------- */
+
         .form-grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-bottom: 15px; width: 100%; }
         .form-grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; width: 100%; }
         
@@ -50,10 +111,6 @@
         textarea { height: auto; min-height: 100px; padding: 15px; resize: vertical; }
         input:focus, select:focus, textarea:focus { border-color: var(--primary); }
         ::placeholder { color: #64748b; opacity: 1; }
-
-        /* Upload Method Selector */
-        .method-selector { background: var(--primary-dim); border: 1px solid var(--primary); padding: 15px; border-radius: 12px; margin-bottom: 20px; display: flex; align-items: center; gap: 15px; }
-        .method-selector select { background: var(--bg-void); border-color: var(--primary); width: auto; font-weight: bold; color: var(--primary); }
 
         .img-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; width: 100%; }
         .img-upload-box { background: var(--bg-input); border: 2px dashed #333; border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; height: 150px; display: flex; flex-direction: column; justify-content: center; }
@@ -104,6 +161,12 @@
             .nav-btns button { padding: 6px 10px; font-size: 0.8rem; margin-right: 5px !important; }
             .container { margin: 15px auto; padding: 0 10px; gap: 20px; }
             .card { padding: 15px; border-radius: 12px; }
+            
+            /* Responsive Engine Box */
+            .upload-engine-box { flex-direction: column; align-items: flex-start; gap: 15px; padding: 15px; }
+            .upload-engine-icon { display: none; } /* Hide icon on mobile to save space */
+            .upload-engine-select { width: 100%; }
+
             .form-grid-2, .form-grid-3, .img-grid { grid-template-columns: 1fr; }
             .extra-link-row { display: flex; flex-direction: column; gap: 8px; background: rgba(255,255,255,0.02); padding: 10px; border-radius: 8px; border: 1px solid #333; }
             .card-title { font-size: 1.1rem; flex-direction: column; align-items: flex-start; gap: 10px; }
@@ -139,12 +202,15 @@
                 <button id="cancelEditBtn" style="display:none; background:var(--danger); color:#fff; border:none; padding:8px 15px; border-radius:8px; cursor:pointer;" onclick="cancelEdit()"><i class="fas fa-times"></i> Cancel Edit</button>
             </h2>
 
-            <div class="method-selector">
-                <i class="fas fa-tools"></i>
-                <label style="margin-bottom:0; color:var(--primary);">Upload Method:</label>
-                <select id="uploadMethod">
-                    <option value="imgbb">ImgBB (URL Method - Fast)</option>
-                    <option value="base64">Base64 (Old Method - Slow)</option>
+            <div class="upload-engine-box">
+                <i class="fas fa-server upload-engine-icon"></i>
+                <div class="upload-engine-info">
+                    <h4>IMAGE UPLOAD ENGINE</h4>
+                    <p>Select <strong style="color:var(--primary)">ImgBB</strong> for ultra-fast loading (Recommended) or <strong style="color:var(--text-primary)">Base64</strong> for your old legacy format.</p>
+                </div>
+                <select id="uploadMethod" class="upload-engine-select">
+                    <option value="imgbb">⚡ ImgBB API (Fast)</option>
+                    <option value="base64">💾 Base64 (Old)</option>
                 </select>
             </div>
             
@@ -475,7 +541,7 @@
         function cancelEdit() {
             document.getElementById('uploadForm').reset();
             document.getElementById('editAppId').value = '';
-            document.getElementById('formTitleText').innerText = "UPLOAD NEW APP";
+            document.getElementById('formTitleText').innerHTML = `<i class="fas fa-upload"></i> UPLOAD NEW APP`;
             document.getElementById('cancelEditBtn').style.display = 'none';
             document.getElementById('bannerPreview').style.display = 'none';
             document.getElementById('bannerText').style.display = 'block';
@@ -491,7 +557,7 @@
             const btn = document.getElementById('submitBtn');
             const id = document.getElementById('editAppId').value;
             btn.disabled = true;
-            btn.innerText = "Processing...";
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PROCESSING...';
 
             const links = [];
             document.querySelectorAll('.extra-link-row').forEach(r => links.push({ title: r.querySelector('.ex-title').value, url: r.querySelector('.ex-url').value }));
