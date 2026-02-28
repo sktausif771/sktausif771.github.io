@@ -11,7 +11,7 @@
     
     <style>
         /* ==========================================================================
-           MVX STORE V4.0 - HOMEPAGE (UPDATED WITH AUTH LOGIC)
+           MVX STORE V4.0 - HOMEPAGE (CLEAN & OPTIMIZED)
            ========================================================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
@@ -27,8 +27,6 @@
 
         body { background: var(--bg-void); color: var(--text-primary); font-family: var(--font-body); min-height: 100vh; overflow-x: hidden; }
         
-        body.smooth-mode .grid-overlay, body.smooth-mode .glow-orb, body.smooth-mode .yt-card:hover { animation: none; transform: none; box-shadow: none; filter: none; }
-
         /* Background Effects */
         .grid-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(0, 230, 184, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 230, 184, 0.03) 1px, transparent 1px); background-size: 50px 50px; pointer-events: none; z-index: -1; animation: gridShift 15s linear infinite; }
         .glow-orb { position: fixed; width: 60vmax; height: 60vmax; border-radius: 50%; background: radial-gradient(circle at center, rgba(0, 230, 184, 0.1) 0%, transparent 70%); filter: blur(50px); pointer-events: none; z-index: -1; top: -20vmax; left: -20vmax; animation: orbFloat 20s ease-in-out infinite alternate; }
@@ -52,7 +50,6 @@
         .sidebar-menu a { display: flex; align-items: center; gap: 15px; padding: 15px; color: var(--text-primary); text-decoration: none; border-radius: 8px; margin-bottom: 10px; transition: 0.3s; cursor: pointer; }
         .sidebar-menu a:hover { background: var(--bg-input); color: var(--primary); }
         
-        .smooth-toggle { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--bg-input); border-radius: 8px; margin-top: 20px; }
         .login-redirect-btn { width: 100%; padding: 15px; background: var(--primary); color: #000; border: none; border-radius: 8px; font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; cursor: pointer; margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s;}
         .login-redirect-btn:hover { box-shadow: 0 0 15px var(--primary-dim); }
 
@@ -65,9 +62,8 @@
         .tab-btn.active[data-type="Paid"] { background: var(--danger-dim); border-color: var(--danger); color: var(--danger); }
 
         /* Sub Categories */
-        .sub-categories { display: flex; gap: 10px; padding: 10px 20px; overflow-x: auto; background: var(--bg-void); display: none; animation: slideDown 0.3s ease; }
+        .sub-categories { display: flex; gap: 10px; padding: 10px 20px; overflow-x: auto; background: var(--bg-void); display: none; }
         .sub-categories::-webkit-scrollbar { display: none; }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         .cat-pill { padding: 8px 20px; background: var(--bg-card); border: 1px solid #333; border-radius: 100px; color: var(--text-muted); cursor: pointer; white-space: nowrap; transition: 0.3s; }
         .cat-pill.active { background: #fff; color: #000; border-color: #fff; }
 
@@ -81,7 +77,6 @@
         .yt-card:hover { transform: translateY(-5px); }
         .yt-banner-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; border-radius: 12px; overflow: hidden; background: var(--bg-input); border: var(--glass-border); }
         .yt-banner { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
-        .yt-card:hover .yt-banner { transform: scale(1.05); }
         
         .type-badge { position: absolute; top: 10px; right: 10px; padding: 5px 12px; border-radius: 5px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
         .type-badge.Free { background: var(--primary); color: #000; }
@@ -91,26 +86,23 @@
         .yt-info { display: flex; gap: 15px; margin-top: 15px; align-items: flex-start; }
         .yt-logo { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; background: var(--bg-input); border: 1px solid #333; }
         .yt-text { flex: 1; }
-        .yt-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 5px; color: var(--text-primary); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .yt-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 5px; color: var(--text-primary); }
         .yt-meta { font-size: 0.85rem; color: var(--text-muted); }
 
         .empty-state { text-align: center; padding: 50px 20px; color: var(--text-muted); }
-        .empty-state i { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; }
 
-        /* Custom Password Modal for Admin */
+        /* Admin Password Modal */
         .pass-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
-        .pass-modal { background: var(--bg-card); padding: 25px; border-radius: 15px; border: 1px solid var(--primary); text-align: center; width: 90%; max-width: 350px; box-shadow: 0 0 30px var(--primary-dim); animation: slideDown 0.3s ease; }
-        .pass-modal h3 { color: var(--primary); font-family: var(--font-head); margin-bottom: 15px; }
-        .pass-modal input { width: 100%; background: var(--bg-input); border: 1px solid #333; color: #fff; padding: 12px; border-radius: 8px; margin-bottom: 20px; outline: none; font-size: 1rem; text-align: center; letter-spacing: 3px; }
-        .pass-modal input:focus { border-color: var(--primary); }
+        .pass-modal { background: var(--bg-card); padding: 25px; border-radius: 15px; border: 1px solid var(--primary); text-align: center; width: 90%; max-width: 350px; }
+        .pass-modal h3 { color: var(--primary); margin-bottom: 15px; font-family: var(--font-head); }
+        .pass-modal input { width: 100%; background: var(--bg-input); border: 1px solid #333; color: #fff; padding: 12px; border-radius: 8px; margin-bottom: 20px; text-align: center; letter-spacing: 3px; outline: none; }
         .pass-btns { display: flex; gap: 10px; }
-        .pass-btns button { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .pass-btns button { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
         .btn-cancel { background: #333; color: #fff; }
         .btn-verify { background: var(--primary); color: #000; }
-        .btn-verify:hover { box-shadow: 0 0 15px var(--primary-dim); }
 
-        /* Custom Toast inside Page */
-        .local-toast { position: fixed; top: 80px; right: 20px; background: var(--bg-input); border-left: 4px solid var(--primary); padding: 15px 20px; border-radius: 8px; display: none; gap: 10px; align-items: center; color: #fff; z-index: 9999; box-shadow: 0 5px 15px rgba(0,0,0,0.5); font-weight: 500;}
+        /* Local Toast */
+        .local-toast { position: fixed; top: 80px; right: 20px; background: var(--bg-input); border-left: 4px solid var(--primary); padding: 15px 20px; border-radius: 8px; display: none; gap: 10px; align-items: center; color: #fff; z-index: 9999; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
 
     </style>
 </head>
@@ -145,11 +137,6 @@
             <i class="fas fa-user-circle"></i> <span id="sidebarUserText">LOGIN / SETTINGS</span>
         </button>
 
-        <div class="smooth-toggle">
-            <span>Low-end Device Mode</span>
-            <input type="checkbox" id="smoothModeToggle" onchange="toggleSmoothMode()">
-        </div>
-
         <div class="sidebar-menu" style="margin-top: 30px;">
             <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 10px;">COMMUNITY</p>
             <a href="#"><i class="fab fa-telegram" style="color: #0088cc;"></i> Telegram Channel</a>
@@ -158,11 +145,8 @@
             <hr style="border-color: #333; margin: 25px 0 15px;">
             
             <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 10px;">SYSTEM ADMIN</p>
-            
             <a onclick="checkLoginAndGoFree()"><i class="fas fa-unlock" style="color: #00e6b8;"></i> Lua Admin (Free)</a>
-            
             <a onclick="openPassModal('lua-admin-owner.html')"><i class="fas fa-crown" style="color: #ffd700;"></i> Lua Admin (Owner)</a>
-            
             <a onclick="openPassModal('store-dashboard.html')"><i class="fas fa-satellite-dish" style="color: #ff003c;"></i> Website Admin Panel</a>
         </div>
     </div>
@@ -202,7 +186,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
-        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyAS3UXXrio_-c9uPbHwpDuTVrP-p8d903w",
             authDomain: "white-2k-17-v4.firebaseapp.com",
@@ -225,7 +208,6 @@
         let targetAdminUrl = ""; 
         let currentLoggedUser = null;
 
-        // Custom Toast Message
         function showMessage(msg, type='success') {
             const toast = document.getElementById('localToast');
             document.getElementById('localToastMsg').innerText = msg;
@@ -234,32 +216,20 @@
             setTimeout(() => { toast.style.display = 'none'; }, 3000);
         }
 
-        // --- Auth State Tracker ---
         auth.onAuthStateChanged((user) => {
             currentLoggedUser = user;
-            if(user) {
-                document.getElementById('sidebarUserText').innerText = "MY PROFILE";
-            } else {
-                document.getElementById('sidebarUserText').innerText = "LOGIN / SETTINGS";
-            }
+            document.getElementById('sidebarUserText').innerText = user ? "MY PROFILE" : "LOGIN / SETTINGS";
         });
 
-        // --- NEW: Free Lua Login Check ---
         function checkLoginAndGoFree() {
             if(currentLoggedUser) {
-                // User is logged in, grant access
                 window.location.href = 'lua-admin-free.html';
             } else {
-                // Not logged in, show error and redirect
-                showMessage('লগইন ছাড়া ফ্রি এডমিনে ঢোকা নিষেধ! দয়া করে লগইন করুন।', 'error');
-                setTimeout(() => {
-                    // Redirecting to login page with a return path
-                    window.location.href = 'user-login.html?redirect=lua-admin-free.html';
-                }, 2000);
+                showMessage('লগইন ছাড়া ফ্রি এডমিনে ঢোকা নিষেধ!', 'error');
+                setTimeout(() => { window.location.href = 'user-login.html?redirect=lua-admin-free.html'; }, 2000);
             }
         }
 
-        // --- UI & Sidebar ---
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
             document.getElementById('overlay').classList.toggle('active');
@@ -271,69 +241,38 @@
             if(box.style.display === 'block') document.getElementById('searchInput').focus();
         }
 
-        function toggleSmoothMode() {
-            const isChecked = document.getElementById('smoothModeToggle').checked;
-            if(isChecked) {
-                document.body.classList.add('smooth-mode');
-                localStorage.setItem('smoothMode', 'true');
-            } else {
-                document.body.classList.remove('smooth-mode');
-                localStorage.setItem('smoothMode', 'false');
-            }
-        }
-        if(localStorage.getItem('smoothMode') === 'true') {
-            document.getElementById('smoothModeToggle').checked = true;
-            document.body.classList.add('smooth-mode');
-        }
-
-        // --- Admin Password Security ---
         function openPassModal(url) {
             targetAdminUrl = url;
             document.getElementById('passModalOverlay').style.display = 'flex';
             document.getElementById('adminPassInput').value = '';
             document.getElementById('adminPassInput').focus();
-            toggleSidebar(); // close sidebar so modal is clear
+            toggleSidebar();
         }
 
-        function closePassModal() {
-            document.getElementById('passModalOverlay').style.display = 'none';
-        }
+        function closePassModal() { document.getElementById('passModalOverlay').style.display = 'none'; }
 
         function verifyAdminPass() {
-            const pass = document.getElementById('adminPassInput').value;
-            if (pass === "121345") {
+            if (document.getElementById('adminPassInput').value === "121345") {
                 sessionStorage.setItem('mvx_admin_token', 'SECURE_AUTHORIZED');
                 window.location.href = targetAdminUrl;
             } else {
                 showMessage("Incorrect Access Code!", "error");
-                document.getElementById('adminPassInput').value = '';
             }
         }
 
-        document.getElementById('adminPassInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') verifyAdminPass();
-        });
-
-        // --- Tabs & Categories ---
         function setAccessType(type) {
             currentAccess = type;
             currentCategory = "All";
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`.tab-btn[data-type="${type}"]`).classList.add('active');
-            
-            document.getElementById('subCategories').style.display = 'flex';
-            document.querySelectorAll('.cat-pill').forEach(btn => btn.classList.remove('active'));
-            document.querySelector('.cat-pill').classList.add('active');
-            filterAndRender();
+            setCategory('All');
         }
 
         function setCategory(cat) {
             currentCategory = cat;
             document.querySelectorAll('.cat-pill').forEach(btn => {
                 btn.classList.remove('active');
-                if(btn.innerText.trim() === cat || (cat === 'Other Game' && btn.innerText.trim() === 'Others')) {
-                    btn.classList.add('active');
-                }
+                if(btn.innerText.trim() === cat || (cat === 'Other Game' && btn.innerText.trim() === 'Others')) btn.classList.add('active');
             });
             filterAndRender();
         }
@@ -343,62 +282,48 @@
             filterAndRender();
         }
 
-        function goToDetails(appId) {
-            window.location.href = `details.html?id=${appId}`;
-        }
+        function goToDetails(appId) { window.location.href = `details.html?id=${appId}`; }
 
-        // --- Firebase Fetch & Render ---
         database.ref(DB_PATH).on('value', (snap) => {
             const data = snap.val();
             if(!data) {
-                document.getElementById('feedContainer').innerHTML = `<div class="empty-state"><i class="fas fa-box-open"></i><h3>No Apps Available</h3></div>`;
+                document.getElementById('feedContainer').innerHTML = `<div class="empty-state"><h3>No Apps Available</h3></div>`;
                 return;
             }
-
-            allApps = Object.entries(data)
-                .map(([key, val]) => ({ id: key, ...val, isHidden: val.isHidden || false }))
-                .filter(app => !app.isHidden)
-                .reverse();
+            allApps = Object.entries(data).map(([key, val]) => ({ id: key, ...val })).filter(app => !app.isHidden).reverse();
             filterAndRender();
         });
 
         function filterAndRender() {
             const feed = document.getElementById('feedContainer');
-            feed.innerHTML = '';
-
             let filtered = allApps.filter(app => app.accessType === currentAccess);
             if(currentCategory !== "All") filtered = filtered.filter(app => app.gameCategory === currentCategory);
             if(searchQuery) filtered = filtered.filter(app => app.appName.toLowerCase().includes(searchQuery));
 
             if(filtered.length === 0) {
-                feed.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><h3>No Results Found</h3></div>`;
+                feed.innerHTML = `<div class="empty-state"><h3>No Results Found</h3></div>`;
                 return;
             }
 
+            let htmlContent = '';
             filtered.forEach(app => {
-                const bannerSrc = app.bannerBase64 || 'https://via.placeholder.com/800x450/1a1f2c/00e6b8?text=NO+BANNER';
-                const logoSrc = app.logoBase64 || 'https://cdn-icons-png.flaticon.com/512/564/564619.png';
-                
-                feed.innerHTML += `
+                htmlContent += `
                     <div class="yt-card" onclick="goToDetails('${app.id}')">
                         <div class="yt-banner-wrapper">
                             <span class="type-badge ${app.accessType}">${app.accessType}</span>
-                            <img src="${bannerSrc}" class="yt-banner" loading="lazy">
+                            <img src="${app.bannerBase64}" class="yt-banner" loading="lazy">
                         </div>
                         <div class="yt-info">
-                            <img src="${logoSrc}" class="yt-logo" loading="lazy">
+                            <img src="${app.logoBase64}" class="yt-logo" loading="lazy">
                             <div class="yt-text">
                                 <h3 class="yt-title">${app.appName}</h3>
-                                <div class="yt-meta">
-                                    ${app.gameCategory} • ${app.version || 'v1.0'} • ${app.size || 'N/A'}
-                                </div>
+                                <div class="yt-meta">${app.gameCategory} • ${app.version || 'v1.0'} • ${app.size || 'N/A'}</div>
                             </div>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             });
+            feed.innerHTML = htmlContent;
         }
-        
         document.getElementById('subCategories').style.display = 'flex';
     </script>
 </body>

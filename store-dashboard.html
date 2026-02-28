@@ -11,7 +11,7 @@
     
     <style>
         /* ==========================================================================
-           MVX STORE ADMIN DASHBOARD V4.0 (FINAL POLISHED)
+           MVX STORE ADMIN DASHBOARD V4.0 (FULL & CLEAN)
            ========================================================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; }
         
@@ -39,7 +39,6 @@
         
         .card-title { font-family: var(--font-head); color: var(--primary); margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; width: 100%; }
         
-        /* Edit Title Fix */
         #formTitleText { flex: 1; min-width: 0; word-break: break-word; line-height: 1.4; display: block; }
 
         .form-grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-bottom: 15px; width: 100%; }
@@ -51,6 +50,10 @@
         textarea { height: auto; min-height: 100px; padding: 15px; resize: vertical; }
         input:focus, select:focus, textarea:focus { border-color: var(--primary); }
         ::placeholder { color: #64748b; opacity: 1; }
+
+        /* Upload Method Selector */
+        .method-selector { background: var(--primary-dim); border: 1px solid var(--primary); padding: 15px; border-radius: 12px; margin-bottom: 20px; display: flex; align-items: center; gap: 15px; }
+        .method-selector select { background: var(--bg-void); border-color: var(--primary); width: auto; font-weight: bold; color: var(--primary); }
 
         .img-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; width: 100%; }
         .img-upload-box { background: var(--bg-input); border: 2px dashed #333; border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; height: 150px; display: flex; flex-direction: column; justify-content: center; }
@@ -76,7 +79,6 @@
         th { background: rgba(0,0,0,0.5); color: var(--primary); font-family: var(--font-head); font-size: 0.9rem; }
         td { font-size: 0.95rem; }
         
-        /* App Title & Logo Wrapper for List */
         .app-title-wrapper { display: flex; align-items: center; gap: 10px; max-width: 250px; }
         .app-title-wrapper img { width: 35px; height: 35px; border-radius: 8px; object-fit: cover; flex-shrink: 0; border: 1px solid #333; background: var(--bg-card); }
         .app-title-text { font-weight: bold; color: var(--primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; width: 100%; }
@@ -96,37 +98,23 @@
         .toast { background: var(--bg-input); border-left: 4px solid var(--primary); padding: 15px 20px; margin-bottom: 10px; border-radius: 8px; display: flex; gap: 10px; align-items: center; color: #fff; animation: slideIn 0.3s; }
         @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
 
-        /* ==========================================================================
-           MOBILE RESPONSIVE (Strict Layout Fixes)
-           ========================================================================== */
         @media (max-width: 768px) {
             .navbar { padding: 10px 15px; }
             .brand { font-size: 1.1rem; }
             .nav-btns button { padding: 6px 10px; font-size: 0.8rem; margin-right: 5px !important; }
             .container { margin: 15px auto; padding: 0 10px; gap: 20px; }
             .card { padding: 15px; border-radius: 12px; }
-            
             .form-grid-2, .form-grid-3, .img-grid { grid-template-columns: 1fr; }
-            
             .extra-link-row { display: flex; flex-direction: column; gap: 8px; background: rgba(255,255,255,0.02); padding: 10px; border-radius: 8px; border: 1px solid #333; }
-            .extra-link-row button { width: 100%; height: 40px; margin-top: 5px; }
-            .btn-submit { height: 50px; font-size: 1.1rem; }
-            
             .card-title { font-size: 1.1rem; flex-direction: column; align-items: flex-start; gap: 10px; }
-            #cancelEditBtn { width: 100%; padding: 12px; font-size: 1rem; font-weight: bold; }
-
-            .table-responsive { border: none; background: transparent; overflow: hidden; }
+            #cancelEditBtn { width: 100%; padding: 12px; font-size: 1rem; }
             table, thead, tbody, tr, td { display: block; width: 100%; }
             thead { display: none; }
             tr { background: rgba(255,255,255,0.03); border: 1px solid #333; border-radius: 12px; margin-bottom: 15px; padding: 15px; display: flex; flex-direction: column; gap: 8px; }
             td { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(255,255,255,0.1); padding: 8px 0; white-space: normal; text-align: right; font-size: 0.9rem; }
-            td:last-child { border-bottom: none; padding-bottom: 0; }
-            
-            td::before { content: attr(data-label); color: var(--text-muted); font-family: var(--font-head); font-size: 0.85rem; font-weight: bold; text-align: left; padding-right: 15px; flex-shrink: 0; }
-            .action-btns { justify-content: flex-end; width: auto; }
-
-            /* Mobile Specific Logo & Title Layout */
-            .app-title-wrapper { justify-content: flex-end; width: 100%; max-width: 100%; }
+            td::before { content: attr(data-label); color: var(--text-muted); font-family: var(--font-head); font-size: 0.85rem; font-weight: bold; text-align: left; flex-shrink: 0; }
+            .action-btns { justify-content: flex-end; }
+            .app-title-wrapper { justify-content: flex-end; }
             .app-title-text { max-width: 140px; text-align: right; }
         }
     </style>
@@ -150,6 +138,15 @@
                 <span id="formTitleText"><i class="fas fa-upload"></i> UPLOAD NEW APP</span>
                 <button id="cancelEditBtn" style="display:none; background:var(--danger); color:#fff; border:none; padding:8px 15px; border-radius:8px; cursor:pointer;" onclick="cancelEdit()"><i class="fas fa-times"></i> Cancel Edit</button>
             </h2>
+
+            <div class="method-selector">
+                <i class="fas fa-tools"></i>
+                <label style="margin-bottom:0; color:var(--primary);">Upload Method:</label>
+                <select id="uploadMethod">
+                    <option value="imgbb">ImgBB (URL Method - Fast)</option>
+                    <option value="base64">Base64 (Old Method - Slow)</option>
+                </select>
+            </div>
             
             <form id="uploadForm" onsubmit="submitApp(event)">
                 <input type="hidden" id="editAppId" value="">
@@ -190,15 +187,15 @@
                     </div>
                 </div>
 
-                <h3 style="margin: 20px 0 10px; color: var(--primary); font-size: 1rem;">MEDIA UPLOADS (BASE64)</h3>
+                <h3 style="margin: 20px 0 10px; color: var(--primary); font-size: 1rem;">MEDIA UPLOADS</h3>
                 <div class="img-grid">
                     <div class="form-group">
                         <label>Thumbnail / Banner (16:9) *</label>
                         <div class="img-upload-box">
                             <div class="placeholder" id="bannerText"><i class="fas fa-image fa-2x"></i><br>Select Banner</div>
                             <img id="bannerPreview">
-                            <input type="file" accept="image/*" id="bannerInput" onchange="convertToBase64(this, 'bannerPreview', 'bannerText', 'bannerBase64')">
-                            <input type="hidden" id="bannerBase64" required>
+                            <input type="file" accept="image/*" id="bannerInput" onchange="processImage(this, 'bannerPreview', 'bannerText', 'bannerValue')">
+                            <input type="hidden" id="bannerValue" required>
                         </div>
                     </div>
                     <div class="form-group">
@@ -206,8 +203,8 @@
                         <div class="img-upload-box">
                             <div class="placeholder" id="logoText"><i class="fas fa-icons fa-2x"></i><br>Select Logo</div>
                             <img id="logoPreview">
-                            <input type="file" accept="image/*" id="logoInput" onchange="convertToBase64(this, 'logoPreview', 'logoText', 'logoBase64')">
-                            <input type="hidden" id="logoBase64" required>
+                            <input type="file" accept="image/*" id="logoInput" onchange="processImage(this, 'logoPreview', 'logoText', 'logoValue')">
+                            <input type="hidden" id="logoValue" required>
                         </div>
                     </div>
                 </div>
@@ -216,14 +213,14 @@
                     <label>Preview Screenshots (Max 5 Images)</label>
                     <div class="img-upload-box" style="height: auto; padding: 10px;">
                         <span style="color: var(--text-muted);"><i class="fas fa-images"></i> Click to add screenshots</span>
-                        <input type="file" accept="image/*" multiple onchange="handleMultipleScreenshots(this)">
+                        <input type="file" accept="image/*" multiple onchange="processMultipleImages(this)">
                     </div>
                     <div class="preview-list" id="screenshotContainer"></div>
                 </div>
 
                 <h3 style="margin: 20px 0 10px; color: var(--primary); font-size: 1rem;">DOWNLOAD & SECURITY</h3>
                 <div class="form-group" style="margin-bottom: 15px;">
-                    <label>Direct Download Link (Mediafire/Drive) *</label>
+                    <label>Direct Download Link *</label>
                     <input type="url" id="downloadUrl" required placeholder="Paste Download Link Here">
                 </div>
 
@@ -239,14 +236,14 @@
                 </div>
 
                 <div class="form-group" style="margin-bottom: 15px;">
-                    <label>Extra Links (Telegram, YouTube, etc.)</label>
+                    <label>Extra Links</label>
                     <div id="extraLinksContainer"></div>
                     <button type="button" class="btn-add-link" onclick="addExtraLink()"><i class="fas fa-plus"></i> Add Extra Link</button>
                 </div>
 
                 <div class="form-group">
                     <label>Description</label>
-                    <textarea id="description" placeholder="Write app features, mod menus, installation guide..."></textarea>
+                    <textarea id="description" placeholder="Write app features..."></textarea>
                 </div>
 
                 <button type="submit" class="btn-submit" id="submitBtn"><i class="fas fa-cloud-upload-alt"></i> PUBLISH TO STORE</button>
@@ -255,7 +252,6 @@
 
         <div class="card">
             <h2 class="card-title"><i class="fas fa-server"></i> MANAGE UPLOADED APPS</h2>
-            
             <div class="table-responsive">
                 <table>
                     <thead>
@@ -273,19 +269,16 @@
                 </table>
             </div>
         </div>
-
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
-        // Security Check
         if (sessionStorage.getItem('mvx_admin_token') !== 'SECURE_AUTHORIZED') {
             window.location.href = 'admin.html';
         }
 
-        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyAS3UXXrio_-c9uPbHwpDuTVrP-p8d903w",
             authDomain: "white-2k-17-v4.firebaseapp.com",
@@ -299,6 +292,7 @@
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const database = firebase.database();
         const DB_PATH = "MVX_VIP_SERVER_V5";
+        const IMGBB_API_KEY = "820eb9aa6a57f863045a52c1929efc9c";
 
         let screenshotsArray = [];
         let allAppsData = {};
@@ -318,259 +312,215 @@
             window.location.href = 'admin.html';
         }
 
-        // --- Fetch & Display Apps ---
+        // --- Load Apps ---
         function loadApps() {
             database.ref(DB_PATH).on('value', snap => {
                 allAppsData = snap.val() || {};
                 const tbody = document.getElementById('appTableBody');
                 tbody.innerHTML = '';
-
                 const keys = Object.keys(allAppsData).reverse();
                 if(keys.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan=\"5\" style=\"text-align:center; color:var(--text-muted);\">No apps uploaded yet.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No apps uploaded yet.</td></tr>`;
                     return;
                 }
-
+                let tableHTML = '';
                 keys.forEach(id => {
                     const app = allAppsData[id];
                     const isHidden = app.isHidden || false;
-                    const statusBadge = isHidden 
-                        ? `<span class="status-badge status-hidden">Hidden</span>` 
-                        : `<span class="status-badge status-active">Active</span>`;
-                    const hideIcon = isHidden ? "fa-eye" : "fa-eye-slash";
-                    const hideTitle = isHidden ? "Unhide App" : "Hide App";
-                    
-                    // Logo Setup with fallback
-                    const logoSrc = app.logoBase64 || 'https://cdn-icons-png.flaticon.com/512/564/564619.png';
-
-                    tbody.innerHTML += `
+                    tableHTML += `
                         <tr>
                             <td data-label="App Name">
                                 <div class="app-title-wrapper">
-                                    <img src="${logoSrc}" alt="Logo">
-                                    <span class="app-title-text" title="${app.appName}">${app.appName}</span>
+                                    <img src="${app.logoBase64}" alt="Logo">
+                                    <span class="app-title-text">${app.appName}</span>
                                 </div>
                             </td>
                             <td data-label="Category">${app.gameCategory}</td>
                             <td data-label="Type">${app.accessType}</td>
-                            <td data-label="Status">${statusBadge}</td>
+                            <td data-label="Status">
+                                <span class="status-badge ${isHidden ? 'status-hidden' : 'status-active'}">${isHidden ? 'Hidden' : 'Active'}</span>
+                            </td>
                             <td data-label="Actions">
                                 <div class="action-btns">
-                                    <button type="button" class="act-btn act-edit" onclick="loadEditData('${id}')" title="Edit"><i class="fas fa-edit"></i></button>
-                                    <button type="button" class="act-btn act-hide" onclick="toggleHide('${id}', ${isHidden})" title="${hideTitle}"><i class="fas ${hideIcon}"></i></button>
-                                    <button type="button" class="act-btn act-del" onclick="deleteApp('${id}')" title="Delete"><i class="fas fa-trash"></i></button>
+                                    <button class="act-btn act-edit" onclick="loadEditData('${id}')"><i class="fas fa-edit"></i></button>
+                                    <button class="act-btn act-hide" onclick="toggleHide('${id}', ${isHidden})"><i class="fas ${isHidden ? 'fa-eye' : 'fa-eye-slash'}"></i></button>
+                                    <button class="act-btn act-del" onclick="deleteApp('${id}')"><i class="fas fa-trash"></i></button>
                                 </div>
                             </td>
-                        </tr>
-                    `;
+                        </tr>`;
                 });
+                tbody.innerHTML = tableHTML;
             });
         }
         loadApps();
 
-        // --- Image Convert Logic ---
-        function convertToBase64(input, previewId, textId, hiddenInputId) {
+        // --- Multi-Method Image Processor ---
+        async function processImage(input, previewId, textId, hiddenInputId) {
             const file = input.files[0];
-            if (file) {
+            if (!file) return;
+
+            const method = document.getElementById('uploadMethod').value;
+            const textEl = document.getElementById(textId);
+            const previewEl = document.getElementById(previewId);
+            const hiddenEl = document.getElementById(hiddenInputId);
+
+            textEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+            if (method === 'imgbb') {
+                const formData = new FormData();
+                formData.append('image', file);
+                try {
+                    const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
+                    const data = await res.json();
+                    if (data.success) {
+                        hiddenEl.value = data.data.url;
+                        previewEl.src = data.data.url;
+                        previewEl.style.display = 'block';
+                        textEl.style.display = 'none';
+                    }
+                } catch (e) { showToast('ImgBB Upload Failed!', 'error'); }
+            } else {
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    const base64String = e.target.result;
-                    document.getElementById(previewId).src = base64String;
-                    document.getElementById(previewId).style.display = 'block';
-                    document.getElementById(textId).style.display = 'none';
-                    document.getElementById(hiddenInputId).value = base64String;
+                reader.onload = (e) => {
+                    hiddenEl.value = e.target.result;
+                    previewEl.src = e.target.result;
+                    previewEl.style.display = 'block';
+                    textEl.style.display = 'none';
                 };
                 reader.readAsDataURL(file);
             }
+            textEl.innerHTML = '<i class="fas fa-image fa-2x"></i><br>Select Image';
         }
 
-        function handleMultipleScreenshots(input) {
+        async function processMultipleImages(input) {
             const files = input.files;
-            if (screenshotsArray.length + files.length > 5) {
-                showToast("Maximum 5 screenshots allowed!", "error");
-                return;
+            if (screenshotsArray.length + files.length > 5) return showToast("Max 5 screenshots!", "error");
+            const method = document.getElementById('uploadMethod').value;
+
+            for (let file of files) {
+                if (method === 'imgbb') {
+                    const formData = new FormData();
+                    formData.append('image', file);
+                    try {
+                        const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
+                        const data = await res.json();
+                        if (data.success) screenshotsArray.push(data.data.url);
+                    } catch (e) {}
+                } else {
+                    const reader = new FileReader();
+                    const b64 = await new Promise(r => { reader.onload = e => r(e.target.result); reader.readAsDataURL(file); });
+                    screenshotsArray.push(b64);
+                }
             }
-            Array.from(files).forEach(file => {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    screenshotsArray.push(e.target.result);
-                    renderScreenshots();
-                };
-                reader.readAsDataURL(file);
-            });
+            renderScreenshots();
             input.value = '';
         }
 
         function renderScreenshots() {
             const container = document.getElementById('screenshotContainer');
-            container.innerHTML = '';
-            screenshotsArray.forEach((b64, index) => {
-                container.innerHTML += `
-                    <div class="preview-item">
-                        <img src="${b64}">
-                        <button type="button" class="remove-btn" onclick="removeScreenshot(${index})">×</button>
-                    </div>
-                `;
-            });
+            container.innerHTML = screenshotsArray.map((src, i) => `
+                <div class="preview-item">
+                    <img src="${src}">
+                    <button type="button" class="remove-btn" onclick="removeScreenshot(${i})">×</button>
+                </div>`).join('');
         }
 
-        function removeScreenshot(index) {
-            screenshotsArray.splice(index, 1);
-            renderScreenshots();
-        }
+        function removeScreenshot(i) { screenshotsArray.splice(i, 1); renderScreenshots(); }
 
-        function addExtraLink(title='', url='') {
-            const container = document.getElementById('extraLinksContainer');
+        function addExtraLink(t='', u='') {
             const div = document.createElement('div');
             div.className = 'extra-link-row';
             div.innerHTML = `
-                <input type="text" placeholder="Link Title" class="ex-title" value="${title}" required>
-                <input type="url" placeholder="Enter URL Link" class="ex-url" value="${url}" required>
-                <button type="button" onclick="this.parentElement.remove()" style="background:var(--danger); border:none; color:#fff; border-radius:8px; cursor:pointer;"><i class="fas fa-trash"></i></button>
-            `;
-            container.appendChild(div);
+                <input type="text" placeholder="Title" class="ex-title" value="${t}" required>
+                <input type="url" placeholder="URL" class="ex-url" value="${u}" required>
+                <button type="button" onclick="this.parentElement.remove()" style="background:var(--danger); border:none; color:#fff; padding:5px 10px; border-radius:5px;"><i class="fas fa-trash"></i></button>`;
+            document.getElementById('extraLinksContainer').appendChild(div);
         }
 
-        // --- MANAGE APP ACTIONS ---
-        function toggleHide(id, currentStatus) {
-            database.ref(`${DB_PATH}/${id}/isHidden`).set(!currentStatus)
-                .then(() => showToast(`App ${!currentStatus ? 'Hidden' : 'Visible'} Successfully!`))
-                .catch(err => showToast("Error: " + err.message, "error"));
-        }
+        function toggleHide(id, status) { database.ref(`${DB_PATH}/${id}/isHidden`).set(!status); }
+        function deleteApp(id) { if(confirm("Delete App?")) database.ref(`${DB_PATH}/${id}`).remove(); }
 
-        function deleteApp(id) {
-            if(confirm("Are you sure you want to permanently delete this app?")) {
-                database.ref(`${DB_PATH}/${id}`).remove()
-                    .then(() => showToast("App Deleted Successfully!"))
-                    .catch(err => showToast("Error: " + err.message, "error"));
-            }
-        }
-
-        // --- EDIT LOGIC ---
         function loadEditData(id) {
             const app = allAppsData[id];
-            if(!app) return;
-
             document.getElementById('editAppId').value = id;
-            document.getElementById('formTitleText').innerHTML = `<i class="fas fa-edit"></i> EDITING: ${app.appName}`;
-            document.getElementById('submitBtn').innerHTML = `<i class="fas fa-save"></i> UPDATE APP DATA`;
-            document.getElementById('cancelEditBtn').style.display = 'inline-block';
-
-            // Populate Text Fields
+            document.getElementById('formTitleText').innerText = "EDITING: " + app.appName;
+            document.getElementById('cancelEditBtn').style.display = 'block';
             document.getElementById('appName').value = app.appName;
-            document.getElementById('version').value = app.version || '';
-            document.getElementById('size').value = app.size || '';
             document.getElementById('category').value = app.gameCategory;
             document.getElementById('accessType').value = app.accessType;
+            document.getElementById('version').value = app.version || '';
+            document.getElementById('size').value = app.size || '';
             document.getElementById('downloadUrl').value = app.downloadUrl;
             document.getElementById('password').value = app.password || '';
             document.getElementById('videoUrl').value = app.passwordVideoUrl || '';
             document.getElementById('description').value = app.description || '';
-
-            // Populate Banner
-            document.getElementById('bannerBase64').value = app.bannerBase64;
+            
+            document.getElementById('bannerValue').value = app.bannerBase64;
             document.getElementById('bannerPreview').src = app.bannerBase64;
             document.getElementById('bannerPreview').style.display = 'block';
             document.getElementById('bannerText').style.display = 'none';
-            document.getElementById('bannerInput').removeAttribute('required');
 
-            // Populate Logo
-            document.getElementById('logoBase64').value = app.logoBase64;
+            document.getElementById('logoValue').value = app.logoBase64;
             document.getElementById('logoPreview').src = app.logoBase64;
             document.getElementById('logoPreview').style.display = 'block';
             document.getElementById('logoText').style.display = 'none';
-            document.getElementById('logoInput').removeAttribute('required');
 
-            // Populate Screenshots
-            screenshotsArray = app.screenshots ? [...app.screenshots] : [];
+            screenshotsArray = app.screenshots || [];
             renderScreenshots();
-
-            // Populate Extra Links
             document.getElementById('extraLinksContainer').innerHTML = '';
-            if(app.extraLinks) {
-                app.extraLinks.forEach(link => addExtraLink(link.title, link.url));
-            }
-
-            // Scroll to top
+            if(app.extraLinks) app.extraLinks.forEach(l => addExtraLink(l.title, l.url));
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function cancelEdit() {
             document.getElementById('uploadForm').reset();
             document.getElementById('editAppId').value = '';
-            document.getElementById('formTitleText').innerHTML = `<i class="fas fa-upload"></i> UPLOAD NEW APP`;
-            document.getElementById('submitBtn').innerHTML = `<i class="fas fa-cloud-upload-alt"></i> PUBLISH TO STORE`;
+            document.getElementById('formTitleText').innerText = "UPLOAD NEW APP";
             document.getElementById('cancelEditBtn').style.display = 'none';
-
-            // Reset Images
             document.getElementById('bannerPreview').style.display = 'none';
             document.getElementById('bannerText').style.display = 'block';
-            document.getElementById('bannerBase64').value = '';
-            document.getElementById('bannerInput').setAttribute('required', 'true');
-
             document.getElementById('logoPreview').style.display = 'none';
             document.getElementById('logoText').style.display = 'block';
-            document.getElementById('logoBase64').value = '';
-            document.getElementById('logoInput').setAttribute('required', 'true');
-
             screenshotsArray = [];
             renderScreenshots();
             document.getElementById('extraLinksContainer').innerHTML = '';
         }
 
-        // --- SUBMIT (Upload / Update) ---
         function submitApp(e) {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
-            const editId = document.getElementById('editAppId').value;
-            
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PROCESSING...';
+            const id = document.getElementById('editAppId').value;
             btn.disabled = true;
+            btn.innerText = "Processing...";
 
-            let extraLinks = [];
-            document.querySelectorAll('.extra-link-row').forEach(row => {
-                extraLinks.push({
-                    title: row.querySelector('.ex-title').value,
-                    url: row.querySelector('.ex-url').value
-                });
-            });
+            const links = [];
+            document.querySelectorAll('.extra-link-row').forEach(r => links.push({ title: r.querySelector('.ex-title').value, url: r.querySelector('.ex-url').value }));
 
-            const appData = {
+            const data = {
                 appName: document.getElementById('appName').value,
-                version: document.getElementById('version').value || 'v1.0',
-                size: document.getElementById('size').value || 'N/A',
                 gameCategory: document.getElementById('category').value,
                 accessType: document.getElementById('accessType').value,
-                bannerBase64: document.getElementById('bannerBase64').value,
-                logoBase64: document.getElementById('logoBase64').value,
+                version: document.getElementById('version').value,
+                size: document.getElementById('size').value,
+                bannerBase64: document.getElementById('bannerValue').value,
+                logoBase64: document.getElementById('logoValue').value,
                 screenshots: screenshotsArray,
                 downloadUrl: document.getElementById('downloadUrl').value,
                 password: document.getElementById('password').value,
                 passwordVideoUrl: document.getElementById('videoUrl').value,
                 description: document.getElementById('description').value,
-                extraLinks: extraLinks,
-                timestamp: Date.now()
+                extraLinks: links,
+                timestamp: Date.now(),
+                isHidden: id ? (allAppsData[id].isHidden || false) : false
             };
 
-            // Maintain hidden status if updating
-            if(editId && allAppsData[editId]) {
-                appData.isHidden = allAppsData[editId].isHidden || false;
-            } else {
-                appData.isHidden = false;
-            }
-
-            const dbRef = editId ? database.ref(`${DB_PATH}/${editId}`) : database.ref(DB_PATH).push();
-
-            dbRef.set(appData)
-                .then(() => {
-                    showToast(`App ${editId ? 'Updated' : 'Uploaded'} Successfully!`);
-                    setTimeout(() => { cancelEdit(); btn.disabled = false; }, 1500);
-                })
-                .catch(error => {
-                    showToast('Failed: ' + error.message, 'error');
-                    btn.innerHTML = editId ? '<i class="fas fa-save"></i> UPDATE APP DATA' : '<i class="fas fa-cloud-upload-alt"></i> PUBLISH TO STORE';
-                    btn.disabled = false;
-                });
+            const ref = id ? database.ref(`${DB_PATH}/${id}`) : database.ref(DB_PATH).push();
+            ref.set(data).then(() => {
+                showToast("Success!");
+                cancelEdit();
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> PUBLISH TO STORE';
+            });
         }
     </script>
 </body>
