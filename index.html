@@ -11,7 +11,7 @@
     
     <style>
         /* ==========================================================================
-           MVX STORE V4.0 - HOMEPAGE (SMART LOADER & CLEAN UI)
+           MVX STORE V4.0 - HOMEPAGE (REAL-TIME DATA LOADER)
            ========================================================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
@@ -72,17 +72,16 @@
         .search-container { padding: 15px 20px; display: none; }
         .search-box { width: 100%; background: var(--bg-input); border: var(--glass-border); border-radius: 8px; padding: 12px 15px; color: #fff; font-size: 1rem; outline: none; }
 
-        /* Smart Loading Animation Styles */
-        .loader-container { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; text-align: center; }
-        .loader-spinner { font-size: 3rem; color: var(--primary); margin-bottom: 20px; text-shadow: 0 0 20px var(--primary-dim); }
-        .loader-text { font-family: 'Orbitron', sans-serif; font-size: 1.2rem; color: var(--text-primary); margin-bottom: 15px; letter-spacing: 2px; }
-        .loader-text span { color: var(--primary); font-weight: bold; font-size: 1.4rem; }
-        .loader-bar-bg { width: 100%; max-width: 300px; height: 6px; background: var(--bg-input); border-radius: 10px; overflow: hidden; position: relative; border: 1px solid #333; }
-        .loader-bar-fill { height: 100%; width: 0%; background: var(--primary); border-radius: 10px; transition: width 0.2s ease; box-shadow: 0 0 10px var(--primary); }
+        /* Real-Time Loading Spinner */
+        .real-loader-container { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 20px; text-align: center; }
+        .real-loader-icon { font-size: 4rem; color: var(--primary); margin-bottom: 20px; filter: drop-shadow(0 0 15px var(--primary-dim)); }
+        .real-loader-text { font-family: 'Orbitron', sans-serif; font-size: 1.2rem; color: var(--primary); letter-spacing: 2px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
 
         /* Feed System */
         .feed-container { max-width: 800px; margin: 0 auto; padding: 20px; display: flex; flex-direction: column; gap: 30px; }
-        .yt-card { display: flex; flex-direction: column; cursor: pointer; transition: 0.3s; }
+        .yt-card { display: flex; flex-direction: column; cursor: pointer; transition: 0.3s; animation: slideUp 0.4s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .yt-card:hover { transform: translateY(-5px); }
         .yt-banner-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; border-radius: 12px; overflow: hidden; background: var(--bg-input); border: var(--glass-border); }
         .yt-banner { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
@@ -191,10 +190,9 @@
     </div>
 
     <main class="feed-container" id="feedContainer">
-        <div class="loader-container" id="loadingView">
-            <div class="loader-spinner"><i class="fas fa-circle-notch fa-spin"></i></div>
-            <div class="loader-text">NEXUS CONNECTING... <span id="loadingPercentage">0</span>%</div>
-            <div class="loader-bar-bg"><div class="loader-bar-fill" id="loaderBarFill"></div></div>
+        <div class="real-loader-container">
+            <i class="fas fa-satellite-dish fa-spin real-loader-icon"></i>
+            <div class="real-loader-text">FETCHING SECURE DATA...</div>
         </div>
     </main>
 
@@ -225,47 +223,6 @@
         let searchQuery = "";
         let targetAdminUrl = ""; 
         let currentLoggedUser = null;
-
-        // --- SMART LOADING ANIMATION LOGIC ---
-        let loadProgress = 0;
-        let loaderInterval;
-        let isDataArrived = false;
-
-        function startSmartLoader() {
-            const pctText = document.getElementById('loadingPercentage');
-            const barFill = document.getElementById('loaderBarFill');
-            if(!pctText || !barFill) return;
-
-            // এটি ডাটা আসার আগ পর্যন্ত ধীরে ধীরে ৮৫% পর্যন্ত বাড়বে
-            loaderInterval = setInterval(() => {
-                if(loadProgress < 85 && !isDataArrived) {
-                    loadProgress += Math.floor(Math.random() * 4) + 1;
-                    if(loadProgress > 85) loadProgress = 85;
-                    pctText.innerText = loadProgress;
-                    barFill.style.width = loadProgress + '%';
-                }
-            }, 150);
-        }
-
-        function finishSmartLoader(callback) {
-            isDataArrived = true;
-            clearInterval(loaderInterval);
-            const pctText = document.getElementById('loadingPercentage');
-            const barFill = document.getElementById('loaderBarFill');
-            
-            // ডাটা চলে এলে দ্রুত ১০০% হয়ে যাবে
-            let finishInterval = setInterval(() => {
-                if(loadProgress < 100) {
-                    loadProgress += 5;
-                    if(loadProgress > 100) loadProgress = 100;
-                    if(pctText) pctText.innerText = loadProgress;
-                    if(barFill) barFill.style.width = loadProgress + '%';
-                } else {
-                    clearInterval(finishInterval);
-                    setTimeout(() => { callback(); }, 300); // ১০০% হওয়ার পর হালকা ওয়েট করে ডাটা দেখাবে
-                }
-            }, 20);
-        }
 
         // --- CUSTOM TOAST ---
         function showMessage(msg, type='success') {
@@ -362,33 +319,22 @@
             window.location.href = `details.html?id=${appId}`;
         }
 
-        // --- FIREBASE FETCH & SMART RENDER ---
-        let initialLoad = true;
-        startSmartLoader();
-
+        // --- REAL TIME FIREBASE FETCH ---
         database.ref(DB_PATH).on('value', (snap) => {
             const data = snap.val();
+            const feed = document.getElementById('feedContainer');
             
-            const displayData = () => {
-                if(!data) {
-                    document.getElementById('feedContainer').innerHTML = `<div class="empty-state"><i class="fas fa-box-open"></i><h3>No Apps Available</h3></div>`;
-                    return;
-                }
-                allApps = Object.entries(data)
-                    .map(([key, val]) => ({ id: key, ...val, isHidden: val.isHidden || false }))
-                    .filter(app => !app.isHidden)
-                    .reverse();
-                filterAndRender();
-            };
-
-            if(initialLoad) {
-                // First load completes the animation up to 100% then renders data
-                finishSmartLoader(displayData);
-                initialLoad = false;
-            } else {
-                // Background updates happen instantly without reloading screen
-                displayData();
+            if(!data) {
+                feed.innerHTML = `<div class="empty-state"><i class="fas fa-box-open"></i><h3>No Apps Available</h3></div>`;
+                return;
             }
+            
+            allApps = Object.entries(data)
+                .map(([key, val]) => ({ id: key, ...val, isHidden: val.isHidden || false }))
+                .filter(app => !app.isHidden)
+                .reverse();
+                
+            filterAndRender();
         });
 
         function filterAndRender() {
@@ -403,7 +349,7 @@
                 return;
             }
 
-            let htmlContent = ''; // OPTIMIZED DOM RENDERING
+            let htmlContent = ''; // OPTIMIZED DOM RENDERING (No Hanging)
             filtered.forEach(app => {
                 const bannerSrc = app.bannerBase64 || 'https://via.placeholder.com/800x450/1a1f2c/00e6b8?text=NO+BANNER';
                 const logoSrc = app.logoBase64 || 'https://cdn-icons-png.flaticon.com/512/564/564619.png';
@@ -426,6 +372,7 @@
                     </div>
                 `;
             });
+            
             feed.innerHTML = htmlContent;
         }
         
