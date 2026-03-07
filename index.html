@@ -4,15 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#00e6b8">
-    <title>MVX STORE | Premium Mods & VIP Game Hacks v4.0</title>
+    <title>MVX STORE | Premium Mods & VIP Game Hacks</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
     <style>
-        /* ==========================================================================
-           MVX STORE V4.0 - HOMEPAGE (ORIGINAL UI + NEW LOGIC)
-           ========================================================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         :root {
@@ -72,7 +69,7 @@
         .search-container { padding: 15px 20px; display: none; }
         .search-box { width: 100%; background: var(--bg-input); border: var(--glass-border); border-radius: 8px; padding: 12px 15px; color: #fff; font-size: 1rem; outline: none; }
 
-        /* Feed System */
+        /* Feed System (App Cards) */
         .feed-container { max-width: 800px; margin: 0 auto; padding: 20px; display: flex; flex-direction: column; gap: 30px; }
         .yt-card { display: flex; flex-direction: column; cursor: pointer; transition: 0.3s; position: relative; }
         .yt-card:hover { transform: translateY(-5px); }
@@ -80,34 +77,31 @@
         .yt-banner { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
         .yt-card:hover .yt-banner { transform: scale(1.05); }
         
+        /* Opposing Badges */
         .type-badge { position: absolute; top: 10px; right: 10px; padding: 5px 12px; border-radius: 5px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; z-index: 2; }
         .type-badge.Free { background: var(--primary); color: #000; }
         .type-badge.Premium { background: var(--gold); color: #000; }
         .type-badge.Paid { background: var(--danger); color: #fff; }
 
-        /* New Update Badge styling */
-        .badge-update { position: absolute; top: 10px; left: 10px; background: var(--danger); color: #fff; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-family: var(--font-head); font-weight: bold; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 0 10px var(--danger-dim); z-index: 2; }
-        
-        /* Time Ago styling (small and clean) */
-        .time-ago-text { font-size: 0.8rem; color: #00e6b8; margin-top: 5px; display: inline-block; font-weight: 500; }
+        .badge-update { position: absolute; top: 10px; left: 10px; background: var(--danger); color: #fff; padding: 5px 12px; border-radius: 5px; font-size: 0.8rem; font-family: var(--font-head); font-weight: bold; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 0 10px var(--danger-dim); z-index: 2; }
 
         .yt-info { display: flex; gap: 15px; margin-top: 15px; align-items: flex-start; }
         .yt-logo { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; background: var(--bg-input); border: 1px solid #333; }
         .yt-text { flex: 1; }
         .yt-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 5px; color: var(--text-primary); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .yt-meta { font-size: 0.85rem; color: var(--text-muted); }
+        .yt-meta { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
 
         .empty-state { text-align: center; padding: 50px 20px; color: var(--text-muted); }
         .empty-state i { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; }
 
-        /* Load More Button */
+        /* Load More */
         .load-more-container { text-align: center; margin: 20px 0 50px; width: 100%; display: none; }
         .btn-load-more { background: var(--bg-input); border: 1px solid var(--primary); color: var(--primary); padding: 12px 30px; border-radius: 8px; font-family: var(--font-head); font-size: 1.1rem; cursor: pointer; transition: 0.3s; }
         .btn-load-more:hover { background: var(--primary-dim); box-shadow: 0 0 15px var(--primary-dim); }
 
-        /* Custom Password Modal for Admin */
+        /* Custom Admin Password Modal */
         .pass-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
-        .pass-modal { background: var(--bg-card); padding: 25px; border-radius: 15px; border: 1px solid var(--primary); text-align: center; width: 90%; max-width: 350px; box-shadow: 0 0 30px var(--primary-dim); animation: slideDown 0.3s ease; }
+        .pass-modal { background: var(--bg-card); padding: 25px; border-radius: 15px; border: 1px solid var(--primary); text-align: center; width: 90%; max-width: 350px; box-shadow: 0 0 30px var(--primary-dim); }
         .pass-modal h3 { color: var(--primary); font-family: var(--font-head); margin-bottom: 15px; }
         .pass-modal input { width: 100%; background: var(--bg-input); border: 1px solid #333; color: #fff; padding: 12px; border-radius: 8px; margin-bottom: 20px; outline: none; font-size: 1rem; text-align: center; letter-spacing: 3px; }
         .pass-modal input:focus { border-color: var(--primary); }
@@ -117,9 +111,8 @@
         .btn-verify { background: var(--primary); color: #000; }
         .btn-verify:hover { box-shadow: 0 0 15px var(--primary-dim); }
 
-        /* Custom Toast inside Page */
+        /* Local Toast */
         .local-toast { position: fixed; top: 80px; right: 20px; background: var(--bg-input); border-left: 4px solid var(--primary); padding: 15px 20px; border-radius: 8px; display: none; gap: 10px; align-items: center; color: #fff; z-index: 9999; box-shadow: 0 5px 15px rgba(0,0,0,0.5); font-weight: 500;}
-
     </style>
 </head>
 <body>
@@ -156,21 +149,14 @@
         <div class="sidebar-menu" style="margin-top: 30px;">
             <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 10px;">COMMUNITY</p>
             <a href="feedback.html"><i class="fas fa-comments" style="color: #00e6b8;"></i> Community Feedback</a>
-            <a href="#"><i class="fab fa-telegram" style="color: #0088cc;"></i> Telegram Channel</a>
-            <a href="#"><i class="fab fa-youtube" style="color: #ff0000;"></i> YouTube Channel</a>
 
             <hr style="border-color: #333; margin: 25px 0 15px;">
             
-            <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 10px;">FREE ADMIN USERS</p>
-            <a onclick="checkLoginAndGoFree('lua')"><i class="fas fa-key" style="color: #00e6b8;"></i> LUA ADMIN PANEL</a>
-            <a onclick="checkLoginAndGoFree('tm')"><i class="fas fa-mobile-alt" style="color: #00e6b8;"></i> TM ADMIN PANEL</a>
+            <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 10px;">ADMIN PANELS</p>
             
-            <hr style="border-color: #333; margin: 25px 0 15px;">
-
-            <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 10px;">WEBSITE ADMIN OWNER</p>
-            <a onclick="openPassModal('store-dashboard.html')"><i class="fas fa-satellite-dish" style="color: #ff003c;"></i> WEBSITE ADMIN PANEL</a>
-            <a onclick="openPassModal('lua-admin-owner.html?tab=lua')"><i class="fas fa-crown" style="color: #ffd700;"></i> LUA ADMIN PANEL</a>
-            <a onclick="openPassModal('lua-admin-owner.html?tab=tm')"><i class="fas fa-shield-alt" style="color: #ffd700;"></i> TM ADMIN PANEL</a>
+            <a onclick="checkLoginAndGoFree()"><i class="fas fa-users-cog" style="color: #00e6b8;"></i> FREE ADMIN USERS</a>
+            
+            <a onclick="openPassModal('owner-admin.html')"><i class="fas fa-crown" style="color: #ffd700;"></i> WEBSITE ADMIN OWNER</a>
         </div>
     </div>
 
@@ -235,10 +221,8 @@
         let searchQuery = "";
         let targetAdminUrl = ""; 
         let currentLoggedUser = null;
-        
-        let displayLimit = 10; // Load More Limit
+        let displayLimit = 10;
 
-        // Custom Toast Message
         function showMessage(msg, type='success') {
             const toast = document.getElementById('localToast');
             document.getElementById('localToastMsg').innerText = msg;
@@ -247,28 +231,23 @@
             setTimeout(() => { toast.style.display = 'none'; }, 3000);
         }
 
-        // Time Ago Function (আপনার কথামতো)
+        // Exact format you asked for (e.g., 1 days ago)
         function timeAgo(timestamp) {
             if (!timestamp) return "";
-            const seconds = Math.floor((new Date() - timestamp) / 1000);
+            const seconds = Math.floor((Date.now() - timestamp) / 1000);
             
-            let interval = seconds / 31536000;
-            if (interval > 1) return Math.floor(interval) + " years ago";
-            interval = seconds / 2592000;
-            if (interval > 1) return Math.floor(interval) + " months ago";
-            interval = seconds / 604800;
-            if (interval > 1) return Math.floor(interval) + " weeks ago";
-            interval = seconds / 86400;
-            if (interval > 1) return Math.floor(interval) + " days ago";
-            interval = seconds / 3600;
-            if (interval > 1) return Math.floor(interval) + " hours ago";
-            interval = seconds / 60;
-            if (interval > 1) return Math.floor(interval) + " mins ago";
+            let interval = seconds / 86400; // Days
+            if (interval >= 1) return Math.floor(interval) + " days ago";
+            
+            interval = seconds / 3600; // Hours
+            if (interval >= 1) return Math.floor(interval) + " hours ago";
+            
+            interval = seconds / 60; // Mins
+            if (interval >= 1) return Math.floor(interval) + " mins ago";
             
             return "Just now";
         }
 
-        // Auth State Tracker
         auth.onAuthStateChanged((user) => {
             currentLoggedUser = user;
             if(user) {
@@ -278,19 +257,16 @@
             }
         });
 
-        // Free Admin Panel Login Check
-        function checkLoginAndGoFree(tab) {
+        // Directs to free-admin.html
+        function checkLoginAndGoFree() {
             if(currentLoggedUser) {
-                window.location.href = 'lua-admin-free.html?tab=' + tab;
+                window.location.href = 'free-admin.html';
             } else {
-                showMessage('লগইন ছাড়া ফ্রি এডমিনে ঢোকা নিষেধ! দয়া করে লগইন করুন।', 'error');
-                setTimeout(() => {
-                    window.location.href = 'user-login.html?redirect=lua-admin-free.html?tab=' + tab;
-                }, 2000);
+                showMessage('লগইন ছাড়া ফ্রি এডমিনে ঢোকা নিষেধ!', 'error');
+                setTimeout(() => { window.location.href = 'user-login.html?redirect=free-admin.html'; }, 2000);
             }
         }
 
-        // UI & Sidebar
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
             document.getElementById('overlay').classList.toggle('active');
@@ -302,13 +278,13 @@
             if(box.style.display === 'block') document.getElementById('searchInput').focus();
         }
 
-        // Admin Password Security
+        // Owner Login Check
         function openPassModal(url) {
             targetAdminUrl = url;
             document.getElementById('passModalOverlay').style.display = 'flex';
             document.getElementById('adminPassInput').value = '';
             document.getElementById('adminPassInput').focus();
-            toggleSidebar(); // close sidebar so modal is clear
+            toggleSidebar(); 
         }
 
         function closePassModal() {
@@ -330,7 +306,6 @@
             if (e.key === 'Enter') verifyAdminPass();
         });
 
-        // Tabs & Categories
         function setAccessType(type) {
             currentAccess = type;
             currentCategory = "All";
@@ -371,7 +346,7 @@
             filterAndRender();
         }
 
-        // Firebase Fetch & Render
+        // Firebase Fetch
         database.ref(DB_PATH).on('value', (snap) => {
             const data = snap.val();
             if(!data) {
@@ -382,7 +357,7 @@
             allApps = Object.entries(data)
                 .map(([key, val]) => ({ id: key, ...val, isHidden: val.isHidden || false }))
                 .filter(app => !app.isHidden)
-                .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0)); // Sort by newest
+                .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0)); // Latest updated comes on top
             
             filterAndRender();
         });
@@ -403,15 +378,24 @@
             }
 
             const appsToShow = filtered.slice(0, displayLimit);
+            const now = Date.now();
+            const threeDaysInMs = 3 * 24 * 60 * 60 * 1000; // 3 Days
 
             let htmlContent = '';
             appsToShow.forEach(app => {
                 const bannerSrc = app.bannerBase64 || 'https://via.placeholder.com/800x450/1a1f2c/00e6b8?text=NO+BANNER';
                 const logoSrc = app.logoBase64 || 'https://cdn-icons-png.flaticon.com/512/564/564619.png';
                 
-                // New Update Badge & Time Logic (আপনার অরিজিনাল কার্ড ডিজাইনে হাত দেওয়া হয়নি)
-                const updateBadge = app.isUpdated ? `<div class="badge-update">LATEST UPDATE</div>` : '';
-                const timeString = app.timestamp ? `<br><span class="time-ago-text"><i class="far fa-clock"></i> Uploaded ${timeAgo(app.timestamp)}</span>` : '';
+                // Update Logic: Shows "UPDATE" badge only if marked updated AND within last 3 days
+                let updateBadge = '';
+                if (app.isUpdated && app.timestamp && (now - app.timestamp) <= threeDaysInMs) {
+                    updateBadge = `<div class="badge-update">UPDATE</div>`;
+                }
+
+                // Meta String exactly as requested: Category • Version • Size • Time Ago
+                const timeString = app.timestamp ? ` • ${timeAgo(app.timestamp)}` : '';
+                const sizeString = app.size ? ` • ${app.size}` : '';
+                const versionString = app.version || 'v1.0';
 
                 htmlContent += `
                     <div class="yt-card" onclick="goToDetails('${app.id}')">
@@ -425,8 +409,7 @@
                             <div class="yt-text">
                                 <h3 class="yt-title">${app.appName}</h3>
                                 <div class="yt-meta">
-                                    ${app.gameCategory} • ${app.version || 'v1.0'} • ${app.size || 'N/A'}
-                                    ${timeString}
+                                    ${app.gameCategory} • ${versionString}${sizeString}${timeString}
                                 </div>
                             </div>
                         </div>
