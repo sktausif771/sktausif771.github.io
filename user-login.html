@@ -4,163 +4,176 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#00e6b8">
-    <title>User Authentication | MVX STORE</title>
+    <title>User Authentication & Profile | MVX STORE</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
+    <link rel="stylesheet" href="style.css">
+    
     <style>
         /* ==========================================================================
-           MVX STORE - USER LOGIN & PROFILE PAGE (UPDATED)
+           MVX STORE - USER LOGIN & PROFILE PAGE (UPDATED WITH BASE64 UPLOAD)
            ========================================================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
-        :root {
-            --primary: #00e6b8; --primary-dim: rgba(0, 230, 184, 0.15);
-            --danger: #ff003c; --bg-void: #000000; --bg-card: #0c101a; --bg-input: #1a1f2c;
-            --text-primary: #ffffff; --text-muted: #9ca3af;
-            --glass-bg: rgba(8, 11, 18, 0.8); --glass-border: 1px solid rgba(0, 230, 184, 0.2);
-            --font-head: 'Rajdhani', sans-serif; --font-body: 'Space Grotesk', sans-serif;
+        body { 
+            background: var(--bg-void); color: var(--text-primary); 
+            font-family: var(--font-body); min-height: 100vh; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            overflow-x: hidden; position: relative;
         }
 
-        body { background: var(--bg-void); color: var(--text-primary); font-family: var(--font-body); min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
-
-        /* Background Effects */
-        .grid-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(0, 230, 184, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 230, 184, 0.03) 1px, transparent 1px); background-size: 50px 50px; z-index: -1; animation: gridShift 15s linear infinite; }
-        .glow-orb { position: absolute; width: 60vmax; height: 60vmax; border-radius: 50%; background: radial-gradient(circle at center, rgba(0, 230, 184, 0.1) 0%, transparent 70%); filter: blur(50px); z-index: -1; animation: orbFloat 10s ease-in-out infinite alternate; }
-        @keyframes gridShift { 0% { background-position: 0 0; } 100% { background-position: 50px 50px; } }
-        @keyframes orbFloat { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
-
-        /* Top Bar */
-        .top-bar { position: absolute; top: 0; left: 0; width: 100%; padding: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 10; }
-        .back-btn { background: var(--glass-bg); border: var(--glass-border); color: var(--text-primary); padding: 10px 20px; border-radius: 8px; text-decoration: none; font-family: var(--font-head); font-weight: 600; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
-        .back-btn:hover { background: var(--primary-dim); color: var(--primary); border-color: var(--primary); }
+        .grid-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(0, 230, 184, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 230, 184, 0.03) 1px, transparent 1px); background-size: 50px 50px; pointer-events: none; z-index: -1; }
+        .glow-orb { position: absolute; width: 50vmax; height: 50vmax; border-radius: 50%; background: radial-gradient(circle at center, rgba(0, 230, 184, 0.1) 0%, transparent 70%); filter: blur(50px); pointer-events: none; z-index: -1; }
 
         /* Auth Container */
-        .auth-container { width: 100%; max-width: 450px; padding: 30px; background: var(--glass-bg); backdrop-filter: blur(15px); border: var(--glass-border); border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); z-index: 5; text-align: center; position: relative; overflow: hidden; }
-        
-        .brand-logo { font-family: 'Orbitron', sans-serif; font-size: 2rem; color: var(--primary); margin-bottom: 5px; }
-        .subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 30px; }
+        .auth-container { 
+            width: 90%; max-width: 400px; 
+            background: var(--glass-bg); backdrop-filter: var(--glass-blur); 
+            border: var(--glass-border); padding: 30px 25px; 
+            border-radius: 20px; box-shadow: 0 0 30px rgba(0, 230, 184, 0.1); 
+            text-align: center; z-index: 10;
+            animation: fadeInGlobal 0.4s ease;
+        }
 
-        /* Forms */
-        .form-section { display: none; animation: fadeIn 0.4s ease; }
-        .form-section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .auth-logo { font-family: var(--font-head); font-size: 1.8rem; color: var(--primary); margin-bottom: 5px; }
+        .auth-subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 25px; }
 
-        .input-group { margin-bottom: 20px; text-align: left; position: relative; }
-        .input-group i { position: absolute; top: 50%; left: 15px; transform: translateY(-50%); color: var(--text-muted); }
-        .form-control { width: 100%; padding: 15px 15px 15px 45px; background: var(--bg-input); border: 1px solid #333; border-radius: 10px; color: #fff; font-family: var(--font-body); font-size: 1rem; outline: none; transition: 0.3s; }
+        /* Input Groups */
+        .input-group { position: relative; margin-bottom: 20px; }
+        .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1.1rem; }
+        .form-control { 
+            width: 100%; background: var(--bg-input); border: 1px solid #333; 
+            color: #fff; padding: 15px 15px 15px 45px; border-radius: 12px; 
+            font-size: 1rem; outline: none; transition: 0.3s; 
+        }
         .form-control:focus { border-color: var(--primary); box-shadow: 0 0 15px var(--primary-dim); }
 
         /* Buttons */
-        .btn { width: 100%; padding: 15px; border-radius: 10px; font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; border: none; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; }
-        .btn-primary { background: var(--primary); color: #000; }
-        .btn-primary:hover { box-shadow: 0 0 20px var(--primary-dim); transform: translateY(-2px); }
-        
-        .toggle-link { color: var(--primary); cursor: pointer; text-decoration: underline; font-weight: 600; }
+        .btn-auth { 
+            width: 100%; background: var(--primary); color: #000; 
+            padding: 15px; border: none; border-radius: 12px; 
+            font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; 
+            cursor: pointer; transition: 0.3s; margin-top: 10px; 
+        }
+        .btn-auth:hover { box-shadow: 0 0 20px var(--primary-dim); transform: translateY(-2px); }
 
-        /* Profile Section */
-        .profile-section { display: none; text-align: center; animation: fadeIn 0.4s ease; }
-        .profile-avatar { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--primary); padding: 5px; margin: 0 auto 20px; background: var(--bg-input); display: flex; align-items: center; justify-content: center; font-size: 3rem; color: var(--primary); }
-        .profile-name { font-family: var(--font-head); font-size: 1.8rem; font-weight: 700; margin-bottom: 5px; }
-        .profile-email { color: var(--primary); font-family: 'Share Tech Mono', monospace; font-size: 0.9rem; background: var(--primary-dim); padding: 5px 15px; border-radius: 100px; display: inline-block; margin-bottom: 30px; }
-        
-        .btn-danger { background: var(--bg-input); border: 1px solid var(--danger); color: var(--danger); }
-        .btn-danger:hover { background: var(--danger); color: #fff; box-shadow: 0 0 20px rgba(255,0,60,0.3); transform: translateY(-2px); }
+        .btn-google { 
+            width: 100%; background: #fff; color: #000; 
+            padding: 15px; border: none; border-radius: 12px; 
+            font-family: var(--font-body); font-weight: 600; font-size: 1rem; 
+            cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; 
+            margin-top: 15px; 
+        }
+        .btn-google:hover { background: #f1f1f1; transform: translateY(-2px); }
+        .btn-google img { width: 20px; }
 
-        /* Toast */
-        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; }
-        .toast { background: var(--bg-input); border-left: 4px solid var(--primary); padding: 15px 20px; margin-bottom: 10px; border-radius: 8px; display: flex; gap: 10px; align-items: center; animation: slideIn 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.5); font-weight: 500; }
-        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+        .auth-switch { margin-top: 20px; font-size: 0.9rem; color: var(--text-muted); }
+        .auth-switch span { color: var(--primary); cursor: pointer; font-weight: 600; text-decoration: underline; }
 
-        /* Loading Overlay */
-        .loading-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--glass-bg); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 20; border-radius: 20px; flex-direction: column; }
-        .loading-overlay i { font-size: 3rem; color: var(--primary); animation: spin 1s linear infinite; margin-bottom: 10px; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .divider { display: flex; align-items: center; margin: 20px 0; color: #555; font-size: 0.9rem; }
+        .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: #333; margin: 0 10px; }
+
+        .back-btn { position: absolute; top: 20px; left: 20px; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; text-decoration: none; z-index: 20; transition: 0.3s; }
+        .back-btn:hover { color: var(--primary); }
+
+        /* --- PROFILE VIEW SECTION --- */
+        .profile-header { position: relative; width: 100px; height: 100px; margin: 0 auto 20px; }
+        .profile-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary); background: var(--bg-input); }
+        .edit-img-btn { 
+            position: absolute; bottom: 0; right: 0; background: var(--primary); 
+            color: #000; border: none; width: 32px; height: 32px; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; cursor: pointer; 
+            font-size: 0.9rem; box-shadow: 0 2px 5px rgba(0,0,0,0.5); transition: 0.3s;
+        }
+        .edit-img-btn:hover { transform: scale(1.1); }
+
+        .profile-info { margin-bottom: 25px; }
+        .profile-info input { text-align: center; padding: 12px; margin-bottom: 10px; font-weight: bold; }
+        .profile-email { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; font-family: 'Share Tech Mono', monospace; }
+
+        .btn-logout { background: var(--danger); color: #fff; margin-top: 15px; }
+        .btn-logout:hover { box-shadow: 0 0 20px var(--danger-dim); }
+        .btn-save { background: var(--gold); color: #000; margin-top: 5px; display: none; }
+
+        /* Hidden Views */
+        #signupView, #profileView { display: none; }
     </style>
 </head>
 <body>
     <div class="grid-overlay"></div>
     <div class="glow-orb"></div>
-    <div class="toast-container" id="toastContainer"></div>
 
-    <div class="top-bar">
-        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> BACK TO STORE</a>
+    <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+
+    <div class="auth-container" id="loginView">
+        <div class="auth-logo">MVX SYSTEM</div>
+        <div class="auth-subtitle">Welcome Back, User!</div>
+        
+        <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="loginEmail" class="form-control" placeholder="Email Address">
+        </div>
+        <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="loginPass" class="form-control" placeholder="Password">
+        </div>
+        
+        <button class="btn-auth" onclick="loginUser()"><i class="fas fa-sign-in-alt"></i> LOGIN</button>
+        
+        <div class="divider">OR</div>
+        
+        <button class="btn-google" onclick="googleLogin()">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google"> Continue with Google
+        </button>
+        
+        <div class="auth-switch">Don't have an account? <span onclick="switchView('signupView')">Sign Up</span></div>
     </div>
 
-    <div class="auth-container">
-        <div class="loading-overlay" id="loadingOverlay">
-            <i class="fas fa-circle-notch"></i>
-            <p style="font-family: var(--font-head); font-weight: bold; margin-top: 10px;">Please wait...</p>
+    <div class="auth-container" id="signupView">
+        <div class="auth-logo">CREATE ACCOUNT</div>
+        <div class="auth-subtitle">Join the MVX Community</div>
+        
+        <div class="input-group">
+            <i class="fas fa-user"></i>
+            <input type="text" id="signupName" class="form-control" placeholder="Full Name">
         </div>
-
-        <div class="brand-logo">MVX SYSTEM</div>
-        <div class="subtitle">Secure Authentication Portal</div>
-
-        <div class="form-section active" id="loginForm">
-            <div class="input-group">
-                <i class="fas fa-envelope"></i>
-                <input type="email" id="loginEmail" class="form-control" placeholder="Email Address" autocomplete="off">
-            </div>
-            <div class="input-group">
-                <i class="fas fa-lock"></i>
-                <input type="password" id="loginPassword" class="form-control" placeholder="Password" autocomplete="off">
-            </div>
-            <button class="btn btn-primary" onclick="login()"><i class="fas fa-sign-in-alt"></i> SECURE LOGIN</button>
-            
-            <button class="btn" style="background: #db4437; color: white;" onclick="googleLogin()">
-                <i class="fab fa-google"></i> LOGIN WITH GOOGLE
-            </button>
-            
-            <p style="margin-top: 20px; color: var(--text-muted); font-size: 0.9rem;">
-                Don't have an account? <span class="toggle-link" onclick="toggleView('registerForm')">Create one</span>
-            </p>
+        <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="signupEmail" class="form-control" placeholder="Email Address">
         </div>
-
-        <div class="form-section" id="registerForm">
-            <div class="input-group">
-                <i class="fas fa-user"></i>
-                <input type="text" id="regName" class="form-control" placeholder="Full Name" autocomplete="off">
-            </div>
-            <div class="input-group">
-                <i class="fas fa-envelope"></i>
-                <input type="email" id="regEmail" class="form-control" placeholder="Email Address" autocomplete="off">
-            </div>
-            <div class="input-group">
-                <i class="fas fa-lock"></i>
-                <input type="password" id="regPassword" class="form-control" placeholder="Create Password (Min 6 characters)" autocomplete="off">
-            </div>
-            <button class="btn btn-primary" onclick="register()"><i class="fas fa-user-plus"></i> REGISTER ACCOUNT</button>
-            
-            <button class="btn" style="background: #db4437; color: white;" onclick="googleLogin()">
-                <i class="fab fa-google"></i> CONTINUE WITH GOOGLE
-            </button>
-            
-            <p style="margin-top: 20px; color: var(--text-muted); font-size: 0.9rem;">
-                Already registered? <span class="toggle-link" onclick="toggleView('loginForm')">Login here</span>
-            </p>
+        <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="signupPass" class="form-control" placeholder="Create Password">
         </div>
-
-        <div class="profile-section" id="profileSection">
-            <div class="profile-avatar"><i class="fas fa-user-astronaut"></i></div>
-            <h2 class="profile-name" id="userName">User Name</h2>
-            <div class="profile-email" id="userEmail">user@email.com</div>
-            
-            <button class="btn btn-primary" onclick="window.location.href='index.html'">
-                <i class="fas fa-store"></i> GO TO APP STORE
-            </button>
-            
-            <button class="btn" style="background: var(--bg-input); border: 1px solid var(--primary); color: var(--primary);" onclick="window.location.href='lua-admin-free.html'">
-                <i class="fas fa-key"></i> FREE LUA KEY GENERATOR
-            </button>
-
-            <button class="btn btn-danger" onclick="logout()" style="margin-top: 15px;">
-                <i class="fas fa-power-off"></i> LOGOUT SESSION
-            </button>
-        </div>
-
+        
+        <button class="btn-auth" onclick="signupUser()"><i class="fas fa-user-plus"></i> SIGN UP</button>
+        
+        <div class="auth-switch">Already have an account? <span onclick="switchView('loginView')">Login</span></div>
     </div>
 
+    <div class="auth-container" id="profileView">
+        <div class="profile-header">
+            <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" id="userProfileImg" class="profile-img" alt="Profile">
+            <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="handleProfileImageSelect(this)">
+            <button class="edit-img-btn" onclick="document.getElementById('imageInput').click()"><i class="fas fa-camera"></i></button>
+        </div>
+        
+        <div class="profile-info">
+            <div class="input-group">
+                <i class="fas fa-user-edit"></i>
+                <input type="text" id="profileNameInput" class="form-control" placeholder="Your Name" oninput="showSaveBtn()">
+            </div>
+            <div class="profile-email" id="userEmailDisplay">user@example.com</div>
+        </div>
+        
+        <button class="btn-auth btn-save" id="saveProfileBtn" onclick="saveProfileChanges()"><i class="fas fa-save"></i> SAVE CHANGES</button>
+        <button class="btn-auth" onclick="window.location.href='index.html'"><i class="fas fa-home"></i> GO TO STORE</button>
+        <button class="btn-auth btn-logout" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> LOGOUT</button>
+    </div>
+
+    <script src="main.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -170,6 +183,7 @@
         const firebaseConfig = {
             apiKey: "AIzaSyAS3UXXrio_-c9uPbHwpDuTVrP-p8d903w",
             authDomain: "white-2k-17-v4.firebaseapp.com",
+            databaseURL: "https://white-2k-17-v4-default-rtdb.firebaseio.com",
             projectId: "white-2k-17-v4",
             storageBucket: "white-2k-17-v4.firebasestorage.app",
             messagingSenderId: "180909174928",
@@ -178,147 +192,165 @@
         
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const auth = firebase.auth();
+        const database = firebase.database();
+        
+        let currentUserData = null;
+        let selectedBase64Image = null;
 
-        // UI Controls
-        function showToast(msg, type='success') {
-            const toastContainer = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = `toast`;
-            toast.style.borderLeftColor = type === 'error' ? 'var(--danger)' : 'var(--primary)';
-            toast.innerHTML = `<i class="fas fa-${type==='error'?'times':'check'}-circle" style="color:${type==='error'?'var(--danger)':'var(--primary)'}"></i> <span>${msg}</span>`;
-            toastContainer.appendChild(toast);
-            setTimeout(() => { toast.style.opacity = '0'; setTimeout(()=>toast.remove(), 300); }, 3000);
+        // View Switcher
+        function switchView(viewId) {
+            document.getElementById('loginView').style.display = 'none';
+            document.getElementById('signupView').style.display = 'none';
+            document.getElementById('profileView').style.display = 'none';
+            document.getElementById(viewId).style.display = 'block';
         }
 
-        function toggleView(viewId) {
-            document.getElementById('loginForm').classList.remove('active');
-            document.getElementById('registerForm').classList.remove('active');
-            document.getElementById('profileSection').style.display = 'none';
-            document.querySelector('.subtitle').style.display = 'block';
-            
-            if(viewId === 'profileSection') {
-                document.getElementById('profileSection').style.display = 'block';
-                document.querySelector('.subtitle').style.display = 'none';
-            } else {
-                document.getElementById(viewId).classList.add('active');
-            }
-        }
-
-        function showLoader(show) {
-            document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
-        }
-
-        // Auth State Listener
+        // Auth State Tracker
         auth.onAuthStateChanged((user) => {
-            showLoader(false);
             if (user) {
-                // NEW: ইমেইল ভেরিফাই করা আছে কি না চেক করা হচ্ছে
-                if (!user.emailVerified) {
-                    showToast('আপনার ইমেইল ভেরিফাই করা নেই! দয়া করে মেইল চেক করুন।', 'error');
-                    auth.signOut();
-                    toggleView('loginForm');
-                    return;
-                }
-
-                // User is logged in and verified
-                document.getElementById('userName').innerText = user.displayName || 'MVX User';
-                document.getElementById('userEmail').innerText = user.email;
-                toggleView('profileSection');
+                switchView('profileView');
+                loadUserProfile(user);
                 
-                // If they came from a redirect link, send them back
+                // Redirect check (from feedback or free admin)
                 const urlParams = new URLSearchParams(window.location.search);
-                const redirect = urlParams.get('redirect');
-                if(redirect) {
-                    window.location.href = redirect;
+                const redirectPath = urlParams.get('redirect');
+                if(redirectPath) {
+                    showGlobalToast('Login successful! Redirecting...', 'success');
+                    setTimeout(() => { window.location.href = redirectPath; }, 1500);
                 }
             } else {
-                // User is logged out
-                toggleView('loginForm');
+                switchView('loginView');
             }
         });
 
-        // Authentication Functions
-        function login() {
-            const email = document.getElementById('loginEmail').value;
-            const pass = document.getElementById('loginPassword').value;
-            if(!email || !pass) return showToast('Please enter email and password', 'error');
+        // --- LOGIN LOGIC ---
+        function loginUser() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const pass = document.getElementById('loginPass').value.trim();
+            if(!email || !pass) return showGlobalToast('Please enter email and password', 'warning');
             
-            showLoader(true);
+            showDarkLoader('Logging In');
             auth.signInWithEmailAndPassword(email, pass)
-                .then((userCredential) => {
-                    // ভেরিফিকেশন চেক onAuthStateChanged-এ করা আছে, তাই এখানে কিছু করতে হবে না
-                    showToast('Login Successful!');
-                })
-                .catch(err => {
-                    showLoader(false);
-                    showToast('লগইন ব্যর্থ হয়েছে: ইমেইল বা পাসওয়ার্ড ভুল।', 'error');
-                });
+                .then(() => { hideDarkLoader(); showGlobalToast('Welcome Back!', 'success'); })
+                .catch(err => { hideDarkLoader(); showGlobalToast(err.message, 'error'); });
         }
 
-        function register() {
-            const name = document.getElementById('regName').value;
-            const email = document.getElementById('regEmail').value;
-            const pass = document.getElementById('regPassword').value;
+        // --- SIGNUP LOGIC ---
+        function signupUser() {
+            const name = document.getElementById('signupName').value.trim();
+            const email = document.getElementById('signupEmail').value.trim();
+            const pass = document.getElementById('signupPass').value.trim();
             
-            if(!name || !email || !pass) return showToast('Please fill all fields', 'error');
-            if(pass.length < 6) return showToast('পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে!', 'error');
+            if(!name || !email || !pass) return showGlobalToast('All fields are required', 'warning');
             
-            showLoader(true);
+            showDarkLoader('Creating Account');
             auth.createUserWithEmailAndPassword(email, pass)
-                .then((result) => {
-                    return result.user.updateProfile({ displayName: name }).then(() => result.user);
-                })
-                .then((user) => {
-                    // NEW: একাউন্ট খোলার পর ভেরিফিকেশন মেইল পাঠানো হচ্ছে
-                    user.sendEmailVerification();
-                    
-                    showToast('একাউন্ট তৈরি হয়েছে! দয়া করে আপনার মেইল চেক করে ভেরিফাই করুন।');
-                    
-                    // Save user basic info to database
-                    firebase.database().ref('registered_users/' + user.uid).set({
+                .then((cred) => {
+                    // Save default profile to DB
+                    return database.ref('registered_users/' + cred.user.uid).set({
                         name: name,
                         email: email,
+                        profilePicBase64: "", // খালি থাকবে প্রথমে
                         joinedAt: Date.now()
                     });
-
-                    // NEW: লগআউট করে লগইন পেজে পাঠানো হচ্ছে, যাতে ভেরিফাই করে তারপর ঢুকতে পারে
-                    auth.signOut();
-                    setTimeout(() => toggleView('loginForm'), 2000);
                 })
-                .catch(err => {
-                    showLoader(false);
-                    if(err.code === 'auth/email-already-in-use') {
-                        showToast('এই ইমেইল দিয়ে আগে থেকেই অ্যাকাউন্ট খোলা আছে, দয়া করে লগইন করুন।', 'error');
-                        setTimeout(() => toggleView('loginForm'), 1500);
-                    } else {
-                        showToast(err.message, 'error');
-                    }
-                });
+                .then(() => { hideDarkLoader(); showGlobalToast('Account Created Successfully!', 'success'); })
+                .catch(err => { hideDarkLoader(); showGlobalToast(err.message, 'error'); });
         }
 
-        // NEW: GOOGLE LOGIN FUNCTION
+        // --- GOOGLE LOGIN ---
         function googleLogin() {
-            showLoader(true);
             const provider = new firebase.auth.GoogleAuthProvider();
+            showDarkLoader('Connecting to Google');
             auth.signInWithPopup(provider)
                 .then((result) => {
-                    showToast('Google Login Successful!');
-                    // Database-এ সেভ করা (যদি নতুন ইউজার হয়)
-                    firebase.database().ref('registered_users/' + result.user.uid).set({
-                        name: result.user.displayName,
-                        email: result.user.email,
-                        joinedAt: Date.now()
+                    // Check if exists in DB, if not add them
+                    database.ref('registered_users/' + result.user.uid).once('value').then(snap => {
+                        if(!snap.exists()) {
+                            database.ref('registered_users/' + result.user.uid).set({
+                                name: result.user.displayName,
+                                email: result.user.email,
+                                profilePicBase64: "", // We let them upload custom Base64 later
+                                joinedAt: Date.now()
+                            });
+                        }
                     });
+                    hideDarkLoader(); 
+                    showGlobalToast('Google Login Successful!', 'success');
                 })
-                .catch((error) => {
-                    showLoader(false);
-                    showToast('গুগল লগইন বাতিল হয়েছে বা সমস্যা হয়েছে।', 'error');
-                });
+                .catch(err => { hideDarkLoader(); showGlobalToast(err.message, 'error'); });
         }
 
-        function logout() {
-            showLoader(true);
-            auth.signOut().then(() => showToast('Logged out successfully'));
+        // --- PROFILE LOGIC (LOAD, EDIT, BASE64 UPLOAD) ---
+        function loadUserProfile(user) {
+            document.getElementById('userEmailDisplay').innerText = user.email;
+            
+            // Fetch custom name and profile pic from DB
+            database.ref('registered_users/' + user.uid).on('value', (snap) => {
+                if(snap.exists()) {
+                    const data = snap.val();
+                    currentUserData = data;
+                    document.getElementById('profileNameInput').value = data.name || user.displayName || 'MVX User';
+                    
+                    if(data.profilePicBase64 && data.profilePicBase64 !== "") {
+                        document.getElementById('userProfileImg').src = data.profilePicBase64;
+                    } else if(user.photoURL) {
+                        document.getElementById('userProfileImg').src = user.photoURL;
+                    }
+                }
+            });
+        }
+
+        // Image Selection -> Base64
+        function handleProfileImageSelect(input) {
+            const file = input.files[0];
+            if(file) {
+                if(file.size > 1.5 * 1024 * 1024) { // 1.5 MB Limit
+                    showGlobalToast("Image size must be less than 1.5MB!", "error");
+                    input.value = "";
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    selectedBase64Image = e.target.result;
+                    document.getElementById('userProfileImg').src = selectedBase64Image;
+                    showSaveBtn();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function showSaveBtn() {
+            document.getElementById('saveProfileBtn').style.display = 'block';
+        }
+
+        // Save Custom Name & Base64 Image to DB
+        function saveProfileChanges() {
+            const newName = document.getElementById('profileNameInput').value.trim();
+            if(!newName) return showGlobalToast('Name cannot be empty!', 'error');
+
+            showDarkLoader('Saving Profile');
+            
+            let updates = { name: newName };
+            if(selectedBase64Image) {
+                updates.profilePicBase64 = selectedBase64Image;
+            }
+
+            database.ref('registered_users/' + auth.currentUser.uid).update(updates)
+                .then(() => {
+                    hideDarkLoader();
+                    document.getElementById('saveProfileBtn').style.display = 'none';
+                    showGlobalToast('Profile Updated Successfully!', 'success');
+                })
+                .catch(err => { hideDarkLoader(); showGlobalToast(err.message, 'error'); });
+        }
+
+        // --- LOGOUT ---
+        function logoutUser() {
+            showDarkLoader('Logging Out');
+            auth.signOut()
+                .then(() => { hideDarkLoader(); showGlobalToast('Logged out successfully', 'success'); })
+                .catch(err => { hideDarkLoader(); showGlobalToast(err.message, 'error'); });
         }
     </script>
 </body>

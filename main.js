@@ -1,10 +1,11 @@
 /* ==========================================================================
-   MVX SYSTEM - GLOBAL JAVASCRIPT ENGINE V4.0
+   MVX SYSTEM - GLOBAL JAVASCRIPT ENGINE V4.0 (UPDATED)
    ==========================================================================
    - Global UI Controls (Toast, Modals)
    - Security Modules (Anti-Inspect)
    - Low-End Device Optimization (Smooth Mode)
    - Global Event Listeners & Network Detection
+   - NEW: Dark Loader Controls & Global Confirm Modal (Yes/Cancel)
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -114,4 +115,73 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('online', () => {
         showGlobalToast('Connection restored! You are back online.', 'success');
     });
+
+    // ==========================================================================
+    // 7. NEW: DARK LOADER CONTROLS
+    // ==========================================================================
+    window.showDarkLoader = function(text = 'Loading') {
+        let loader = document.getElementById('global-dark-loader');
+        if(!loader) {
+            loader = document.createElement('div');
+            loader.id = 'global-dark-loader';
+            loader.className = 'dark-loader-overlay';
+            loader.innerHTML = `
+                <div class="dark-loader-spinner"></div>
+                <div class="dark-loader-text" id="dark-loader-msg">${text}</div>
+            `;
+            document.body.appendChild(loader);
+        } else {
+            document.getElementById('dark-loader-msg').innerText = text;
+        }
+        loader.style.display = 'flex';
+    };
+
+    window.hideDarkLoader = function() {
+        const loader = document.getElementById('global-dark-loader');
+        if(loader) loader.style.display = 'none';
+    };
+
+    // ==========================================================================
+    // 8. NEW: GLOBAL CONFIRMATION MODAL (Yes/Cancel for Deletions)
+    // ==========================================================================
+    window.showConfirmModal = function(message, onConfirmCallback) {
+        let modal = document.getElementById('global-confirm-modal');
+        if(!modal) {
+            modal = document.createElement('div');
+            modal.id = 'global-confirm-modal';
+            modal.className = 'confirm-overlay';
+            modal.innerHTML = `
+                <div class="confirm-box">
+                    <h3><i class="fas fa-exclamation-triangle"></i> WARNING</h3>
+                    <p id="confirm-modal-msg"></p>
+                    <div class="confirm-btns">
+                        <button class="btn-cancel-modal" id="confirm-cancel-btn">Cancel</button>
+                        <button class="btn-yes-modal" id="confirm-yes-btn">Yes, Delete</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        document.getElementById('confirm-modal-msg').innerText = message;
+        modal.style.display = 'flex';
+
+        // Clear previous event listeners by cloning buttons
+        const oldYesBtn = document.getElementById('confirm-yes-btn');
+        const newYesBtn = oldYesBtn.cloneNode(true);
+        oldYesBtn.parentNode.replaceChild(newYesBtn, oldYesBtn);
+
+        const oldCancelBtn = document.getElementById('confirm-cancel-btn');
+        const newCancelBtn = oldCancelBtn.cloneNode(true);
+        oldCancelBtn.parentNode.replaceChild(newCancelBtn, oldCancelBtn);
+
+        newCancelBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        newYesBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+            if(typeof onConfirmCallback === 'function') onConfirmCallback();
+        });
+    };
 });

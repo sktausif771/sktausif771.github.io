@@ -9,9 +9,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
+    <link rel="stylesheet" href="style.css">
+    
     <style>
         /* ==========================================================================
-           MVX STORE V4.0 - HOMEPAGE (REAL-TIME DATA LOADER)
+           MVX STORE V4.0 - HOMEPAGE (UPDATED WITH LAZY LOAD & TIME LOGIC)
            ========================================================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
@@ -26,6 +28,8 @@
         }
 
         body { background: var(--bg-void); color: var(--text-primary); font-family: var(--font-body); min-height: 100vh; overflow-x: hidden; }
+        
+        body.smooth-mode .grid-overlay, body.smooth-mode .glow-orb, body.smooth-mode .yt-card:hover { animation: none; transform: none; box-shadow: none; filter: none; }
 
         /* Background Effects */
         .grid-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(0, 230, 184, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 230, 184, 0.03) 1px, transparent 1px); background-size: 50px 50px; pointer-events: none; z-index: -1; animation: gridShift 15s linear infinite; }
@@ -50,6 +54,7 @@
         .sidebar-menu a { display: flex; align-items: center; gap: 15px; padding: 15px; color: var(--text-primary); text-decoration: none; border-radius: 8px; margin-bottom: 10px; transition: 0.3s; cursor: pointer; }
         .sidebar-menu a:hover { background: var(--bg-input); color: var(--primary); }
         
+        .smooth-toggle { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--bg-input); border-radius: 8px; margin-top: 20px; }
         .login-redirect-btn { width: 100%; padding: 15px; background: var(--primary); color: #000; border: none; border-radius: 8px; font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; cursor: pointer; margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s;}
         .login-redirect-btn:hover { box-shadow: 0 0 15px var(--primary-dim); }
 
@@ -72,22 +77,15 @@
         .search-container { padding: 15px 20px; display: none; }
         .search-box { width: 100%; background: var(--bg-input); border: var(--glass-border); border-radius: 8px; padding: 12px 15px; color: #fff; font-size: 1rem; outline: none; }
 
-        /* Real-Time Loading Spinner */
-        .real-loader-container { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 20px; text-align: center; }
-        .real-loader-icon { font-size: 4rem; color: var(--primary); margin-bottom: 20px; filter: drop-shadow(0 0 15px var(--primary-dim)); }
-        .real-loader-text { font-family: 'Orbitron', sans-serif; font-size: 1.2rem; color: var(--primary); letter-spacing: 2px; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
-
         /* Feed System */
         .feed-container { max-width: 800px; margin: 0 auto; padding: 20px; display: flex; flex-direction: column; gap: 30px; }
-        .yt-card { display: flex; flex-direction: column; cursor: pointer; transition: 0.3s; animation: slideUp 0.4s ease-out; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .yt-card { display: flex; flex-direction: column; cursor: pointer; transition: 0.3s; position: relative; }
         .yt-card:hover { transform: translateY(-5px); }
         .yt-banner-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; border-radius: 12px; overflow: hidden; background: var(--bg-input); border: var(--glass-border); }
         .yt-banner { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
         .yt-card:hover .yt-banner { transform: scale(1.05); }
         
-        .type-badge { position: absolute; top: 10px; right: 10px; padding: 5px 12px; border-radius: 5px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .type-badge { position: absolute; top: 10px; right: 10px; padding: 5px 12px; border-radius: 5px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; z-index: 2; }
         .type-badge.Free { background: var(--primary); color: #000; }
         .type-badge.Premium { background: var(--gold); color: #000; }
         .type-badge.Paid { background: var(--danger); color: #fff; }
@@ -149,17 +147,24 @@
             <i class="fas fa-user-circle"></i> <span id="sidebarUserText">LOGIN / SETTINGS</span>
         </button>
 
+        <div class="smooth-toggle">
+            <span>Low-end Device Mode</span>
+            <input type="checkbox" id="smoothModeToggle" onchange="toggleSmoothMode()">
+        </div>
+
         <div class="sidebar-menu" style="margin-top: 30px;">
             <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 10px;">COMMUNITY</p>
+            <a href="feedback.html"><i class="fas fa-comments" style="color: #00e6b8;"></i> Community Feedback</a>
             <a href="#"><i class="fab fa-telegram" style="color: #0088cc;"></i> Telegram Channel</a>
             <a href="#"><i class="fab fa-youtube" style="color: #ff0000;"></i> YouTube Channel</a>
 
             <hr style="border-color: #333; margin: 25px 0 15px;">
             
             <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 10px;">SYSTEM ADMIN</p>
-            <a onclick="checkLoginAndGoFree()"><i class="fas fa-unlock" style="color: #00e6b8;"></i> Lua Admin (Free)</a>
-            <a onclick="openPassModal('lua-admin-owner.html')"><i class="fas fa-crown" style="color: #ffd700;"></i> Lua Admin (Owner)</a>
-            <a onclick="openPassModal('store-dashboard.html')"><i class="fas fa-satellite-dish" style="color: #ff003c;"></i> Website Admin Panel</a>
+            
+            <a onclick="openPassModal('lua-admin-owner.html')"><i class="fas fa-crown" style="color: #ffd700;"></i> WEBSITE ADMIN OWNER</a>
+            
+            <a onclick="checkLoginAndGoFree()"><i class="fas fa-users-cog" style="color: #00e6b8;"></i> FREE ADMIN USERS</a>
         </div>
     </div>
 
@@ -190,11 +195,14 @@
     </div>
 
     <main class="feed-container" id="feedContainer">
-        <div class="real-loader-container">
-            <i class="fas fa-satellite-dish fa-spin real-loader-icon"></i>
-            <div class="real-loader-text">FETCHING SECURE DATA...</div>
-        </div>
+        <p style="text-align: center; color: gray; margin-top: 50px;"><i class="fas fa-circle-notch fa-spin"></i> Loading Data...</p>
     </main>
+
+    <div class="load-more-container" id="loadMoreContainer">
+        <button class="btn-load-more" onclick="loadMoreApps()">Load More Apps <i class="fas fa-angle-down"></i></button>
+    </div>
+
+    <script src="main.js"></script>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -223,8 +231,11 @@
         let searchQuery = "";
         let targetAdminUrl = ""; 
         let currentLoggedUser = null;
+        
+        // Lazy Load Limit Variable
+        let displayLimit = 10; 
 
-        // --- CUSTOM TOAST ---
+        // Custom Toast Message
         function showMessage(msg, type='success') {
             const toast = document.getElementById('localToast');
             document.getElementById('localToastMsg').innerText = msg;
@@ -233,18 +244,46 @@
             setTimeout(() => { toast.style.display = 'none'; }, 3000);
         }
 
+        // Time Ago Function (নতুন অ্যাড করা লজিক)
+        function timeAgo(timestamp) {
+            if (!timestamp) return "A while ago";
+            const seconds = Math.floor((new Date() - timestamp) / 1000);
+            
+            let interval = seconds / 31536000;
+            if (interval > 1) return Math.floor(interval) + " years ago";
+            interval = seconds / 2592000;
+            if (interval > 1) return Math.floor(interval) + " months ago";
+            interval = seconds / 604800;
+            if (interval > 1) return Math.floor(interval) + " weeks ago";
+            interval = seconds / 86400;
+            if (interval > 1) return Math.floor(interval) + " days ago";
+            interval = seconds / 3600;
+            if (interval > 1) return Math.floor(interval) + " hours ago";
+            interval = seconds / 60;
+            if (interval > 1) return Math.floor(interval) + " mins ago";
+            
+            return "Just now";
+        }
+
         // --- Auth State Tracker ---
         auth.onAuthStateChanged((user) => {
             currentLoggedUser = user;
-            if(user) { document.getElementById('sidebarUserText').innerText = "MY PROFILE"; } 
-            else { document.getElementById('sidebarUserText').innerText = "LOGIN / SETTINGS"; }
+            if(user) {
+                document.getElementById('sidebarUserText').innerText = "MY PROFILE";
+            } else {
+                document.getElementById('sidebarUserText').innerText = "LOGIN / SETTINGS";
+            }
         });
 
+        // --- Free Lua Login Check ---
         function checkLoginAndGoFree() {
-            if(currentLoggedUser) { window.location.href = 'lua-admin-free.html'; } 
-            else {
+            if(currentLoggedUser) {
+                window.location.href = 'lua-admin-free.html';
+            } else {
                 showMessage('লগইন ছাড়া ফ্রি এডমিনে ঢোকা নিষেধ! দয়া করে লগইন করুন।', 'error');
-                setTimeout(() => { window.location.href = 'user-login.html?redirect=lua-admin-free.html'; }, 2000);
+                setTimeout(() => {
+                    window.location.href = 'user-login.html?redirect=lua-admin-free.html';
+                }, 2000);
             }
         }
 
@@ -260,16 +299,33 @@
             if(box.style.display === 'block') document.getElementById('searchInput').focus();
         }
 
+        function toggleSmoothMode() {
+            const isChecked = document.getElementById('smoothModeToggle').checked;
+            if(isChecked) {
+                document.body.classList.add('smooth-mode');
+                localStorage.setItem('smoothMode', 'true');
+            } else {
+                document.body.classList.remove('smooth-mode');
+                localStorage.setItem('smoothMode', 'false');
+            }
+        }
+        if(localStorage.getItem('smoothMode') === 'true') {
+            document.getElementById('smoothModeToggle').checked = true;
+            document.body.classList.add('smooth-mode');
+        }
+
         // --- Admin Password Security ---
         function openPassModal(url) {
             targetAdminUrl = url;
             document.getElementById('passModalOverlay').style.display = 'flex';
             document.getElementById('adminPassInput').value = '';
             document.getElementById('adminPassInput').focus();
-            toggleSidebar(); 
+            toggleSidebar(); // close sidebar so modal is clear
         }
 
-        function closePassModal() { document.getElementById('passModalOverlay').style.display = 'none'; }
+        function closePassModal() {
+            document.getElementById('passModalOverlay').style.display = 'none';
+        }
 
         function verifyAdminPass() {
             const pass = document.getElementById('adminPassInput').value;
@@ -290,6 +346,7 @@
         function setAccessType(type) {
             currentAccess = type;
             currentCategory = "All";
+            displayLimit = 10; // Reset Limit when changing tab
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`.tab-btn[data-type="${type}"]`).classList.add('active');
             
@@ -301,6 +358,7 @@
 
         function setCategory(cat) {
             currentCategory = cat;
+            displayLimit = 10; // Reset Limit when changing category
             document.querySelectorAll('.cat-pill').forEach(btn => {
                 btn.classList.remove('active');
                 if(btn.innerText.trim() === cat || (cat === 'Other Game' && btn.innerText.trim() === 'Others')) {
@@ -312,6 +370,7 @@
 
         function handleSearch() {
             searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            displayLimit = 10;
             filterAndRender();
         }
 
@@ -319,26 +378,32 @@
             window.location.href = `details.html?id=${appId}`;
         }
 
-        // --- REAL TIME FIREBASE FETCH ---
+        // --- Firebase Fetch & Render ---
         database.ref(DB_PATH).on('value', (snap) => {
             const data = snap.val();
-            const feed = document.getElementById('feedContainer');
-            
             if(!data) {
-                feed.innerHTML = `<div class="empty-state"><i class="fas fa-box-open"></i><h3>No Apps Available</h3></div>`;
+                document.getElementById('feedContainer').innerHTML = `<div class="empty-state"><i class="fas fa-box-open"></i><h3>No Apps Available</h3></div>`;
                 return;
             }
-            
+
             allApps = Object.entries(data)
                 .map(([key, val]) => ({ id: key, ...val, isHidden: val.isHidden || false }))
                 .filter(app => !app.isHidden)
-                .reverse();
-                
+                .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0)); // Sort by newest
+            
             filterAndRender();
         });
 
+        // Load More Logic
+        function loadMoreApps() {
+            displayLimit += 10;
+            filterAndRender();
+        }
+
         function filterAndRender() {
             const feed = document.getElementById('feedContainer');
+            const loadMoreBtn = document.getElementById('loadMoreContainer');
+            feed.innerHTML = '';
 
             let filtered = allApps.filter(app => app.accessType === currentAccess);
             if(currentCategory !== "All") filtered = filtered.filter(app => app.gameCategory === currentCategory);
@@ -346,17 +411,26 @@
 
             if(filtered.length === 0) {
                 feed.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><h3>No Results Found</h3></div>`;
+                loadMoreBtn.style.display = 'none';
                 return;
             }
 
-            let htmlContent = ''; // OPTIMIZED DOM RENDERING (No Hanging)
-            filtered.forEach(app => {
+            // Slice data for Lazy Loading
+            const appsToShow = filtered.slice(0, displayLimit);
+
+            let htmlContent = '';
+            appsToShow.forEach(app => {
                 const bannerSrc = app.bannerBase64 || 'https://via.placeholder.com/800x450/1a1f2c/00e6b8?text=NO+BANNER';
                 const logoSrc = app.logoBase64 || 'https://cdn-icons-png.flaticon.com/512/564/564619.png';
                 
+                // Time & Badge logic
+                const timeString = app.timestamp ? timeAgo(app.timestamp) : 'A while ago';
+                const updateBadge = app.isUpdated ? `<div class="badge-update">LATEST UPDATE</div>` : '';
+
                 htmlContent += `
                     <div class="yt-card" onclick="goToDetails('${app.id}')">
                         <div class="yt-banner-wrapper">
+                            ${updateBadge}
                             <span class="type-badge ${app.accessType}">${app.accessType}</span>
                             <img src="${bannerSrc}" class="yt-banner" loading="lazy">
                         </div>
@@ -365,7 +439,8 @@
                             <div class="yt-text">
                                 <h3 class="yt-title">${app.appName}</h3>
                                 <div class="yt-meta">
-                                    ${app.gameCategory} • ${app.version || 'v1.0'} • ${app.size || 'N/A'}
+                                    ${app.gameCategory} • ${app.version || 'v1.0'} <br>
+                                    <span class="time-ago-text"><i class="far fa-clock"></i> ${timeString}</span>
                                 </div>
                             </div>
                         </div>
@@ -374,6 +449,13 @@
             });
             
             feed.innerHTML = htmlContent;
+
+            // Show or Hide "Load More" button
+            if (filtered.length > displayLimit) {
+                loadMoreBtn.style.display = 'block';
+            } else {
+                loadMoreBtn.style.display = 'none';
+            }
         }
         
         document.getElementById('subCategories').style.display = 'flex';

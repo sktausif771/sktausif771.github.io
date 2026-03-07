@@ -7,9 +7,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <link rel="stylesheet" href="lua.style.css">
+    
     <style>
         /* ==========================================================================
-           LUA ADMIN OWNER - STYLE (FULL ACCESS)
+           LUA ADMIN OWNER - STYLE (FULL ACCESS & SETTINGS)
            ========================================================================== */
         :root {
             --bg-body: #0f172a; --bg-panel: #1e293b; --primary: #ffd700; /* Gold for Owner */
@@ -18,71 +20,66 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Rajdhani', sans-serif; }
-
         body { background: var(--bg-body); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
 
-        /* SIDEBAR */
-        .sidebar { width: 260px; background: var(--bg-panel); height: 100%; padding: 20px; border-right: 1px solid var(--border); transition: transform 0.3s ease; z-index: 1000; }
+        .sidebar { width: 260px; background: var(--bg-panel); height: 100%; padding: 20px; border-right: 1px solid var(--border); transition: 0.3s; z-index: 1000; }
         .brand { font-size: 24px; font-weight: 800; color: var(--primary); margin-bottom: 40px; display: flex; justify-content: space-between; align-items: center; }
         .brand span { color: white; }
-        .close-btn { display: none; color: var(--text-sub); cursor: pointer; font-size: 20px; }
+        .close-btn { display: none; color: white; cursor: pointer; }
+        
+        .menu-item { padding: 12px 15px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; transition: 0.3s; color: var(--text-sub); display: flex; align-items: center; gap: 10px; font-weight: 600; }
+        .menu-item:hover, .menu-item.active { background: rgba(255, 215, 0, 0.1); color: var(--primary); }
+        .menu-item i { width: 20px; text-align: center; }
 
-        .menu-item { padding: 12px 15px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; color: var(--text-sub); font-weight: 600; transition: 0.2s; display: flex; align-items: center; gap: 10px; }
-        .menu-item:hover, .menu-item.active { background: var(--primary); color: #000; }
-
-        /* MAIN CONTENT */
-        .content { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
-        .top-header { padding: 15px 20px; border-bottom: 1px solid var(--border); background: var(--bg-body); display: flex; align-items: center; justify-content: space-between; }
-        .top-header-left { display: flex; align-items: center; gap: 15px; }
-        .menu-toggle { background: none; border: none; color: white; font-size: 24px; cursor: pointer; display: none; }
-        .btn-home { background: var(--border); color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; text-decoration: none; }
-        .btn-home:hover { background: var(--red); }
-
-        .tab-content { padding: 20px; overflow-y: auto; height: 100%; }
-
-        /* TOOLBAR & INPUTS */
-        .toolbar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        input, select { background: var(--bg-panel); border: 1px solid var(--border); color: white; padding: 10px; border-radius: 6px; outline: none; }
-        .search { flex: 1; min-width: 200px; }
-        .btn { padding: 10px 15px; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; color: #000; display: flex; align-items: center; gap: 5px; transition: 0.3s;}
-        .btn-add { background: var(--primary); }
+        .main-content { flex: 1; padding: 30px; overflow-y: auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .hamburger { display: none; font-size: 24px; cursor: pointer; color: white; }
+        
+        .btn { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600; font-size: 14px; transition: 0.3s; display: inline-flex; align-items: center; gap: 5px; }
+        .btn-add { background: var(--primary); color: #000; }
         .btn-add:hover { box-shadow: 0 0 15px rgba(255, 215, 0, 0.4); }
+        .btn-cancel { background: var(--border); color: white; }
 
-        /* TABLE */
-        .table-responsive { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); }
-        table { width: 100%; border-collapse: collapse; background: var(--bg-panel); white-space: nowrap; }
-        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border); }
-        th { background: #151f32; color: var(--text-sub); font-size: 13px; text-transform: uppercase; }
-        td { font-size: 14px; }
-
-        /* BADGES & ACTIONS */
-        .badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
-        .b-active { background: #064e3b; color: #34d399; }
-        .b-banned { background: #450a0a; color: #f87171; }
-
-        .actions { display: flex; gap: 5px; }
-        .act-btn { width: 28px; height: 28px; border-radius: 4px; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; color: white; transition: 0.2s;}
+        /* Tables */
+        .table-container { background: var(--bg-panel); border-radius: 10px; border: 1px solid var(--border); overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 15px; border-bottom: 1px solid var(--border); }
+        th { color: var(--text-sub); font-weight: 600; font-size: 14px; text-transform: uppercase; }
+        .act-btn { width: 32px; height: 32px; border-radius: 5px; border: none; cursor: pointer; display: inline-flex; justify-content: center; align-items: center; color: white; margin-right: 5px; }
         .act-reset { background: var(--yellow); color: black; }
         .act-ban { background: #475569; }
         .act-ban.is-banned { background: var(--red); }
         .act-del { background: var(--red); }
 
-        /* MODAL */
+        /* Modals */
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 20px; }
-        .modal-box { background: var(--bg-panel); width: 100%; max-width: 400px; padding: 20px; border-radius: 10px; border: 1px solid var(--primary); box-shadow: 0 0 20px rgba(255, 215, 0, 0.2); }
-        .modal-header { display: flex; justify-content: space-between; margin-bottom: 15px; color: var(--primary); }
-        .form-group { margin-bottom: 15px; }
+        .modal-box { background: var(--bg-panel); width: 100%; max-width: 400px; padding: 20px; border-radius: 10px; border: 1px solid var(--border); }
+        .modal-header { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 18px; font-weight: bold; color: var(--primary); }
+        .form-group { margin-bottom: 15px; position: relative; }
         .form-group label { display: block; margin-bottom: 5px; color: var(--text-sub); }
-        .form-group input, .form-group select { width: 100%; }
-        .modal-footer { display: flex; justify-content: flex-end; gap: 10px; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid var(--border); background: var(--bg-body); color: white; outline: none; }
+        .form-group input:focus { border-color: var(--primary); }
+        .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+        
+        .random-icon { position: absolute; right: 10px; bottom: 10px; cursor: pointer; color: var(--primary); }
 
-        /* OVERLAY */
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 900; }
+        /* Confirm Modal */
+        .confirm-box { background: var(--bg-panel); border: 1px solid var(--red); padding: 20px; border-radius: 10px; width: 90%; max-width: 350px; text-align: center; }
+        .confirm-box h3 { color: var(--red); margin-bottom: 15px; }
+        .confirm-btns { display: flex; gap: 10px; margin-top: 20px; }
+        .confirm-btns button { flex: 1; padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        .btn-yes { background: var(--red); color: white; }
+        .btn-no { background: var(--border); color: white; }
+
+        /* Settings Card */
+        .settings-card { background: var(--bg-panel); padding: 20px; border-radius: 10px; border: 1px solid var(--border); max-width: 600px; margin-bottom: 20px;}
+        .settings-card h3 { color: var(--primary); margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
 
         @media (max-width: 768px) {
-            .sidebar { position: fixed; left: -260px; top: 0; height: 100%; }
+            .sidebar { position: fixed; left: -260px; }
             .sidebar.active { left: 0; }
-            .menu-toggle { display: block; }
+            .hamburger, .close-btn { display: block; }
+            .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 999; }
             .overlay.active { display: block; }
         }
     </style>
@@ -92,62 +89,165 @@
     <div class="overlay" onclick="toggleSidebar()"></div>
 
     <aside class="sidebar" id="sidebar">
-        <div class="brand">MVX <span>OWNER</span></div>
+        <div class="brand">
+            MVX <span>OWNER</span>
+            <i class="fas fa-times close-btn" onclick="toggleSidebar()"></i>
+        </div>
+        
         <nav>
-            <div class="menu-item active" onclick="showTab('users')"><i class="fas fa-users"></i> Key Manager</div>
-            <div class="menu-item" onclick="showTab('settings')"><i class="fas fa-cogs"></i> System Config</div>
+            <div class="menu-item active" onclick="showTab('lua-tab')" id="nav-lua-tab">
+                <i class="fas fa-key"></i> LUA KEYS (MASTER)
+            </div>
+            <div class="menu-item" onclick="showTab('app-tab')" id="nav-app-tab">
+                <i class="fas fa-mobile-alt"></i> ALL APP PASSWORDS
+            </div>
+            <div class="menu-item" onclick="showTab('settings-tab')" id="nav-settings-tab">
+                <i class="fas fa-cogs"></i> FREE TIER LIMITS
+            </div>
+            <div class="menu-item" onclick="logoutAdmin()" style="margin-top: 30px; color: var(--red);">
+                <i class="fas fa-sign-out-alt"></i> EXIT ADMIN
+            </div>
         </nav>
     </aside>
 
-    <main class="content">
-        <div class="top-header">
-            <div class="top-header-left">
-                <button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-                <h2 id="pageTitle" style="color: var(--primary);">Master Key Manager</h2>
-            </div>
-            <button class="btn-home" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i> Exit</button>
+    <main class="main-content">
+        <div class="header">
+            <i class="fas fa-bars hamburger" onclick="toggleSidebar()"></i>
+            <h2 id="pageTitle">Lua Script Keys (Owner Control)</h2>
+            <div id="adminBadge" style="background: var(--primary); color: black; padding: 5px 10px; border-radius: 5px; font-weight: bold; font-size: 14px;">SUPER ADMIN</div>
         </div>
 
-        <div id="tab-users" class="tab-content">
-            <div class="toolbar">
-                <input type="text" id="searchBox" class="search" placeholder="Search by key or user email..." onkeyup="renderTable()">
-                <button class="btn btn-add" onclick="openModal()"><i class="fas fa-plus"></i> NEW KEY</button>
+        <div id="lua-tab">
+            <div style="margin-bottom: 20px; display: flex; gap: 10px;">
+                <button class="btn btn-add" onclick="openLuaModal()"><i class="fas fa-plus"></i> Create VIP Key</button>
             </div>
 
-            <div class="table-responsive">
+            <div class="table-container">
                 <table>
                     <thead>
                         <tr>
-                            <th>Key / Creator</th>
+                            <th>Key</th>
+                            <th>Devices</th>
+                            <th>Creator</th>
                             <th>Status</th>
-                            <th>Expiry Date</th>
-                            <th>Device Info</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="userTable"></tbody>
+                    <tbody id="luaTableBody">
+                        <tr><td colspan="5" style="text-align: center;">Loading keys...</td></tr>
+                    </tbody>
                 </table>
             </div>
         </div>
 
-        <div id="tab-settings" class="tab-content" style="display: none;">
-            <div style="background: var(--bg-panel); border: 1px solid var(--border); padding: 20px; border-radius: 8px;">
-                <h3 style="color: var(--yellow); margin-bottom: 10px;">⚠️ Global Version Control</h3>
-                <div style="display: flex; gap: 10px;">
-                    <input type="number" id="appVer" value="1.0" step="0.1" style="width: 150px;">
-                    <button class="btn btn-add" onclick="updateVersion()">UPDATE</button>
+        <div id="app-tab" style="display: none;">
+            <div style="margin-bottom: 20px;">
+                <button class="btn btn-add" onclick="openAppPassModal()"><i class="fas fa-plus"></i> Generate App Password</button>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User Name</th>
+                            <th>Password</th>
+                            <th>Creator/Seller</th>
+                            <th>Expiry Time</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="appPassTableBody">
+                        <tr><td colspan="5" style="text-align: center;">Loading app passwords...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="settings-tab" style="display: none;">
+            <div class="settings-card">
+                <h3>Control Free Admin Users limits</h3>
+                
+                <div class="form-group">
+                    <label>Passwords per day (Limit)</label>
+                    <input type="number" id="setPassLimit" value="2">
                 </div>
+                <div class="form-group">
+                    <label>Password Expiry Time (in Hours)</label>
+                    <input type="number" id="setPassHours" value="6">
+                </div>
+                <div class="form-group">
+                    <label>Device Limit (Acessos)</label>
+                    <input type="number" id="setPassDevice" value="1">
+                </div>
+                
+                <button class="btn btn-add" onclick="saveFreeLimits()"><i class="fas fa-save"></i> Save Free Tier Limits</button>
             </div>
         </div>
     </main>
 
-    <div class="modal" id="keyModal">
+    <div class="modal" id="luaModal">
         <div class="modal-box">
-            <div class="modal-header"><h3><i class="fas fa-key"></i> Generate Master Key</h3><i class="fas fa-times" onclick="closeModal()" style="cursor:pointer;"></i></div>
-            <div class="form-group"><label>Key Name</label><input type="text" id="newKey"></div>
-            <div class="form-group"><label>Duration</label><select id="duration"><option value="1">1 Day</option><option value="30" selected>1 Month</option><option value="365">1 Year</option></select></div>
-            <div class="form-group"><label>Device Limit</label><select id="limit"><option value="1">1 Device</option><option value="999">Unlimited</option></select></div>
-            <div class="modal-footer"><button class="btn btn-add" onclick="createKey()">Create</button></div>
+            <div class="modal-header">
+                <span>Create VIP Lua Key</span>
+            </div>
+            <div class="form-group">
+                <label>Key Name</label>
+                <input type="text" id="newLuaKey" placeholder="MVX_VIP_XXXX">
+                <i class="fas fa-random random-icon" onclick="document.getElementById('newLuaKey').value = 'MVX_VIP_' + Math.floor(Math.random() * 90000)"></i>
+            </div>
+            <div class="form-group">
+                <label>Duration (Days)</label>
+                <input type="number" id="luaDuration" value="30">
+            </div>
+            <div class="form-group">
+                <label>Device Limit</label>
+                <input type="number" id="luaLimit" value="1">
+                <small style="color:var(--text-sub);">Use 999 for unlimited.</small>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel" onclick="closeModal('luaModal')">Cancel</button>
+                <button class="btn btn-add" onclick="createLuaKey()">Create Key</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="appPassModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <span>Generate App Password (Unlimited)</span>
+            </div>
+            <div class="form-group">
+                <label>Usuário (Username)</label>
+                <input type="text" id="appUser">
+            </div>
+            <div class="form-group">
+                <label>Senha (Password)</label>
+                <input type="text" id="appPass">
+                <i class="fas fa-random random-icon" onclick="shuffleAppPass()"></i>
+            </div>
+            <div class="form-group">
+                <label>Validade (Days)</label>
+                <input type="number" id="appValidDays" value="30">
+            </div>
+            <div class="form-group">
+                <label>Devices Limit</label>
+                <input type="number" id="appDeviceLimit" value="1">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel" onclick="closeModal('appPassModal')">Cancel</button>
+                <button class="btn btn-add" onclick="createAppPass()">Generate</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="confirmModal">
+        <div class="confirm-box">
+            <h3><i class="fas fa-exclamation-triangle"></i> WARNING</h3>
+            <p id="confirmMessage">Are you sure you want to proceed?</p>
+            <div class="confirm-btns">
+                <button class="btn-no" onclick="closeModal('confirmModal')">Cancel</button>
+                <button class="btn-yes" id="confirmYesBtn">Yes, Execute</button>
+            </div>
         </div>
     </div>
 
@@ -155,82 +255,278 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
-        // Security check
-        if (sessionStorage.getItem('mvx_admin_token') !== 'SECURE_AUTHORIZED') window.location.href = 'index.html';
-
         const firebaseConfig = {
             apiKey: "AIzaSyAS3UXXrio_-c9uPbHwpDuTVrP-p8d903w",
             authDomain: "white-2k-17-v4.firebaseapp.com",
             databaseURL: "https://white-2k-17-v4-default-rtdb.firebaseio.com",
-            projectId: "white-2k-17-v4"
+            projectId: "white-2k-17-v4",
+            storageBucket: "white-2k-17-v4.firebasestorage.app",
+            messagingSenderId: "180909174928",
+            appId: "1:180909174928:android:148861a87d66c6980ca815"
         };
-        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.database();
-        let allUsers = {};
 
-        function init() {
-            db.ref('users').on('value', snap => { allUsers = snap.val() || {}; renderTable(); });
-            db.ref('config/version').on('value', snap => { if(snap.val()) document.getElementById('appVer').value = snap.val(); });
+        // Check Owner Token
+        if (sessionStorage.getItem('mvx_admin_token') !== 'SECURE_AUTHORIZED') {
+            window.location.href = 'index.html';
         }
 
-        function renderTable() {
-            const tbody = document.getElementById('userTable');
-            const search = document.getElementById('searchBox').value.toLowerCase();
-            tbody.innerHTML = '';
+        window.onload = function() {
+            loadLuaKeys();
+            loadAppPasswords();
+            loadFreeLimits();
+        }
 
-            Object.keys(allUsers).reverse().forEach(key => {
-                const user = allUsers[key];
-                const creator = user.creatorEmail || "Admin (Direct)";
-                
-                if (key.toLowerCase().includes(search) || creator.toLowerCase().includes(search)) {
-                    const statusBadge = user.status === 'banned' ? '<span class="badge b-banned">BANNED</span>' : '<span class="badge b-active">ACTIVE</span>';
-                    let deviceText = user.hwids ? `Used: ${Object.keys(user.hwids).length}/${user.maxDevices == 999 ? '∞' : user.maxDevices}` : "No Device";
+        // --- TAB SWITCHER ---
+        function showTab(tabId) {
+            document.getElementById('lua-tab').style.display = 'none';
+            document.getElementById('app-tab').style.display = 'none';
+            document.getElementById('settings-tab').style.display = 'none';
+            document.getElementById(tabId).style.display = 'block';
 
-                    tbody.innerHTML += `
-                        <tr>
-                            <td><strong>${key}</strong><br><small style="color:var(--text-sub)">By: ${creator}</small></td>
-                            <td>${statusBadge}</td>
-                            <td>${user.expiry}</td>
-                            <td>${deviceText}</td>
-                            <td>
-                                <div class="actions">
-                                    <button class="act-btn act-reset" onclick="resetDevice('${key}')"><i class="fas fa-sync"></i></button>
-                                    <button class="act-btn act-ban ${user.status === 'banned' ? 'is-banned' : ''}" onclick="toggleBan('${key}', '${user.status}')"><i class="fas fa-ban"></i></button>
-                                    <button class="act-btn act-del" onclick="deleteUser('${key}')"><i class="fas fa-trash"></i></button>
-                                </div>
-                            </td>
-                        </tr>`;
+            document.getElementById('nav-lua-tab').classList.remove('active');
+            document.getElementById('nav-app-tab').classList.remove('active');
+            document.getElementById('nav-settings-tab').classList.remove('active');
+            document.getElementById('nav-' + tabId).classList.add('active');
+
+            if(tabId === 'lua-tab') document.getElementById('pageTitle').innerText = "Lua Script Keys (Master)";
+            else if(tabId === 'app-tab') document.getElementById('pageTitle').innerText = "All App Passwords";
+            else document.getElementById('pageTitle').innerText = "Free Tier Limits Settings";
+            
+            if(window.innerWidth <= 768) toggleSidebar();
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.querySelector('.overlay').classList.toggle('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function showConfirm(message, confirmCallback) {
+            document.getElementById('confirmMessage').innerText = message;
+            document.getElementById('confirmModal').style.display = 'flex';
+            
+            const yesBtn = document.getElementById('confirmYesBtn');
+            const newYesBtn = yesBtn.cloneNode(true);
+            yesBtn.parentNode.replaceChild(newYesBtn, yesBtn);
+            
+            newYesBtn.addEventListener('click', () => {
+                closeModal('confirmModal');
+                confirmCallback();
+            });
+        }
+
+        function logoutAdmin() {
+            sessionStorage.removeItem('mvx_admin_token');
+            window.location.href = 'index.html';
+        }
+
+        // ==========================================
+        // FREE TIER SETTINGS
+        // ==========================================
+        function loadFreeLimits() {
+            db.ref('config/free_limits').on('value', snap => {
+                if(snap.exists()) {
+                    const data = snap.val();
+                    document.getElementById('setPassLimit').value = data.appPassLimit || 2;
+                    document.getElementById('setPassHours').value = data.appPassHours || 6;
+                    document.getElementById('setPassDevice').value = data.appPassDevice || 1;
                 }
             });
         }
 
-        function createKey() {
-            const key = document.getElementById('newKey').value.trim();
-            const days = parseInt(document.getElementById('duration').value);
-            const limit = parseInt(document.getElementById('limit').value);
-            if(!key) return alert("Enter Key!");
+        function saveFreeLimits() {
+            const limit = parseInt(document.getElementById('setPassLimit').value);
+            const hours = parseInt(document.getElementById('setPassHours').value);
+            const device = parseInt(document.getElementById('setPassDevice').value);
 
-            const date = new Date(); date.setDate(date.getDate() + days);
-            db.ref('users/' + key).set({
-                expiry: date.toISOString().split('T')[0],
-                maxDevices: limit,
-                status: 'active',
-                creatorEmail: "Owner (Master)"
-            });
-            closeModal();
+            db.ref('config/free_limits').set({
+                appPassLimit: limit,
+                appPassHours: hours,
+                appPassDevice: device
+            }).then(() => alert("Free Tier limits updated successfully!"));
         }
 
-        function resetDevice(key) { if(confirm("Reset HWID?")) db.ref('users/' + key + '/hwids').remove(); }
-        function toggleBan(key, status) { db.ref('users/' + key + '/status').set(status === 'active' ? 'banned' : 'active'); }
-        function deleteUser(key) { if(confirm("Delete Key?")) db.ref('users/' + key).remove(); }
-        function updateVersion() { db.ref('config/version').set(document.getElementById('appVer').value); alert("Updated!"); }
-        function logoutAdmin() { sessionStorage.removeItem('mvx_admin_token'); window.location.href = 'index.html'; }
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); document.querySelector('.overlay').classList.toggle('active'); }
-        function showTab(tab) { document.getElementById('tab-users').style.display = tab === 'users' ? 'block' : 'none'; document.getElementById('tab-settings').style.display = tab === 'settings' ? 'block' : 'none'; }
-        function openModal() { document.getElementById('newKey').value = "MVX_VIP_" + Math.floor(Math.random()*10000); document.getElementById('keyModal').style.display = 'flex'; }
-        function closeModal() { document.getElementById('keyModal').style.display = 'none'; }
+        // ==========================================
+        // LUA KEY LOGIC (MASTER)
+        // ==========================================
+        function openLuaModal() {
+            document.getElementById('newLuaKey').value = "MVX_VIP_" + Math.floor(Math.random() * 90000);
+            document.getElementById('luaModal').style.display = 'flex';
+        }
 
-        init();
+        function createLuaKey() {
+            const key = document.getElementById('newLuaKey').value.trim();
+            const days = parseInt(document.getElementById('luaDuration').value);
+            const limit = parseInt(document.getElementById('luaLimit').value);
+            
+            if(!key) return alert("Enter key name!");
+
+            const expDate = new Date();
+            expDate.setDate(expDate.getDate() + days);
+
+            db.ref('users/' + key).set({
+                devices: [],
+                maxDevices: limit,
+                status: 'active',
+                creatorUid: "OWNER",
+                isFreeTier: false,
+                createdAt: Date.now(),
+                expiry: expDate.getTime()
+            }).then(() => {
+                alert("VIP Lua Key Created!");
+                closeModal('luaModal');
+            });
+        }
+
+        function loadLuaKeys() {
+            db.ref('users').on('value', snap => {
+                let html = '';
+                if(snap.exists()) {
+                    const allData = [];
+                    snap.forEach(child => allData.push({ key: child.key, ...child.val() }));
+                    
+                    // Sort by newest
+                    allData.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+                    allData.forEach(data => {
+                        const hwidCount = data.hwids ? Object.keys(data.hwids).length : 0;
+                        const banClass = data.status === 'banned' ? 'is-banned' : '';
+                        const creator = data.isFreeTier ? "Free User" : "Owner";
+
+                        html += `
+                            <tr>
+                                <td><b>${data.key}</b></td>
+                                <td>${hwidCount} / ${data.maxDevices}</td>
+                                <td>${creator}</td>
+                                <td>${data.status.toUpperCase()}</td>
+                                <td>
+                                    <button class="act-btn act-reset" onclick="resetLuaDevice('${data.key}')" title="Reset HWID"><i class="fas fa-mobile-alt"></i></button>
+                                    <button class="act-btn act-ban ${banClass}" onclick="toggleLuaBan('${data.key}', '${data.status}')" title="Ban/Unban"><i class="fas fa-ban"></i></button>
+                                    <button class="act-btn act-del" onclick="deleteLuaKey('${data.key}')" title="Delete"><i class="fas fa-times"></i></button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    html = `<tr><td colspan="5" style="text-align: center;">No Lua Keys found.</td></tr>`;
+                }
+                document.getElementById('luaTableBody').innerHTML = html;
+            });
+        }
+
+        function resetLuaDevice(key) {
+            showConfirm(`Reset HWID for Lua Key: ${key}?`, () => db.ref(`users/${key}/hwids`).remove());
+        }
+        function toggleLuaBan(key, currentStatus) {
+            const newStatus = currentStatus === 'active' ? 'banned' : 'active';
+            showConfirm(`Are you sure you want to ${newStatus} this key?`, () => db.ref(`users/${key}/status`).set(newStatus));
+        }
+        function deleteLuaKey(key) {
+            showConfirm(`Permanently Delete Lua Key: ${key}?`, () => db.ref(`users/${key}`).remove());
+        }
+
+        // ==========================================
+        // APP PASSWORD LOGIC (MASTER VIEW ALL)
+        // ==========================================
+        function openAppPassModal() {
+            document.getElementById('appUser').value = "VIP_USER_" + Math.floor(Math.random() * 900);
+            shuffleAppPass();
+            document.getElementById('appPassModal').style.display = 'flex';
+        }
+
+        function shuffleAppPass() {
+            const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+            let pass = '';
+            for(let i = 0; i < 6; i++) pass += chars.charAt(Math.floor(Math.random() * chars.length));
+            document.getElementById('appPass').value = pass;
+        }
+
+        function createAppPass() {
+            const user = document.getElementById('appUser').value.trim();
+            const pass = document.getElementById('appPass').value.trim();
+            const days = parseInt(document.getElementById('appValidDays').value);
+            const limit = parseInt(document.getElementById('appDeviceLimit').value);
+            
+            if(!user || !pass) return alert("Fill all fields!");
+
+            const now = new Date();
+            const rgtime = String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0') + " - " + String(now.getDate()).padStart(2, '0') + "/" + String(now.getMonth() + 1).padStart(2, '0') + "/" + String(now.getFullYear()).slice(-2);
+
+            const expiryDate = new Date();
+            expiryDate.setDate(now.getDate() + days);
+            const validadeTime = String(expiryDate.getTime());
+
+            const newRef = db.ref('Usuarios').push();
+            
+            newRef.set({
+                "Usuário": user,
+                "Senha": pass,
+                "Cargo": "Admin",
+                "Revendedor": "Owner Master",
+                "CreatorUid": "OWNER", 
+                "Status": "true",
+                "Coins": "0",
+                "Conectados": "0",
+                "Dispositivos": "[]",
+                "Acessos": String(limit),
+                "Key": newRef.key,
+                "rgtime": rgtime,
+                "Validade": validadeTime,
+                "createdAt": now.getTime()
+            }).then(() => {
+                alert("VIP App Password Generated!");
+                closeModal('appPassModal');
+            });
+        }
+
+        function loadAppPasswords() {
+            db.ref('Usuarios').on('value', snap => {
+                let html = '';
+                if(snap.exists()) {
+                    const allData = [];
+                    snap.forEach(child => allData.push({ dbKey: child.key, ...child.val() }));
+                    
+                    allData.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+                    allData.forEach(data => {
+                        let expiryStr = "Infinity";
+                        if(data.Validade && data.Validade !== "∞") {
+                            const expDate = new Date(parseInt(data.Validade));
+                            expiryStr = expDate.toLocaleString();
+                            if(Date.now() > expDate.getTime()) expiryStr = "<span style='color:var(--red);'>Expired</span>";
+                        }
+
+                        const seller = data.Revendedor || "Unknown";
+
+                        html += `
+                            <tr>
+                                <td><b>${data.Usuário}</b></td>
+                                <td>${data.Senha}</td>
+                                <td style="font-size: 13px;">${seller}</td>
+                                <td>${expiryStr}</td>
+                                <td>
+                                    <button class="act-btn act-del" onclick="deleteAppPass('${data.dbKey}')" title="Delete"><i class="fas fa-times"></i></button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    html = `<tr><td colspan="5" style="text-align: center;">No App Passwords found.</td></tr>`;
+                }
+                document.getElementById('appPassTableBody').innerHTML = html;
+            });
+        }
+
+        function deleteAppPass(key) {
+            showConfirm(`Delete this App Password?`, () => db.ref(`Usuarios/${key}`).remove());
+        }
+
     </script>
 </body>
 </html>
