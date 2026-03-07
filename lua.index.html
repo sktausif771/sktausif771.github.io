@@ -2,119 +2,448 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MVX PRO Admin Panel</title>
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#00e6b8">
+    <title>MVX STORE | Premium Mods & VIP Game Hacks v4.0</title>
     
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <style>
+        /* ==========================================================================
+           MVX STORE V4.0 - HOMEPAGE (ORIGINAL UI + NEW LOGIC)
+           ========================================================================== */
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        :root {
+            --primary: #00e6b8; --primary-dim: rgba(0, 230, 184, 0.15);
+            --gold: #ffd700; --gold-dim: rgba(255, 215, 0, 0.15);
+            --danger: #ff003c; --danger-dim: rgba(255, 0, 60, 0.15);
+            --bg-void: #000000; --bg-card: #0c101a; --bg-input: #1a1f2c;
+            --text-primary: #ffffff; --text-muted: #9ca3af;
+            --glass-bg: rgba(8, 11, 18, 0.8); --glass-border: 1px solid rgba(0, 230, 184, 0.2);
+            --font-head: 'Rajdhani', sans-serif; --font-body: 'Space Grotesk', sans-serif;
+        }
 
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+        body { background: var(--bg-void); color: var(--text-primary); font-family: var(--font-body); min-height: 100vh; overflow-x: hidden; }
+
+        /* Background Effects */
+        .grid-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(0, 230, 184, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 230, 184, 0.03) 1px, transparent 1px); background-size: 50px 50px; pointer-events: none; z-index: -1; animation: gridShift 15s linear infinite; }
+        .glow-orb { position: fixed; width: 60vmax; height: 60vmax; border-radius: 50%; background: radial-gradient(circle at center, rgba(0, 230, 184, 0.1) 0%, transparent 70%); filter: blur(50px); pointer-events: none; z-index: -1; top: -20vmax; left: -20vmax; animation: orbFloat 20s ease-in-out infinite alternate; }
+        @keyframes gridShift { 0% { background-position: 0 0; } 100% { background-position: 50px 50px; } }
+        @keyframes orbFloat { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(10%,10%) scale(1.2); } }
+
+        /* Header */
+        .header { position: sticky; top: 0; background: var(--glass-bg); backdrop-filter: blur(10px); border-bottom: var(--glass-border); height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 100; }
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .menu-btn, .search-btn { font-size: 1.5rem; color: var(--text-primary); cursor: pointer; background: none; border: none; }
+        .brand { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--primary); }
+        
+        /* Sidebar */
+        .sidebar { position: fixed; top: 0; left: -300px; width: 300px; height: 100%; background: #080b12; border-right: var(--glass-border); z-index: 1000; transition: 0.3s; padding: 20px; overflow-y: auto; }
+        .sidebar.active { left: 0; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 999; display: none; }
+        .overlay.active { display: block; }
+        .close-btn { position: absolute; top: 20px; right: 20px; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; }
+        
+        .sidebar-logo { text-align: center; margin-bottom: 30px; margin-top: 20px; font-family: 'Orbitron', sans-serif; font-size: 1.5rem; color: var(--primary); }
+        .sidebar-menu a { display: flex; align-items: center; gap: 15px; padding: 15px; color: var(--text-primary); text-decoration: none; border-radius: 8px; margin-bottom: 10px; transition: 0.3s; cursor: pointer; }
+        .sidebar-menu a:hover { background: var(--bg-input); color: var(--primary); }
+        
+        .login-redirect-btn { width: 100%; padding: 15px; background: var(--primary); color: #000; border: none; border-radius: 8px; font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; cursor: pointer; margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s;}
+        .login-redirect-btn:hover { box-shadow: 0 0 15px var(--primary-dim); }
+
+        /* Main Nav Tabs */
+        .main-tabs { display: flex; gap: 10px; padding: 15px 20px; background: var(--bg-void); position: sticky; top: 70px; z-index: 90; overflow-x: auto; }
+        .main-tabs::-webkit-scrollbar { display: none; }
+        .tab-btn { flex: 1; min-width: 100px; padding: 12px; background: var(--bg-input); border: 1px solid #333; color: var(--text-primary); border-radius: 8px; font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: 0.3s; text-align: center; }
+        .tab-btn.active[data-type="Free"] { background: var(--primary-dim); border-color: var(--primary); color: var(--primary); }
+        .tab-btn.active[data-type="Premium"] { background: var(--gold-dim); border-color: var(--gold); color: var(--gold); }
+        .tab-btn.active[data-type="Paid"] { background: var(--danger-dim); border-color: var(--danger); color: var(--danger); }
+
+        /* Sub Categories */
+        .sub-categories { display: flex; gap: 10px; padding: 10px 20px; overflow-x: auto; background: var(--bg-void); display: none; animation: slideDown 0.3s ease; }
+        .sub-categories::-webkit-scrollbar { display: none; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .cat-pill { padding: 8px 20px; background: var(--bg-card); border: 1px solid #333; border-radius: 100px; color: var(--text-muted); cursor: pointer; white-space: nowrap; transition: 0.3s; }
+        .cat-pill.active { background: #fff; color: #000; border-color: #fff; }
+
+        /* Search Bar */
+        .search-container { padding: 15px 20px; display: none; }
+        .search-box { width: 100%; background: var(--bg-input); border: var(--glass-border); border-radius: 8px; padding: 12px 15px; color: #fff; font-size: 1rem; outline: none; }
+
+        /* Feed System */
+        .feed-container { max-width: 800px; margin: 0 auto; padding: 20px; display: flex; flex-direction: column; gap: 30px; }
+        .yt-card { display: flex; flex-direction: column; cursor: pointer; transition: 0.3s; position: relative; }
+        .yt-card:hover { transform: translateY(-5px); }
+        .yt-banner-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; border-radius: 12px; overflow: hidden; background: var(--bg-input); border: var(--glass-border); }
+        .yt-banner { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
+        .yt-card:hover .yt-banner { transform: scale(1.05); }
+        
+        .type-badge { position: absolute; top: 10px; right: 10px; padding: 5px 12px; border-radius: 5px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; z-index: 2; }
+        .type-badge.Free { background: var(--primary); color: #000; }
+        .type-badge.Premium { background: var(--gold); color: #000; }
+        .type-badge.Paid { background: var(--danger); color: #fff; }
+
+        /* New Update Badge styling */
+        .badge-update { position: absolute; top: 10px; left: 10px; background: var(--danger); color: #fff; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-family: var(--font-head); font-weight: bold; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 0 10px var(--danger-dim); z-index: 2; }
+        
+        /* Time Ago styling (small and clean) */
+        .time-ago-text { font-size: 0.8rem; color: #00e6b8; margin-top: 5px; display: inline-block; font-weight: 500; }
+
+        .yt-info { display: flex; gap: 15px; margin-top: 15px; align-items: flex-start; }
+        .yt-logo { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; background: var(--bg-input); border: 1px solid #333; }
+        .yt-text { flex: 1; }
+        .yt-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 5px; color: var(--text-primary); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .yt-meta { font-size: 0.85rem; color: var(--text-muted); }
+
+        .empty-state { text-align: center; padding: 50px 20px; color: var(--text-muted); }
+        .empty-state i { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; }
+
+        /* Load More Button */
+        .load-more-container { text-align: center; margin: 20px 0 50px; width: 100%; display: none; }
+        .btn-load-more { background: var(--bg-input); border: 1px solid var(--primary); color: var(--primary); padding: 12px 30px; border-radius: 8px; font-family: var(--font-head); font-size: 1.1rem; cursor: pointer; transition: 0.3s; }
+        .btn-load-more:hover { background: var(--primary-dim); box-shadow: 0 0 15px var(--primary-dim); }
+
+        /* Custom Password Modal for Admin */
+        .pass-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .pass-modal { background: var(--bg-card); padding: 25px; border-radius: 15px; border: 1px solid var(--primary); text-align: center; width: 90%; max-width: 350px; box-shadow: 0 0 30px var(--primary-dim); animation: slideDown 0.3s ease; }
+        .pass-modal h3 { color: var(--primary); font-family: var(--font-head); margin-bottom: 15px; }
+        .pass-modal input { width: 100%; background: var(--bg-input); border: 1px solid #333; color: #fff; padding: 12px; border-radius: 8px; margin-bottom: 20px; outline: none; font-size: 1rem; text-align: center; letter-spacing: 3px; }
+        .pass-modal input:focus { border-color: var(--primary); }
+        .pass-btns { display: flex; gap: 10px; }
+        .pass-btns button { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-cancel { background: #333; color: #fff; }
+        .btn-verify { background: var(--primary); color: #000; }
+        .btn-verify:hover { box-shadow: 0 0 15px var(--primary-dim); }
+
+        /* Custom Toast inside Page */
+        .local-toast { position: fixed; top: 80px; right: 20px; background: var(--bg-input); border-left: 4px solid var(--primary); padding: 15px 20px; border-radius: 8px; display: none; gap: 10px; align-items: center; color: #fff; z-index: 9999; box-shadow: 0 5px 15px rgba(0,0,0,0.5); font-weight: 500;}
+
+    </style>
 </head>
 <body>
+    <div class="grid-overlay"></div>
+    <div class="glow-orb"></div>
 
-    <div class="overlay" onclick="toggleSidebar()"></div>
+    <div class="local-toast" id="localToast">
+        <i class="fas fa-info-circle"></i> <span id="localToastMsg">Message</span>
+    </div>
 
-    <aside class="sidebar" id="sidebar">
-        <div class="brand">
-            MVX <span>PRO</span>
-            <i class="fas fa-times close-btn" onclick="toggleSidebar()"></i>
+    <header class="header">
+        <div class="header-left">
+            <button class="menu-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+            <span class="brand">MVX STORE</span>
         </div>
+        <div class="header-right">
+            <button class="search-btn" onclick="toggleSearch()"><i class="fas fa-search"></i></button>
+        </div>
+    </header>
+
+    <div class="search-container" id="searchContainer">
+        <input type="text" id="searchInput" class="search-box" placeholder="Search apps, games, tools..." onkeyup="handleSearch()">
+    </div>
+
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+    <div class="sidebar" id="sidebar">
+        <i class="fas fa-times close-btn" onclick="toggleSidebar()"></i>
+        <div class="sidebar-logo">MVX SYSTEM</div>
         
-        <nav>
-            <div class="menu-item active" onclick="showTab('users')">
-                <i class="fas fa-users"></i> User Manager
-            </div>
-            <div class="menu-item" onclick="showTab('settings')">
-                <i class="fas fa-cogs"></i> Settings
-            </div>
-        </nav>
-    </aside>
+        <button class="login-redirect-btn" onclick="window.location.href='user-login.html'">
+            <i class="fas fa-user-circle"></i> <span id="sidebarUserText">LOGIN / SETTINGS</span>
+        </button>
 
-    <main class="content">
-        <div class="top-header">
-            <button class="menu-toggle" onclick="toggleSidebar()">
-                <i class="fas fa-bars"></i>
-            </button>
-            <h2 id="pageTitle">User Management</h2>
-        </div>
+        <div class="sidebar-menu" style="margin-top: 30px;">
+            <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 10px;">COMMUNITY</p>
+            <a href="feedback.html"><i class="fas fa-comments" style="color: #00e6b8;"></i> Community Feedback</a>
+            <a href="#"><i class="fab fa-telegram" style="color: #0088cc;"></i> Telegram Channel</a>
+            <a href="#"><i class="fab fa-youtube" style="color: #ff0000;"></i> YouTube Channel</a>
 
-        <div id="tab-users" class="tab-content">
-            <div class="toolbar">
-                <input type="text" id="searchBox" class="search" placeholder="Search key or device..." onkeyup="renderTable()">
-                <button class="btn btn-add" onclick="openModal()">
-                    <i class="fas fa-plus"></i> NEW KEY
-                </button>
-            </div>
-
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Key</th>
-                            <th>Status</th>
-                            <th>Expiry</th>
-                            <th>Device Info</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="userTable">
-                        </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="tab-settings" class="tab-content" style="display: none;">
-            <div class="card">
-                <h3>⚠️ Global Version Control</h3>
-                <p>Set the active script version. Old versions will stop working.</p>
-                <div class="input-group">
-                    <input type="number" id="appVer" value="1.0" step="0.1">
-                    <button class="btn btn-add" onclick="updateVersion()">UPDATE</button>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <div class="modal" id="keyModal">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h3>Generate Key</h3>
-                <i class="fas fa-times" onclick="closeModal()" style="cursor:pointer;"></i>
-            </div>
+            <hr style="border-color: #333; margin: 25px 0 15px;">
             
-            <div class="form-group">
-                <label>Key Name</label>
-                <input type="text" id="newKey" placeholder="Enter Name">
-            </div>
+            <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 10px;">FREE ADMIN USERS</p>
+            <a onclick="checkLoginAndGoFree('lua')"><i class="fas fa-key" style="color: #00e6b8;"></i> LUA ADMIN PANEL</a>
+            <a onclick="checkLoginAndGoFree('tm')"><i class="fas fa-mobile-alt" style="color: #00e6b8;"></i> TM ADMIN PANEL</a>
             
-            <div class="form-group">
-                <label>Duration</label>
-                <select id="duration">
-                    <option value="1">1 Day</option>
-                    <option value="7">7 Days</option>
-                    <option value="30" selected>1 Month</option>
-                    <option value="365">1 Year</option>
-                </select>
-            </div>
+            <hr style="border-color: #333; margin: 25px 0 15px;">
 
-            <div class="form-group">
-                <label>Device Limit</label>
-                <select id="limit">
-                    <option value="1">1 Device</option>
-                    <option value="2">2 Devices</option>
-                    <option value="999">Unlimited</option>
-                </select>
-            </div>
+            <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 10px;">WEBSITE ADMIN OWNER</p>
+            <a onclick="openPassModal('store-dashboard.html')"><i class="fas fa-satellite-dish" style="color: #ff003c;"></i> WEBSITE ADMIN PANEL</a>
+            <a onclick="openPassModal('lua-admin-owner.html?tab=lua')"><i class="fas fa-crown" style="color: #ffd700;"></i> LUA ADMIN PANEL</a>
+            <a onclick="openPassModal('lua-admin-owner.html?tab=tm')"><i class="fas fa-shield-alt" style="color: #ffd700;"></i> TM ADMIN PANEL</a>
+        </div>
+    </div>
 
-            <div class="modal-footer">
-                <button class="btn btn-cancel" onclick="closeModal()">Cancel</button>
-                <button class="btn btn-add" onclick="createKey()">Create</button>
+    <div class="pass-modal-overlay" id="passModalOverlay">
+        <div class="pass-modal">
+            <h3><i class="fas fa-shield-alt"></i> ADMIN ACCESS</h3>
+            <input type="password" id="adminPassInput" placeholder="••••••" autocomplete="off">
+            <div class="pass-btns">
+                <button class="btn-cancel" onclick="closePassModal()">Cancel</button>
+                <button class="btn-verify" onclick="verifyAdminPass()">Authorize</button>
             </div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <div class="main-tabs">
+        <button class="tab-btn active" data-type="Free" onclick="setAccessType('Free')">🔓 FREE</button>
+        <button class="tab-btn" data-type="Premium" onclick="setAccessType('Premium')">👑 PREMIUM</button>
+        <button class="tab-btn" data-type="Paid" onclick="setAccessType('Paid')">🛒 PAID</button>
+    </div>
+
+    <div class="sub-categories" id="subCategories">
+        <button class="cat-pill active" onclick="setCategory('All')">All</button>
+        <button class="cat-pill" onclick="setCategory('Free Fire')">Free Fire</button>
+        <button class="cat-pill" onclick="setCategory('PUBG')">PUBG</button>
+        <button class="cat-pill" onclick="setCategory('Blood Strike')">Blood Strike</button>
+        <button class="cat-pill" onclick="setCategory('Tools')">Tools</button>
+        <button class="cat-pill" onclick="setCategory('Other Game')">Others</button>
+    </div>
+
+    <main class="feed-container" id="feedContainer">
+        <p style="text-align: center; color: gray; margin-top: 50px;"><i class="fas fa-circle-notch fa-spin"></i> Loading Data...</p>
+    </main>
+
+    <div class="load-more-container" id="loadMoreContainer">
+        <button class="btn-load-more" onclick="loadMoreApps()">Load More Apps <i class="fas fa-angle-down"></i></button>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAS3UXXrio_-c9uPbHwpDuTVrP-p8d903w",
+            authDomain: "white-2k-17-v4.firebaseapp.com",
+            databaseURL: "https://white-2k-17-v4-default-rtdb.firebaseio.com",
+            projectId: "white-2k-17-v4",
+            storageBucket: "white-2k-17-v4.firebasestorage.app",
+            messagingSenderId: "180909174928",
+            appId: "1:180909174928:android:148861a87d66c6980ca815"
+        };
+        
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+        const database = firebase.database();
+        const auth = firebase.auth();
+        const DB_PATH = "MVX_VIP_SERVER_V5";
+
+        let allApps = [];
+        let currentAccess = "Free";
+        let currentCategory = "All";
+        let searchQuery = "";
+        let targetAdminUrl = ""; 
+        let currentLoggedUser = null;
+        
+        let displayLimit = 10; // Load More Limit
+
+        // Custom Toast Message
+        function showMessage(msg, type='success') {
+            const toast = document.getElementById('localToast');
+            document.getElementById('localToastMsg').innerText = msg;
+            toast.style.borderLeftColor = type === 'error' ? 'var(--danger)' : 'var(--primary)';
+            toast.style.display = 'flex';
+            setTimeout(() => { toast.style.display = 'none'; }, 3000);
+        }
+
+        // Time Ago Function (আপনার কথামতো)
+        function timeAgo(timestamp) {
+            if (!timestamp) return "";
+            const seconds = Math.floor((new Date() - timestamp) / 1000);
+            
+            let interval = seconds / 31536000;
+            if (interval > 1) return Math.floor(interval) + " years ago";
+            interval = seconds / 2592000;
+            if (interval > 1) return Math.floor(interval) + " months ago";
+            interval = seconds / 604800;
+            if (interval > 1) return Math.floor(interval) + " weeks ago";
+            interval = seconds / 86400;
+            if (interval > 1) return Math.floor(interval) + " days ago";
+            interval = seconds / 3600;
+            if (interval > 1) return Math.floor(interval) + " hours ago";
+            interval = seconds / 60;
+            if (interval > 1) return Math.floor(interval) + " mins ago";
+            
+            return "Just now";
+        }
+
+        // Auth State Tracker
+        auth.onAuthStateChanged((user) => {
+            currentLoggedUser = user;
+            if(user) {
+                document.getElementById('sidebarUserText').innerText = "MY PROFILE";
+            } else {
+                document.getElementById('sidebarUserText').innerText = "LOGIN / SETTINGS";
+            }
+        });
+
+        // Free Admin Panel Login Check
+        function checkLoginAndGoFree(tab) {
+            if(currentLoggedUser) {
+                window.location.href = 'lua-admin-free.html?tab=' + tab;
+            } else {
+                showMessage('লগইন ছাড়া ফ্রি এডমিনে ঢোকা নিষেধ! দয়া করে লগইন করুন।', 'error');
+                setTimeout(() => {
+                    window.location.href = 'user-login.html?redirect=lua-admin-free.html?tab=' + tab;
+                }, 2000);
+            }
+        }
+
+        // UI & Sidebar
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
+        function toggleSearch() {
+            const box = document.getElementById('searchContainer');
+            box.style.display = box.style.display === 'block' ? 'none' : 'block';
+            if(box.style.display === 'block') document.getElementById('searchInput').focus();
+        }
+
+        // Admin Password Security
+        function openPassModal(url) {
+            targetAdminUrl = url;
+            document.getElementById('passModalOverlay').style.display = 'flex';
+            document.getElementById('adminPassInput').value = '';
+            document.getElementById('adminPassInput').focus();
+            toggleSidebar(); // close sidebar so modal is clear
+        }
+
+        function closePassModal() {
+            document.getElementById('passModalOverlay').style.display = 'none';
+        }
+
+        function verifyAdminPass() {
+            const pass = document.getElementById('adminPassInput').value;
+            if (pass === "121345") {
+                sessionStorage.setItem('mvx_admin_token', 'SECURE_AUTHORIZED');
+                window.location.href = targetAdminUrl;
+            } else {
+                showMessage("Incorrect Access Code!", "error");
+                document.getElementById('adminPassInput').value = '';
+            }
+        }
+
+        document.getElementById('adminPassInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') verifyAdminPass();
+        });
+
+        // Tabs & Categories
+        function setAccessType(type) {
+            currentAccess = type;
+            currentCategory = "All";
+            displayLimit = 10;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.tab-btn[data-type="${type}"]`).classList.add('active');
+            
+            document.getElementById('subCategories').style.display = 'flex';
+            document.querySelectorAll('.cat-pill').forEach(btn => btn.classList.remove('active'));
+            document.querySelector('.cat-pill').classList.add('active');
+            filterAndRender();
+        }
+
+        function setCategory(cat) {
+            currentCategory = cat;
+            displayLimit = 10;
+            document.querySelectorAll('.cat-pill').forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.innerText.trim() === cat || (cat === 'Other Game' && btn.innerText.trim() === 'Others')) {
+                    btn.classList.add('active');
+                }
+            });
+            filterAndRender();
+        }
+
+        function handleSearch() {
+            searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            displayLimit = 10;
+            filterAndRender();
+        }
+
+        function goToDetails(appId) {
+            window.location.href = `details.html?id=${appId}`;
+        }
+
+        function loadMoreApps() {
+            displayLimit += 10;
+            filterAndRender();
+        }
+
+        // Firebase Fetch & Render
+        database.ref(DB_PATH).on('value', (snap) => {
+            const data = snap.val();
+            if(!data) {
+                document.getElementById('feedContainer').innerHTML = `<div class="empty-state"><i class="fas fa-box-open"></i><h3>No Apps Available</h3></div>`;
+                return;
+            }
+
+            allApps = Object.entries(data)
+                .map(([key, val]) => ({ id: key, ...val, isHidden: val.isHidden || false }))
+                .filter(app => !app.isHidden)
+                .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0)); // Sort by newest
+            
+            filterAndRender();
+        });
+
+        function filterAndRender() {
+            const feed = document.getElementById('feedContainer');
+            const loadMoreBtn = document.getElementById('loadMoreContainer');
+            feed.innerHTML = '';
+
+            let filtered = allApps.filter(app => app.accessType === currentAccess);
+            if(currentCategory !== "All") filtered = filtered.filter(app => app.gameCategory === currentCategory);
+            if(searchQuery) filtered = filtered.filter(app => app.appName.toLowerCase().includes(searchQuery));
+
+            if(filtered.length === 0) {
+                feed.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><h3>No Results Found</h3></div>`;
+                loadMoreBtn.style.display = 'none';
+                return;
+            }
+
+            const appsToShow = filtered.slice(0, displayLimit);
+
+            let htmlContent = '';
+            appsToShow.forEach(app => {
+                const bannerSrc = app.bannerBase64 || 'https://via.placeholder.com/800x450/1a1f2c/00e6b8?text=NO+BANNER';
+                const logoSrc = app.logoBase64 || 'https://cdn-icons-png.flaticon.com/512/564/564619.png';
+                
+                // New Update Badge & Time Logic (আপনার অরিজিনাল কার্ড ডিজাইনে হাত দেওয়া হয়নি)
+                const updateBadge = app.isUpdated ? `<div class="badge-update">LATEST UPDATE</div>` : '';
+                const timeString = app.timestamp ? `<br><span class="time-ago-text"><i class="far fa-clock"></i> Uploaded ${timeAgo(app.timestamp)}</span>` : '';
+
+                htmlContent += `
+                    <div class="yt-card" onclick="goToDetails('${app.id}')">
+                        <div class="yt-banner-wrapper">
+                            ${updateBadge}
+                            <span class="type-badge ${app.accessType}">${app.accessType}</span>
+                            <img src="${bannerSrc}" class="yt-banner" loading="lazy">
+                        </div>
+                        <div class="yt-info">
+                            <img src="${logoSrc}" class="yt-logo" loading="lazy">
+                            <div class="yt-text">
+                                <h3 class="yt-title">${app.appName}</h3>
+                                <div class="yt-meta">
+                                    ${app.gameCategory} • ${app.version || 'v1.0'} • ${app.size || 'N/A'}
+                                    ${timeString}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            feed.innerHTML = htmlContent;
+
+            if (filtered.length > displayLimit) {
+                loadMoreBtn.style.display = 'block';
+            } else {
+                loadMoreBtn.style.display = 'none';
+            }
+        }
+        
+        document.getElementById('subCategories').style.display = 'flex';
+    </script>
 </body>
 </html>

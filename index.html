@@ -9,11 +9,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
-    <link rel="stylesheet" href="style.css">
-    
     <style>
         /* ==========================================================================
-           MVX STORE V4.0 - HOMEPAGE (UPDATED WITH LAZY LOAD & TIME LOGIC)
+           MVX STORE V4.0 - HOMEPAGE (ORIGINAL UI + NEW LOGIC)
            ========================================================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
@@ -28,8 +26,6 @@
         }
 
         body { background: var(--bg-void); color: var(--text-primary); font-family: var(--font-body); min-height: 100vh; overflow-x: hidden; }
-        
-        body.smooth-mode .grid-overlay, body.smooth-mode .glow-orb, body.smooth-mode .yt-card:hover { animation: none; transform: none; box-shadow: none; filter: none; }
 
         /* Background Effects */
         .grid-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(0, 230, 184, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 230, 184, 0.03) 1px, transparent 1px); background-size: 50px 50px; pointer-events: none; z-index: -1; animation: gridShift 15s linear infinite; }
@@ -54,7 +50,6 @@
         .sidebar-menu a { display: flex; align-items: center; gap: 15px; padding: 15px; color: var(--text-primary); text-decoration: none; border-radius: 8px; margin-bottom: 10px; transition: 0.3s; cursor: pointer; }
         .sidebar-menu a:hover { background: var(--bg-input); color: var(--primary); }
         
-        .smooth-toggle { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--bg-input); border-radius: 8px; margin-top: 20px; }
         .login-redirect-btn { width: 100%; padding: 15px; background: var(--primary); color: #000; border: none; border-radius: 8px; font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; cursor: pointer; margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s;}
         .login-redirect-btn:hover { box-shadow: 0 0 15px var(--primary-dim); }
 
@@ -90,6 +85,12 @@
         .type-badge.Premium { background: var(--gold); color: #000; }
         .type-badge.Paid { background: var(--danger); color: #fff; }
 
+        /* New Update Badge styling */
+        .badge-update { position: absolute; top: 10px; left: 10px; background: var(--danger); color: #fff; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-family: var(--font-head); font-weight: bold; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 0 10px var(--danger-dim); z-index: 2; }
+        
+        /* Time Ago styling (small and clean) */
+        .time-ago-text { font-size: 0.8rem; color: #00e6b8; margin-top: 5px; display: inline-block; font-weight: 500; }
+
         .yt-info { display: flex; gap: 15px; margin-top: 15px; align-items: flex-start; }
         .yt-logo { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; background: var(--bg-input); border: 1px solid #333; }
         .yt-text { flex: 1; }
@@ -98,6 +99,11 @@
 
         .empty-state { text-align: center; padding: 50px 20px; color: var(--text-muted); }
         .empty-state i { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; }
+
+        /* Load More Button */
+        .load-more-container { text-align: center; margin: 20px 0 50px; width: 100%; display: none; }
+        .btn-load-more { background: var(--bg-input); border: 1px solid var(--primary); color: var(--primary); padding: 12px 30px; border-radius: 8px; font-family: var(--font-head); font-size: 1.1rem; cursor: pointer; transition: 0.3s; }
+        .btn-load-more:hover { background: var(--primary-dim); box-shadow: 0 0 15px var(--primary-dim); }
 
         /* Custom Password Modal for Admin */
         .pass-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
@@ -147,11 +153,6 @@
             <i class="fas fa-user-circle"></i> <span id="sidebarUserText">LOGIN / SETTINGS</span>
         </button>
 
-        <div class="smooth-toggle">
-            <span>Low-end Device Mode</span>
-            <input type="checkbox" id="smoothModeToggle" onchange="toggleSmoothMode()">
-        </div>
-
         <div class="sidebar-menu" style="margin-top: 30px;">
             <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 10px;">COMMUNITY</p>
             <a href="feedback.html"><i class="fas fa-comments" style="color: #00e6b8;"></i> Community Feedback</a>
@@ -160,11 +161,16 @@
 
             <hr style="border-color: #333; margin: 25px 0 15px;">
             
-            <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 10px;">SYSTEM ADMIN</p>
+            <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 10px;">FREE ADMIN USERS</p>
+            <a onclick="checkLoginAndGoFree('lua')"><i class="fas fa-key" style="color: #00e6b8;"></i> LUA ADMIN PANEL</a>
+            <a onclick="checkLoginAndGoFree('tm')"><i class="fas fa-mobile-alt" style="color: #00e6b8;"></i> TM ADMIN PANEL</a>
             
-            <a onclick="openPassModal('lua-admin-owner.html')"><i class="fas fa-crown" style="color: #ffd700;"></i> WEBSITE ADMIN OWNER</a>
-            
-            <a onclick="checkLoginAndGoFree()"><i class="fas fa-users-cog" style="color: #00e6b8;"></i> FREE ADMIN USERS</a>
+            <hr style="border-color: #333; margin: 25px 0 15px;">
+
+            <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 10px;">WEBSITE ADMIN OWNER</p>
+            <a onclick="openPassModal('store-dashboard.html')"><i class="fas fa-satellite-dish" style="color: #ff003c;"></i> WEBSITE ADMIN PANEL</a>
+            <a onclick="openPassModal('lua-admin-owner.html?tab=lua')"><i class="fas fa-crown" style="color: #ffd700;"></i> LUA ADMIN PANEL</a>
+            <a onclick="openPassModal('lua-admin-owner.html?tab=tm')"><i class="fas fa-shield-alt" style="color: #ffd700;"></i> TM ADMIN PANEL</a>
         </div>
     </div>
 
@@ -202,8 +208,6 @@
         <button class="btn-load-more" onclick="loadMoreApps()">Load More Apps <i class="fas fa-angle-down"></i></button>
     </div>
 
-    <script src="main.js"></script>
-
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -232,8 +236,7 @@
         let targetAdminUrl = ""; 
         let currentLoggedUser = null;
         
-        // Lazy Load Limit Variable
-        let displayLimit = 10; 
+        let displayLimit = 10; // Load More Limit
 
         // Custom Toast Message
         function showMessage(msg, type='success') {
@@ -244,9 +247,9 @@
             setTimeout(() => { toast.style.display = 'none'; }, 3000);
         }
 
-        // Time Ago Function (নতুন অ্যাড করা লজিক)
+        // Time Ago Function (আপনার কথামতো)
         function timeAgo(timestamp) {
-            if (!timestamp) return "A while ago";
+            if (!timestamp) return "";
             const seconds = Math.floor((new Date() - timestamp) / 1000);
             
             let interval = seconds / 31536000;
@@ -265,7 +268,7 @@
             return "Just now";
         }
 
-        // --- Auth State Tracker ---
+        // Auth State Tracker
         auth.onAuthStateChanged((user) => {
             currentLoggedUser = user;
             if(user) {
@@ -275,19 +278,19 @@
             }
         });
 
-        // --- Free Lua Login Check ---
-        function checkLoginAndGoFree() {
+        // Free Admin Panel Login Check
+        function checkLoginAndGoFree(tab) {
             if(currentLoggedUser) {
-                window.location.href = 'lua-admin-free.html';
+                window.location.href = 'lua-admin-free.html?tab=' + tab;
             } else {
                 showMessage('লগইন ছাড়া ফ্রি এডমিনে ঢোকা নিষেধ! দয়া করে লগইন করুন।', 'error');
                 setTimeout(() => {
-                    window.location.href = 'user-login.html?redirect=lua-admin-free.html';
+                    window.location.href = 'user-login.html?redirect=lua-admin-free.html?tab=' + tab;
                 }, 2000);
             }
         }
 
-        // --- UI & Sidebar ---
+        // UI & Sidebar
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
             document.getElementById('overlay').classList.toggle('active');
@@ -299,22 +302,7 @@
             if(box.style.display === 'block') document.getElementById('searchInput').focus();
         }
 
-        function toggleSmoothMode() {
-            const isChecked = document.getElementById('smoothModeToggle').checked;
-            if(isChecked) {
-                document.body.classList.add('smooth-mode');
-                localStorage.setItem('smoothMode', 'true');
-            } else {
-                document.body.classList.remove('smooth-mode');
-                localStorage.setItem('smoothMode', 'false');
-            }
-        }
-        if(localStorage.getItem('smoothMode') === 'true') {
-            document.getElementById('smoothModeToggle').checked = true;
-            document.body.classList.add('smooth-mode');
-        }
-
-        // --- Admin Password Security ---
+        // Admin Password Security
         function openPassModal(url) {
             targetAdminUrl = url;
             document.getElementById('passModalOverlay').style.display = 'flex';
@@ -342,11 +330,11 @@
             if (e.key === 'Enter') verifyAdminPass();
         });
 
-        // --- Tabs & Categories ---
+        // Tabs & Categories
         function setAccessType(type) {
             currentAccess = type;
             currentCategory = "All";
-            displayLimit = 10; // Reset Limit when changing tab
+            displayLimit = 10;
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`.tab-btn[data-type="${type}"]`).classList.add('active');
             
@@ -358,7 +346,7 @@
 
         function setCategory(cat) {
             currentCategory = cat;
-            displayLimit = 10; // Reset Limit when changing category
+            displayLimit = 10;
             document.querySelectorAll('.cat-pill').forEach(btn => {
                 btn.classList.remove('active');
                 if(btn.innerText.trim() === cat || (cat === 'Other Game' && btn.innerText.trim() === 'Others')) {
@@ -378,7 +366,12 @@
             window.location.href = `details.html?id=${appId}`;
         }
 
-        // --- Firebase Fetch & Render ---
+        function loadMoreApps() {
+            displayLimit += 10;
+            filterAndRender();
+        }
+
+        // Firebase Fetch & Render
         database.ref(DB_PATH).on('value', (snap) => {
             const data = snap.val();
             if(!data) {
@@ -393,12 +386,6 @@
             
             filterAndRender();
         });
-
-        // Load More Logic
-        function loadMoreApps() {
-            displayLimit += 10;
-            filterAndRender();
-        }
 
         function filterAndRender() {
             const feed = document.getElementById('feedContainer');
@@ -415,7 +402,6 @@
                 return;
             }
 
-            // Slice data for Lazy Loading
             const appsToShow = filtered.slice(0, displayLimit);
 
             let htmlContent = '';
@@ -423,9 +409,9 @@
                 const bannerSrc = app.bannerBase64 || 'https://via.placeholder.com/800x450/1a1f2c/00e6b8?text=NO+BANNER';
                 const logoSrc = app.logoBase64 || 'https://cdn-icons-png.flaticon.com/512/564/564619.png';
                 
-                // Time & Badge logic
-                const timeString = app.timestamp ? timeAgo(app.timestamp) : 'A while ago';
+                // New Update Badge & Time Logic (আপনার অরিজিনাল কার্ড ডিজাইনে হাত দেওয়া হয়নি)
                 const updateBadge = app.isUpdated ? `<div class="badge-update">LATEST UPDATE</div>` : '';
+                const timeString = app.timestamp ? `<br><span class="time-ago-text"><i class="far fa-clock"></i> Uploaded ${timeAgo(app.timestamp)}</span>` : '';
 
                 htmlContent += `
                     <div class="yt-card" onclick="goToDetails('${app.id}')">
@@ -439,8 +425,8 @@
                             <div class="yt-text">
                                 <h3 class="yt-title">${app.appName}</h3>
                                 <div class="yt-meta">
-                                    ${app.gameCategory} • ${app.version || 'v1.0'} <br>
-                                    <span class="time-ago-text"><i class="far fa-clock"></i> ${timeString}</span>
+                                    ${app.gameCategory} • ${app.version || 'v1.0'} • ${app.size || 'N/A'}
+                                    ${timeString}
                                 </div>
                             </div>
                         </div>
@@ -450,7 +436,6 @@
             
             feed.innerHTML = htmlContent;
 
-            // Show or Hide "Load More" button
             if (filtered.length > displayLimit) {
                 loadMoreBtn.style.display = 'block';
             } else {

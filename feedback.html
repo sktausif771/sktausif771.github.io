@@ -13,7 +13,7 @@
     
     <style>
         /* ==========================================================================
-           MVX STORE - FEEDBACK CHAT V4.0 (GUEST VIEW + OWNER CONTROLS)
+           MVX STORE - FEEDBACK CHAT V4.0 (ORIGINAL UI + BUG FIXED + LIGHTBOX)
            ========================================================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
@@ -29,47 +29,48 @@
         body { background: var(--bg-void); color: var(--text-primary); font-family: var(--font-body); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
         /* Navbar */
-        .navbar { position: fixed; top: 0; left: 0; width: 100%; background: var(--glass-bg); backdrop-filter: blur(10px); border-bottom: var(--glass-border); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; height: 60px; }
-        .back-btn { color: #fff; text-decoration: none; font-size: 1.2rem; }
-        .brand { font-family: var(--font-head); font-size: 1.3rem; font-weight: 700; color: var(--primary); }
+        .navbar { position: fixed; top: 0; left: 0; width: 100%; background: var(--glass-bg); backdrop-filter: blur(10px); border-bottom: var(--glass-border); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 100; height: 70px; }
+        .back-btn { color: var(--text-primary); text-decoration: none; font-size: 1.2rem; background: var(--bg-input); width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; border-radius: 8px; border: 1px solid #333; transition: 0.3s; }
+        .back-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .brand { font-family: var(--font-head); font-size: 1.4rem; font-weight: 700; color: var(--primary); letter-spacing: 1px; }
 
         /* Chat Container */
-        .chat-container { flex: 1; overflow-y: auto; padding: 80px 20px 100px; display: flex; flex-direction: column; gap: 15px; scroll-behavior: smooth; height: 100%; }
+        .chat-container { flex: 1; overflow-y: auto; padding: 90px 20px 100px; display: flex; flex-direction: column; gap: 15px; scroll-behavior: smooth; }
         .chat-container::-webkit-scrollbar { width: 4px; }
         .chat-container::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
 
-        .message-box { max-width: 85%; padding: 12px 15px; border-radius: 12px; position: relative; animation: fadeIn 0.3s ease; word-wrap: break-word; }
+        .message-box { max-width: 85%; padding: 12px 15px; border-radius: 15px; position: relative; animation: fadeIn 0.3s ease; word-wrap: break-word; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Message Types */
-        .msg-others { align-self: flex-start; background: var(--bg-card); border: 1px solid #333; border-bottom-left-radius: 0; }
-        .msg-mine { align-self: flex-end; background: var(--primary-dim); border: 1px solid var(--primary); border-bottom-right-radius: 0; }
-        .msg-owner { border-color: var(--gold); box-shadow: 0 0 10px rgba(255,215,0,0.1); } /* Owner Special Style */
+        .msg-others { align-self: flex-start; background: var(--bg-card); border: 1px solid #333; border-bottom-left-radius: 2px; }
+        .msg-mine { align-self: flex-end; background: var(--primary-dim); border: 1px solid var(--primary); border-bottom-right-radius: 2px; }
+        .msg-owner { border-color: var(--gold); box-shadow: 0 0 10px rgba(255,215,0,0.1); }
 
-        .msg-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 0.8rem; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 5px; gap: 10px;}
+        .msg-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 0.8rem; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 5px; gap: 15px;}
         .msg-name { font-weight: bold; color: var(--text-muted); }
         .msg-mine .msg-name { color: var(--primary); }
         
         .owner-badge { background: var(--gold); color: #000; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: 800; font-family: var(--font-head); letter-spacing: 1px; }
-        .msg-time { font-size: 0.7rem; color: #666; }
+        .msg-time { font-size: 0.7rem; color: #666; white-space: nowrap; }
 
         .msg-text { font-size: 0.95rem; line-height: 1.4; white-space: pre-wrap; }
         
-        /* Image Preview in Chat */
-        .msg-image { max-width: 100%; height: auto; max-height: 200px; border-radius: 8px; margin-top: 8px; border: 1px solid #333; object-fit: cover; display: block; cursor: pointer; transition: 0.2s; }
-        .msg-image:hover { opacity: 0.8; }
+        /* Image Preview in Chat (Clickable) */
+        .msg-image { max-width: 100%; height: auto; max-height: 250px; border-radius: 8px; margin-top: 8px; border: 1px solid #333; object-fit: cover; display: block; cursor: zoom-in; transition: 0.2s; }
+        .msg-image:hover { opacity: 0.8; border-color: var(--primary); }
 
         .msg-actions { display: flex; gap: 12px; margin-top: 8px; justify-content: flex-end; opacity: 0.7; }
         .msg-actions button { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.9rem; transition: 0.2s; }
         .msg-actions button:hover { color: var(--primary); opacity: 1; }
         .btn-del:hover { color: var(--danger) !important; }
-        .btn-block:hover { color: var(--warning) !important; }
+        .btn-block:hover { color: #ff9800 !important; }
 
         /* Fixed Input Area */
-        .input-area { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--bg-card); padding: 10px 15px; border-top: var(--glass-border); display: flex; gap: 10px; align-items: flex-end; z-index: 1000; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); }
+        .input-area { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--bg-card); padding: 12px 15px; border-top: 1px solid #333; display: flex; gap: 10px; align-items: flex-end; z-index: 100; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); }
         
-        .attach-btn { background: var(--bg-input); border: 1px solid #333; color: var(--primary); width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; cursor: pointer; flex-shrink: 0; transition: 0.2s; }
-        .attach-btn:active { transform: scale(0.95); }
+        .attach-btn { background: var(--bg-input); border: 1px solid #333; color: var(--text-primary); width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; cursor: pointer; flex-shrink: 0; transition: 0.2s; }
+        .attach-btn:hover { border-color: var(--primary); color: var(--primary); }
         
         .textarea-wrapper { flex: 1; background: var(--bg-input); border: 1px solid #333; border-radius: 20px; padding: 5px 15px; position: relative; display: flex; flex-direction: column; justify-content: center; }
         textarea { width: 100%; background: transparent; border: none; color: #fff; font-family: var(--font-body); resize: none; outline: none; padding: 10px 0; max-height: 100px; min-height: 24px; font-size: 1rem; }
@@ -80,17 +81,17 @@
 
         .send-btn { background: var(--primary); border: none; color: #000; width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; cursor: pointer; flex-shrink: 0; transition: 0.3s; }
         .send-btn:hover { box-shadow: 0 0 15px var(--primary-dim); transform: scale(1.05); }
-        .send-btn:active { transform: scale(0.95); }
 
-        /* Login Prompt Layer */
-        .login-prompt { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(12, 16, 26, 0.9); backdrop-filter: blur(3px); display: none; align-items: center; justify-content: center; z-index: 1001; border-top: var(--glass-border); }
-        .login-prompt-btn { background: var(--primary); color: #000; border: none; padding: 10px 20px; border-radius: 8px; font-family: var(--font-head); font-weight: bold; cursor: pointer; }
+        /* Login Prompt Layer (Guest View) */
+        .login-prompt { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(12, 16, 26, 0.9); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 101; border-top: 1px solid var(--primary); }
+        .login-prompt-btn { background: var(--primary); color: #000; border: none; padding: 12px 25px; border-radius: 8px; font-family: var(--font-head); font-weight: bold; font-size: 1rem; cursor: pointer; transition: 0.3s; }
+        .login-prompt-btn:hover { box-shadow: 0 0 20px var(--primary-dim); }
 
-        /* Lightbox */
-        .lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; z-index: 9999; animation: fadeIn 0.2s ease; }
-        .lightbox img { max-width: 95%; max-height: 90%; border-radius: 8px; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
-        .lightbox-close { position: absolute; top: 20px; right: 20px; color: #fff; font-size: 2rem; cursor: pointer; background: rgba(255,255,255,0.1); width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
-
+        /* Lightbox (Image Viewer) */
+        .lightbox-modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.95); backdrop-filter: blur(5px); align-items: center; justify-content: center; animation: fadeIn 0.2s ease; }
+        .lightbox-content { max-width: 95%; max-height: 90%; border-radius: 10px; box-shadow: 0 0 30px rgba(0,0,0,0.8); object-fit: contain; }
+        .lightbox-close { position: absolute; top: 20px; right: 30px; color: #fff; font-size: 2.5rem; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .lightbox-close:hover { color: var(--danger); }
     </style>
 </head>
 <body>
@@ -98,11 +99,12 @@
     <nav class="navbar">
         <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
         <div class="brand"><i class="fas fa-comments"></i> FEEDBACK</div>
-        <div style="width: 20px;"></div>
+        <div style="width: 40px;"></div>
     </nav>
 
     <div class="chat-container" id="chatContainer">
-        </div>
+        <p style="text-align: center; color: gray; margin-top: 50px;"><i class="fas fa-circle-notch fa-spin"></i> Loading messages...</p>
+    </div>
 
     <div class="input-area" id="inputAreaBox">
         <div class="login-prompt" id="loginPromptOverlay">
@@ -117,24 +119,23 @@
                 <img id="imgPreview" src="">
                 <button class="remove-img" onclick="removeImage()">×</button>
             </div>
-            <textarea id="messageInput" placeholder="Write message..." oninput="autoResize(this)" rows="1"></textarea>
+            <textarea id="messageInput" placeholder="Write a message..." oninput="autoResize(this)" rows="1"></textarea>
         </div>
         
-        <button class="send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+        <button class="send-btn" id="sendBtn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
     </div>
 
-    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
-        <span class="lightbox-close">&times;</span>
-        <img id="lightboxImg" src="" onclick="event.stopPropagation()"> 
+    <div id="lightboxModal" class="lightbox-modal" onclick="closeLightbox()">
+        <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+        <img class="lightbox-content" id="lightboxImg" onclick="event.stopPropagation()">
     </div>
 
-    <script src="main.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
-        // Firebase Configuration
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyAS3UXXrio_-c9uPbHwpDuTVrP-p8d903w",
             authDomain: "white-2k-17-v4.firebaseapp.com",
@@ -153,15 +154,15 @@
         let currentUser = null;
         let isOwner = false;
         let isBlocked = false;
+        let myProfileName = "MVX User";
         let selectedBase64Image = "";
         let editMessageId = null;
-        let lastMessageSentTime = 0; // 30 sec cooldown tracker
-        let myProfileName = "MVX User";
+        let lastMessageSentTime = 0; // For 30s Cooldown
 
-        // --- LOAD MESSAGES IMMEDIATELY (GUEST VIEW) ---
+        // Load Messages Immediately for Guests
         loadMessages();
 
-        // --- AUTH CHECK ---
+        // Auth State Check
         auth.onAuthStateChanged((user) => {
             if (user) {
                 currentUser = user;
@@ -172,17 +173,18 @@
                     isOwner = true;
                 }
 
-                // Check Custom Name
+                // Fetch Custom Name
                 db.ref('registered_users/' + user.uid).once('value').then(snap => {
                     if(snap.exists() && snap.val().name) myProfileName = snap.val().name;
+                    else if(user.displayName) myProfileName = user.displayName;
                 });
 
-                // Check if user is blocked
+                // Block Check
                 db.ref('blocked_users/' + user.uid).once('value').then(snap => {
                     if(snap.exists()) {
                         isBlocked = true;
                         document.getElementById('loginPromptOverlay').style.display = 'flex';
-                        document.getElementById('loginPromptOverlay').innerHTML = `<p style="color:var(--danger); font-weight:bold;">You are blocked by Admin.</p>`;
+                        document.getElementById('loginPromptOverlay').innerHTML = `<h3 style="color:var(--danger);">You are Blocked</h3>`;
                     }
                 });
 
@@ -193,17 +195,15 @@
             }
         });
 
-        // --- LOAD MESSAGES FROM FIREBASE ---
+        // --- LOAD CHAT MESSAGES ---
         function loadMessages() {
-            showDarkLoader("Loading Chat");
             db.ref(DB_PATH).on('value', (snap) => {
                 const data = snap.val();
                 const container = document.getElementById('chatContainer');
                 container.innerHTML = '';
-                hideDarkLoader();
 
                 if(!data) {
-                    container.innerHTML = `<p style="text-align:center; color:gray; margin-top:50px;">No feedbacks yet. Be the first to write!</p>`;
+                    container.innerHTML = `<p style="text-align:center; color:gray; margin-top:50px;">No messages yet. Be the first to say hi!</p>`;
                     return;
                 }
 
@@ -213,12 +213,13 @@
                     const isMine = currentUser && (msg.uid === currentUser.uid);
                     let msgClass = isMine ? 'msg-mine' : 'msg-others';
                     
-                    let displayName = msg.name || "Unknown User";
+                    let displayName = msg.name || "User";
                     if(msg.email === "sktausif771@gmail.com") {
-                        displayName = `<span class="owner-badge"><i class="fas fa-crown"></i> OWNER</span>`;
-                        msgClass += ' msg-owner'; // Special border for owner
+                        displayName = `<span class="owner-badge"><i class="fas fa-crown"></i> ADMIN</span>`;
+                        msgClass += ' msg-owner';
                     }
 
+                    // Onclick Lightbox Added Here
                     const imgHtml = msg.imageBase64 ? `<img src="${msg.imageBase64}" class="msg-image" onclick="openLightbox('${msg.imageBase64}')">` : '';
 
                     let actionHtml = '';
@@ -230,25 +231,23 @@
                             </div>
                         `;
                     }
-                    // OWNER CONTROLS (Delete anyone's post & Block User)
                     if(isOwner) {
-                        let blockBtn = msg.uid !== currentUser.uid ? `<button class="btn-block" onclick="blockUser('${msg.uid}', '${msg.name}')" title="Block User"><i class="fas fa-ban"></i></button>` : '';
+                        let blockBtn = msg.uid !== (currentUser ? currentUser.uid : '') ? `<button class="btn-block" onclick="blockUser('${msg.uid}', '${msg.name}')" title="Block"><i class="fas fa-ban"></i></button>` : '';
                         actionHtml = `
                             <div class="msg-actions">
                                 ${blockBtn}
-                                <button class="btn-del" onclick="deleteMsg('${msg.id}')" title="Delete Post"><i class="fas fa-trash"></i></button>
+                                <button class="btn-del" onclick="deleteMsg('${msg.id}')"><i class="fas fa-trash"></i></button>
                             </div>
                         `;
                     }
 
-                    const dateObj = new Date(msg.timestamp);
-                    const timeString = dateObj.toLocaleDateString() + ' ' + dateObj.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                    const timeStr = new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
                     container.innerHTML += `
-                        <div class="message-box ${msgClass}" id="msg-${msg.id}">
+                        <div class="message-box ${msgClass}">
                             <div class="msg-header">
                                 <span class="msg-name">${displayName}</span>
-                                <span class="msg-time">${timeString} ${msg.isEdited ? '(Edited)' : ''}</span>
+                                <span class="msg-time">${timeStr} ${msg.isEdited ? '(Edited)' : ''}</span>
                             </div>
                             <div class="msg-text">${msg.text}</div>
                             ${imgHtml}
@@ -257,57 +256,46 @@
                     `;
                 });
 
+                // Auto Scroll to bottom
                 setTimeout(() => { container.scrollTop = container.scrollHeight; }, 100);
             });
         }
 
-        // --- IMAGE LIGHTBOX ---
+        // --- LIGHTBOX FUNCTIONS ---
         function openLightbox(src) {
             document.getElementById('lightboxImg').src = src;
-            document.getElementById('lightbox').style.display = 'flex';
+            document.getElementById('lightboxModal').style.display = 'flex';
         }
         function closeLightbox() {
-            document.getElementById('lightbox').style.display = 'none';
+            document.getElementById('lightboxModal').style.display = 'none';
         }
 
-        // --- SEND MESSAGE WITH LIMITS & COOLDOWN ---
-        async function sendMessage() {
+        // --- SEND MESSAGE LOGIC (BUG FIXED) ---
+        function sendMessage() {
             if(!currentUser) return;
-            if(isBlocked) return showGlobalToast("অ্যাডমিন আপনাকে ব্লক করেছে!", "error");
+            if(isBlocked) {
+                alert("অ্যাডমিন আপনাকে ব্লক করেছে!");
+                return;
+            }
 
             const textInput = document.getElementById('messageInput');
             const text = textInput.value.trim();
 
-            if(!text && !selectedBase64Image) return;
+            if(!text && !selectedBase64Image) return; // Empty msg block
 
-            // 1. Cooldown Check (30 seconds for non-owners)
+            const sendBtn = document.getElementById('sendBtn');
+            
+            // Cooldown Check (30 seconds)
             if(!isOwner && !editMessageId) {
                 const now = Date.now();
-                if(now - lastMessageSentTime < 30000) { // 30000 ms = 30 sec
-                    const waitTime = Math.ceil((30000 - (now - lastMessageSentTime))/1000);
-                    return showGlobalToast(`পরবর্তী মেসেজ পাঠাতে ${waitTime} সেকেন্ড অপেক্ষা করুন।`, 'warning');
+                if(now - lastMessageSentTime < 30000) {
+                    const wait = Math.ceil((30000 - (now - lastMessageSentTime))/1000);
+                    alert(`পরবর্তী মেসেজ পাঠাতে ${wait} সেকেন্ড অপেক্ষা করুন।`);
+                    return;
                 }
             }
 
-            // 2. Image Limit Check (Max 10 images per 24h)
-            if(!isOwner && !editMessageId && selectedBase64Image !== "") {
-                const now = Date.now();
-                const past24h = now - (24 * 60 * 60 * 1000);
-                
-                const snap = await db.ref(DB_PATH).orderByChild('uid').equalTo(currentUser.uid).once('value');
-                const myMessages = snap.val();
-                
-                if(myMessages) {
-                    let imgCount = 0;
-                    Object.values(myMessages).forEach(m => {
-                        if(m.timestamp > past24h && m.imageBase64 && m.imageBase64 !== "") imgCount++;
-                    });
-                    if(imgCount >= 10) {
-                        return showGlobalToast("আপনি দিনে সর্বোচ্চ ১০টি ছবি পাঠাতে পারবেন।", "error");
-                    }
-                }
-            }
-
+            sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
             textInput.disabled = true;
 
             const msgData = {
@@ -320,36 +308,42 @@
             };
 
             if(editMessageId) {
-                db.ref(`${DB_PATH}/${editMessageId}`).update({ text: text, isEdited: true })
-                .then(() => resetInput());
-            } else {
-                db.ref(DB_PATH).push(msgData)
-                .then(() => {
-                    lastMessageSentTime = Date.now(); // Update cooldown timer
+                db.ref(`${DB_PATH}/${editMessageId}`).update({ text: text, isEdited: true }).then(() => {
                     resetInput();
-                })
-                .catch(err => {
-                    showGlobalToast("Error: " + err.message, "error");
+                    sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+                    textInput.disabled = false;
+                    textInput.focus();
+                }).catch(err => {
+                    alert("Error: " + err.message);
+                    sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+                    textInput.disabled = false;
+                });
+            } else {
+                db.ref(DB_PATH).push(msgData).then(() => {
+                    lastMessageSentTime = Date.now();
+                    resetInput();
+                    sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+                    textInput.disabled = false;
+                    textInput.focus();
+                }).catch(err => {
+                    alert("Error: " + err.message);
+                    sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
                     textInput.disabled = false;
                 });
             }
         }
 
-        // --- OWNER & USER ACTIONS ---
+        // Edit / Delete / Block
         function deleteMsg(id) {
-            showConfirmModal("আপনি কি মেসেজটি মুছে ফেলতে চান?", () => {
+            if(confirm("মেসেজটি কি ডিলিট করতে চান?")) {
                 db.ref(`${DB_PATH}/${id}`).remove();
-                showGlobalToast("মেসেজ ডিলিট করা হয়েছে।", "success");
-            });
+            }
         }
-
         function blockUser(uid, name) {
-            showConfirmModal(`আপনি কি স্প্যামিং এর জন্য ${name} কে ব্লক করতে চান?`, () => {
-                db.ref('blocked_users/' + uid).set({ blockedAt: Date.now(), reason: "Spamming in Feedback" });
-                showGlobalToast(`${name} কে ব্লক করা হয়েছে!`, "warning");
-            });
+            if(confirm(`${name} কে ব্লক করতে চান?`)) {
+                db.ref('blocked_users/' + uid).set({ blockedAt: Date.now() });
+            }
         }
-
         function editMsg(id, encodedText) {
             editMessageId = id;
             const textInput = document.getElementById('messageInput');
@@ -358,12 +352,12 @@
             autoResize(textInput);
         }
 
-        // --- IMAGE UPLOAD LOGIC ---
+        // --- IMAGE HANDLING ---
         function handleImageSelect(input) {
             const file = input.files[0];
             if(file) {
                 if(file.size > 2 * 1024 * 1024) {
-                    showGlobalToast("ছবির সাইজ ২MB এর বেশি হতে পারবে না!", "error");
+                    alert("২MB এর ছোট ছবি দিন!");
                     input.value = "";
                     return;
                 }
@@ -386,11 +380,9 @@
         function resetInput() {
             const textInput = document.getElementById('messageInput');
             textInput.value = "";
-            textInput.disabled = false;
             textInput.style.height = 'auto';
             editMessageId = null;
             removeImage();
-            textInput.focus();
         }
 
         function autoResize(textarea) {
