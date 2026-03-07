@@ -11,7 +11,7 @@
     
     <style>
         /* ==========================================================================
-           MVX STORE ADMIN DASHBOARD V4.0 (PREMIUM UI & ALL MASTER CONTROLS)
+           GLOBAL & SIDEBAR STYLES
            ========================================================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; }
         html, body { max-width: 100vw; overflow-x: hidden; }
@@ -41,82 +41,113 @@
         .mobile-header { display: none; padding: 15px 20px; background: var(--bg-card); border-bottom: 1px solid #333; align-items: center; gap: 15px; flex-shrink: 0; }
         .hamburger { font-size: 24px; color: var(--gold); cursor: pointer; }
 
-        /* Shared Card Styles */
+        /* Shared Tab Styles */
         .tab-content { padding: 20px; height: 100%; overflow-y: auto; display: none; width: 100%; }
         .active-tab { display: block !important; }
         
-        .web-card { background: var(--bg-card); border: var(--glass-border); border-radius: 16px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 20px; width: 100%; }
-        .card-title { font-family: var(--font-head); color: var(--primary); margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; font-size: 1.3rem;}
-        
-        .web-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;}
-        .web-grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;}
-        @media(max-width: 768px) { .web-grid { grid-template-columns: 1fr; } }
-        
-        .web-input-group { display: flex; flex-direction: column; gap: 5px; width: 100%; margin-bottom: 15px;}
-        .web-input-group label { font-size: 0.9rem; color: var(--text-muted); font-weight: 600; }
-        .web-input-group input, .web-input-group select, .web-input-group textarea { width: 100%; background: var(--bg-input); border: 1px solid #444; color: #fff; padding: 12px; border-radius: 8px; font-size: 1rem; outline: none; transition: 0.3s; font-family: var(--font-body); }
-        .web-input-group input:focus, .web-input-group textarea:focus { border-color: var(--primary); }
-        .web-input-group textarea { height: auto; min-height: 100px; resize: vertical; }
-
-        /* Store Upload Engine & Dual Method */
-        .upload-engine-box { background: rgba(0, 230, 184, 0.05); border: 1px solid rgba(0, 230, 184, 0.3); border-radius: 12px; padding: 20px; margin-bottom: 25px; display: flex; align-items: center; gap: 20px; transition: 0.3s; }
-        .upload-engine-icon { font-size: 2.5rem; color: var(--primary); text-shadow: 0 0 15px var(--primary-dim); }
-        .upload-engine-info flex: 1; }
-        .upload-engine-info h4 { color: var(--text-primary); margin-bottom: 5px; font-family: var(--font-head); font-size: 1.1rem; }
-        .upload-engine-info p { color: var(--text-muted); font-size: 0.85rem; margin: 0; line-height: 1.4; }
-        .upload-engine-select { background: var(--bg-input); border: 2px solid var(--primary); color: var(--primary); padding: 12px 15px; border-radius: 8px; font-weight: bold; outline: none; cursor: pointer; font-size: 1rem; }
-
-        .image-upload-wrapper { display: flex; gap: 10px; align-items: center; width: 100%; }
-        .image-upload-wrapper input[type="text"] { flex: 1; min-width: 0; }
-        .file-btn { background: #333; color: #fff; border: none; padding: 12px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; white-space: nowrap; flex-shrink: 0; }
-        
-        .img-upload-box { background: var(--bg-input); border: 2px dashed #333; border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; position: relative; height: 150px; display: flex; flex-direction: column; justify-content: center; }
-        .img-upload-box input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-        .preview-list { display: flex; gap: 10px; overflow-x: auto; margin-top: 10px; padding-bottom: 10px; width: 100%; }
-        .preview-item { position: relative; width: 80px; height: 120px; flex-shrink: 0; border-radius: 8px; overflow: hidden; border: 1px solid var(--primary); }
-        .preview-item img { width: 100%; height: 100%; object-fit: cover; }
-        .preview-item .remove-btn { position: absolute; top: 5px; right: 5px; background: red; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-weight: bold; }
-
-        .update-box { background: rgba(255, 215, 0, 0.1); border-left: 4px solid var(--warning); padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; cursor: pointer; }
-        .update-box input { width: 18px; height: 18px; cursor: pointer; flex-shrink: 0; }
-        .update-box label { color: var(--warning); font-weight: bold; cursor: pointer; font-size: 0.95rem; }
-
-        .btn-submit { width: 100%; background: var(--primary); color: #000; border: none; padding: 15px; border-radius: 8px; font-family: var(--font-head); font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
-        .btn-submit:hover { box-shadow: 0 0 15px var(--primary-dim); }
-
-        .web-table { width: 100%; border-collapse: collapse; min-width: 600px; }
-        .web-table th, .web-table td { padding: 15px; text-align: left; border-bottom: 1px solid #333; font-size: 0.95rem; }
-        .web-table th { color: var(--primary); font-family: var(--font-head); }
-        .web-table td img { width: 40px; height: 40px; border-radius: 5px; object-fit: cover; }
-        .action-btns button { background: none; border: none; cursor: pointer; font-size: 1.2rem; margin-right: 10px; }
-
-        /* Master TM/LUA Specific Styles */
-        .tm-card { border-left: 4px solid var(--gold); }
-        .tm-count { font-size: 24px; font-weight: bold; color: var(--gold); }
-        .lua-act-btn { width: 32px; height: 32px; border-radius: 5px; border: none; cursor: pointer; color: white; margin-right: 5px; }
-
-        /* Lock Toggle Switches */
-        .switch-container { display: flex; justify-content: space-between; align-items: center; background: var(--bg-input); padding: 15px; border-radius: 8px; border: 1px solid #333; margin-bottom: 15px; }
-        .switch-label { font-size: 1rem; font-weight: bold; color: #fff; display: flex; align-items: center; gap: 10px; }
-        
+        /* Toast */
         .toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; }
         .toast { background: var(--bg-input); border-left: 4px solid var(--primary); padding: 15px 20px; margin-bottom: 10px; border-radius: 8px; display: flex; gap: 10px; align-items: center; color: #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
 
-        /* Modals */
+        /* ==========================================================================
+           TAB 1: WEBSITE ADMIN (EXACT COPY FROM YOUR FILE + UPDATE BTN)
+           ========================================================================== */
+        .card { background: var(--bg-card); border: var(--glass-border); border-radius: 16px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; margin-bottom: 20px; }
+        .card-title { font-family: var(--font-head); color: var(--primary); margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; width: 100%; }
+        #formTitleText { flex: 1; min-width: 0; word-break: break-word; line-height: 1.4; display: block; font-size: 1.3rem;}
+
+        .upload-engine-box { background: rgba(0, 230, 184, 0.05); border: 1px solid rgba(0, 230, 184, 0.3); border-radius: 12px; padding: 20px; margin-bottom: 25px; display: flex; align-items: center; gap: 20px; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); transition: 0.3s; }
+        .upload-engine-box:hover { border-color: var(--primary); background: rgba(0, 230, 184, 0.1); }
+        .upload-engine-icon { font-size: 2.5rem; color: var(--primary); text-shadow: 0 0 15px var(--primary-dim); }
+        .upload-engine-info { flex: 1; }
+        .upload-engine-info h4 { color: var(--text-primary); margin-bottom: 5px; font-family: var(--font-head); font-size: 1.1rem; }
+        .upload-engine-info p { color: var(--text-muted); font-size: 0.85rem; margin: 0; line-height: 1.4; }
+        .upload-engine-select { background: var(--bg-input); border: 2px solid var(--primary); color: var(--primary); padding: 12px 15px; border-radius: 8px; font-weight: bold; outline: none; cursor: pointer; font-family: var(--font-body); font-size: 1rem; transition: 0.3s; }
+
+        .form-grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-bottom: 15px; width: 100%; }
+        .form-grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; width: 100%; }
+        .form-group { display: flex; flex-direction: column; width: 100%; max-width: 100%; }
+        label { margin-bottom: 8px; color: var(--text-muted); font-size: 0.9rem; font-weight: 600; }
+        input, select, textarea { width: 100%; height: 45px; background: var(--bg-input); border: 1px solid #333; color: #fff; padding: 0 15px; border-radius: 8px; font-family: var(--font-body); outline: none; transition: 0.3s; font-size: 16px !important; }
+        textarea { height: auto; min-height: 100px; padding: 15px; resize: vertical; }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary); }
+
+        .img-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; width: 100%; }
+        .img-upload-box { background: var(--bg-input); border: 2px dashed #333; border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; height: 150px; display: flex; flex-direction: column; justify-content: center; }
+        .img-upload-box:hover { border-color: var(--primary); }
+        .img-upload-box img { max-width: 100%; max-height: 100%; border-radius: 8px; display: none; margin: 0 auto; object-fit: contain; }
+        .img-upload-box .placeholder { color: var(--text-muted); font-size: 0.9rem; }
+        .img-upload-box input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+
+        .preview-list { display: flex; gap: 10px; overflow-x: auto; margin-top: 10px; padding-bottom: 10px; width: 100%; }
+        .preview-item { position: relative; width: 80px; height: 120px; flex-shrink: 0; border-radius: 8px; overflow: hidden; border: 1px solid var(--primary); }
+        .preview-item img { width: 100%; height: 100%; object-fit: cover; }
+        .preview-item .remove-btn { position: absolute; top: 5px; right: 5px; background: red; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 12px; font-weight: bold; }
+
+        .extra-link-row { display: grid; grid-template-columns: 1fr 2fr auto; gap: 10px; margin-bottom: 10px; width: 100%; }
+        .btn-add-link { background: var(--primary-dim); border: 1px dashed var(--primary); color: var(--primary); width: 100%; height: 45px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+
+        .btn-submit { width: 100%; height: 55px; background: var(--primary); color: #000; font-family: var(--font-head); font-size: 1.2rem; font-weight: 700; border: none; border-radius: 12px; cursor: pointer; margin-top: 20px; transition: 0.3s; }
+        .btn-submit:hover { box-shadow: 0 0 20px var(--primary-dim); transform: translateY(-2px); }
+
+        /* The NEW UPDATE CHECKBOX */
+        .update-box { background: rgba(255, 215, 0, 0.1); border-left: 4px solid var(--gold); padding: 15px; border-radius: 8px; margin-top: 15px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .update-box input { width: 18px; height: 18px; cursor: pointer; flex-shrink: 0;}
+        .update-box label { color: var(--gold); font-weight: bold; cursor: pointer; font-size: 0.95rem; }
+
+        .table-responsive { width: 100%; overflow-x: auto; margin-top: 15px; border-radius: 8px; border: 1px solid #333; }
+        table { width: 100%; border-collapse: collapse; text-align: left; background: var(--bg-input); }
+        th, td { padding: 12px 15px; border-bottom: 1px solid #333; white-space: nowrap; }
+        th { background: rgba(0,0,0,0.5); color: var(--primary); font-family: var(--font-head); font-size: 0.9rem; }
+        td { font-size: 0.95rem; }
+        
+        .app-title-wrapper { display: flex; align-items: center; gap: 10px; max-width: 250px; }
+        .app-title-wrapper img { width: 35px; height: 35px; border-radius: 8px; object-fit: cover; flex-shrink: 0; border: 1px solid #333; background: var(--bg-card); }
+        .app-title-text { font-weight: bold; color: var(--primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; width: 100%; }
+
+        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
+        .status-active { background: rgba(0, 230, 184, 0.2); color: var(--primary); }
+        .status-hidden { background: rgba(255, 0, 60, 0.2); color: var(--danger); }
+
+        .action-btns { display: flex; gap: 8px; }
+        .act-btn { width: 32px; height: 32px; border-radius: 6px; border: none; cursor: pointer; color: #fff; display: flex; justify-content: center; align-items: center; transition: 0.2s; }
+        .act-edit { background: var(--primary); color: #000; }
+        .act-hide { background: var(--warning); color: #000; }
+        .act-del { background: var(--danger); }
+        .act-btn:hover { transform: scale(1.1); }
+
+        /* ==========================================================================
+           TAB 2, 3, 4, 5: CLEAN PANELS (LUA, TM, UPDATE, SETTINGS)
+           ========================================================================== */
+        .clean-card { background: var(--bg-card); border: 1px solid #333; border-radius: 12px; padding: 25px; margin-bottom: 20px; }
+        .clean-title { color: var(--gold); font-family: 'Rajdhani', sans-serif; font-size: 1.5rem; margin-bottom: 20px; font-weight: 700; border-bottom: 1px dashed #333; padding-bottom: 10px;}
+        
+        .clean-btn { padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-family: 'Rajdhani'; transition: 0.3s; background: var(--gold); color: #000; display: inline-flex; align-items: center; gap: 5px;}
+        
+        .tm-card { background: #f4f7f6; color: #000; border-radius: 12px; padding: 20px; font-family: Arial, sans-serif; }
+        .tm-title { font-size: 20px; font-weight: 900; color: #000; margin-bottom: 5px;}
+        .tm-table-box { background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); padding: 15px; margin-top: 15px;}
+        .tm-table { width: 100%; border-collapse: collapse; background: #fff; }
+        .tm-table th { background: #f0f0f0; color: #000; font-family: Arial, sans-serif; font-size: 12px; padding: 10px; border-bottom: 2px solid #ddd;}
+        .tm-table td { padding: 12px 10px; border-bottom: 1px solid #eee; color: #000; font-size: 14px;}
+        .tm-user-icon { background: #000; color: var(--gold); width: 30px; height: 30px; border-radius: 50%; display: inline-flex; justify-content: center; align-items: center; margin-right: 10px;}
+        
+        .switch-container { display: flex; justify-content: space-between; align-items: center; background: var(--bg-input); padding: 15px; border-radius: 8px; border: 1px solid #333; margin-bottom: 15px; }
+        
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 3000; backdrop-filter: blur(5px); }
         .modal-box { background: var(--bg-card); width: 90%; max-width: 400px; padding: 25px; border-radius: 12px; border: 1px solid var(--gold); box-shadow: 0 0 30px rgba(255, 215, 0, 0.2); }
-        .modal-box h3 { color: var(--gold); font-family: var(--font-head); margin-bottom: 15px; }
 
         @media (max-width: 768px) {
             .sidebar { position: fixed; left: -260px; }
             .sidebar.active { left: 0; }
-            .main-content { width: 100%; }
             .mobile-header { display: flex; }
             .close-btn { display: block; }
             .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; z-index: 999; }
             .overlay.active { display: block; }
             .upload-engine-box { flex-direction: column; align-items: flex-start; }
             .upload-engine-icon { display: none; }
+            .form-grid-2, .form-grid-3, .img-grid { grid-template-columns: 1fr; }
+            .extra-link-row { display: flex; flex-direction: column; }
         }
     </style>
 </head>
@@ -168,10 +199,10 @@
         <div class="toast-container" id="toastContainer"></div>
 
         <div id="website-tab" class="tab-content active-tab">
-            <div class="web-card" id="uploadFormCard">
+            <div class="card" id="formCard">
                 <h2 class="card-title">
                     <span id="formTitleText"><i class="fas fa-upload"></i> UPLOAD NEW APP</span>
-                    <button id="cancelEditBtn" style="display:none; background:var(--danger); color:#fff; border:none; padding:8px 15px; border-radius:8px; cursor:pointer;" onclick="cancelEdit()">Cancel Edit</button>
+                    <button id="cancelEditBtn" style="display:none; background:var(--danger); color:#fff; border:none; padding:8px 15px; border-radius:8px; cursor:pointer;" onclick="cancelEdit()"><i class="fas fa-times"></i> Cancel Edit</button>
                 </h2>
 
                 <div class="upload-engine-box">
@@ -186,113 +217,128 @@
                     </select>
                 </div>
                 
-                <input type="hidden" id="editAppId" value="">
+                <form id="uploadForm" onsubmit="submitApp(event)">
+                    <input type="hidden" id="editAppId" value="">
 
-                <div class="web-grid">
-                    <div class="web-input-group">
-                        <label>App / Game Name *</label>
-                        <input type="text" id="appName" placeholder="e.g. VIP Game Mod">
-                    </div>
-                    <div class="web-input-group">
-                        <label>Category *</label>
-                        <select id="category">
-                            <option value="Free Fire">Free Fire</option>
-                            <option value="PUBG">PUBG</option>
-                            <option value="Blood Strike">Blood Strike</option>
-                            <option value="Tools">Tools</option>
-                            <option value="Other Game">Others</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="web-grid-3">
-                    <div class="web-input-group">
-                        <label>Access Type *</label>
-                        <select id="accessType">
-                            <option value="Free">Free</option>
-                            <option value="Premium">Premium</option>
-                            <option value="Paid">Paid</option>
-                        </select>
-                    </div>
-                    <div class="web-input-group">
-                        <label>Version</label>
-                        <input type="text" id="version" placeholder="v1.0">
-                    </div>
-                    <div class="web-input-group">
-                        <label>Size</label>
-                        <input type="text" id="size" placeholder="150 MB">
-                    </div>
-                </div>
-
-                <div class="web-grid">
-                    <div class="web-input-group">
-                        <label>Banner Image (API Link / Select) *</label>
-                        <div class="image-upload-wrapper">
-                            <input type="text" id="bannerValue" placeholder="Paste URL/Base64...">
-                            <input type="file" id="bannerFile" accept="image/*" style="display: none;" onchange="processImage(this, 'bannerValue')">
-                            <button class="file-btn" onclick="document.getElementById('bannerFile').click()"><i class="fas fa-folder-open"></i></button>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>App / Game Name *</label>
+                            <input type="text" id="appName" required placeholder="Enter App Name">
+                        </div>
+                        <div class="form-group">
+                            <label>Version</label>
+                            <input type="text" id="version" placeholder="Enter Version">
                         </div>
                     </div>
-                    <div class="web-input-group">
-                        <label>Logo Image (API Link / Select) *</label>
-                        <div class="image-upload-wrapper">
-                            <input type="text" id="logoValue" placeholder="Paste URL/Base64...">
-                            <input type="file" id="logoFile" accept="image/*" style="display: none;" onchange="processImage(this, 'logoValue')">
-                            <button class="file-btn" onclick="document.getElementById('logoFile').click()"><i class="fas fa-folder-open"></i></button>
+
+                    <div class="form-grid-3">
+                        <div class="form-group">
+                            <label>Size</label>
+                            <input type="text" id="size" placeholder="Enter File Size">
+                        </div>
+                        <div class="form-group">
+                            <label>Category *</label>
+                            <select id="category" required>
+                                <option value="Free Fire">Free Fire</option>
+                                <option value="PUBG">PUBG</option>
+                                <option value="Blood Strike">Blood Strike</option>
+                                <option value="Tools">Tools</option>
+                                <option value="Other Game">Others</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Access Type *</label>
+                            <select id="accessType" required>
+                                <option value="Free">Free</option>
+                                <option value="Premium">Premium</option>
+                                <option value="Paid">Paid</option>
+                            </select>
                         </div>
                     </div>
-                </div>
 
-                <div class="web-input-group">
-                    <label>5 Review Screenshots (Select Max 5 Images)</label>
-                    <div class="img-upload-box" style="height: auto; padding: 15px;">
-                        <span style="color: var(--text-muted);"><i class="fas fa-images fa-2x"></i><br>Click to add screenshots</span>
-                        <input type="file" accept="image/*" multiple onchange="processMultipleImages(this)">
+                    <h3 style="margin: 20px 0 10px; color: var(--primary); font-size: 1rem;">MEDIA UPLOADS</h3>
+                    <div class="img-grid">
+                        <div class="form-group">
+                            <label>Thumbnail / Banner (16:9) *</label>
+                            <div class="img-upload-box">
+                                <div class="placeholder" id="bannerText"><i class="fas fa-image fa-2x"></i><br>Select Banner</div>
+                                <img id="bannerPreview">
+                                <input type="file" accept="image/*" id="bannerInput" onchange="processImage(this, 'bannerPreview', 'bannerText', 'bannerValue')">
+                                <input type="hidden" id="bannerValue" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>App Logo (1:1) *</label>
+                            <div class="img-upload-box">
+                                <div class="placeholder" id="logoText"><i class="fas fa-icons fa-2x"></i><br>Select Logo</div>
+                                <img id="logoPreview">
+                                <input type="file" accept="image/*" id="logoInput" onchange="processImage(this, 'logoPreview', 'logoText', 'logoValue')">
+                                <input type="hidden" id="logoValue" required>
+                            </div>
+                        </div>
                     </div>
-                    <div class="preview-list" id="screenshotContainer"></div>
-                </div>
 
-                <div class="web-grid">
-                    <div class="web-input-group">
+                    <div class="form-group">
+                        <label>Preview Screenshots (Max 5 Images)</label>
+                        <div class="img-upload-box" style="height: auto; padding: 10px;">
+                            <span style="color: var(--text-muted);"><i class="fas fa-images"></i> Click to add screenshots</span>
+                            <input type="file" accept="image/*" multiple onchange="processMultipleImages(this)">
+                        </div>
+                        <div class="preview-list" id="screenshotContainer"></div>
+                    </div>
+
+                    <h3 style="margin: 20px 0 10px; color: var(--primary); font-size: 1rem;">DOWNLOAD & SECURITY</h3>
+                    <div class="form-group" style="margin-bottom: 15px;">
                         <label>Direct Download Link *</label>
-                        <input type="url" id="downloadUrl" placeholder="MediaFire/Drive Link">
+                        <input type="url" id="downloadUrl" required placeholder="Paste Download Link Here">
                     </div>
-                    <div class="web-input-group">
-                        <label>Password & Video URL</label>
-                        <div style="display: flex; gap: 10px;">
-                            <input type="text" id="password" placeholder="Pass Key" style="flex: 1; min-width: 0;">
-                            <input type="url" id="videoUrl" placeholder="YT Link" style="flex: 1; min-width: 0;">
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Password (Leave empty if none)</label>
+                            <input type="text" id="password" placeholder="Enter Password">
+                        </div>
+                        <div class="form-group">
+                            <label>Password Video URL (YouTube)</label>
+                            <input type="url" id="videoUrl" placeholder="Paste YouTube Link">
                         </div>
                     </div>
-                </div>
 
-                <div class="web-input-group">
-                    <label>Description</label>
-                    <textarea id="description" placeholder="Write app features..."></textarea>
-                </div>
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label>Extra Links</label>
+                        <div id="extraLinksContainer"></div>
+                        <button type="button" class="btn-add-link" onclick="addExtraLink()"><i class="fas fa-plus"></i> Add Extra Link</button>
+                    </div>
 
-                <div class="update-box" id="updateGroup" style="display: none;">
-                    <input type="checkbox" id="isAppUpdate">
-                    <label for="isAppUpdate">Mark as LATEST UPDATE (Adds Badge & Moves to Top)</label>
-                </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="description" placeholder="Write app features..."></textarea>
+                    </div>
 
-                <button class="btn-submit" id="submitBtn" onclick="saveApp()"><i class="fas fa-cloud-upload-alt"></i> PUBLISH TO STORE</button>
+                    <div class="update-box" id="updateGroup" style="display: none;">
+                        <input type="checkbox" id="isAppUpdate">
+                        <label for="isAppUpdate">Mark as LATEST UPDATE (Adds 3-Days Badge & Moves to Top)</label>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="submitBtn"><i class="fas fa-cloud-upload-alt"></i> PUBLISH TO STORE</button>
+                </form>
             </div>
 
-            <div class="web-card">
-                <h2><i class="fas fa-list"></i> Uploaded Apps Overview</h2>
-                <div style="overflow-x: auto;">
-                    <table class="web-table">
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-server"></i> MANAGE UPLOADED APPS</h2>
+                <div class="table-responsive">
+                    <table>
                         <thead>
                             <tr>
-                                <th>Logo</th>
-                                <th>App Name</th>
+                                <th>App / Logo</th>
                                 <th>Category</th>
+                                <th>Type</th>
+                                <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="appsTableBody">
-                            <tr><td colspan="4" style="text-align: center;">Loading apps...</td></tr>
+                        <tbody id="appTableBody">
+                            <tr><td colspan="5" style="text-align:center;">Loading...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -300,23 +346,23 @@
         </div>
 
         <div id="lua-tab" class="tab-content">
-            <div class="web-card">
+            <div class="clean-card">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h2 style="margin: 0; border: none; padding: 0;"><i class="fas fa-key"></i> Master Lua Keys</h2>
-                    <button class="btn-submit" style="width: auto; padding: 10px 20px; margin: 0; background: var(--gold);" onclick="openLuaModal()"><i class="fas fa-plus"></i> Create VIP Lua</button>
+                    <h2 class="clean-title"><i class="fas fa-key"></i> Master Lua Keys</h2>
+                    <button class="clean-btn" onclick="openLuaModal()"><i class="fas fa-plus"></i> Create VIP Lua</button>
                 </div>
                 
-                <div class="web-input-group" style="background: rgba(255,215,0,0.05); padding: 15px; border: 1px solid var(--gold); border-radius: 8px;">
-                    <label style="color: var(--gold);">Force Lua Expiry / Update Version</label>
+                <div style="background: rgba(255,215,0,0.05); padding: 15px; border: 1px solid var(--gold); border-radius: 8px; margin-bottom: 20px;">
+                    <label style="color: var(--gold); font-weight: bold; margin-bottom: 10px; display: block;">Force Lua Update / Expiry</label>
                     <div style="display: flex; gap: 10px;">
-                        <input type="text" id="luaVersionInput" placeholder="New Version (e.g. 1.1)">
-                        <button class="btn-submit" style="width: auto; margin: 0;" onclick="updateLuaVersion()">UPDATE</button>
+                        <input type="text" id="luaVersionInput" placeholder="New Version (e.g. 1.1)" style="max-width: 300px;">
+                        <button class="clean-btn" onclick="updateLuaVersion()">UPDATE VERSION</button>
                     </div>
-                    <small style="color: var(--text-muted); margin-top: 5px;">* Updating version will immediately expire all old Lua scripts.</small>
+                    <small style="color: var(--text-muted); margin-top: 5px; display: block;">* Updating version will immediately expire all old Lua scripts for users.</small>
                 </div>
 
-                <div style="overflow-x: auto; margin-top: 20px;">
-                    <table class="web-table">
+                <div class="table-responsive">
+                    <table>
                         <thead>
                             <tr>
                                 <th>Key Name</th>
@@ -335,101 +381,99 @@
         </div>
 
         <div id="tm-tab" class="tab-content">
-            <div class="web-card tm-card">
-                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 20px;">
+            <div class="tm-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ddd; padding-bottom: 15px; margin-bottom: 20px;">
                     <div>
-                        <h2 style="margin: 0; border: none; padding: 0; color: #fff;"><i class="fas fa-shield-alt" style="color: var(--gold);"></i> MASTER TM PANEL</h2>
-                        <p style="color: var(--danger); font-size: 12px; margin-top: 5px; font-weight: bold;">Viewing All Sellers & Users</p>
+                        <h2 class="tm-title"><i class="fas fa-shield-alt" style="color: var(--gold);"></i> MASTER TM PANEL</h2>
+                        <p style="color: var(--danger); font-size: 12px; margin-top: 2px; font-weight: bold;">Viewing All Sellers & Users</p>
                     </div>
-                    <button class="btn-submit" style="width: auto; padding: 10px 20px; margin: 0; background: var(--gold);" onclick="openTmModal()"><i class="fas fa-plus"></i> VIP Pass</button>
+                    <button style="background: #000; color: var(--gold); font-weight: bold; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;" onclick="openTmModal()"><i class="fas fa-plus"></i> VIP Pass</button>
                 </div>
 
-                <div style="margin-bottom: 20px;">
-                    <h3 style="color: var(--text-muted); font-size: 14px; margin-bottom: 5px;">Total Database Passwords</h3>
-                    <div class="tm-count" id="tmTotalUsers">0</div>
+                <div>
+                    <h3 style="color: #555; font-size: 14px; margin-bottom: 5px;">Total Database Passwords</h3>
+                    <div style="font-size: 24px; font-weight: bold; color: #000;" id="tmTotalUsers">0</div>
                 </div>
 
-                <div style="overflow-x: auto;">
-                    <table class="web-table">
-                        <thead>
-                            <tr>
-                                <th>User Info</th>
-                                <th>Password</th>
-                                <th>Creator / Seller</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tmUsersList">
-                            <tr><td colspan="5" style="text-align:center;">Loading users...</td></tr>
-                        </tbody>
-                    </table>
+                <div class="tm-table-box">
+                    <div style="overflow-x: auto;">
+                        <table class="tm-table">
+                            <thead>
+                                <tr>
+                                    <th>User Info</th>
+                                    <th>Password</th>
+                                    <th>Creator / Seller</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tmUsersList">
+                                <tr><td colspan="5" style="text-align:center;">Loading users...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div id="app-update-tab" class="tab-content">
-            <div class="web-card" style="max-width: 500px; margin: 0 auto; text-align: center; border-top: 4px solid var(--primary);">
-                <h2 style="border: none; padding: 0;"><i class="fas fa-sync-alt"></i> Sketchware App Update</h2>
+            <div class="clean-card" style="max-width: 500px; margin: 0 auto; text-align: center; border-top: 4px solid var(--primary);">
+                <h2 class="clean-title" style="border: none;"><i class="fas fa-sync-alt"></i> App Update (Sketchware)</h2>
                 <p style="color: var(--text-muted); margin-bottom: 25px; font-size: 0.9rem;">Send update notification directly to user's app.</p>
                 
-                <div class="web-input-group" style="margin-bottom: 20px;">
-                    <label style="text-align: left;">App Version Code (e.g. 2)</label>
+                <div class="form-group" style="margin-bottom: 20px; text-align: left;">
+                    <label>App Version Code (e.g. 2)</label>
                     <input type="number" id="appVersionUpd" placeholder="Enter Version Number">
                 </div>
                 
-                <div class="web-input-group" style="margin-bottom: 20px;">
-                    <label style="text-align: left;">What's New (Changes)</label>
+                <div class="form-group" style="margin-bottom: 20px; text-align: left;">
+                    <label>What's New (Changes)</label>
                     <input type="text" id="whatNewsUpd" placeholder="Added new features...">
                 </div>
                 
-                <div class="web-input-group" style="margin-bottom: 25px;">
-                    <label style="text-align: left;">Direct Download Link</label>
+                <div class="form-group" style="margin-bottom: 25px; text-align: left;">
+                    <label>Direct Download Link</label>
                     <input type="url" id="appLinkUpd" placeholder="https://...">
                 </div>
 
-                <button class="btn-submit" onclick="sendAppUpdate()">SEND UPDATE</button>
+                <button class="btn-submit" style="margin-top: 0;" onclick="sendAppUpdate()">SEND UPDATE PUSH</button>
             </div>
         </div>
 
         <div id="settings-tab" class="tab-content">
-            <div class="web-card" style="max-width: 600px; margin: 0 auto;">
-                <h2><i class="fas fa-cogs"></i> Free User Limits</h2>
+            <div class="clean-card" style="max-width: 600px; margin: 0 auto;">
+                <h2 class="clean-title"><i class="fas fa-cogs"></i> Free User Limits</h2>
                 <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Set generation limits for Free Admin Panel.</p>
                 
-                <div class="web-grid-3">
-                    <div class="web-input-group">
-                        <label>Max Passwords / Day</label>
+                <div class="form-grid-3">
+                    <div class="form-group">
+                        <label>Max TM Pass / Day</label>
                         <input type="number" id="limitCount" value="2">
                     </div>
-                    <div class="web-input-group">
-                        <label>Valid Hours</label>
+                    <div class="form-group">
+                        <label>TM Valid Hours</label>
                         <input type="number" id="limitHours" value="6">
                     </div>
-                    <div class="web-input-group">
-                        <label>Device Limit</label>
+                    <div class="form-group">
+                        <label>TM Device Limit</label>
                         <input type="number" id="limitDevice" value="1">
                     </div>
                 </div>
 
-                <h2 style="margin-top: 30px;"><i class="fas fa-lock"></i> Panel Locks</h2>
+                <h2 class="clean-title" style="margin-top: 30px;"><i class="fas fa-lock"></i> Panel Locks</h2>
                 <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Turn on to instantly lock Free Users out of these panels.</p>
 
                 <div class="switch-container">
-                    <div class="switch-label"><i class="fas fa-key" style="color: var(--primary);"></i> Lock Free LUA Panel</div>
-                    <label class="switch">
-                        <input type="checkbox" id="lockLuaCheck" style="width: 20px; height: 20px; cursor: pointer;">
-                    </label>
+                    <div style="font-weight: bold; color: #fff;"><i class="fas fa-key" style="color: var(--primary);"></i> Lock Free LUA Panel</div>
+                    <input type="checkbox" id="lockLuaCheck" style="width: 20px; height: 20px; cursor: pointer;">
                 </div>
                 
                 <div class="switch-container">
-                    <div class="switch-label"><i class="fas fa-shield-alt" style="color: var(--gold);"></i> Lock Free TM Panel</div>
-                    <label class="switch">
-                        <input type="checkbox" id="lockTmCheck" style="width: 20px; height: 20px; cursor: pointer;">
-                    </label>
+                    <div style="font-weight: bold; color: #fff;"><i class="fas fa-shield-alt" style="color: var(--gold);"></i> Lock Free TM Panel</div>
+                    <input type="checkbox" id="lockTmCheck" style="width: 20px; height: 20px; cursor: pointer;">
                 </div>
 
-                <button class="btn-submit" onclick="saveMasterSettings()" style="margin-top: 20px;">SAVE ALL SETTINGS</button>
+                <button class="btn-submit" onclick="saveMasterSettings()">SAVE ALL SETTINGS</button>
             </div>
         </div>
 
@@ -438,23 +482,23 @@
     <div class="modal-overlay" id="luaVIPModal">
         <div class="modal-box">
             <h3>Create VIP Lua Key</h3>
-            <input type="text" id="vipLuaKey" class="web-input-group input" style="width:100%; padding:12px; margin-bottom:15px; background:var(--bg-input); border:1px solid #444; color:#fff; border-radius:8px;" placeholder="MVX_VIP_XXXX">
-            <input type="number" id="vipLuaDays" class="web-input-group input" style="width:100%; padding:12px; margin-bottom:15px; background:var(--bg-input); border:1px solid #444; color:#fff; border-radius:8px;" placeholder="Valid Days (e.g. 30)">
-            <input type="number" id="vipLuaDev" class="web-input-group input" style="width:100%; padding:12px; margin-bottom:20px; background:var(--bg-input); border:1px solid #444; color:#fff; border-radius:8px;" placeholder="Device Limit (999 for UNL)">
-            <button class="btn-submit" style="margin-bottom:10px; background:var(--gold);" onclick="createLuaKey()">Generate Key</button>
-            <button class="btn-submit" style="background:#333; color:#fff;" onclick="closeModal('luaVIPModal')">Cancel</button>
+            <input type="text" id="vipLuaKey" style="margin-bottom:15px;" placeholder="MVX_VIP_XXXX">
+            <input type="number" id="vipLuaDays" style="margin-bottom:15px;" placeholder="Valid Days (e.g. 30)">
+            <input type="number" id="vipLuaDev" style="margin-bottom:20px;" placeholder="Device Limit (999 for UNL)">
+            <button class="clean-btn" style="width: 100%; justify-content: center; margin-bottom:10px;" onclick="createLuaKey()">Generate Key</button>
+            <button class="clean-btn" style="width: 100%; justify-content: center; background:#333; color:#fff;" onclick="closeModal('luaVIPModal')">Cancel</button>
         </div>
     </div>
 
     <div class="modal-overlay" id="tmVIPModal">
         <div class="modal-box">
             <h3 style="color:var(--primary);">Generate VIP App Pass</h3>
-            <input type="text" id="vipTmUser" class="web-input-group input" style="width:100%; padding:12px; margin-bottom:15px; background:var(--bg-input); border:1px solid #444; color:#fff; border-radius:8px;" placeholder="Username (VIP_USER)">
-            <input type="text" id="vipTmPass" class="web-input-group input" style="width:100%; padding:12px; margin-bottom:15px; background:var(--bg-input); border:1px solid #444; color:#fff; border-radius:8px;" placeholder="Password">
-            <input type="number" id="vipTmDays" class="web-input-group input" style="width:100%; padding:12px; margin-bottom:15px; background:var(--bg-input); border:1px solid #444; color:#fff; border-radius:8px;" placeholder="Valid Days">
-            <input type="number" id="vipTmDev" class="web-input-group input" style="width:100%; padding:12px; margin-bottom:20px; background:var(--bg-input); border:1px solid #444; color:#fff; border-radius:8px;" placeholder="Device Limit">
-            <button class="btn-submit" style="margin-bottom:10px; background:var(--primary);" onclick="createTmPass()">Generate Password</button>
-            <button class="btn-submit" style="background:#333; color:#fff;" onclick="closeModal('tmVIPModal')">Cancel</button>
+            <input type="text" id="vipTmUser" style="margin-bottom:15px;" placeholder="Username (VIP_USER)">
+            <input type="text" id="vipTmPass" style="margin-bottom:15px;" placeholder="Password">
+            <input type="number" id="vipTmDays" style="margin-bottom:15px;" placeholder="Valid Days">
+            <input type="number" id="vipTmDev" style="margin-bottom:20px;" placeholder="Device Limit">
+            <button class="clean-btn" style="width: 100%; justify-content: center; background:var(--primary); margin-bottom:10px;" onclick="createTmPass()">Generate Password</button>
+            <button class="clean-btn" style="width: 100%; justify-content: center; background:#333; color:#fff;" onclick="closeModal('tmVIPModal')">Cancel</button>
         </div>
     </div>
 
@@ -476,8 +520,10 @@
             messagingSenderId: "180909174928",
             appId: "1:180909174928:android:148861a87d66c6980ca815"
         };
+        
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
-        const db = firebase.database();
+        const database = firebase.database(); // Used for App Store
+        const db = firebase.database(); // Standard ref
         const DB_PATH = "MVX_VIP_SERVER_V5";
         const IMGBB_API_KEY = "820eb9aa6a57f863045a52c1929efc9c";
 
@@ -487,7 +533,7 @@
 
         window.onload = function() {
             showTab('website-tab');
-            loadStoreApps();
+            loadApps(); // Original App Store Load
             loadLuaKeys();
             loadTmPasswords();
             loadMasterSettings();
@@ -532,15 +578,58 @@
         }
 
         // ==========================================
-        // 1. WEBSITE ADMIN (STORE) UPLOAD ENGINE
+        // 1. WEBSITE ADMIN (EXACT COPY OF YOUR UPLOAD ENGINE)
         // ==========================================
-        async function processImage(input, targetId) {
+        function loadApps() {
+            database.ref(DB_PATH).on('value', snap => {
+                allAppsData = snap.val() || {};
+                const tbody = document.getElementById('appTableBody');
+                tbody.innerHTML = '';
+                const keys = Object.keys(allAppsData).reverse();
+                if(keys.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No apps uploaded yet.</td></tr>`;
+                    return;
+                }
+                let tableHTML = '';
+                keys.forEach(id => {
+                    const app = allAppsData[id];
+                    const isHidden = app.isHidden || false;
+                    tableHTML += `
+                        <tr>
+                            <td data-label="App Name">
+                                <div class="app-title-wrapper">
+                                    <img src="${app.logoBase64}" alt="Logo">
+                                    <span class="app-title-text">${app.appName}</span>
+                                </div>
+                            </td>
+                            <td data-label="Category">${app.gameCategory}</td>
+                            <td data-label="Type">${app.accessType}</td>
+                            <td data-label="Status">
+                                <span class="status-badge ${isHidden ? 'status-hidden' : 'status-active'}">${isHidden ? 'Hidden' : 'Active'}</span>
+                            </td>
+                            <td data-label="Actions">
+                                <div class="action-btns">
+                                    <button class="act-btn act-edit" onclick="loadEditData('${id}')"><i class="fas fa-edit"></i></button>
+                                    <button class="act-btn act-hide" onclick="toggleHide('${id}', ${isHidden})"><i class="fas ${isHidden ? 'fa-eye' : 'fa-eye-slash'}"></i></button>
+                                    <button class="act-btn act-del" onclick="deleteApp('${id}')"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>`;
+                });
+                tbody.innerHTML = tableHTML;
+            });
+        }
+
+        async function processImage(input, previewId, textId, hiddenInputId) {
             const file = input.files[0];
             if (!file) return;
+
             const method = document.getElementById('uploadMethod').value;
-            const hiddenEl = document.getElementById(targetId);
-            
-            showToast('Processing image...', 'success');
+            const textEl = document.getElementById(textId);
+            const previewEl = document.getElementById(previewId);
+            const hiddenEl = document.getElementById(hiddenInputId);
+
+            textEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
 
             if (method === 'imgbb') {
                 const formData = new FormData();
@@ -550,14 +639,24 @@
                     const data = await res.json();
                     if (data.success) {
                         hiddenEl.value = data.data.url;
-                        showToast('Uploaded via API!', 'success');
+                        previewEl.src = data.data.url;
+                        previewEl.style.display = 'block';
+                        textEl.style.display = 'none';
+                    } else {
+                        showToast('ImgBB API Error!', 'error');
+                        textEl.innerHTML = '<i class="fas fa-image fa-2x"></i><br>Select Image';
                     }
-                } catch (e) { showToast('API Upload Failed!', 'error'); }
+                } catch (e) { 
+                    showToast('Upload Failed!', 'error'); 
+                    textEl.innerHTML = '<i class="fas fa-image fa-2x"></i><br>Select Image';
+                }
             } else {
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     hiddenEl.value = e.target.result;
-                    showToast('Base64 Generated!', 'success');
+                    previewEl.src = e.target.result;
+                    previewEl.style.display = 'block';
+                    textEl.style.display = 'none';
                 };
                 reader.readAsDataURL(file);
             }
@@ -566,6 +665,7 @@
         async function processMultipleImages(input) {
             const files = input.files;
             if (screenshotsArray.length + files.length > 5) return showToast("Max 5 screenshots!", "error");
+            
             const method = document.getElementById('uploadMethod').value;
             showToast("Processing Screenshots...", "success");
 
@@ -598,120 +698,125 @@
         }
         function removeScreenshot(i) { screenshotsArray.splice(i, 1); renderScreenshots(); }
 
-        function loadStoreApps() {
-            db.ref(DB_PATH).on('value', (snap) => {
-                allAppsData = snap.val() || {};
-                const tbody = document.getElementById('appsTableBody');
-                tbody.innerHTML = '';
-                const keys = Object.keys(allAppsData).reverse();
-                if(keys.length === 0) return tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">No apps found.</td></tr>`;
-
-                keys.forEach(id => {
-                    const app = allAppsData[id];
-                    const isHidden = app.isHidden || false;
-                    tbody.innerHTML += `
-                        <tr style="${isHidden ? 'opacity:0.5;' : ''}">
-                            <td><img src="${app.logoBase64}"></td>
-                            <td><b>${app.appName}</b></td>
-                            <td>${app.gameCategory}</td>
-                            <td>
-                                <div class="action-btns">
-                                    <button style="color:var(--primary);" onclick="editApp('${id}')"><i class="fas fa-edit"></i></button>
-                                    <button style="color:var(--warning);" onclick="toggleVisibility('${id}', ${isHidden})"><i class="fas ${isHidden ? 'fa-eye' : 'fa-eye-slash'}"></i></button>
-                                    <button style="color:var(--danger);" onclick="deleteApp('${id}')"><i class="fas fa-trash"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-                });
-            });
+        function addExtraLink(t='', u='') {
+            const div = document.createElement('div');
+            div.className = 'extra-link-row';
+            div.innerHTML = `
+                <input type="text" placeholder="Title" class="ex-title" value="${t}" required style="background:var(--bg-input); border:1px solid #333; color:#fff; padding:10px; border-radius:8px; outline:none;">
+                <input type="url" placeholder="URL" class="ex-url" value="${u}" required style="background:var(--bg-input); border:1px solid #333; color:#fff; padding:10px; border-radius:8px; outline:none;">
+                <button type="button" onclick="this.parentElement.remove()" style="background:var(--danger); border:none; color:#fff; padding:10px; border-radius:8px; cursor:pointer;"><i class="fas fa-trash"></i></button>`;
+            document.getElementById('extraLinksContainer').appendChild(div);
         }
 
-        function saveApp() {
-            const btn = document.getElementById('submitBtn');
-            const isUpdateChecked = document.getElementById('isAppUpdate') ? document.getElementById('isAppUpdate').checked : false;
-            
-            const appData = {
-                appName: document.getElementById('appName').value.trim(),
-                gameCategory: document.getElementById('category').value,
-                accessType: document.getElementById('accessType').value,
-                version: document.getElementById('version').value.trim(),
-                size: document.getElementById('size').value.trim(),
-                bannerBase64: document.getElementById('bannerValue').value.trim(),
-                logoBase64: document.getElementById('logoValue').value.trim(),
-                downloadUrl: document.getElementById('downloadUrl').value.trim(),
-                password: document.getElementById('password').value.trim(),
-                passwordVideoUrl: document.getElementById('videoUrl').value.trim(),
-                description: document.getElementById('description').value.trim(),
-                screenshots: screenshotsArray
-            };
+        function toggleHide(id, status) { database.ref(`${DB_PATH}/${id}/isHidden`).set(!status); }
+        function deleteApp(id) { if(confirm("Permanently Delete App?")) database.ref(`${DB_PATH}/${id}`).remove(); }
 
-            if(!appData.appName || !appData.downloadUrl) return showToast("Required fields empty!", "error");
-
-            btn.disabled = true; btn.innerHTML = 'SAVING...';
-
-            if(editId && allAppsData[editId]) {
-                appData.isHidden = allAppsData[editId].isHidden || false;
-                if (isUpdateChecked) {
-                    appData.timestamp = Date.now();
-                    appData.isUpdated = true;
-                } else {
-                    appData.timestamp = allAppsData[editId].timestamp || Date.now();
-                    appData.isUpdated = allAppsData[editId].isUpdated || false;
-                }
-            } else {
-                appData.isHidden = false;
-                appData.timestamp = Date.now();
-                appData.isUpdated = true;
-            }
-
-            const dbRef = editId ? db.ref(`${DB_PATH}/${editId}`) : db.ref(DB_PATH).push();
-            dbRef.set(appData).then(() => {
-                showToast(`App ${editId ? 'Updated' : 'Uploaded'}!`);
-                cancelEdit();
-            }).finally(() => { btn.innerHTML = 'PUBLISH TO STORE'; btn.disabled = false; });
-        }
-
-        function editApp(id) {
+        function loadEditData(id) {
             const app = allAppsData[id];
-            editId = id;
-            document.getElementById('formTitleText').innerHTML = '<i class="fas fa-edit"></i> EDITING: ' + app.appName;
-            document.getElementById('updateGroup').style.display = 'flex';
+            document.getElementById('editAppId').value = id;
+            document.getElementById('formTitleText').innerHTML = "<i class='fas fa-edit'></i> EDITING: " + app.appName;
+            document.getElementById('cancelEditBtn').style.display = 'inline-block';
+            document.getElementById('updateGroup').style.display = 'flex'; // Show update check
             
-            document.getElementById('appName').value = app.appName || '';
-            document.getElementById('category').value = app.gameCategory || 'Free Fire';
-            document.getElementById('accessType').value = app.accessType || 'Free';
+            document.getElementById('appName').value = app.appName;
+            document.getElementById('category').value = app.gameCategory;
+            document.getElementById('accessType').value = app.accessType;
             document.getElementById('version').value = app.version || '';
             document.getElementById('size').value = app.size || '';
-            document.getElementById('bannerValue').value = app.bannerBase64 || '';
-            document.getElementById('logoValue').value = app.logoBase64 || '';
-            document.getElementById('downloadUrl').value = app.downloadUrl || '';
+            document.getElementById('downloadUrl').value = app.downloadUrl;
             document.getElementById('password').value = app.password || '';
             document.getElementById('videoUrl').value = app.passwordVideoUrl || '';
             document.getElementById('description').value = app.description || '';
             
+            document.getElementById('bannerValue').value = app.bannerBase64;
+            document.getElementById('bannerPreview').src = app.bannerBase64;
+            document.getElementById('bannerPreview').style.display = 'block';
+            document.getElementById('bannerText').style.display = 'none';
+
+            document.getElementById('logoValue').value = app.logoBase64;
+            document.getElementById('logoPreview').src = app.logoBase64;
+            document.getElementById('logoPreview').style.display = 'block';
+            document.getElementById('logoText').style.display = 'none';
+
             screenshotsArray = app.screenshots || [];
             renderScreenshots();
-
-            document.getElementById('submitBtn').innerHTML = 'UPDATE APP DATA';
-            document.getElementById('cancelEditBtn').style.display = 'block';
-            document.getElementById('website-tab').scrollTo(0,0);
+            document.getElementById('extraLinksContainer').innerHTML = '';
+            if(app.extraLinks) app.extraLinks.forEach(l => addExtraLink(l.title, l.url));
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function cancelEdit() {
-            editId = null;
-            document.getElementById('formTitleText').innerHTML = '<i class="fas fa-cloud-upload-alt"></i> UPLOAD NEW APP';
-            document.getElementById('updateGroup').style.display = 'none';
-            if(document.getElementById('isAppUpdate')) document.getElementById('isAppUpdate').checked = false;
-            
-            document.querySelectorAll('.web-input-group input, textarea').forEach(el => el.value = '');
-            screenshotsArray = []; renderScreenshots();
-            document.getElementById('submitBtn').innerHTML = 'PUBLISH TO STORE';
+            document.getElementById('uploadForm').reset();
+            document.getElementById('editAppId').value = '';
+            document.getElementById('formTitleText').innerHTML = `<i class="fas fa-upload"></i> UPLOAD NEW APP`;
             document.getElementById('cancelEditBtn').style.display = 'none';
+            document.getElementById('updateGroup').style.display = 'none'; // Hide update check
+            
+            document.getElementById('bannerPreview').style.display = 'none';
+            document.getElementById('bannerText').style.display = 'block';
+            document.getElementById('logoPreview').style.display = 'none';
+            document.getElementById('logoText').style.display = 'block';
+            screenshotsArray = [];
+            renderScreenshots();
+            document.getElementById('extraLinksContainer').innerHTML = '';
         }
 
-        function deleteApp(id) { if(confirm("Permanently delete this app?")) db.ref(`${DB_PATH}/${id}`).remove(); }
-        function toggleVisibility(id, status) { db.ref(`${DB_PATH}/${id}/isHidden`).set(!status); }
+        function submitApp(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const id = document.getElementById('editAppId').value;
+            const isUpdateChecked = document.getElementById('isAppUpdate') ? document.getElementById('isAppUpdate').checked : false;
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PROCESSING...';
+
+            const links = [];
+            document.querySelectorAll('.extra-link-row').forEach(r => links.push({ title: r.querySelector('.ex-title').value, url: r.querySelector('.ex-url').value }));
+
+            const data = {
+                appName: document.getElementById('appName').value,
+                gameCategory: document.getElementById('category').value,
+                accessType: document.getElementById('accessType').value,
+                version: document.getElementById('version').value,
+                size: document.getElementById('size').value,
+                bannerBase64: document.getElementById('bannerValue').value,
+                logoBase64: document.getElementById('logoValue').value,
+                screenshots: screenshotsArray,
+                downloadUrl: document.getElementById('downloadUrl').value,
+                password: document.getElementById('password').value,
+                passwordVideoUrl: document.getElementById('videoUrl').value,
+                description: document.getElementById('description').value,
+                extraLinks: links
+            };
+
+            // Inject the requested update logic here
+            if(id && allAppsData[id]) {
+                data.isHidden = allAppsData[id].isHidden || false;
+                if (isUpdateChecked) {
+                    data.timestamp = Date.now();
+                    data.isUpdated = true;
+                } else {
+                    data.timestamp = allAppsData[id].timestamp || Date.now();
+                    data.isUpdated = allAppsData[id].isUpdated || false;
+                }
+            } else {
+                data.isHidden = false;
+                data.timestamp = Date.now();
+                data.isUpdated = true;
+            }
+
+            const ref = id ? database.ref(`${DB_PATH}/${id}`) : database.ref(DB_PATH).push();
+            ref.set(data).then(() => {
+                showToast("Success!");
+                cancelEdit();
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> PUBLISH TO STORE';
+            }).catch(error => {
+                showToast("Error: " + error.message, "error");
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> PUBLISH TO STORE';
+            });
+        }
 
         // ==========================================
         // 2. MASTER LUA & VERSION LOGIC
@@ -759,9 +864,9 @@
                                 <td><span style="${banClass} font-weight:bold;">${data.status.toUpperCase()}</span></td>
                                 <td>
                                     <div class="action-btns">
-                                        <button style="color:var(--gold);" onclick="resetLua('${child.key}')"><i class="fas fa-mobile-alt"></i></button>
-                                        <button style="color:var(--warning);" onclick="banLua('${child.key}', '${data.status}')"><i class="fas fa-ban"></i></button>
-                                        <button style="color:var(--danger);" onclick="delLua('${child.key}')"><i class="fas fa-trash"></i></button>
+                                        <button style="background:var(--gold); border:none; padding:5px 10px; border-radius:5px; cursor:pointer;" onclick="resetLua('${child.key}')"><i class="fas fa-mobile-alt"></i></button>
+                                        <button style="background:var(--warning); border:none; padding:5px 10px; border-radius:5px; cursor:pointer;" onclick="banLua('${child.key}', '${data.status}')"><i class="fas fa-ban"></i></button>
+                                        <button style="background:var(--danger); border:none; padding:5px 10px; border-radius:5px; color:#fff; cursor:pointer;" onclick="delLua('${child.key}')"><i class="fas fa-trash"></i></button>
                                     </div>
                                 </td>
                             </tr>
@@ -803,7 +908,7 @@
             expiryDate.setDate(now.getDate() + days);
             const validadeTime = String(expiryDate.getTime());
 
-            // Exact DB Structure to prevent Sketchware App Crash
+            // Exact DB Structure from your dashboard.html to prevent App Crash
             const userData = {
                 "Usuário": user,
                 "Senha": pass,
@@ -843,24 +948,22 @@
                         let isExpired = false;
                         if(data.Validade && data.Validade !== "∞" && Date.now() > parseInt(data.Validade)) isExpired = true;
 
-                        const statusDisplay = isExpired ? `<span style="color:var(--danger); font-weight:bold;">Expired</span>` : `<span style="color:var(--primary); font-weight:bold;">Active</span>`;
+                        const statusDisplay = isExpired ? `<span style="color:var(--danger); font-weight:bold;">Expired</span>` : `<span style="color:green; font-weight:bold;">Active</span>`;
                         const creator = data.Revendedor || "Unknown";
 
                         htmlContent += `
                             <tr>
                                 <td>
                                     <div style="display:flex; align-items:center; gap:10px;">
-                                        <i class="fas fa-user-circle" style="font-size:24px; color:#555;"></i>
-                                        <strong style="color:#fff;">${data.Usuário}</strong>
+                                        <div class="tm-user-icon"><i class="fas fa-user-shield"></i></div>
+                                        <strong style="color:#000;">${data.Usuário}</strong>
                                     </div>
                                 </td>
                                 <td>${data.Senha}</td>
-                                <td><span style="background:#333; padding:2px 6px; border-radius:4px; font-size:11px;">${creator}</span></td>
+                                <td><span style="background:#000; color:#fff; padding:2px 6px; border-radius:4px; font-size:11px;">${creator}</span></td>
                                 <td>${statusDisplay}</td>
                                 <td>
-                                    <div class="action-btns">
-                                        <button style="color:var(--danger);" onclick="deleteTm('${data.dbKey}')"><i class="fas fa-trash"></i></button>
-                                    </div>
+                                    <button style="background:transparent; border:none; color:var(--danger); font-size:1.2rem; cursor:pointer;" onclick="deleteTm('${data.dbKey}')"><i class="fas fa-trash"></i></button>
                                 </td>
                             </tr>
                         `;
