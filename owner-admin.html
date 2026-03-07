@@ -3,37 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#00e6b8">
     <title>MASTER OWNER PANEL | MVX STORE</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
     <style>
         /* ==========================================================================
-           1. GLOBAL & SIDEBAR STYLES (OWNER THEME)
+           MVX STORE ADMIN DASHBOARD V4.0 (PREMIUM UI & ALL MASTER CONTROLS)
            ========================================================================== */
+        * { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; }
+        html, body { max-width: 100vw; overflow-x: hidden; }
+
         :root {
-            --bg-body: #000000; --bg-panel: #0c101a; --bg-input: #1a1f2c;
-            --primary: #00e6b8; --gold: #ffd700; --danger: #ff003c;
-            --text-main: #ffffff; --text-sub: #9ca3af; --border: #333333;
+            --primary: #00e6b8; --primary-dim: rgba(0, 230, 184, 0.15);
+            --danger: #ff003c; --warning: #ffd700; --gold: #ffd700;
+            --bg-void: #000000; --bg-card: #0c101a; --bg-input: #1a1f2c;
+            --text-primary: #ffffff; --text-muted: #9ca3af;
+            --glass-bg: rgba(8, 11, 18, 0.8); --glass-border: 1px solid rgba(0, 230, 184, 0.2);
             --font-head: 'Orbitron', sans-serif; --font-body: 'Space Grotesk', sans-serif;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg-body); color: var(--text-main); font-family: var(--font-body); display: flex; height: 100vh; overflow: hidden; }
+        body { background: var(--bg-void); color: var(--text-primary); font-family: var(--font-body); display: flex; height: 100vh; overflow: hidden; }
 
-        .sidebar { width: 260px; background: #080b12; height: 100%; padding: 20px; border-right: 1px solid var(--border); transition: 0.3s; z-index: 1000; position: relative; flex-shrink: 0;}
-        .brand { font-family: var(--font-head); font-size: 20px; color: var(--gold); margin-bottom: 40px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
+        /* Sidebar Styles */
+        .sidebar { width: 260px; background: #080b12; height: 100%; padding: 20px; border-right: 1px solid #333; transition: 0.3s; z-index: 1000; position: relative; flex-shrink: 0; overflow-y: auto; }
+        .brand { font-family: var(--font-head); font-size: 20px; color: var(--gold); margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
         .close-btn { display: none; color: white; cursor: pointer; font-size: 24px; }
         
-        .menu-label { color: var(--text-sub); font-size: 12px; margin-bottom: 10px; font-weight: bold; letter-spacing: 1px; font-family: sans-serif; }
-        .menu-item { padding: 12px 15px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; transition: 0.3s; color: var(--text-sub); display: flex; align-items: center; gap: 10px; font-weight: 600; }
-        .menu-item:hover, .menu-item.active { background: rgba(255, 215, 0, 0.1); color: var(--gold); }
-        .menu-item i { width: 20px; text-align: center; }
+        .menu-label { color: var(--text-muted); font-size: 11px; margin-bottom: 10px; font-weight: bold; letter-spacing: 1px; font-family: sans-serif; }
+        .menu-item { padding: 12px 15px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; transition: 0.3s; color: var(--text-muted); display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 0.9rem;}
+        .menu-item:hover, .menu-item.active { background: rgba(255, 215, 0, 0.1); color: var(--gold); border-left: 3px solid var(--gold); }
+        .menu-item i { width: 20px; text-align: center; font-size: 1.1rem; }
 
         .main-content { flex: 1; position: relative; height: 100%; overflow: hidden; display: flex; flex-direction: column; width: calc(100% - 260px); }
-        .mobile-header { display: none; padding: 15px 20px; background: var(--bg-panel); border-bottom: 1px solid var(--border); align-items: center; gap: 15px; flex-shrink: 0; }
+        .mobile-header { display: none; padding: 15px 20px; background: var(--bg-card); border-bottom: 1px solid #333; align-items: center; gap: 15px; flex-shrink: 0; }
         .hamburger { font-size: 24px; color: var(--gold); cursor: pointer; }
+
+        /* Shared Card Styles */
+        .tab-content { padding: 20px; height: 100%; overflow-y: auto; display: none; width: 100%; }
+        .active-tab { display: block !important; }
+        
+        .web-card { background: var(--bg-card); border: var(--glass-border); border-radius: 16px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 20px; width: 100%; }
+        .card-title { font-family: var(--font-head); color: var(--primary); margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; font-size: 1.3rem;}
+        
+        .web-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;}
+        .web-grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;}
+        @media(max-width: 768px) { .web-grid { grid-template-columns: 1fr; } }
+        
+        .web-input-group { display: flex; flex-direction: column; gap: 5px; width: 100%; margin-bottom: 15px;}
+        .web-input-group label { font-size: 0.9rem; color: var(--text-muted); font-weight: 600; }
+        .web-input-group input, .web-input-group select, .web-input-group textarea { width: 100%; background: var(--bg-input); border: 1px solid #444; color: #fff; padding: 12px; border-radius: 8px; font-size: 1rem; outline: none; transition: 0.3s; font-family: var(--font-body); }
+        .web-input-group input:focus, .web-input-group textarea:focus { border-color: var(--primary); }
+        .web-input-group textarea { height: auto; min-height: 100px; resize: vertical; }
+
+        /* Store Upload Engine & Dual Method */
+        .upload-engine-box { background: rgba(0, 230, 184, 0.05); border: 1px solid rgba(0, 230, 184, 0.3); border-radius: 12px; padding: 20px; margin-bottom: 25px; display: flex; align-items: center; gap: 20px; transition: 0.3s; }
+        .upload-engine-icon { font-size: 2.5rem; color: var(--primary); text-shadow: 0 0 15px var(--primary-dim); }
+        .upload-engine-info flex: 1; }
+        .upload-engine-info h4 { color: var(--text-primary); margin-bottom: 5px; font-family: var(--font-head); font-size: 1.1rem; }
+        .upload-engine-info p { color: var(--text-muted); font-size: 0.85rem; margin: 0; line-height: 1.4; }
+        .upload-engine-select { background: var(--bg-input); border: 2px solid var(--primary); color: var(--primary); padding: 12px 15px; border-radius: 8px; font-weight: bold; outline: none; cursor: pointer; font-size: 1rem; }
+
+        .image-upload-wrapper { display: flex; gap: 10px; align-items: center; width: 100%; }
+        .image-upload-wrapper input[type="text"] { flex: 1; min-width: 0; }
+        .file-btn { background: #333; color: #fff; border: none; padding: 12px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; white-space: nowrap; flex-shrink: 0; }
+        
+        .img-upload-box { background: var(--bg-input); border: 2px dashed #333; border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; position: relative; height: 150px; display: flex; flex-direction: column; justify-content: center; }
+        .img-upload-box input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+        .preview-list { display: flex; gap: 10px; overflow-x: auto; margin-top: 10px; padding-bottom: 10px; width: 100%; }
+        .preview-item { position: relative; width: 80px; height: 120px; flex-shrink: 0; border-radius: 8px; overflow: hidden; border: 1px solid var(--primary); }
+        .preview-item img { width: 100%; height: 100%; object-fit: cover; }
+        .preview-item .remove-btn { position: absolute; top: 5px; right: 5px; background: red; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-weight: bold; }
+
+        .update-box { background: rgba(255, 215, 0, 0.1); border-left: 4px solid var(--warning); padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .update-box input { width: 18px; height: 18px; cursor: pointer; flex-shrink: 0; }
+        .update-box label { color: var(--warning); font-weight: bold; cursor: pointer; font-size: 0.95rem; }
+
+        .btn-submit { width: 100%; background: var(--primary); color: #000; border: none; padding: 15px; border-radius: 8px; font-family: var(--font-head); font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .btn-submit:hover { box-shadow: 0 0 15px var(--primary-dim); }
+
+        .web-table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        .web-table th, .web-table td { padding: 15px; text-align: left; border-bottom: 1px solid #333; font-size: 0.95rem; }
+        .web-table th { color: var(--primary); font-family: var(--font-head); }
+        .web-table td img { width: 40px; height: 40px; border-radius: 5px; object-fit: cover; }
+        .action-btns button { background: none; border: none; cursor: pointer; font-size: 1.2rem; margin-right: 10px; }
+
+        /* Master TM/LUA Specific Styles */
+        .tm-card { border-left: 4px solid var(--gold); }
+        .tm-count { font-size: 24px; font-weight: bold; color: var(--gold); }
+        .lua-act-btn { width: 32px; height: 32px; border-radius: 5px; border: none; cursor: pointer; color: white; margin-right: 5px; }
+
+        /* Lock Toggle Switches */
+        .switch-container { display: flex; justify-content: space-between; align-items: center; background: var(--bg-input); padding: 15px; border-radius: 8px; border: 1px solid #333; margin-bottom: 15px; }
+        .switch-label { font-size: 1rem; font-weight: bold; color: #fff; display: flex; align-items: center; gap: 10px; }
+        
+        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; }
+        .toast { background: var(--bg-input); border-left: 4px solid var(--primary); padding: 15px 20px; margin-bottom: 10px; border-radius: 8px; display: flex; gap: 10px; align-items: center; color: #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+
+        /* Modals */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 3000; backdrop-filter: blur(5px); }
+        .modal-box { background: var(--bg-card); width: 90%; max-width: 400px; padding: 25px; border-radius: 12px; border: 1px solid var(--gold); box-shadow: 0 0 30px rgba(255, 215, 0, 0.2); }
+        .modal-box h3 { color: var(--gold); font-family: var(--font-head); margin-bottom: 15px; }
 
         @media (max-width: 768px) {
             .sidebar { position: fixed; left: -260px; }
@@ -43,104 +115,9 @@
             .close-btn { display: block; }
             .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; z-index: 999; }
             .overlay.active { display: block; }
+            .upload-engine-box { flex-direction: column; align-items: flex-start; }
+            .upload-engine-icon { display: none; }
         }
-
-        /* ==========================================================================
-           2. WEBSITE ADMIN (STORE DASHBOARD) - FIXED LAYOUT
-           ========================================================================== */
-        #website-tab { padding: 20px; height: 100%; overflow-y: auto; display: block; width: 100%; }
-        .web-card { background: var(--bg-panel); padding: 25px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px; max-width: 100%; }
-        .web-card h2 { color: var(--primary); font-family: var(--font-head); margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; font-size: 1.3rem; }
-        
-        .web-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;}
-        @media(max-width: 768px) { .web-grid { grid-template-columns: 1fr; } }
-        
-        .web-input-group { display: flex; flex-direction: column; gap: 5px; width: 100%; }
-        .web-input-group label { font-size: 0.9rem; color: var(--text-sub); font-weight: 600; }
-        .web-input-group input, .web-input-group select, .web-input-group textarea { width: 100%; background: var(--bg-input); border: 1px solid #444; color: #fff; padding: 12px; border-radius: 8px; font-size: 1rem; outline: none; transition: 0.3s; font-family: var(--font-body); }
-        .web-input-group input:focus, .web-input-group textarea:focus { border-color: var(--primary); }
-        
-        /* Dual Method Image Upload Fix */
-        .image-upload-wrapper { display: flex; gap: 10px; align-items: center; width: 100%; }
-        .image-upload-wrapper input[type="text"] { flex: 1; min-width: 0; }
-        .file-btn { background: #333; color: #fff; border: none; padding: 12px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; white-space: nowrap; flex-shrink: 0; }
-        
-        /* Update Checkbox */
-        .update-box { background: rgba(255, 215, 0, 0.1); border-left: 4px solid var(--gold); padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; cursor: pointer; }
-        .update-box input { width: 18px; height: 18px; cursor: pointer; flex-shrink: 0;}
-        .update-box label { color: var(--gold); font-weight: bold; cursor: pointer; font-size: 0.9rem;}
-
-        .btn-submit { background: var(--primary); color: #000; border: none; padding: 15px; border-radius: 8px; font-family: var(--font-head); font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s; margin-top: 10px;}
-        .btn-submit:hover { box-shadow: 0 0 15px var(--primary-dim); }
-
-        .table-responsive { width: 100%; overflow-x: auto; }
-        .web-table { width: 100%; border-collapse: collapse; min-width: 500px; }
-        .web-table th, .web-table td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.9rem;}
-        .web-table th { color: var(--primary); font-family: var(--font-head); }
-        .web-table td img { width: 40px; height: 40px; border-radius: 5px; object-fit: cover; }
-        .web-actions button { background: none; border: none; cursor: pointer; font-size: 1.2rem; margin-right: 10px; }
-
-        /* ==========================================================================
-           3. MASTER LUA PANEL (DARK THEME)
-           ========================================================================== */
-        #lua-tab { padding: 20px; height: 100%; overflow-y: auto; display: none; width: 100%;}
-        .lua-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        
-        .lua-btn { padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-family: 'Rajdhani'; transition: 0.3s; }
-        .lua-btn-add { background: var(--gold); color: #000; }
-        
-        .lua-table-container { background: var(--bg-panel); border-radius: 10px; border: 1px solid var(--border); overflow-x: auto; width: 100%;}
-        .lua-table { width: 100%; border-collapse: collapse; text-align: left; min-width: 500px; }
-        .lua-table th, .lua-table td { padding: 15px; border-bottom: 1px solid var(--border); font-family: 'Rajdhani'; }
-        .lua-table th { color: var(--text-sub); }
-        
-        .lua-act-btn { width: 32px; height: 32px; border-radius: 5px; border: none; cursor: pointer; color: white; margin-right: 5px; }
-        .act-reset { background: var(--gold); color: black; }
-        .act-ban { background: #475569; }
-        .act-ban.is-banned { background: var(--danger); }
-        .act-del { background: var(--danger); }
-
-        /* ==========================================================================
-           4. MASTER TM PANEL (WHITE APP UI) - STRICTLY ISOLATED & FIXED
-           ========================================================================== */
-        #tm-tab { background-color: #f0f0f0; color: #212121; font-family: Arial, sans-serif; position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow-y: auto; display: none; }
-        
-        .tm-header { padding: 20px; display: flex; align-items: center; background: #f0f0f0; }
-        .tm-header img { width: 45px; height: 45px; border-radius: 50%; margin-right: 15px; background: #000; }
-        .tm-header h2 { margin: 0; font-size: 20px; color: #000; font-weight: bold; }
-        .tm-header p { margin: 2px 0 0 0; font-size: 12px; color: #d32f2f; font-weight: bold; }
-
-        .tm-card { background: #fff; margin: 10px 15px; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid var(--gold); }
-        .tm-card h3 { margin: 0 0 5px 0; font-size: 16px; color: #212121; }
-        .tm-count { font-weight: bold; font-size: 18px; color: var(--gold); }
-
-        .tm-action-btns { margin: 10px 15px; display: flex; gap: 10px;}
-        .tm-btn-master { flex: 1; background: #000; color: #fff; padding: 15px; text-align: center; border-radius: 8px; font-weight: bold; cursor: pointer; border: none; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
-        
-        .tm-list-box { background: #fff; margin: 10px 15px; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .tm-list-header { font-weight: bold; font-size: 14px; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 10px; color: #000; display: flex; justify-content: space-between; }
-        
-        /* Fixed List Items */
-        .tm-list-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0; flex-wrap: wrap; gap: 10px;}
-        .tm-user-info { display: flex; align-items: center; gap: 10px; font-weight: bold; font-size: 15px; color: #000; flex: 1; min-width: 150px;}
-        .tm-user-info i { color: #555; font-size: 18px; }
-        .tm-user-details { display: flex; flex-direction: column; }
-        
-        .tm-right-actions { display: flex; align-items: center; gap: 15px; }
-        .tm-status-dot { width: 10px; height: 10px; border-radius: 50%; }
-        .tm-dot-green { background: #76FF03; }
-        .tm-dot-red { background: #FF1744; }
-        .tm-action-icons { color: #ff1744; font-size: 18px; cursor: pointer; }
-
-        /* Modals */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 3000; backdrop-filter: blur(5px); }
-        .modal-box { background: var(--bg-panel); width: 90%; max-width: 380px; padding: 25px; border-radius: 12px; border: 1px solid var(--gold); }
-        .modal-box h3 { color: var(--gold); font-family: var(--font-head); margin-bottom: 15px; }
-        
-        .modal-input { width: 100%; background: var(--bg-input); border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 8px; margin-bottom: 15px; outline: none; font-family: var(--font-body);}
-        .modal-btn { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; margin-bottom: 10px; background: var(--gold); color: #000; font-size: 16px;}
-        .modal-btn-cancel { background: transparent; color: #ff1744; border: 1px solid #ff1744; }
-        
     </style>
 </head>
 <body>
@@ -154,22 +131,28 @@
         </div>
         
         <nav>
-            <div class="menu-label">MASTER PANELS</div>
-            
+            <div class="menu-label">STORE MANAGEMENT</div>
             <div class="menu-item active" onclick="showTab('website-tab')" id="nav-website-tab">
                 <i class="fas fa-satellite-dish"></i> WEBSITE ADMIN
             </div>
-
+            
+            <div class="menu-label" style="margin-top: 20px;">OWNER PANELS</div>
             <div class="menu-item" onclick="showTab('lua-tab')" id="nav-lua-tab">
                 <i class="fas fa-key"></i> MASTER LUA
             </div>
-            
             <div class="menu-item" onclick="showTab('tm-tab')" id="nav-tm-tab">
                 <i class="fas fa-shield-alt"></i> MASTER TM
             </div>
             
-            <hr style="border-color: var(--border); margin: 20px 0;">
+            <div class="menu-label" style="margin-top: 20px;">SYSTEM SETTINGS</div>
+            <div class="menu-item" onclick="showTab('app-update-tab')" id="nav-app-update-tab">
+                <i class="fas fa-sync-alt"></i> APP UPDATE (APK)
+            </div>
+            <div class="menu-item" onclick="showTab('settings-tab')" id="nav-settings-tab">
+                <i class="fas fa-cogs"></i> MASTER SETTINGS
+            </div>
             
+            <hr style="border-color: var(--border); margin: 20px 0;">
             <div class="menu-item" onclick="logoutAdmin()" style="color: var(--danger);">
                 <i class="fas fa-sign-out-alt"></i> EXIT ADMIN
             </div>
@@ -182,19 +165,32 @@
             <i class="fas fa-bars hamburger" onclick="toggleSidebar()"></i>
             <span style="font-family: var(--font-head); font-weight: bold; color: var(--gold);">OWNER DASHBOARD</span>
         </div>
+        <div class="toast-container" id="toastContainer"></div>
 
-        <div id="website-tab">
+        <div id="website-tab" class="tab-content active-tab">
             <div class="web-card" id="uploadFormCard">
-                <h2 id="formTitle"><i class="fas fa-cloud-upload-alt"></i> Upload App to Store</h2>
-                
-                <div class="update-box" id="updateGroup" style="display: none;">
-                    <input type="checkbox" id="isAppUpdate">
-                    <label for="isAppUpdate">Mark as LATEST UPDATE (3 Days Badge)</label>
+                <h2 class="card-title">
+                    <span id="formTitleText"><i class="fas fa-upload"></i> UPLOAD NEW APP</span>
+                    <button id="cancelEditBtn" style="display:none; background:var(--danger); color:#fff; border:none; padding:8px 15px; border-radius:8px; cursor:pointer;" onclick="cancelEdit()">Cancel Edit</button>
+                </h2>
+
+                <div class="upload-engine-box">
+                    <i class="fas fa-server upload-engine-icon"></i>
+                    <div class="upload-engine-info">
+                        <h4>IMAGE UPLOAD ENGINE</h4>
+                        <p>Select the method for <strong style="color:var(--primary)">ALL</strong> image uploads below.</p>
+                    </div>
+                    <select id="uploadMethod" class="upload-engine-select">
+                        <option value="imgbb">⚡ ImgBB API (Fast - New Method)</option>
+                        <option value="base64">💾 Base64 (Legacy - Old Method)</option>
+                    </select>
                 </div>
+                
+                <input type="hidden" id="editAppId" value="">
 
                 <div class="web-grid">
                     <div class="web-input-group">
-                        <label>App Name *</label>
+                        <label>App / Game Name *</label>
                         <input type="text" id="appName" placeholder="e.g. VIP Game Mod">
                     </div>
                     <div class="web-input-group">
@@ -204,12 +200,12 @@
                             <option value="PUBG">PUBG</option>
                             <option value="Blood Strike">Blood Strike</option>
                             <option value="Tools">Tools</option>
-                            <option value="Other Game">Other Game</option>
+                            <option value="Other Game">Others</option>
                         </select>
                     </div>
                 </div>
 
-                <div class="web-grid">
+                <div class="web-grid-3">
                     <div class="web-input-group">
                         <label>Access Type *</label>
                         <select id="accessType">
@@ -219,11 +215,12 @@
                         </select>
                     </div>
                     <div class="web-input-group">
-                        <label>Version & Size</label>
-                        <div style="display: flex; gap: 10px;">
-                            <input type="text" id="version" placeholder="v1.0" style="flex: 1; min-width: 0;">
-                            <input type="text" id="size" placeholder="150 MB" style="flex: 1; min-width: 0;">
-                        </div>
+                        <label>Version</label>
+                        <input type="text" id="version" placeholder="v1.0">
+                    </div>
+                    <div class="web-input-group">
+                        <label>Size</label>
+                        <input type="text" id="size" placeholder="150 MB">
                     </div>
                 </div>
 
@@ -231,25 +228,34 @@
                     <div class="web-input-group">
                         <label>Banner Image (API Link / Select) *</label>
                         <div class="image-upload-wrapper">
-                            <input type="text" id="bannerValue" placeholder="Paste ImgBB URL...">
-                            <input type="file" id="bannerFile" accept="image/*" style="display: none;" onchange="convertToBase64(this, 'bannerValue')">
+                            <input type="text" id="bannerValue" placeholder="Paste URL/Base64...">
+                            <input type="file" id="bannerFile" accept="image/*" style="display: none;" onchange="processImage(this, 'bannerValue')">
                             <button class="file-btn" onclick="document.getElementById('bannerFile').click()"><i class="fas fa-folder-open"></i></button>
                         </div>
                     </div>
                     <div class="web-input-group">
                         <label>Logo Image (API Link / Select) *</label>
                         <div class="image-upload-wrapper">
-                            <input type="text" id="logoValue" placeholder="Paste ImgBB URL...">
-                            <input type="file" id="logoFile" accept="image/*" style="display: none;" onchange="convertToBase64(this, 'logoValue')">
+                            <input type="text" id="logoValue" placeholder="Paste URL/Base64...">
+                            <input type="file" id="logoFile" accept="image/*" style="display: none;" onchange="processImage(this, 'logoValue')">
                             <button class="file-btn" onclick="document.getElementById('logoFile').click()"><i class="fas fa-folder-open"></i></button>
                         </div>
                     </div>
                 </div>
 
+                <div class="web-input-group">
+                    <label>5 Review Screenshots (Select Max 5 Images)</label>
+                    <div class="img-upload-box" style="height: auto; padding: 15px;">
+                        <span style="color: var(--text-muted);"><i class="fas fa-images fa-2x"></i><br>Click to add screenshots</span>
+                        <input type="file" accept="image/*" multiple onchange="processMultipleImages(this)">
+                    </div>
+                    <div class="preview-list" id="screenshotContainer"></div>
+                </div>
+
                 <div class="web-grid">
                     <div class="web-input-group">
-                        <label>Download Link *</label>
-                        <input type="url" id="downloadUrl" placeholder="Direct Link (MediaFire/Drive)">
+                        <label>Direct Download Link *</label>
+                        <input type="url" id="downloadUrl" placeholder="MediaFire/Drive Link">
                     </div>
                     <div class="web-input-group">
                         <label>Password & Video URL</label>
@@ -261,28 +267,27 @@
                 </div>
 
                 <div class="web-input-group">
-                    <label>5 Review Screenshots (Paste API Links, one per line)</label>
-                    <textarea id="screenshotsInput" rows="4" placeholder="https://imgbb.com/img1&#10;https://imgbb.com/img2"></textarea>
-                </div>
-                
-                <div class="web-input-group">
                     <label>Description</label>
-                    <textarea id="description" rows="3" placeholder="App features..."></textarea>
+                    <textarea id="description" placeholder="Write app features..."></textarea>
                 </div>
 
-                <button class="btn-submit" id="submitBtn" onclick="saveApp()"><i class="fas fa-save"></i> PUBLISH APP</button>
-                <button class="btn-submit" id="cancelBtn" onclick="cancelEdit()" style="display:none; background:#333; margin-top:10px; color:#fff;">CANCEL EDIT</button>
+                <div class="update-box" id="updateGroup" style="display: none;">
+                    <input type="checkbox" id="isAppUpdate">
+                    <label for="isAppUpdate">Mark as LATEST UPDATE (Adds Badge & Moves to Top)</label>
+                </div>
+
+                <button class="btn-submit" id="submitBtn" onclick="saveApp()"><i class="fas fa-cloud-upload-alt"></i> PUBLISH TO STORE</button>
             </div>
 
             <div class="web-card">
                 <h2><i class="fas fa-list"></i> Uploaded Apps Overview</h2>
-                <div class="table-responsive">
+                <div style="overflow-x: auto;">
                     <table class="web-table">
                         <thead>
                             <tr>
                                 <th>Logo</th>
-                                <th>App Details</th>
-                                <th>Status</th>
+                                <th>App Name</th>
+                                <th>Category</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -294,83 +299,162 @@
             </div>
         </div>
 
-        <div id="lua-tab">
-            <div class="lua-header">
-                <h2 style="font-family: 'Rajdhani'; color: var(--gold); font-size: 24px;">Master Lua Keys</h2>
-                <button class="lua-btn lua-btn-add" onclick="openLuaModal()"><i class="fas fa-plus"></i> Create VIP Lua</button>
-            </div>
+        <div id="lua-tab" class="tab-content">
+            <div class="web-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="margin: 0; border: none; padding: 0;"><i class="fas fa-key"></i> Master Lua Keys</h2>
+                    <button class="btn-submit" style="width: auto; padding: 10px 20px; margin: 0; background: var(--gold);" onclick="openLuaModal()"><i class="fas fa-plus"></i> Create VIP Lua</button>
+                </div>
+                
+                <div class="web-input-group" style="background: rgba(255,215,0,0.05); padding: 15px; border: 1px solid var(--gold); border-radius: 8px;">
+                    <label style="color: var(--gold);">Force Lua Expiry / Update Version</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="luaVersionInput" placeholder="New Version (e.g. 1.1)">
+                        <button class="btn-submit" style="width: auto; margin: 0;" onclick="updateLuaVersion()">UPDATE</button>
+                    </div>
+                    <small style="color: var(--text-muted); margin-top: 5px;">* Updating version will immediately expire all old Lua scripts.</small>
+                </div>
 
-            <div class="lua-table-container">
-                <table class="lua-table">
-                    <thead>
-                        <tr>
-                            <th>Key Name</th>
-                            <th>Devices</th>
-                            <th>Creator</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="luaTableBody">
-                        <tr><td colspan="5" style="text-align: center;">Loading keys...</td></tr>
-                    </tbody>
-                </table>
+                <div style="overflow-x: auto; margin-top: 20px;">
+                    <table class="web-table">
+                        <thead>
+                            <tr>
+                                <th>Key Name</th>
+                                <th>Devices</th>
+                                <th>Creator</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="luaTableBody">
+                            <tr><td colspan="5" style="text-align: center;">Loading keys...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
-        <div id="tm-tab">
-            <div class="tm-header">
-                <i class="fas fa-bars" onclick="toggleSidebar()" style="font-size: 20px; color: #000; margin-right: 15px; cursor: pointer; display: inline-block;"></i>
-                <img src="https://via.placeholder.com/45/000000/ffd700/?text=TM" alt="Logo">
-                <div>
-                    <h2>MASTER TM PANEL</h2>
-                    <p style="color: #ff0000;">Viewing All Users Data</p>
+        <div id="tm-tab" class="tab-content">
+            <div class="web-card tm-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 20px;">
+                    <div>
+                        <h2 style="margin: 0; border: none; padding: 0; color: #fff;"><i class="fas fa-shield-alt" style="color: var(--gold);"></i> MASTER TM PANEL</h2>
+                        <p style="color: var(--danger); font-size: 12px; margin-top: 5px; font-weight: bold;">Viewing All Sellers & Users</p>
+                    </div>
+                    <button class="btn-submit" style="width: auto; padding: 10px 20px; margin: 0; background: var(--gold);" onclick="openTmModal()"><i class="fas fa-plus"></i> VIP Pass</button>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: var(--text-muted); font-size: 14px; margin-bottom: 5px;">Total Database Passwords</h3>
+                    <div class="tm-count" id="tmTotalUsers">0</div>
+                </div>
+
+                <div style="overflow-x: auto;">
+                    <table class="web-table">
+                        <thead>
+                            <tr>
+                                <th>User Info</th>
+                                <th>Password</th>
+                                <th>Creator / Seller</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tmUsersList">
+                            <tr><td colspan="5" style="text-align:center;">Loading users...</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
+        </div>
 
-            <div class="tm-card">
-                <h3>Global Database</h3>
-                <p style="margin:0; font-size:12px; color:#777;">Total generated passwords across all users.</p>
-                <div class="tm-count" id="tmTotalUsers">0</div>
-            </div>
-
-            <div class="tm-action-btns">
-                <button class="tm-btn-master" onclick="openTmModal()"><i class="fas fa-crown"></i> Generate VIP App Password</button>
-            </div>
-
-            <div class="tm-list-box">
-                <div class="tm-list-header">
-                    <span>User Data</span>
-                    <span>Action</span>
+        <div id="app-update-tab" class="tab-content">
+            <div class="web-card" style="max-width: 500px; margin: 0 auto; text-align: center; border-top: 4px solid var(--primary);">
+                <h2 style="border: none; padding: 0;"><i class="fas fa-sync-alt"></i> Sketchware App Update</h2>
+                <p style="color: var(--text-muted); margin-bottom: 25px; font-size: 0.9rem;">Send update notification directly to user's app.</p>
+                
+                <div class="web-input-group" style="margin-bottom: 20px;">
+                    <label style="text-align: left;">App Version Code (e.g. 2)</label>
+                    <input type="number" id="appVersionUpd" placeholder="Enter Version Number">
                 </div>
-                <div id="tmUsersList">
-                    <p style="text-align:center; color:#9e9e9e;">Loading users...</p>
+                
+                <div class="web-input-group" style="margin-bottom: 20px;">
+                    <label style="text-align: left;">What's New (Changes)</label>
+                    <input type="text" id="whatNewsUpd" placeholder="Added new features...">
                 </div>
+                
+                <div class="web-input-group" style="margin-bottom: 25px;">
+                    <label style="text-align: left;">Direct Download Link</label>
+                    <input type="url" id="appLinkUpd" placeholder="https://...">
+                </div>
+
+                <button class="btn-submit" onclick="sendAppUpdate()">SEND UPDATE</button>
+            </div>
+        </div>
+
+        <div id="settings-tab" class="tab-content">
+            <div class="web-card" style="max-width: 600px; margin: 0 auto;">
+                <h2><i class="fas fa-cogs"></i> Free User Limits</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Set generation limits for Free Admin Panel.</p>
+                
+                <div class="web-grid-3">
+                    <div class="web-input-group">
+                        <label>Max Passwords / Day</label>
+                        <input type="number" id="limitCount" value="2">
+                    </div>
+                    <div class="web-input-group">
+                        <label>Valid Hours</label>
+                        <input type="number" id="limitHours" value="6">
+                    </div>
+                    <div class="web-input-group">
+                        <label>Device Limit</label>
+                        <input type="number" id="limitDevice" value="1">
+                    </div>
+                </div>
+
+                <h2 style="margin-top: 30px;"><i class="fas fa-lock"></i> Panel Locks</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Turn on to instantly lock Free Users out of these panels.</p>
+
+                <div class="switch-container">
+                    <div class="switch-label"><i class="fas fa-key" style="color: var(--primary);"></i> Lock Free LUA Panel</div>
+                    <label class="switch">
+                        <input type="checkbox" id="lockLuaCheck" style="width: 20px; height: 20px; cursor: pointer;">
+                    </label>
+                </div>
+                
+                <div class="switch-container">
+                    <div class="switch-label"><i class="fas fa-shield-alt" style="color: var(--gold);"></i> Lock Free TM Panel</div>
+                    <label class="switch">
+                        <input type="checkbox" id="lockTmCheck" style="width: 20px; height: 20px; cursor: pointer;">
+                    </label>
+                </div>
+
+                <button class="btn-submit" onclick="saveMasterSettings()" style="margin-top: 20px;">SAVE ALL SETTINGS</button>
             </div>
         </div>
 
     </main>
 
-    <div class="modal-overlay" id="luaModal">
+    <div class="modal-overlay" id="luaVIPModal">
         <div class="modal-box">
             <h3>Create VIP Lua Key</h3>
-            <input type="text" id="newLuaKey" class="modal-input" placeholder="MVX_VIP_XXXX">
-            <input type="number" id="luaDuration" class="modal-input" placeholder="Valid Days (e.g. 30)">
-            <input type="number" id="luaLimit" class="modal-input" placeholder="Device Limit (e.g. 1)">
-            <button class="modal-btn" onclick="createLuaKey()">Generate Key</button>
-            <button class="modal-btn modal-btn-cancel" onclick="closeModal('luaModal')">Cancel</button>
+            <input type="text" id="vipLuaKey" class="web-input-group input" style="width:100%; padding:12px; margin-bottom:15px; background:var(--bg-input); border:1px solid #444; color:#fff; border-radius:8px;" placeholder="MVX_VIP_XXXX">
+            <input type="number" id="vipLuaDays" class="web-input-group input" style="width:100%; padding:12px; margin-bottom:15px; background:var(--bg-input); border:1px solid #444; color:#fff; border-radius:8px;" placeholder="Valid Days (e.g. 30)">
+            <input type="number" id="vipLuaDev" class="web-input-group input" style="width:100%; padding:12px; margin-bottom:20px; background:var(--bg-input); border:1px solid #444; color:#fff; border-radius:8px;" placeholder="Device Limit (999 for UNL)">
+            <button class="btn-submit" style="margin-bottom:10px; background:var(--gold);" onclick="createLuaKey()">Generate Key</button>
+            <button class="btn-submit" style="background:#333; color:#fff;" onclick="closeModal('luaVIPModal')">Cancel</button>
         </div>
     </div>
 
-    <div class="modal-overlay" id="tmModal">
+    <div class="modal-overlay" id="tmVIPModal">
         <div class="modal-box">
-            <h3 style="color:var(--primary);">Generate App Password</h3>
-            <input type="text" id="tmUser" class="modal-input" placeholder="Username (VIP_USER)">
-            <input type="text" id="tmPass" class="modal-input" placeholder="Password">
-            <input type="number" id="tmDays" class="modal-input" placeholder="Valid Days">
-            <input type="number" id="tmDevice" class="modal-input" placeholder="Device Limit">
-            <button class="modal-btn" style="background:var(--primary);" onclick="createTmPass()">Generate Password</button>
-            <button class="modal-btn modal-btn-cancel" onclick="closeModal('tmModal')">Cancel</button>
+            <h3 style="color:var(--primary);">Generate VIP App Pass</h3>
+            <input type="text" id="vipTmUser" class="web-input-group input" style="width:100%; padding:12px; margin-bottom:15px; background:var(--bg-input); border:1px solid #444; color:#fff; border-radius:8px;" placeholder="Username (VIP_USER)">
+            <input type="text" id="vipTmPass" class="web-input-group input" style="width:100%; padding:12px; margin-bottom:15px; background:var(--bg-input); border:1px solid #444; color:#fff; border-radius:8px;" placeholder="Password">
+            <input type="number" id="vipTmDays" class="web-input-group input" style="width:100%; padding:12px; margin-bottom:15px; background:var(--bg-input); border:1px solid #444; color:#fff; border-radius:8px;" placeholder="Valid Days">
+            <input type="number" id="vipTmDev" class="web-input-group input" style="width:100%; padding:12px; margin-bottom:20px; background:var(--bg-input); border:1px solid #444; color:#fff; border-radius:8px;" placeholder="Device Limit">
+            <button class="btn-submit" style="margin-bottom:10px; background:var(--primary);" onclick="createTmPass()">Generate Password</button>
+            <button class="btn-submit" style="background:#333; color:#fff;" onclick="closeModal('tmVIPModal')">Cancel</button>
         </div>
     </div>
 
@@ -378,7 +462,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
-        // Security
+        // Security Check
         if (sessionStorage.getItem('mvx_admin_token') !== 'SECURE_AUTHORIZED') {
             window.location.href = 'index.html';
         }
@@ -395,16 +479,29 @@
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.database();
         const DB_PATH = "MVX_VIP_SERVER_V5";
+        const IMGBB_API_KEY = "820eb9aa6a57f863045a52c1929efc9c";
 
         let allAppsData = {};
         let editId = null;
+        let screenshotsArray = [];
 
         window.onload = function() {
             showTab('website-tab');
             loadStoreApps();
             loadLuaKeys();
             loadTmPasswords();
+            loadMasterSettings();
         };
+
+        function showToast(msg, type='success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.style.borderLeftColor = type === 'error' ? 'var(--danger)' : 'var(--primary)';
+            toast.innerHTML = `<i class="fas fa-${type==='error'?'times':'check'}-circle" style="color:${type==='error'?'var(--danger)':'var(--primary)'}"></i> <span>${msg}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.style.opacity = '0'; setTimeout(()=>toast.remove(), 300); }, 3000);
+        }
 
         function logoutAdmin() {
             sessionStorage.removeItem('mvx_admin_token');
@@ -413,10 +510,8 @@
 
         // --- TAB SWITCHER ---
         function showTab(tabId) {
-            document.getElementById('website-tab').style.display = 'none';
-            document.getElementById('lua-tab').style.display = 'none';
-            document.getElementById('tm-tab').style.display = 'none';
-            document.getElementById(tabId).style.display = 'block';
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active-tab'));
+            document.getElementById(tabId).classList.add('active-tab');
 
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
             document.getElementById('nav-' + tabId).classList.add('active');
@@ -436,40 +531,95 @@
             document.getElementById(modalId).style.display = 'none';
         }
 
-        function convertToBase64(input, targetId) {
+        // ==========================================
+        // 1. WEBSITE ADMIN (STORE) UPLOAD ENGINE
+        // ==========================================
+        async function processImage(input, targetId) {
             const file = input.files[0];
-            if(file) {
+            if (!file) return;
+            const method = document.getElementById('uploadMethod').value;
+            const hiddenEl = document.getElementById(targetId);
+            
+            showToast('Processing image...', 'success');
+
+            if (method === 'imgbb') {
+                const formData = new FormData();
+                formData.append('image', file);
+                try {
+                    const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
+                    const data = await res.json();
+                    if (data.success) {
+                        hiddenEl.value = data.data.url;
+                        showToast('Uploaded via API!', 'success');
+                    }
+                } catch (e) { showToast('API Upload Failed!', 'error'); }
+            } else {
                 const reader = new FileReader();
-                reader.onload = function(e) { document.getElementById(targetId).value = e.target.result; };
+                reader.onload = (e) => {
+                    hiddenEl.value = e.target.result;
+                    showToast('Base64 Generated!', 'success');
+                };
                 reader.readAsDataURL(file);
             }
         }
 
-        // ==========================================
-        // 1. WEBSITE ADMIN (STORE) LOGIC
-        // ==========================================
+        async function processMultipleImages(input) {
+            const files = input.files;
+            if (screenshotsArray.length + files.length > 5) return showToast("Max 5 screenshots!", "error");
+            const method = document.getElementById('uploadMethod').value;
+            showToast("Processing Screenshots...", "success");
+
+            for (let file of files) {
+                if (method === 'imgbb') {
+                    const formData = new FormData();
+                    formData.append('image', file);
+                    try {
+                        const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
+                        const data = await res.json();
+                        if (data.success) screenshotsArray.push(data.data.url);
+                    } catch (e) {}
+                } else {
+                    const reader = new FileReader();
+                    const b64 = await new Promise(r => { reader.onload = e => r(e.target.result); reader.readAsDataURL(file); });
+                    screenshotsArray.push(b64);
+                }
+            }
+            renderScreenshots();
+            input.value = '';
+        }
+
+        function renderScreenshots() {
+            const container = document.getElementById('screenshotContainer');
+            container.innerHTML = screenshotsArray.map((src, i) => `
+                <div class="preview-item">
+                    <img src="${src}">
+                    <button type="button" class="remove-btn" onclick="removeScreenshot(${i})">×</button>
+                </div>`).join('');
+        }
+        function removeScreenshot(i) { screenshotsArray.splice(i, 1); renderScreenshots(); }
+
         function loadStoreApps() {
             db.ref(DB_PATH).on('value', (snap) => {
                 allAppsData = snap.val() || {};
                 const tbody = document.getElementById('appsTableBody');
                 tbody.innerHTML = '';
-                
-                const keys = Object.keys(allAppsData);
+                const keys = Object.keys(allAppsData).reverse();
                 if(keys.length === 0) return tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">No apps found.</td></tr>`;
 
-                keys.reverse().forEach(id => {
+                keys.forEach(id => {
                     const app = allAppsData[id];
-                    const status = app.isHidden ? '<span style="color:var(--danger); font-weight:bold;">Hidden</span>' : '<span style="color:var(--primary); font-weight:bold;">Active</span>';
-                    
+                    const isHidden = app.isHidden || false;
                     tbody.innerHTML += `
-                        <tr style="${app.isHidden ? 'opacity:0.6;' : ''}">
-                            <td><img src="${app.logoBase64 || 'https://via.placeholder.com/40'}"></td>
-                            <td><b>${app.appName}</b><br><span style="color:#888; font-size:11px;">${app.gameCategory} • ${app.accessType}</span></td>
-                            <td>${status}</td>
-                            <td class="web-actions">
-                                <button style="color:var(--gold);" onclick="editApp('${id}')"><i class="fas fa-edit"></i></button>
-                                <button style="color:var(--primary);" onclick="toggleVisibility('${id}', ${app.isHidden})"><i class="fas fa-eye-slash"></i></button>
-                                <button style="color:var(--danger);" onclick="deleteApp('${id}')"><i class="fas fa-trash"></i></button>
+                        <tr style="${isHidden ? 'opacity:0.5;' : ''}">
+                            <td><img src="${app.logoBase64}"></td>
+                            <td><b>${app.appName}</b></td>
+                            <td>${app.gameCategory}</td>
+                            <td>
+                                <div class="action-btns">
+                                    <button style="color:var(--primary);" onclick="editApp('${id}')"><i class="fas fa-edit"></i></button>
+                                    <button style="color:var(--warning);" onclick="toggleVisibility('${id}', ${isHidden})"><i class="fas ${isHidden ? 'fa-eye' : 'fa-eye-slash'}"></i></button>
+                                    <button style="color:var(--danger);" onclick="deleteApp('${id}')"><i class="fas fa-trash"></i></button>
+                                </div>
                             </td>
                         </tr>
                     `;
@@ -479,13 +629,11 @@
 
         function saveApp() {
             const btn = document.getElementById('submitBtn');
-            const isUpdateChecked = document.getElementById('isAppUpdate').checked;
+            const isUpdateChecked = document.getElementById('isAppUpdate') ? document.getElementById('isAppUpdate').checked : false;
             
-            const screensArray = document.getElementById('screenshotsInput').value.split('\n').map(s => s.trim()).filter(s => s !== '');
-
             const appData = {
                 appName: document.getElementById('appName').value.trim(),
-                category: document.getElementById('category').value,
+                gameCategory: document.getElementById('category').value,
                 accessType: document.getElementById('accessType').value,
                 version: document.getElementById('version').value.trim(),
                 size: document.getElementById('size').value.trim(),
@@ -495,10 +643,10 @@
                 password: document.getElementById('password').value.trim(),
                 passwordVideoUrl: document.getElementById('videoUrl').value.trim(),
                 description: document.getElementById('description').value.trim(),
-                screenshots: screensArray
+                screenshots: screenshotsArray
             };
 
-            if(!appData.appName || !appData.downloadUrl) return alert("Please fill App Name and Download Link!");
+            if(!appData.appName || !appData.downloadUrl) return showToast("Required fields empty!", "error");
 
             btn.disabled = true; btn.innerHTML = 'SAVING...';
 
@@ -518,17 +666,16 @@
             }
 
             const dbRef = editId ? db.ref(`${DB_PATH}/${editId}`) : db.ref(DB_PATH).push();
-
             dbRef.set(appData).then(() => {
-                alert(`App ${editId ? 'Updated' : 'Uploaded'}!`);
+                showToast(`App ${editId ? 'Updated' : 'Uploaded'}!`);
                 cancelEdit();
-            }).finally(() => { btn.innerHTML = 'PUBLISH APP'; btn.disabled = false; });
+            }).finally(() => { btn.innerHTML = 'PUBLISH TO STORE'; btn.disabled = false; });
         }
 
         function editApp(id) {
             const app = allAppsData[id];
             editId = id;
-            document.getElementById('formTitle').innerHTML = '<i class="fas fa-edit"></i> Edit App';
+            document.getElementById('formTitleText').innerHTML = '<i class="fas fa-edit"></i> EDITING: ' + app.appName;
             document.getElementById('updateGroup').style.display = 'flex';
             
             document.getElementById('appName').value = app.appName || '';
@@ -542,44 +689,58 @@
             document.getElementById('password').value = app.password || '';
             document.getElementById('videoUrl').value = app.passwordVideoUrl || '';
             document.getElementById('description').value = app.description || '';
-            document.getElementById('screenshotsInput').value = app.screenshots ? app.screenshots.join('\n') : '';
+            
+            screenshotsArray = app.screenshots || [];
+            renderScreenshots();
 
             document.getElementById('submitBtn').innerHTML = 'UPDATE APP DATA';
-            document.getElementById('cancelBtn').style.display = 'block';
+            document.getElementById('cancelEditBtn').style.display = 'block';
             document.getElementById('website-tab').scrollTo(0,0);
         }
 
         function cancelEdit() {
             editId = null;
-            document.getElementById('formTitle').innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Upload App';
+            document.getElementById('formTitleText').innerHTML = '<i class="fas fa-cloud-upload-alt"></i> UPLOAD NEW APP';
             document.getElementById('updateGroup').style.display = 'none';
-            document.getElementById('isAppUpdate').checked = false;
+            if(document.getElementById('isAppUpdate')) document.getElementById('isAppUpdate').checked = false;
             
             document.querySelectorAll('.web-input-group input, textarea').forEach(el => el.value = '');
-            document.getElementById('submitBtn').innerHTML = 'PUBLISH APP';
-            document.getElementById('cancelBtn').style.display = 'none';
+            screenshotsArray = []; renderScreenshots();
+            document.getElementById('submitBtn').innerHTML = 'PUBLISH TO STORE';
+            document.getElementById('cancelEditBtn').style.display = 'none';
         }
 
         function deleteApp(id) { if(confirm("Permanently delete this app?")) db.ref(`${DB_PATH}/${id}`).remove(); }
         function toggleVisibility(id, status) { db.ref(`${DB_PATH}/${id}/isHidden`).set(!status); }
 
         // ==========================================
-        // 2. MASTER LUA LOGIC
+        // 2. MASTER LUA & VERSION LOGIC
         // ==========================================
+        function updateLuaVersion() {
+            const ver = document.getElementById('luaVersionInput').value.trim();
+            if(!ver) return showToast("Enter a version!", "error");
+            if(confirm("This will expire old Lua scripts. Continue?")) {
+                db.ref('config/lua_version').set(ver).then(() => {
+                    showToast("Lua Version Updated!");
+                    document.getElementById('luaVersionInput').value = '';
+                });
+            }
+        }
+
         function openLuaModal() {
-            document.getElementById('newLuaKey').value = "MVX_VIP_" + Math.floor(Math.random() * 9000);
-            document.getElementById('luaModal').style.display = 'flex';
+            document.getElementById('vipLuaKey').value = "MVX_VIP_" + Math.floor(Math.random() * 9000);
+            document.getElementById('luaVIPModal').style.display = 'flex';
         }
 
         function createLuaKey() {
-            const key = document.getElementById('newLuaKey').value.trim();
-            const days = parseInt(document.getElementById('luaDuration').value) || 30;
-            const limit = parseInt(document.getElementById('luaLimit').value) || 1;
+            const key = document.getElementById('vipLuaKey').value.trim();
+            const days = parseInt(document.getElementById('vipLuaDays').value) || 30;
+            const limit = parseInt(document.getElementById('vipLuaDev').value) || 1;
             
             const expDate = new Date(); expDate.setDate(expDate.getDate() + days);
             
             db.ref('users/' + key).set({ devices: [], maxDevices: limit, status: 'active', creatorUid: "OWNER", isFreeTier: false, createdAt: Date.now(), expiry: expDate.getTime() })
-            .then(() => { alert("VIP Lua Key Created!"); closeModal('luaModal'); });
+            .then(() => { showToast("VIP Lua Key Created!"); closeModal('luaVIPModal'); });
         }
 
         function loadLuaKeys() {
@@ -589,17 +750,19 @@
                     snap.forEach(child => {
                         const data = child.val();
                         const hwidCount = data.hwids ? Object.keys(data.hwids).length : 0;
-                        const banClass = data.status === 'banned' ? 'is-banned' : '';
+                        const banClass = data.status === 'banned' ? 'color:var(--danger);' : 'color:#fff;';
                         tbody.innerHTML += `
                             <tr>
                                 <td><b>${child.key}</b></td>
                                 <td>${hwidCount} / ${data.maxDevices}</td>
                                 <td><span style="background:#333; padding:2px 6px; border-radius:4px; font-size:11px;">${data.creatorUid === 'OWNER' ? 'Owner' : 'Free User'}</span></td>
-                                <td>${data.status.toUpperCase()}</td>
+                                <td><span style="${banClass} font-weight:bold;">${data.status.toUpperCase()}</span></td>
                                 <td>
-                                    <button class="lua-act-btn act-reset" onclick="resetLua('${child.key}')"><i class="fas fa-mobile-alt"></i></button>
-                                    <button class="lua-act-btn act-ban ${banClass}" onclick="banLua('${child.key}', '${data.status}')"><i class="fas fa-ban"></i></button>
-                                    <button class="lua-act-btn act-del" onclick="delLua('${child.key}')"><i class="fas fa-trash"></i></button>
+                                    <div class="action-btns">
+                                        <button style="color:var(--gold);" onclick="resetLua('${child.key}')"><i class="fas fa-mobile-alt"></i></button>
+                                        <button style="color:var(--warning);" onclick="banLua('${child.key}', '${data.status}')"><i class="fas fa-ban"></i></button>
+                                        <button style="color:var(--danger);" onclick="delLua('${child.key}')"><i class="fas fa-trash"></i></button>
+                                    </div>
                                 </td>
                             </tr>
                         `;
@@ -612,22 +775,21 @@
         function delLua(key) { if(confirm("Delete Key?")) db.ref(`users/${key}`).remove(); }
 
         // ==========================================
-        // 3. MASTER TM LOGIC (SKETCHWARE CRASH FIXED & LIST BUG FIXED)
+        // 3. MASTER TM LOGIC (SKETCHWARE CRASH FIXED DB STRUCTURE)
         // ==========================================
         function openTmModal() {
-            document.getElementById('tmUser').value = "VIP_" + Math.floor(Math.random() * 900);
-            document.getElementById('tmPass').value = Math.random().toString(36).slice(-6);
-            document.getElementById('tmModal').style.display = 'flex';
+            document.getElementById('vipTmUser').value = "VIP_" + Math.floor(Math.random() * 900);
+            document.getElementById('vipTmPass').value = Math.random().toString(36).slice(-6);
+            document.getElementById('tmVIPModal').style.display = 'flex';
         }
 
-        // Exact App DB Structure mapped
         function createTmPass() {
-            const user = document.getElementById('tmUser').value.trim();
-            const pass = document.getElementById('tmPass').value.trim();
-            const days = parseInt(document.getElementById('tmDays').value) || 30;
-            const limit = document.getElementById('tmDevice').value || "1";
+            const user = document.getElementById('vipTmUser').value.trim();
+            const pass = document.getElementById('vipTmPass').value.trim();
+            const days = parseInt(document.getElementById('vipTmDays').value) || 30;
+            const limit = document.getElementById('vipTmDev').value || "1";
             
-            if (!user || !pass) return alert("Please fill fields!");
+            if (!user || !pass) return showToast("Fill required fields!", "error");
 
             const newRef = db.ref('Usuarios').push();
             const key = newRef.key;
@@ -641,6 +803,7 @@
             expiryDate.setDate(now.getDate() + days);
             const validadeTime = String(expiryDate.getTime());
 
+            // Exact DB Structure to prevent Sketchware App Crash
             const userData = {
                 "Usuário": user,
                 "Senha": pass,
@@ -654,68 +817,118 @@
                 "Key": key,
                 "rgtime": rgtime,
                 "Validade": validadeTime,
-                "CreatorUid": "OWNER", // Track generator
+                "CreatorUid": "OWNER",
                 "createdAt": now.getTime()
             };
 
             newRef.set(userData).then(() => {
-                alert("VIP Password Generated Successfully!");
-                closeModal('tmModal');
-            }).catch(err => alert("Error: " + err.message));
+                showToast("VIP Password Created!");
+                closeModal('tmVIPModal');
+            }).catch(err => showToast(err.message, "error"));
         }
 
-        // Fixed Rendering Bug for TM List
         function loadTmPasswords() {
             db.ref('Usuarios').on('value', snap => {
-                const listDiv = document.getElementById('tmUsersList'); 
-                listDiv.innerHTML = '';
-                let total = 0; 
+                const listDiv = document.getElementById('tmUsersList'); listDiv.innerHTML = '';
+                let total = 0;
                 
                 if(snap.exists()) {
                     let htmlContent = '';
-                    
-                    snap.forEach(child => {
+                    const allData = [];
+                    snap.forEach(child => allData.push({ dbKey: child.key, ...child.val() }));
+                    allData.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+                    allData.forEach(data => {
                         total++;
-                        const data = child.val();
-                        
-                        let isStatusActive = (data.Status === "true");
                         let isExpired = false;
-                        
-                        if(data.Validade && data.Validade !== "∞") {
-                            if(Date.now() > parseInt(data.Validade)) isExpired = true;
-                        }
-                        
-                        const statusClass = (!isExpired && isStatusActive) ? "tm-dot-green" : "tm-dot-red";
-                        const passDisplay = isExpired ? `<span style="color:#ff1744;">Expired</span>` : data.Senha;
-                        const creator = data.Revendedor || "Unknown User";
+                        if(data.Validade && data.Validade !== "∞" && Date.now() > parseInt(data.Validade)) isExpired = true;
+
+                        const statusDisplay = isExpired ? `<span style="color:var(--danger); font-weight:bold;">Expired</span>` : `<span style="color:var(--primary); font-weight:bold;">Active</span>`;
+                        const creator = data.Revendedor || "Unknown";
 
                         htmlContent += `
-                            <div class="tm-list-item">
-                                <div class="tm-user-info">
-                                    <i class="fas fa-user-circle" style="font-size:24px;"></i>
-                                    <div class="tm-user-details">
-                                        <span style="font-size:15px; color:#000;">${data.Usuário}</span>
-                                        <span style="font-size:12px; color:#555;">Pass: ${passDisplay}</span>
-                                        <span style="font-size:10px; background:#000; color:#fff; padding:2px 5px; border-radius:3px; margin-top:3px; width:fit-content;">By: ${creator}</span>
+                            <tr>
+                                <td>
+                                    <div style="display:flex; align-items:center; gap:10px;">
+                                        <i class="fas fa-user-circle" style="font-size:24px; color:#555;"></i>
+                                        <strong style="color:#fff;">${data.Usuário}</strong>
                                     </div>
-                                </div>
-                                <div class="tm-right-actions">
-                                    <div class="tm-status-dot ${statusClass}"></div>
-                                    <i class="far fa-trash-alt tm-action-icons" onclick="deleteTm('${child.key}')"></i>
-                                </div>
-                            </div>
+                                </td>
+                                <td>${data.Senha}</td>
+                                <td><span style="background:#333; padding:2px 6px; border-radius:4px; font-size:11px;">${creator}</span></td>
+                                <td>${statusDisplay}</td>
+                                <td>
+                                    <div class="action-btns">
+                                        <button style="color:var(--danger);" onclick="deleteTm('${data.dbKey}')"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
                         `;
                     });
-                    
                     listDiv.innerHTML = htmlContent;
                 } else {
-                    listDiv.innerHTML = '<p style="text-align:center; color:#777; padding: 20px 0;">No users found.</p>';
+                    listDiv.innerHTML = `<tr><td colspan="5" style="text-align:center;">No users found.</td></tr>`;
                 }
                 document.getElementById('tmTotalUsers').innerText = total;
             });
         }
+        function deleteTm(key) { if(confirm("Permanently delete this user?")) db.ref(`Usuarios/${key}`).remove(); }
 
-        function deleteTm(key) { if(confirm("Permanently delete this user from database?")) db.ref(`Usuarios/${key}`).remove(); }
+        // ==========================================
+        // 4. APP UPDATE LOGIC (SKETCHWARE)
+        // ==========================================
+        function sendAppUpdate() {
+            const version = document.getElementById('appVersionUpd').value.trim();
+            const news = document.getElementById('whatNewsUpd').value.trim();
+            const link = document.getElementById('appLinkUpd').value.trim();
+
+            if (!version || !news || !link) return showToast("Fill all update fields!", "error");
+
+            db.ref('AppUpdate').set({
+                "Version": version,
+                "News": news,
+                "Link": link,
+                "UpdateTime": new Date().toLocaleString()
+            }).then(() => {
+                showToast("App Update Pushed Successfully!");
+                document.getElementById('appVersionUpd').value = "";
+                document.getElementById('whatNewsUpd').value = "";
+                document.getElementById('appLinkUpd').value = "";
+            }).catch((error) => showToast(error.message, "error"));
+        }
+
+        // ==========================================
+        // 5. MASTER SETTINGS (LIMITS & LOCKS)
+        // ==========================================
+        function loadMasterSettings() {
+            db.ref('config').on('value', snap => {
+                if(snap.exists()) {
+                    const data = snap.val();
+                    if(data.free_limits) {
+                        document.getElementById('limitCount').value = data.free_limits.appPassLimit || 2;
+                        document.getElementById('limitHours').value = data.free_limits.appPassHours || 6;
+                        document.getElementById('limitDevice').value = data.free_limits.appPassDevice || 1;
+                    }
+                    if(data.panel_locks) {
+                        document.getElementById('lockLuaCheck').checked = data.panel_locks.lua === true;
+                        document.getElementById('lockTmCheck').checked = data.panel_locks.tm === true;
+                    }
+                }
+            });
+        }
+
+        function saveMasterSettings() {
+            const limit = parseInt(document.getElementById('limitCount').value);
+            const hours = parseInt(document.getElementById('limitHours').value);
+            const device = parseInt(document.getElementById('limitDevice').value);
+            const lockLua = document.getElementById('lockLuaCheck').checked;
+            const lockTm = document.getElementById('lockTmCheck').checked;
+
+            db.ref('config').update({
+                free_limits: { appPassLimit: limit, appPassHours: hours, appPassDevice: device },
+                panel_locks: { lua: lockLua, tm: lockTm }
+            }).then(() => showToast("All Settings Saved!"));
+        }
 
     </script>
 </body>
