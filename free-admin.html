@@ -19,11 +19,10 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Rajdhani', sans-serif; -webkit-tap-highlight-color: transparent; }
-
         body { background: var(--bg-body); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
 
         /* Sidebar */
-        .sidebar { width: 260px; background: var(--bg-panel); height: 100%; padding: 20px; border-right: 1px solid var(--border); transition: 0.3s; z-index: 1000; position: relative; }
+        .sidebar { width: 260px; background: var(--bg-panel); height: 100%; padding: 20px; border-right: 1px solid var(--border); transition: 0.3s; z-index: 1000; position: relative; flex-shrink: 0; }
         .brand { font-size: 20px; font-weight: 800; color: var(--primary); margin-bottom: 40px; display: flex; justify-content: space-between; align-items: center; }
         .brand span { color: white; }
         .close-btn { display: none; color: white; cursor: pointer; font-size: 24px; }
@@ -38,123 +37,61 @@
         /* ==========================================================================
            2. LUA ADMIN PANEL (DARK THEME)
            ========================================================================== */
-        #lua-tab { padding: 20px; height: 100%; overflow-y: auto; background: var(--bg-body); display: block; } /* Default Open */
-        
-        .lua-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        #lua-tab { padding: 20px; height: 100%; overflow-y: auto; background: var(--bg-body); display: block; }
+        .lua-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .lua-hamburger { display: none; font-size: 24px; cursor: pointer; color: white; margin-right: 15px; }
-        .lua-title-wrap { display: flex; align-items: center; }
-        .lua-title-wrap h2 { font-size: 22px; }
         
         .lua-btn { padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 14px; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; }
         .lua-btn-add { background: var(--primary); color: #000; }
-        .lua-btn-add:hover { box-shadow: 0 0 15px rgba(0, 230, 184, 0.4); transform: translateY(-2px); }
-        .lua-btn-cancel { background: var(--border); color: white; }
 
-        .lua-alert { background: rgba(239, 68, 68, 0.1); border-left: 4px solid var(--red); padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; line-height: 1.5; }
-        .lua-alert b { color: var(--red); }
+        .lua-alert { background: rgba(239, 68, 68, 0.1); border-left: 4px solid var(--red); padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; }
 
-        .lua-table-container { background: var(--bg-panel); border-radius: 10px; border: 1px solid var(--border); overflow-x: auto; margin-top: 20px; }
+        .lua-table-container { background: var(--bg-panel); border-radius: 10px; border: 1px solid var(--border); overflow-x: auto; margin-top: 15px; }
         #lua-tab table { width: 100%; border-collapse: collapse; text-align: left; min-width: 400px; }
         #lua-tab th, #lua-tab td { padding: 15px; border-bottom: 1px solid var(--border); }
-        #lua-tab th { color: var(--text-sub); font-weight: 600; font-size: 13px; text-transform: uppercase; background: rgba(0,0,0,0.2); }
-        
-        .lua-act-btn { width: 35px; height: 35px; border-radius: 8px; border: none; cursor: pointer; display: inline-flex; justify-content: center; align-items: center; color: white; margin-right: 5px; transition: 0.2s; }
-        .lua-act-btn:active { transform: scale(0.9); }
-        .lua-act-reset { background: var(--yellow); color: black; }
-        .lua-act-del { background: var(--red); }
-
-        /* Lua Modal */
-        .lua-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 20px; backdrop-filter: blur(5px); }
-        .lua-modal-box { background: var(--bg-panel); width: 100%; max-width: 380px; padding: 25px; border-radius: 15px; border: 1px solid var(--primary); box-shadow: 0 0 30px rgba(0, 230, 184, 0.2); animation: popIn 0.3s ease; }
-        .lua-modal-header { display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 20px; font-weight: bold; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 10px; }
-        .lua-form-group { margin-bottom: 15px; }
-        .lua-form-group label { display: block; margin-bottom: 8px; color: var(--text-sub); font-size: 14px; font-weight: 600; }
-        .lua-form-group input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: #111827; color: #9ca3af; outline: none; font-family: monospace; font-size: 16px; text-align: center; }
-        .lua-modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px; }
+        #lua-tab th { color: var(--text-sub); font-size: 13px; text-transform: uppercase; }
 
         /* ==========================================================================
-           3. TM ADMIN PANEL (ORIGINAL APP UI - WHITE THEME) - STRICTLY ISOLATED
+           3. TM ADMIN PANEL (ORIGINAL APP UI - WHITE THEME)
            ========================================================================== */
-        #tm-tab {
-            background-color: #f4f7f6; /* App Background */
-            color: #212121;
-            font-family: Arial, sans-serif; /* Standard App Font */
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            overflow-y: auto;
-            display: none; /* Hidden by default */
-        }
-
-        .tm-header { padding: 20px; display: flex; align-items: center; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 10; }
-        .tm-hamburger { font-size: 22px; color: #212121; margin-right: 15px; cursor: pointer; display: none; }
+        #tm-tab { background-color: #f0f0f0; color: #212121; font-family: Arial, sans-serif; position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow-y: auto; display: none; }
         
-        /* New UI Logo for TM */
+        .tm-header { padding: 20px; display: flex; align-items: center; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); sticky: top; z-index: 10; }
         .tm-logo { width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(135deg, #00e6b8, #008c7a); margin-right: 15px; display: flex; justify-content: center; align-items: center; color: #fff; font-size: 20px; box-shadow: 0 4px 10px rgba(0, 230, 184, 0.3); }
-        
-        .tm-header-text h2 { margin: 0; font-size: 18px; color: #000; font-weight: 900; letter-spacing: 0.5px; }
+        .tm-header-text h2 { margin: 0; font-size: 18px; color: #000; font-weight: bold; }
         .tm-header-text p { margin: 2px 0 0 0; font-size: 12px; color: #757575; font-weight: bold; }
 
-        .tm-card { background: #fff; margin: 15px; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); position: relative; overflow: hidden; border-left: 4px solid var(--primary); }
+        .tm-card { background: #fff; margin: 15px; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-left: 4px solid var(--primary); }
         .tm-card h3 { margin: 0 0 8px 0; font-size: 16px; color: #000; font-weight: bold; }
-        .tm-card p { margin: 0 0 12px 0; font-size: 13px; color: #616161; line-height: 1.4; }
-        .tm-limits-highlight { background: rgba(255, 23, 68, 0.1); color: #FF1744; padding: 8px 12px; border-radius: 6px; font-weight: bold; font-size: 13px; display: inline-block; }
+        .tm-limits { color: #FF1744; font-weight: bold; font-size: 13px; }
 
-        .tm-action-btns { margin: 15px; }
-        /* Removed Reseller Button, kept only one Add User Button full width */
-        .tm-btn { width: 100%; background: #000; padding: 16px; text-align: center; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); font-weight: bold; font-size: 15px; color: #fff; cursor: pointer; border: none; transition: 0.3s; }
-        .tm-btn:active { transform: scale(0.98); background: #333; }
-        .tm-btn i { margin-right: 8px; color: var(--primary); }
-
-        .tm-list-box { background: #fff; margin: 15px; padding: 15px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .tm-list-header { font-weight: bold; font-size: 14px; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 10px; color: #000; display: flex; justify-content: space-between; }
+        .tm-btn { width: calc(100% - 30px); background: #000; padding: 16px; text-align: center; border-radius: 10px; margin: 0 15px 15px; font-weight: bold; font-size: 15px; color: #fff; cursor: pointer; border: none; }
+        
+        .tm-list-box { background: #fff; margin: 0 15px 15px; padding: 15px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .tm-list-header { font-weight: bold; font-size: 14px; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 10px; color: #000; }
         
         .tm-list-item { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #f9f9f9; }
-        .tm-list-item:last-child { border-bottom: none; }
         .tm-user-info { display: flex; align-items: center; gap: 12px; }
-        .tm-user-icon { width: 35px; height: 35px; background: #f0f0f0; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #555; font-size: 16px; }
-        .tm-user-details strong { display: block; font-size: 15px; color: #000; margin-bottom: 3px; }
-        .tm-user-details span { font-size: 12px; color: #757575; background: #eee; padding: 2px 6px; border-radius: 4px; }
+        .tm-user-info i { font-size: 24px; color: #555; }
         
-        .tm-right-actions { display: flex; align-items: center; gap: 15px; }
-        .tm-status-dot { width: 10px; height: 10px; border-radius: 50%; box-shadow: 0 0 5px rgba(0,0,0,0.2); }
-        .tm-dot-green { background: #00e676; box-shadow: 0 0 8px #00e676; }
-        .tm-dot-red { background: #ff1744; box-shadow: 0 0 8px #ff1744; }
-        .tm-del-icon { color: #ff1744; font-size: 20px; cursor: pointer; padding: 5px; background: rgba(255, 23, 68, 0.1); border-radius: 6px; transition: 0.2s; }
-        .tm-del-icon:active { transform: scale(0.9); }
+        .tm-status-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .tm-dot-green { background: #00e676; }
+        .tm-dot-red { background: #ff1744; }
 
-        .tm-footer-stats { display: flex; justify-content: space-around; margin: 20px 15px; font-size: 12px; color: #616161; padding-bottom: 30px; font-weight: bold; border-top: 1px dashed #ccc; padding-top: 15px;}
-        .tm-footer-stats span { display: flex; align-items: center; gap: 6px; }
+        /* Modals */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 3000; backdrop-filter: blur(5px); }
+        .modal-box { background: #fff; width: 90%; max-width: 340px; border-radius: 15px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .modal-box h3 { margin-bottom: 20px; font-size: 18px; color: #000; font-weight: bold;}
+        .modal-input { width: 100%; border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin-bottom: 15px; outline: none; font-size: 16px; color: #000; }
+        .modal-confirm { width: 100%; background: #000; color: #fff; border: none; padding: 14px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-bottom: 10px; }
+        .modal-cancel { width: 100%; background: transparent; color: #ff1744; border: none; font-weight: bold; cursor: pointer; }
 
-        /* TM Specific Modal */
-        .tm-modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 3000; backdrop-filter: blur(3px); }
-        .tm-modal-content { background: #fff; width: 90%; max-width: 340px; border-radius: 15px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border-top: 6px solid #000; animation: popIn 0.3s ease; }
-        .tm-modal-content h3 { margin: 0 0 5px 0; font-size: 20px; color: #000; font-weight: 900; }
-        .tm-sub-text { margin: 0 0 20px 0; font-size: 12px; color: #757575; }
-        
-        .tm-input-group { position: relative; margin-bottom: 20px; width: 100%; }
-        .tm-input-group label { font-size: 12px; color: #9e9e9e; font-weight: bold; position: absolute; top: -8px; left: 10px; background: #fff; padding: 0 5px; z-index: 2;}
-        .tm-input-group input { width: 100%; border: 2px solid #e0e0e0; border-radius: 8px; padding: 14px 12px; font-size: 15px; color: #000; outline: none; transition: 0.3s; font-weight: 600;}
-        .tm-input-group input:focus { border-color: #000; }
-        .tm-random-icon { position: absolute; right: 12px; top: 14px; cursor: pointer; color: var(--primary); font-size: 18px; }
-        
-        .tm-locked-field { background: #f5f5f5 !important; color: #9e9e9e !important; border-color: #eee !important; }
-        
-        .tm-confirm-btn { width: 100%; background: #000; color: var(--primary); border: none; padding: 16px; border-radius: 8px; font-size: 16px; font-weight: 900; cursor: pointer; margin-bottom: 12px; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;}
-        .tm-confirm-btn:active { transform: scale(0.98); background: #333; }
-        .tm-close-btn { width: 100%; background: transparent; color: #ff1744; border: none; font-size: 14px; font-weight: bold; cursor: pointer; padding: 10px; }
-
-        @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
-        /* Responsive Layouts */
         @media (max-width: 768px) {
             .sidebar { position: fixed; left: -260px; }
             .sidebar.active { left: 0; }
-            .lua-hamburger, .tm-hamburger { display: inline-block; }
-            .close-btn { display: block; }
+            .lua-hamburger { display: block; }
             .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 999; }
             .overlay.active { display: block; }
-            #lua-tab { padding: 15px; }
-            .lua-header { margin-bottom: 20px; }
-            .lua-table-container { margin-top: 10px; }
         }
     </style>
 </head>
@@ -163,154 +100,63 @@
     <div class="overlay" onclick="toggleSidebar()"></div>
 
     <aside class="sidebar" id="sidebar">
-        <div class="brand">
-            FREE <span>ADMIN</span>
-            <i class="fas fa-times close-btn" onclick="toggleSidebar()"></i>
-        </div>
-        
+        <div class="brand">FREE <span>ADMIN</span> <i class="fas fa-times close-btn" onclick="toggleSidebar()"></i></div>
         <nav>
             <div class="menu-label">SELECT PANEL</div>
-            
-            <div class="menu-item active" onclick="showTab('lua-tab')" id="nav-lua-tab">
-                <i class="fas fa-key"></i> LUA ADMIN PANEL
-            </div>
-            
-            <div class="menu-item" onclick="showTab('tm-tab')" id="nav-tm-tab">
-                <i class="fas fa-mobile-alt"></i> TM ADMIN PANEL
-            </div>
-            
-            <hr style="border-color: #334155; margin: 25px 0 15px 0;">
-            
-            <div class="menu-item" onclick="window.location.href='index.html'" style="color: var(--primary);">
-                <i class="fas fa-arrow-left"></i> BACK TO STORE
-            </div>
+            <div class="menu-item active" onclick="showTab('lua-tab')" id="nav-lua-tab"><i class="fas fa-key"></i> LUA ADMIN</div>
+            <div class="menu-item" onclick="showTab('tm-tab')" id="nav-tm-tab"><i class="fas fa-mobile-alt"></i> TM ADMIN</div>
+            <hr style="border-color: #334155; margin: 20px 0;">
+            <div class="menu-item" onclick="window.location.href='index.html'" style="color: var(--primary);"><i class="fas fa-arrow-left"></i> BACK TO STORE</div>
         </nav>
     </aside>
 
     <main class="main-content">
-
         <div id="lua-tab">
             <div class="lua-header">
-                <div class="lua-title-wrap">
+                <div style="display:flex; align-items:center;">
                     <i class="fas fa-bars lua-hamburger" onclick="toggleSidebar()"></i>
-                    <h2>Lua Script Keys</h2>
+                    <h2>Lua Keys</h2>
                 </div>
-                <div id="userEmailDisplay" style="color: var(--primary); font-weight: bold; font-size: 13px;">...</div>
+                <div id="userEmail" style="color:var(--primary); font-size:12px; font-weight:bold;">...</div>
             </div>
-
-            <div class="lua-alert">
-                <i class="fas fa-info-circle" style="color:var(--red);"></i> You can generate <b>1 Free Lua Key</b> every 24 Hours. Deleting a key will NOT reset your time limit.
-            </div>
-
+            <div class="lua-alert">You can generate <b>1 Key</b> every 24 Hours.</div>
             <button class="lua-btn lua-btn-add" onclick="openLuaModal()"><i class="fas fa-plus"></i> Generate Free Key</button>
-
             <div class="lua-table-container">
                 <table>
-                    <thead>
-                        <tr>
-                            <th>Key Name</th>
-                            <th>Devices</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="luaTableBody">
-                        <tr><td colspan="3" style="text-align: center; color: var(--text-sub);">Loading your keys...</td></tr>
-                    </tbody>
+                    <thead><tr><th>Key</th><th>Devices</th><th>Actions</th></tr></thead>
+                    <tbody id="luaTableBody"></tbody>
                 </table>
             </div>
         </div>
 
         <div id="tm-tab">
             <div class="tm-header">
-                <i class="fas fa-bars tm-hamburger" onclick="toggleSidebar()"></i>
+                <i class="fas fa-bars lua-hamburger" onclick="toggleSidebar()" style="color:#000; margin-right:15px;"></i>
                 <div class="tm-logo"><i class="fas fa-shield-alt"></i></div>
                 <div class="tm-header-text">
                     <h2>TM ADMIN PANEL</h2>
-                    <p>APP PASSWORD GENERATOR</p>
+                    <p>PASSWORD GENERATOR</p>
                 </div>
             </div>
-
             <div class="tm-card">
-                <h3>Generation Limits</h3>
-                <p>These limits are set by the Owner for Free Users.</p>
-                <div class="tm-limits-highlight">
-                    Created Today: <span id="tmTodayCount">0</span> / <span id="tmLimitCount">2</span><br>
-                    Valid For: <span id="tmLimitHours">6</span> Hours<br>
-                    Device Allowed: <span id="tmLimitDevice">1</span>
-                </div>
+                <h3>Daily Limits</h3>
+                <div class="tm-limits">Today: <span id="tmCount">0</span> / <span id="tmMax">2</span> | Valid: 6H</div>
             </div>
-
-            <div class="tm-action-btns">
-                <button class="tm-btn" onclick="openTmModal()"><i class="fas fa-user-plus"></i> ADD NEW USER</button>
-            </div>
-
+            <button class="tm-btn" onclick="openTmModal()"><i class="fas fa-user-plus"></i> ADD USER</button>
             <div class="tm-list-box">
-                <div class="tm-list-header">
-                    <span>Generated Users</span>
-                    <span>Status / Action</span>
-                </div>
-                <div id="tmUsersList">
-                    <p style="text-align:center; color:#9e9e9e; padding: 20px 0;">No passwords created yet.</p>
-                </div>
-            </div>
-
-            <div class="tm-footer-stats">
-                <span><div class="tm-status-dot tm-dot-green"></div> Active: <span id="tmActiveCount">0</span></span>
-                <span><div class="tm-status-dot tm-dot-red"></div> Expired: <span id="tmInactiveCount">0</span></span>
-                <span>Total: <span id="tmFooterTotal">0</span></span>
+                <div class="tm-list-header">User List</div>
+                <div id="tmList"></div>
             </div>
         </div>
-
     </main>
 
-    <div class="lua-modal" id="luaModal">
-        <div class="lua-modal-box">
-            <div class="lua-modal-header">
-                <span>Generate Lua Key</span>
-            </div>
-            <div class="lua-form-group">
-                <label>Key Name (Auto Generated)</label>
-                <input type="text" id="newLuaKey" readonly>
-            </div>
-            <p style="color: var(--text-sub); font-size: 13px; margin-bottom: 5px;"><i class="fas fa-clock"></i> Duration: 1 Day</p>
-            <p style="color: var(--text-sub); font-size: 13px;"><i class="fas fa-mobile-alt"></i> Limit: 1 Device</p>
-            
-            <div class="lua-modal-footer">
-                <button class="lua-btn lua-btn-cancel" onclick="closeModal('luaModal')">Cancel</button>
-                <button class="lua-btn lua-btn-add" id="btnSubmitLuaKey" onclick="createLuaKey()">Generate Key</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="tmAppPassModal" class="tm-modal-overlay">
-        <div class="tm-modal-content">
-            <h3>Create User</h3>
-            <p class="tm-sub-text">Generate app access password</p>
-
-            <div class="tm-input-group">
-                <label>Usuário (Username)</label>
-                <input type="text" id="tmUser" placeholder="e.g. USER_123">
-            </div>
-
-            <div class="tm-input-group">
-                <label>Senha (Password)</label>
-                <input type="text" id="tmPass" placeholder="Auto generated">
-                <i class="fas fa-random tm-random-icon" onclick="tmShufflePass()"></i>
-            </div>
-
-            <div style="display: flex; gap: 15px;">
-                <div class="tm-input-group" style="flex: 1;">
-                    <label>Validade</label>
-                    <input type="text" id="tmValid" readonly class="tm-locked-field">
-                </div>
-                <div class="tm-input-group" style="width: 80px;">
-                    <label>Device</label>
-                    <input type="text" id="tmDevice" readonly class="tm-locked-field">
-                </div>
-            </div>
-
-            <button class="tm-confirm-btn" onclick="createTmPass()">GENERATE</button>
-            <button class="tm-close-btn" onclick="closeModal('tmAppPassModal')">Cancel</button>
+    <div class="modal-overlay" id="tmModal">
+        <div class="modal-box">
+            <h3>Add New User</h3>
+            <input type="text" id="tmUser" class="modal-input" placeholder="Username">
+            <input type="text" id="tmPass" class="modal-input" placeholder="Password">
+            <button class="modal-confirm" onclick="createTmUser()">Confirm</button>
+            <button class="modal-cancel" onclick="closeModal('tmModal')">Cancel</button>
         </div>
     </div>
 
@@ -319,7 +165,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
-        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyAS3UXXrio_-c9uPbHwpDuTVrP-p8d903w",
             authDomain: "white-2k-17-v4.firebaseapp.com",
@@ -329,46 +174,38 @@
             messagingSenderId: "180909174928",
             appId: "1:180909174928:android:148861a87d66c6980ca815"
         };
-        
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
-        const auth = firebase.auth();
         const db = firebase.database();
+        const auth = firebase.auth();
 
         let currentUser = null;
-        
-        // Default Limits (Overwritten by DB)
-        let ownerLimits = { appPassLimit: 2, appPassHours: 6, appPassDevice: 1 };
-        let todayTmCount = 0;
+        let limits = { appPassLimit: 2, appPassHours: 6, appPassDevice: 1 };
 
-        // AUTH LISTENER
         auth.onAuthStateChanged(user => {
             if(user) {
                 currentUser = user;
-                document.getElementById('userEmailDisplay').innerText = user.email;
-                
-                // Fetch data
-                fetchOwnerLimits();
-                loadLuaKeys();
-                loadTmPasswords();
-            } else {
-                window.location.href = 'user-login.html';
-            }
+                document.getElementById('userEmail').innerText = user.email;
+                loadLua();
+                loadTm();
+                fetchLimits();
+            } else { window.location.href = 'user-login.html'; }
         });
 
-        // --- TAB & UI CONTROL ---
-        function showTab(tabId) {
-            document.getElementById('lua-tab').style.display = 'none';
-            document.getElementById('tm-tab').style.display = 'none';
-            document.getElementById(tabId).style.display = 'block';
+        function fetchLimits() {
+            db.ref('config/free_limits').on('value', snap => {
+                if(snap.exists()) {
+                    limits = snap.val();
+                    document.getElementById('tmMax').innerText = limits.appPassLimit;
+                }
+            });
+        }
 
-            document.getElementById('nav-lua-tab').classList.remove('active');
-            document.getElementById('nav-tm-tab').classList.remove('active');
-            document.getElementById('nav-' + tabId).classList.add('active');
-
-            if(window.innerWidth <= 768) {
-                document.getElementById('sidebar').classList.remove('active');
-                document.querySelector('.overlay').classList.remove('active');
-            }
+        function showTab(id) {
+            document.getElementById('lua-tab').style.display = id === 'lua-tab' ? 'block' : 'none';
+            document.getElementById('tm-tab').style.display = id === 'tm-tab' ? 'block' : 'none';
+            document.getElementById('nav-lua-tab').classList.toggle('active', id === 'lua-tab');
+            document.getElementById('nav-tm-tab').classList.toggle('active', id === 'tm-tab');
+            if(window.innerWidth <= 768) toggleSidebar();
         }
 
         function toggleSidebar() {
@@ -376,215 +213,81 @@
             document.querySelector('.overlay').classList.toggle('active');
         }
 
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        // ==========================================
-        // LUA KEY LOGIC (DARK)
-        // ==========================================
-        function openLuaModal() {
-            db.ref('free_tier_limits/' + currentUser.uid).once('value').then(snap => {
-                if(snap.exists()) {
-                    const lastTime = snap.val().lastKeyTime;
-                    const now = Date.now();
-                    const diffHours = (now - lastTime) / (1000 * 60 * 60);
-                    if(diffHours < 24) {
-                        alert(`Limit Reached! Try again in ${Math.ceil(24 - diffHours)} hours.`);
-                        return;
-                    }
-                }
-                document.getElementById('newLuaKey').value = "MVX_FREE_" + Math.floor(Math.random() * 9000 + 1000);
-                document.getElementById('luaModal').style.display = 'flex';
-            });
-        }
-
-        function createLuaKey() {
-            const key = document.getElementById('newLuaKey').value;
-            const btn = document.getElementById('btnSubmitLuaKey');
-            btn.disabled = true;
-
-            const now = Date.now();
-            db.ref('users/' + key).set({
-                devices: [],
-                maxDevices: 1,
-                status: 'active',
-                creatorUid: currentUser.uid,
-                isFreeTier: true,
-                createdAt: now
-            }).then(() => {
-                return db.ref('free_tier_limits/' + currentUser.uid).set({ lastKeyTime: now });
-            }).then(() => {
-                alert("Free Lua Key Generated Successfully!");
-                closeModal('luaModal');
-                btn.disabled = false;
-            }).catch(err => {
-                alert("Error: " + err.message);
-                btn.disabled = false;
-            });
-        }
-
-        function loadLuaKeys() {
-            db.ref('users').orderByChild('creatorUid').equalTo(currentUser.uid).on('value', snap => {
-                let html = '';
-                if(snap.exists()) {
-                    snap.forEach(child => {
-                        const key = child.key;
-                        const hwidCount = child.val().hwids ? Object.keys(child.val().hwids).length : 0;
-                        html += `
-                            <tr>
-                                <td><b>${key}</b></td>
-                                <td>${hwidCount} / 1</td>
-                                <td>
-                                    <button class="lua-act-btn lua-act-reset" onclick="resetLuaDevice('${key}')" title="Reset Device"><i class="fas fa-mobile-alt"></i></button>
-                                    <button class="lua-act-btn lua-act-del" onclick="deleteLuaKey('${key}')" title="Delete Key"><i class="fas fa-times"></i></button>
-                                </td>
-                            </tr>
-                        `;
-                    });
-                } else {
-                    html = `<tr><td colspan="3" style="text-align: center; color: var(--text-sub);">No Lua Keys created yet.</td></tr>`;
-                }
-                document.getElementById('luaTableBody').innerHTML = html;
-            });
-        }
-
-        function resetLuaDevice(key) {
-            if(confirm(`Reset Device Lock for Key: ${key}?`)) db.ref(`users/${key}/hwids`).remove();
-        }
-        function deleteLuaKey(key) {
-            if(confirm(`Delete Lua Key: ${key}? (Note: 24h limit will NOT reset)`)) db.ref(`users/${key}`).remove();
-        }
-
-        // ==========================================
-        // TM ADMIN PANEL LOGIC (WHITE)
-        // ==========================================
-        function fetchOwnerLimits() {
-            db.ref('config/free_limits').on('value', snap => {
-                if(snap.exists()) {
-                    ownerLimits = snap.val();
-                    document.getElementById('tmLimitCount').innerText = ownerLimits.appPassLimit;
-                    document.getElementById('tmLimitHours').innerText = ownerLimits.appPassHours;
-                    document.getElementById('tmLimitDevice').innerText = ownerLimits.appPassDevice;
-                }
-            });
-        }
-
+        // TM LOGIC
         function openTmModal() {
-            if(todayTmCount >= ownerLimits.appPassLimit) {
-                alert(`Limit Reached! You can only create ${ownerLimits.appPassLimit} app passwords today.`);
-                return;
-            }
-            document.getElementById('tmUser').value = "USER_" + Math.floor(Math.random() * 9000);
-            tmShufflePass();
-            
-            document.getElementById('tmValid').value = ownerLimits.appPassHours + "H";
-            document.getElementById('tmDevice').value = ownerLimits.appPassDevice;
-            
-            document.getElementById('tmAppPassModal').style.display = 'flex';
+            document.getElementById('tmUser').value = "USER_" + Math.floor(Math.random()*9000);
+            document.getElementById('tmPass').value = Math.random().toString(36).slice(-6);
+            document.getElementById('tmModal').style.display = 'flex';
         }
 
-        function tmShufflePass() {
-            const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-            let pass = '';
-            for(let i = 0; i < 6; i++) pass += chars.charAt(Math.floor(Math.random() * chars.length));
-            document.getElementById('tmPass').value = pass;
-        }
-
-        function createTmPass() {
+        function createTmUser() {
             const user = document.getElementById('tmUser').value.trim();
             const pass = document.getElementById('tmPass').value.trim();
-            if(!user || !pass) return alert("Please fill all fields!");
+            if(!user || !pass) return;
 
             const now = new Date();
-            const rgtime = String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0') + " - " + String(now.getDate()).padStart(2, '0') + "/" + String(now.getMonth() + 1).padStart(2, '0') + "/" + String(now.getFullYear()).slice(-2);
+            const rgtime = String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0') + " - " + 
+                           String(now.getDate()).padStart(2, '0') + "/" + String(now.getMonth() + 1).padStart(2, '0') + "/" + 
+                           String(now.getFullYear()).slice(-2);
 
-            const expiryDate = new Date();
-            expiryDate.setHours(now.getHours() + parseInt(ownerLimits.appPassHours));
-            const validadeTime = String(expiryDate.getTime());
+            const expiry = new Date();
+            expiry.setHours(now.getHours() + parseInt(limits.appPassHours));
 
             const newRef = db.ref('Usuarios').push();
-            
-            const data = {
+            newRef.set({
                 "Usuário": user,
                 "Senha": pass,
                 "Cargo": "Usuário",
                 "Revendedor": currentUser.email,
-                "CreatorUid": currentUser.uid, 
                 "Status": "true",
                 "Coins": "0",
                 "Conectados": "0",
                 "Dispositivos": "[]",
-                "Acessos": String(ownerLimits.appPassDevice),
+                "Acessos": String(limits.appPassDevice),
                 "Key": newRef.key,
                 "rgtime": rgtime,
-                "Validade": validadeTime,
+                "Validade": String(expiry.getTime()),
+                "CreatorUid": currentUser.uid,
                 "createdAt": now.getTime()
-            };
-
-            newRef.set(data).then(() => {
-                alert("User Created Successfully!");
-                closeModal('tmAppPassModal');
-            }).catch(err => alert("Error: " + err.message));
+            }).then(() => { closeModal('tmModal'); alert("User Added!"); });
         }
 
-        function loadTmPasswords() {
+        function loadTm() {
             db.ref('Usuarios').orderByChild('CreatorUid').equalTo(currentUser.uid).on('value', snap => {
-                const listDiv = document.getElementById('tmUsersList');
-                listDiv.innerHTML = '';
-                
-                let total = 0; let active = 0; let countToday = 0;
-                const todayStart = new Date().setHours(0,0,0,0);
-
-                if(snap.exists()) {
+                const list = document.getElementById('tmList'); list.innerHTML = '';
+                let count = 0;
+                const today = new Date().setHours(0,0,0,0);
+                if(snap.exists()){
                     snap.forEach(child => {
                         const data = child.val();
-                        total++;
-                        
-                        if(data.createdAt && data.createdAt > todayStart) countToday++;
-                        
-                        let isExpired = false;
-                        if(data.Validade && data.Validade !== "∞") {
-                            if(Date.now() > parseInt(data.Validade)) isExpired = true;
-                        }
-                        
-                        if(!isExpired) active++;
-
-                        const statusClass = isExpired ? "tm-dot-red" : "tm-dot-green";
-                        const passDisplay = isExpired ? `<span style="color:#ff1744; font-weight:bold;">Expired</span>` : `<span>${data.Senha}</span>`;
-
-                        listDiv.innerHTML += `
+                        if(data.createdAt > today) count++;
+                        const expired = data.Validade !== "∞" && Date.now() > parseInt(data.Validade);
+                        list.innerHTML += `
                             <div class="tm-list-item">
-                                <div class="tm-user-info">
-                                    <div class="tm-user-icon"><i class="fas fa-user"></i></div>
-                                    <div class="tm-user-details">
-                                        <strong>${data.Usuário}</strong>
-                                        ${passDisplay}
-                                    </div>
-                                </div>
-                                <div class="tm-right-actions">
-                                    <div class="tm-status-dot ${statusClass}"></div>
-                                    <i class="far fa-trash-alt tm-del-icon" onclick="deleteTmPass('${child.key}')" title="Delete"></i>
-                                </div>
-                            </div>
-                        `;
+                                <div class="tm-user-info"><i class="fas fa-user-circle"></i> <span>${data.Usuário}<br><small>Pass: ${expired ? 'Expired' : data.Senha}</small></span></div>
+                                <div class="tm-status-dot ${expired ? 'tm-dot-red' : 'tm-dot-green'}"></div>
+                            </div>`;
                     });
-                } else {
-                    listDiv.innerHTML = `<p style="text-align:center; color:#9e9e9e; padding: 20px 0;">No users found.</p>`;
                 }
-
-                todayTmCount = countToday;
-                document.getElementById('tmTodayCount').innerText = todayTmCount;
-                document.getElementById('tmTotalUsers').innerText = total;
-                document.getElementById('tmFooterTotal').innerText = total;
-                document.getElementById('tmActiveCount').innerText = active;
-                document.getElementById('tmInactiveCount').innerText = total - active;
+                document.getElementById('tmCount').innerText = count;
             });
         }
 
-        function deleteTmPass(key) {
-            if(confirm("Delete this user?")) db.ref(`Usuarios/${key}`).remove();
+        // LUA LOGIC
+        function loadLua() {
+            db.ref('users').orderByChild('creatorUid').equalTo(currentUser.uid).on('value', snap => {
+                const body = document.getElementById('luaTableBody'); body.innerHTML = '';
+                if(snap.exists()){
+                    snap.forEach(child => {
+                        const data = child.val();
+                        body.innerHTML += `<tr><td>${child.key}</td><td>${data.hwids ? Object.keys(data.hwids).length : 0}/1</td><td><i class="fas fa-trash-alt" style="color:var(--red); cursor:pointer;" onclick="deleteLua('${child.key}')"></i></td></tr>`;
+                    });
+                }
+            });
         }
+        function deleteLua(k){ if(confirm("Delete?")) db.ref(`users/${k}`).remove(); }
     </script>
 </body>
 </html>

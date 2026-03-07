@@ -22,7 +22,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg-body); color: var(--text-main); font-family: var(--font-body); display: flex; height: 100vh; overflow: hidden; }
 
-        .sidebar { width: 260px; background: #080b12; height: 100%; padding: 20px; border-right: 1px solid var(--border); transition: 0.3s; z-index: 1000; position: relative; }
+        .sidebar { width: 260px; background: #080b12; height: 100%; padding: 20px; border-right: 1px solid var(--border); transition: 0.3s; z-index: 1000; position: relative; flex-shrink: 0;}
         .brand { font-family: var(--font-head); font-size: 20px; color: var(--gold); margin-bottom: 40px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
         .close-btn { display: none; color: white; cursor: pointer; font-size: 24px; }
         
@@ -31,13 +31,14 @@
         .menu-item:hover, .menu-item.active { background: rgba(255, 215, 0, 0.1); color: var(--gold); }
         .menu-item i { width: 20px; text-align: center; }
 
-        .main-content { flex: 1; position: relative; height: 100%; overflow: hidden; }
-        .mobile-header { display: none; padding: 15px 20px; background: var(--bg-panel); border-bottom: 1px solid var(--border); align-items: center; gap: 15px; }
+        .main-content { flex: 1; position: relative; height: 100%; overflow: hidden; display: flex; flex-direction: column; width: calc(100% - 260px); }
+        .mobile-header { display: none; padding: 15px 20px; background: var(--bg-panel); border-bottom: 1px solid var(--border); align-items: center; gap: 15px; flex-shrink: 0; }
         .hamburger { font-size: 24px; color: var(--gold); cursor: pointer; }
 
         @media (max-width: 768px) {
             .sidebar { position: fixed; left: -260px; }
             .sidebar.active { left: 0; }
+            .main-content { width: 100%; }
             .mobile-header { display: flex; }
             .close-btn { display: block; }
             .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; z-index: 999; }
@@ -45,35 +46,36 @@
         }
 
         /* ==========================================================================
-           2. WEBSITE ADMIN (STORE DASHBOARD) - DEFAULT TAB
+           2. WEBSITE ADMIN (STORE DASHBOARD) - FIXED LAYOUT
            ========================================================================== */
-        #website-tab { padding: 20px; height: 100%; overflow-y: auto; display: block; }
-        .web-card { background: var(--bg-panel); padding: 25px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px; }
-        .web-card h2 { color: var(--primary); font-family: var(--font-head); margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; font-size: 1.5rem; }
+        #website-tab { padding: 20px; height: 100%; overflow-y: auto; display: block; width: 100%; }
+        .web-card { background: var(--bg-panel); padding: 25px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px; max-width: 100%; }
+        .web-card h2 { color: var(--primary); font-family: var(--font-head); margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; font-size: 1.3rem; }
         
-        .web-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .web-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;}
         @media(max-width: 768px) { .web-grid { grid-template-columns: 1fr; } }
         
-        .web-input-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 15px; }
+        .web-input-group { display: flex; flex-direction: column; gap: 5px; width: 100%; }
         .web-input-group label { font-size: 0.9rem; color: var(--text-sub); font-weight: 600; }
-        .web-input-group input, .web-input-group select, .web-input-group textarea { background: var(--bg-input); border: 1px solid #444; color: #fff; padding: 12px; border-radius: 8px; font-size: 1rem; outline: none; transition: 0.3s; font-family: var(--font-body); }
-        .web-input-group input:focus { border-color: var(--primary); }
+        .web-input-group input, .web-input-group select, .web-input-group textarea { width: 100%; background: var(--bg-input); border: 1px solid #444; color: #fff; padding: 12px; border-radius: 8px; font-size: 1rem; outline: none; transition: 0.3s; font-family: var(--font-body); }
+        .web-input-group input:focus, .web-input-group textarea:focus { border-color: var(--primary); }
         
-        /* Dual Method Image Upload */
-        .image-upload-wrapper { display: flex; gap: 10px; align-items: center; }
-        .image-upload-wrapper input[type="text"] { flex: 1; }
-        .file-btn { background: #333; color: #fff; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; white-space: nowrap; }
+        /* Dual Method Image Upload Fix */
+        .image-upload-wrapper { display: flex; gap: 10px; align-items: center; width: 100%; }
+        .image-upload-wrapper input[type="text"] { flex: 1; min-width: 0; }
+        .file-btn { background: #333; color: #fff; border: none; padding: 12px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; white-space: nowrap; flex-shrink: 0; }
         
         /* Update Checkbox */
         .update-box { background: rgba(255, 215, 0, 0.1); border-left: 4px solid var(--gold); padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; cursor: pointer; }
-        .update-box input { width: 18px; height: 18px; cursor: pointer; }
-        .update-box label { color: var(--gold); font-weight: bold; cursor: pointer; }
+        .update-box input { width: 18px; height: 18px; cursor: pointer; flex-shrink: 0;}
+        .update-box label { color: var(--gold); font-weight: bold; cursor: pointer; font-size: 0.9rem;}
 
-        .btn-submit { background: var(--primary); color: #000; border: none; padding: 15px; border-radius: 8px; font-family: var(--font-head); font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s; }
+        .btn-submit { background: var(--primary); color: #000; border: none; padding: 15px; border-radius: 8px; font-family: var(--font-head); font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s; margin-top: 10px;}
         .btn-submit:hover { box-shadow: 0 0 15px var(--primary-dim); }
 
-        .web-table { width: 100%; border-collapse: collapse; min-width: 600px; }
-        .web-table th, .web-table td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border); }
+        .table-responsive { width: 100%; overflow-x: auto; }
+        .web-table { width: 100%; border-collapse: collapse; min-width: 500px; }
+        .web-table th, .web-table td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.9rem;}
         .web-table th { color: var(--primary); font-family: var(--font-head); }
         .web-table td img { width: 40px; height: 40px; border-radius: 5px; object-fit: cover; }
         .web-actions button { background: none; border: none; cursor: pointer; font-size: 1.2rem; margin-right: 10px; }
@@ -81,13 +83,13 @@
         /* ==========================================================================
            3. MASTER LUA PANEL (DARK THEME)
            ========================================================================== */
-        #lua-tab { padding: 20px; height: 100%; overflow-y: auto; display: none; }
+        #lua-tab { padding: 20px; height: 100%; overflow-y: auto; display: none; width: 100%;}
         .lua-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         
         .lua-btn { padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-family: 'Rajdhani'; transition: 0.3s; }
         .lua-btn-add { background: var(--gold); color: #000; }
         
-        .lua-table-container { background: var(--bg-panel); border-radius: 10px; border: 1px solid var(--border); overflow-x: auto; }
+        .lua-table-container { background: var(--bg-panel); border-radius: 10px; border: 1px solid var(--border); overflow-x: auto; width: 100%;}
         .lua-table { width: 100%; border-collapse: collapse; text-align: left; min-width: 500px; }
         .lua-table th, .lua-table td { padding: 15px; border-bottom: 1px solid var(--border); font-family: 'Rajdhani'; }
         .lua-table th { color: var(--text-sub); }
@@ -99,44 +101,46 @@
         .act-del { background: var(--danger); }
 
         /* ==========================================================================
-           4. MASTER TM PANEL (WHITE APP UI) - STRICTLY ISOLATED
+           4. MASTER TM PANEL (WHITE APP UI) - STRICTLY ISOLATED & FIXED
            ========================================================================== */
-        #tm-tab { background-color: #f4f7f6; color: #212121; font-family: Arial, sans-serif; position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow-y: auto; display: none; }
+        #tm-tab { background-color: #f0f0f0; color: #212121; font-family: Arial, sans-serif; position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow-y: auto; display: none; }
         
-        .tm-header { padding: 20px; display: flex; align-items: center; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .tm-logo { width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(135deg, #ffd700, #ffa000); margin-right: 15px; display: flex; justify-content: center; align-items: center; color: #000; font-size: 20px; box-shadow: 0 4px 10px rgba(255, 215, 0, 0.3); }
-        .tm-header-text h2 { margin: 0; font-size: 18px; color: #000; font-weight: 900; }
-        .tm-header-text p { margin: 2px 0 0 0; font-size: 12px; color: #d32f2f; font-weight: bold; }
+        .tm-header { padding: 20px; display: flex; align-items: center; background: #f0f0f0; }
+        .tm-header img { width: 45px; height: 45px; border-radius: 50%; margin-right: 15px; background: #000; }
+        .tm-header h2 { margin: 0; font-size: 20px; color: #000; font-weight: bold; }
+        .tm-header p { margin: 2px 0 0 0; font-size: 12px; color: #d32f2f; font-weight: bold; }
 
-        .tm-card { background: #fff; margin: 15px; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-left: 4px solid var(--gold); }
-        .tm-card h3 { margin: 0 0 8px 0; font-size: 16px; color: #000; font-weight: bold; }
+        .tm-card { background: #fff; margin: 10px 15px; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid var(--gold); }
+        .tm-card h3 { margin: 0 0 5px 0; font-size: 16px; color: #212121; }
         .tm-count { font-weight: bold; font-size: 18px; color: var(--gold); }
 
-        .tm-btn-master { background: #000; color: var(--gold); padding: 15px; text-align: center; border-radius: 8px; font-weight: bold; cursor: pointer; margin: 15px; border: none; width: calc(100% - 30px); font-size: 15px; }
+        .tm-action-btns { margin: 10px 15px; display: flex; gap: 10px;}
+        .tm-btn-master { flex: 1; background: #000; color: #fff; padding: 15px; text-align: center; border-radius: 8px; font-weight: bold; cursor: pointer; border: none; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
         
-        .tm-list-box { background: #fff; margin: 15px; padding: 15px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .tm-list-header { font-weight: bold; font-size: 13px; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 10px; color: #000; display: flex; justify-content: space-between; }
+        .tm-list-box { background: #fff; margin: 10px 15px; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .tm-list-header { font-weight: bold; font-size: 14px; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 10px; color: #000; display: flex; justify-content: space-between; }
         
-        .tm-list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f9f9f9; }
-        .tm-user-info { display: flex; align-items: center; gap: 10px; }
-        .tm-user-icon { width: 35px; height: 35px; background: #fff8e1; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #ffa000; font-size: 16px; border: 1px solid #ffe082;}
-        .tm-creator-tag { font-size: 11px; color: #fff; background: #000; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-top: 3px; }
+        /* Fixed List Items */
+        .tm-list-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0; flex-wrap: wrap; gap: 10px;}
+        .tm-user-info { display: flex; align-items: center; gap: 10px; font-weight: bold; font-size: 15px; color: #000; flex: 1; min-width: 150px;}
+        .tm-user-info i { color: #555; font-size: 18px; }
+        .tm-user-details { display: flex; flex-direction: column; }
         
-        .tm-status-dot { width: 10px; height: 10px; border-radius: 50%; margin-right: 10px; }
-        .tm-dot-green { background: #00e676; }
-        .tm-dot-red { background: #ff1744; }
+        .tm-right-actions { display: flex; align-items: center; gap: 15px; }
+        .tm-status-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .tm-dot-green { background: #76FF03; }
+        .tm-dot-red { background: #FF1744; }
+        .tm-action-icons { color: #ff1744; font-size: 18px; cursor: pointer; }
 
         /* Modals */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 3000; backdrop-filter: blur(5px); }
-        .modal-box { background: var(--bg-panel); width: 90%; max-width: 400px; padding: 25px; border-radius: 15px; border: 1px solid var(--gold); }
+        .modal-box { background: var(--bg-panel); width: 90%; max-width: 380px; padding: 25px; border-radius: 12px; border: 1px solid var(--gold); }
         .modal-box h3 { color: var(--gold); font-family: var(--font-head); margin-bottom: 15px; }
         
         .modal-input { width: 100%; background: var(--bg-input); border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 8px; margin-bottom: 15px; outline: none; font-family: var(--font-body);}
-        .modal-btn { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; margin-bottom: 10px; background: var(--gold); color: #000; }
-        .modal-btn-cancel { background: #333; color: #fff; }
+        .modal-btn { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; margin-bottom: 10px; background: var(--gold); color: #000; font-size: 16px;}
+        .modal-btn-cancel { background: transparent; color: #ff1744; border: 1px solid #ff1744; }
         
-        /* TM specific modal uses the same logic but white styling inside JS if needed, but for simplicity we use one modal style for owner */
-
     </style>
 </head>
 <body>
@@ -191,7 +195,7 @@
                 <div class="web-grid">
                     <div class="web-input-group">
                         <label>App Name *</label>
-                        <input type="text" id="appName" placeholder="e.g. Free Fire VIP">
+                        <input type="text" id="appName" placeholder="e.g. VIP Game Mod">
                     </div>
                     <div class="web-input-group">
                         <label>Category *</label>
@@ -203,6 +207,9 @@
                             <option value="Other Game">Other Game</option>
                         </select>
                     </div>
+                </div>
+
+                <div class="web-grid">
                     <div class="web-input-group">
                         <label>Access Type *</label>
                         <select id="accessType">
@@ -214,27 +221,27 @@
                     <div class="web-input-group">
                         <label>Version & Size</label>
                         <div style="display: flex; gap: 10px;">
-                            <input type="text" id="version" placeholder="v1.0" style="flex: 1;">
-                            <input type="text" id="size" placeholder="150 MB" style="flex: 1;">
+                            <input type="text" id="version" placeholder="v1.0" style="flex: 1; min-width: 0;">
+                            <input type="text" id="size" placeholder="150 MB" style="flex: 1; min-width: 0;">
                         </div>
                     </div>
                 </div>
 
                 <div class="web-grid">
                     <div class="web-input-group">
-                        <label>Banner Image (URL or Base64) *</label>
+                        <label>Banner Image (API Link / Select) *</label>
                         <div class="image-upload-wrapper">
-                            <input type="text" id="bannerValue" placeholder="API Link / Base64">
+                            <input type="text" id="bannerValue" placeholder="Paste ImgBB URL...">
                             <input type="file" id="bannerFile" accept="image/*" style="display: none;" onchange="convertToBase64(this, 'bannerValue')">
-                            <button class="file-btn" onclick="document.getElementById('bannerFile').click()"><i class="fas fa-image"></i></button>
+                            <button class="file-btn" onclick="document.getElementById('bannerFile').click()"><i class="fas fa-folder-open"></i></button>
                         </div>
                     </div>
                     <div class="web-input-group">
-                        <label>Logo Image (URL or Base64) *</label>
+                        <label>Logo Image (API Link / Select) *</label>
                         <div class="image-upload-wrapper">
-                            <input type="text" id="logoValue" placeholder="API Link / Base64">
+                            <input type="text" id="logoValue" placeholder="Paste ImgBB URL...">
                             <input type="file" id="logoFile" accept="image/*" style="display: none;" onchange="convertToBase64(this, 'logoValue')">
-                            <button class="file-btn" onclick="document.getElementById('logoFile').click()"><i class="fas fa-image"></i></button>
+                            <button class="file-btn" onclick="document.getElementById('logoFile').click()"><i class="fas fa-folder-open"></i></button>
                         </div>
                     </div>
                 </div>
@@ -242,19 +249,19 @@
                 <div class="web-grid">
                     <div class="web-input-group">
                         <label>Download Link *</label>
-                        <input type="url" id="downloadUrl" placeholder="Direct Link">
+                        <input type="url" id="downloadUrl" placeholder="Direct Link (MediaFire/Drive)">
                     </div>
                     <div class="web-input-group">
                         <label>Password & Video URL</label>
                         <div style="display: flex; gap: 10px;">
-                            <input type="text" id="password" placeholder="Key" style="flex: 1;">
-                            <input type="url" id="videoUrl" placeholder="YT Link" style="flex: 1;">
+                            <input type="text" id="password" placeholder="Pass Key" style="flex: 1; min-width: 0;">
+                            <input type="url" id="videoUrl" placeholder="YT Link" style="flex: 1; min-width: 0;">
                         </div>
                     </div>
                 </div>
 
                 <div class="web-input-group">
-                    <label>5 Review Screenshots (Paste ImgBB URLs, one per line)</label>
+                    <label>5 Review Screenshots (Paste API Links, one per line)</label>
                     <textarea id="screenshotsInput" rows="4" placeholder="https://imgbb.com/img1&#10;https://imgbb.com/img2"></textarea>
                 </div>
                 
@@ -268,8 +275,8 @@
             </div>
 
             <div class="web-card">
-                <h2><i class="fas fa-list"></i> Uploaded Store Apps</h2>
-                <div style="overflow-x: auto;">
+                <h2><i class="fas fa-list"></i> Uploaded Apps Overview</h2>
+                <div class="table-responsive">
                     <table class="web-table">
                         <thead>
                             <tr>
@@ -290,7 +297,7 @@
         <div id="lua-tab">
             <div class="lua-header">
                 <h2 style="font-family: 'Rajdhani'; color: var(--gold); font-size: 24px;">Master Lua Keys</h2>
-                <button class="lua-btn lua-btn-add" onclick="openLuaModal()"><i class="fas fa-plus"></i> Create VIP Lua Key</button>
+                <button class="lua-btn lua-btn-add" onclick="openLuaModal()"><i class="fas fa-plus"></i> Create VIP Lua</button>
             </div>
 
             <div class="lua-table-container">
@@ -313,24 +320,28 @@
 
         <div id="tm-tab">
             <div class="tm-header">
-                <div class="tm-logo"><i class="fas fa-crown"></i></div>
-                <div class="tm-header-text">
+                <i class="fas fa-bars" onclick="toggleSidebar()" style="font-size: 20px; color: #000; margin-right: 15px; cursor: pointer; display: inline-block;"></i>
+                <img src="https://via.placeholder.com/45/000000/ffd700/?text=TM" alt="Logo">
+                <div>
                     <h2>MASTER TM PANEL</h2>
-                    <p>Viewing All Sellers & Users</p>
+                    <p style="color: #ff0000;">Viewing All Users Data</p>
                 </div>
             </div>
 
             <div class="tm-card">
                 <h3>Global Database</h3>
+                <p style="margin:0; font-size:12px; color:#777;">Total generated passwords across all users.</p>
                 <div class="tm-count" id="tmTotalUsers">0</div>
             </div>
 
-            <button class="tm-btn-master" onclick="openTmModal()"><i class="fas fa-plus"></i> Generate VIP Password (Unlimited)</button>
+            <div class="tm-action-btns">
+                <button class="tm-btn-master" onclick="openTmModal()"><i class="fas fa-crown"></i> Generate VIP App Password</button>
+            </div>
 
             <div class="tm-list-box">
                 <div class="tm-list-header">
-                    <span>User Credentials</span>
-                    <span>Status / Actions</span>
+                    <span>User Data</span>
+                    <span>Action</span>
                 </div>
                 <div id="tmUsersList">
                     <p style="text-align:center; color:#9e9e9e;">Loading users...</p>
@@ -344,8 +355,8 @@
         <div class="modal-box">
             <h3>Create VIP Lua Key</h3>
             <input type="text" id="newLuaKey" class="modal-input" placeholder="MVX_VIP_XXXX">
-            <input type="number" id="luaDuration" class="modal-input" placeholder="Days (e.g. 30)">
-            <input type="number" id="luaLimit" class="modal-input" placeholder="Device Limit (999 for UNL)">
+            <input type="number" id="luaDuration" class="modal-input" placeholder="Valid Days (e.g. 30)">
+            <input type="number" id="luaLimit" class="modal-input" placeholder="Device Limit (e.g. 1)">
             <button class="modal-btn" onclick="createLuaKey()">Generate Key</button>
             <button class="modal-btn modal-btn-cancel" onclick="closeModal('luaModal')">Cancel</button>
         </div>
@@ -353,12 +364,12 @@
 
     <div class="modal-overlay" id="tmModal">
         <div class="modal-box">
-            <h3>Generate VIP App Password</h3>
+            <h3 style="color:var(--primary);">Generate App Password</h3>
             <input type="text" id="tmUser" class="modal-input" placeholder="Username (VIP_USER)">
             <input type="text" id="tmPass" class="modal-input" placeholder="Password">
             <input type="number" id="tmDays" class="modal-input" placeholder="Valid Days">
             <input type="number" id="tmDevice" class="modal-input" placeholder="Device Limit">
-            <button class="modal-btn" onclick="createTmPass()">Generate Password</button>
+            <button class="modal-btn" style="background:var(--primary);" onclick="createTmPass()">Generate Password</button>
             <button class="modal-btn modal-btn-cancel" onclick="closeModal('tmModal')">Cancel</button>
         </div>
     </div>
@@ -425,7 +436,6 @@
             document.getElementById(modalId).style.display = 'none';
         }
 
-        // Base64 Converter for Dual Method
         function convertToBase64(input, targetId) {
             const file = input.files[0];
             if(file) {
@@ -449,12 +459,12 @@
 
                 keys.reverse().forEach(id => {
                     const app = allAppsData[id];
-                    const status = app.isHidden ? '<span style="color:var(--danger);">Hidden</span>' : '<span style="color:var(--primary);">Active</span>';
+                    const status = app.isHidden ? '<span style="color:var(--danger); font-weight:bold;">Hidden</span>' : '<span style="color:var(--primary); font-weight:bold;">Active</span>';
                     
                     tbody.innerHTML += `
-                        <tr style="${app.isHidden ? 'opacity:0.5;' : ''}">
+                        <tr style="${app.isHidden ? 'opacity:0.6;' : ''}">
                             <td><img src="${app.logoBase64 || 'https://via.placeholder.com/40'}"></td>
-                            <td><b>${app.appName}</b><br><small style="color:#888;">${app.gameCategory} • ${app.accessType}</small></td>
+                            <td><b>${app.appName}</b><br><span style="color:#888; font-size:11px;">${app.gameCategory} • ${app.accessType}</span></td>
                             <td>${status}</td>
                             <td class="web-actions">
                                 <button style="color:var(--gold);" onclick="editApp('${id}')"><i class="fas fa-edit"></i></button>
@@ -488,7 +498,7 @@
                 screenshots: screensArray
             };
 
-            if(!appData.appName || !appData.downloadUrl) return alert("Fill required fields!");
+            if(!appData.appName || !appData.downloadUrl) return alert("Please fill App Name and Download Link!");
 
             btn.disabled = true; btn.innerHTML = 'SAVING...';
 
@@ -602,7 +612,7 @@
         function delLua(key) { if(confirm("Delete Key?")) db.ref(`users/${key}`).remove(); }
 
         // ==========================================
-        // 3. MASTER TM LOGIC
+        // 3. MASTER TM LOGIC (SKETCHWARE CRASH FIXED & LIST BUG FIXED)
         // ==========================================
         function openTmModal() {
             document.getElementById('tmUser').value = "VIP_" + Math.floor(Math.random() * 900);
@@ -610,62 +620,102 @@
             document.getElementById('tmModal').style.display = 'flex';
         }
 
+        // Exact App DB Structure mapped
         function createTmPass() {
-            const user = document.getElementById('tmUser').value;
-            const pass = document.getElementById('tmPass').value;
+            const user = document.getElementById('tmUser').value.trim();
+            const pass = document.getElementById('tmPass').value.trim();
             const days = parseInt(document.getElementById('tmDays').value) || 30;
             const limit = document.getElementById('tmDevice').value || "1";
             
-            const now = new Date();
-            const exp = new Date(); exp.setDate(now.getDate() + days);
+            if (!user || !pass) return alert("Please fill fields!");
 
-            db.ref('Usuarios').push().set({
-                "Usuário": user, "Senha": pass, "Cargo": "Admin", "Revendedor": "Owner Panel", "CreatorUid": "OWNER", 
-                "Status": "true", "Acessos": limit, "Validade": String(exp.getTime()), "createdAt": now.getTime()
-            }).then(() => { alert("VIP Password Created!"); closeModal('tmModal'); });
+            const newRef = db.ref('Usuarios').push();
+            const key = newRef.key;
+            
+            const now = new Date();
+            const rgtime = String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0') + " - " + 
+                           String(now.getDate()).padStart(2, '0') + "/" + String(now.getMonth() + 1).padStart(2, '0') + "/" + 
+                           String(now.getFullYear()).slice(-2);
+
+            const expiryDate = new Date();
+            expiryDate.setDate(now.getDate() + days);
+            const validadeTime = String(expiryDate.getTime());
+
+            const userData = {
+                "Usuário": user,
+                "Senha": pass,
+                "Cargo": "Admin",
+                "Revendedor": "Owner Master",
+                "Status": "true",
+                "Coins": "0",
+                "Conectados": "0",
+                "Dispositivos": "[]",
+                "Acessos": String(limit),
+                "Key": key,
+                "rgtime": rgtime,
+                "Validade": validadeTime,
+                "CreatorUid": "OWNER", // Track generator
+                "createdAt": now.getTime()
+            };
+
+            newRef.set(userData).then(() => {
+                alert("VIP Password Generated Successfully!");
+                closeModal('tmModal');
+            }).catch(err => alert("Error: " + err.message));
         }
 
+        // Fixed Rendering Bug for TM List
         function loadTmPasswords() {
             db.ref('Usuarios').on('value', snap => {
-                const listDiv = document.getElementById('tmUsersList'); listDiv.innerHTML = '';
-                let total = 0; let active = 0;
+                const listDiv = document.getElementById('tmUsersList'); 
+                listDiv.innerHTML = '';
+                let total = 0; 
                 
                 if(snap.exists()) {
-                    const allData = [];
-                    snap.forEach(child => allData.push({ key: child.key, ...child.val() }));
-                    allData.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
-
-                    allData.forEach(data => {
+                    let htmlContent = '';
+                    
+                    snap.forEach(child => {
                         total++;
+                        const data = child.val();
+                        
+                        let isStatusActive = (data.Status === "true");
                         let isExpired = false;
-                        if(data.Validade && data.Validade !== "∞" && Date.now() > parseInt(data.Validade)) isExpired = true;
-                        if(!isExpired) active++;
+                        
+                        if(data.Validade && data.Validade !== "∞") {
+                            if(Date.now() > parseInt(data.Validade)) isExpired = true;
+                        }
+                        
+                        const statusClass = (!isExpired && isStatusActive) ? "tm-dot-green" : "tm-dot-red";
+                        const passDisplay = isExpired ? `<span style="color:#ff1744;">Expired</span>` : data.Senha;
+                        const creator = data.Revendedor || "Unknown User";
 
-                        const statusClass = isExpired ? "tm-dot-red" : "tm-dot-green";
-                        const creator = data.Revendedor || "Free User";
-
-                        listDiv.innerHTML += `
+                        htmlContent += `
                             <div class="tm-list-item">
                                 <div class="tm-user-info">
-                                    <div class="tm-user-icon"><i class="fas fa-user-shield"></i></div>
-                                    <div>
-                                        <strong style="color:#000; font-size:15px;">${data.Usuário}</strong>
-                                        <div style="font-size:12px; color:#555;">Pass: ${data.Senha}</div>
-                                        <div class="tm-creator-tag">${creator}</div>
+                                    <i class="fas fa-user-circle" style="font-size:24px;"></i>
+                                    <div class="tm-user-details">
+                                        <span style="font-size:15px; color:#000;">${data.Usuário}</span>
+                                        <span style="font-size:12px; color:#555;">Pass: ${passDisplay}</span>
+                                        <span style="font-size:10px; background:#000; color:#fff; padding:2px 5px; border-radius:3px; margin-top:3px; width:fit-content;">By: ${creator}</span>
                                     </div>
                                 </div>
-                                <div style="display:flex; align-items:center; gap:15px;">
+                                <div class="tm-right-actions">
                                     <div class="tm-status-dot ${statusClass}"></div>
-                                    <i class="fas fa-trash-alt" style="color:#ff1744; font-size:18px; cursor:pointer;" onclick="deleteTm('${data.key}')"></i>
+                                    <i class="far fa-trash-alt tm-action-icons" onclick="deleteTm('${child.key}')"></i>
                                 </div>
                             </div>
                         `;
                     });
+                    
+                    listDiv.innerHTML = htmlContent;
+                } else {
+                    listDiv.innerHTML = '<p style="text-align:center; color:#777; padding: 20px 0;">No users found.</p>';
                 }
                 document.getElementById('tmTotalUsers').innerText = total;
             });
         }
-        function deleteTm(key) { if(confirm("Delete this user?")) db.ref(`Usuarios/${key}`).remove(); }
+
+        function deleteTm(key) { if(confirm("Permanently delete this user from database?")) db.ref(`Usuarios/${key}`).remove(); }
 
     </script>
 </body>
