@@ -838,7 +838,7 @@
             const ver = document.getElementById('luaVersionInput').value.trim();
             if(!ver) return showToast("Enter a version!", "error");
             if(confirm("This will expire old Lua scripts. Continue?")) {
-                db.ref('config/version').set(ver).then(() => { // FIXED: Path is config/version
+                db.ref('config/version').set(ver).then(() => {
                     showToast("Lua Version Updated!");
                     document.getElementById('luaVersionInput').value = '';
                 });
@@ -857,7 +857,6 @@
             
             if(!key) return showToast("Enter Key Name!", "error");
 
-            // EXACT LUA LOGIC (YYYY-MM-DD Format)
             const date = new Date();
             date.setDate(date.getDate() + days);
             const expiryStr = date.toISOString().split('T')[0];
@@ -866,7 +865,7 @@
                 expiry: expiryStr,
                 maxDevices: limit, 
                 status: 'active', 
-                hwids: null, // As per original script.js
+                hwids: null,
                 creatorUid: "OWNER", 
                 isFreeTier: false, 
                 createdAt: Date.now() 
@@ -1006,8 +1005,7 @@
 
             if (!version || !news || !link) return showToast("Fill all update fields!", "error");
 
-            // EXACT LOGIC FROM SKETCHWARE
-            db.ref('update').update({
+            db.ref('update/update').set({
                 "version": version,
                 "message": news,
                 "link": link
