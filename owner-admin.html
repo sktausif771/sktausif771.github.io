@@ -123,7 +123,7 @@
         .tm-title { font-size: 20px; font-weight: 900; color: #000; margin-bottom: 5px;}
         .tm-table-box { background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); padding: 15px; margin-top: 15px;}
         .tm-table { width: 100%; border-collapse: collapse; background: #fff; }
-        .tm-table th { background: #f0f0f0; color: #000; font-family: Arial, sans-serif; font-size: 12px; padding: 10px; border-bottom: 2px solid #ddd;}
+        .tm-table th { background: #f0f0f0; color: #000; font-family: Arial, sans-serif; font-size: 12px; padding: 10px; border-bottom: 2px solid #ddd; position: sticky; top: 0; z-index: 10;}
         .tm-table td { padding: 12px 10px; border-bottom: 1px solid #eee; color: #000; font-size: 14px;}
         
         .switch-container { display: flex; justify-content: space-between; align-items: center; background: var(--bg-input); padding: 15px; border-radius: 8px; border: 1px solid #333; margin-bottom: 15px; }
@@ -391,7 +391,7 @@
                 </div>
 
                 <div class="tm-table-box">
-                    <div style="overflow-x: auto;">
+                    <div style="overflow-x: auto; overflow-y: auto; max-height: 400px;">
                         <table class="tm-table">
                             <thead>
                                 <tr>
