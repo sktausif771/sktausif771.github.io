@@ -27,7 +27,6 @@
 
         body { background: var(--bg-void); color: var(--text-primary); font-family: var(--font-body); display: flex; height: 100vh; overflow: hidden; }
 
-        /* Sidebar Styles */
         .sidebar { width: 260px; background: #080b12; height: 100%; padding: 20px; border-right: 1px solid #333; transition: 0.3s; z-index: 1000; position: relative; flex-shrink: 0; overflow-y: auto; }
         .brand { font-family: var(--font-head); font-size: 20px; color: var(--gold); margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
         .close-btn { display: none; color: white; cursor: pointer; font-size: 24px; }
@@ -41,16 +40,14 @@
         .mobile-header { display: none; padding: 15px 20px; background: var(--bg-card); border-bottom: 1px solid #333; align-items: center; gap: 15px; flex-shrink: 0; }
         .hamburger { font-size: 24px; color: var(--gold); cursor: pointer; }
 
-        /* Shared Tab Styles */
         .tab-content { padding: 20px; height: 100%; overflow-y: auto; display: none; width: 100%; }
         .active-tab { display: block !important; }
         
-        /* Toast */
         .toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; }
         .toast { background: var(--bg-input); border-left: 4px solid var(--primary); padding: 15px 20px; margin-bottom: 10px; border-radius: 8px; display: flex; gap: 10px; align-items: center; color: #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
 
         /* ==========================================================================
-           TAB 1: WEBSITE ADMIN 
+           TAB 1: WEBSITE ADMIN (EXACT COPY OF YOUR UPLOAD ENGINE)
            ========================================================================== */
         .card { background: var(--bg-card); border: var(--glass-border); border-radius: 16px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; margin-bottom: 20px; }
         .card-title { font-family: var(--font-head); color: var(--primary); margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; width: 100%; }
@@ -120,7 +117,6 @@
            ========================================================================== */
         .clean-card { background: var(--bg-card); border: 1px solid #333; border-radius: 12px; padding: 25px; margin-bottom: 20px; }
         .clean-title { color: var(--gold); font-family: 'Rajdhani', sans-serif; font-size: 1.5rem; margin-bottom: 20px; font-weight: 700; border-bottom: 1px dashed #333; padding-bottom: 10px;}
-        
         .clean-btn { padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-family: 'Rajdhani'; transition: 0.3s; background: var(--gold); color: #000; display: inline-flex; align-items: center; gap: 5px;}
         
         .tm-card { background: #f4f7f6; color: #000; border-radius: 12px; padding: 20px; font-family: Arial, sans-serif; }
@@ -364,6 +360,7 @@
                         <thead>
                             <tr>
                                 <th>Key Name</th>
+                                <th>Expiry Date</th>
                                 <th>Devices</th>
                                 <th>Creator</th>
                                 <th>Status</th>
@@ -371,7 +368,7 @@
                             </tr>
                         </thead>
                         <tbody id="luaTableBody">
-                            <tr><td colspan="5" style="text-align: center;">Loading keys...</td></tr>
+                            <tr><td colspan="6" style="text-align: center;">Loading keys...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -420,8 +417,8 @@
                 <p style="color: var(--text-muted); margin-bottom: 25px; font-size: 0.9rem;">Send update notification directly to user's app.</p>
                 
                 <div class="form-group" style="margin-bottom: 20px; text-align: left;">
-                    <label>App Version Code (e.g. 2)</label>
-                    <input type="number" id="appVersionUpd" placeholder="Enter Version Number">
+                    <label>App Version (e.g. 1.2)</label>
+                    <input type="text" id="appVersionUpd" placeholder="Enter Version Number">
                 </div>
                 
                 <div class="form-group" style="margin-bottom: 20px; text-align: left;">
@@ -835,13 +832,13 @@
         }
 
         // ==========================================
-        // 2. MASTER LUA LOGIC
+        // 2. MASTER LUA LOGIC (FIXED DATE FORMAT)
         // ==========================================
         function updateLuaVersion() {
             const ver = document.getElementById('luaVersionInput').value.trim();
             if(!ver) return showToast("Enter a version!", "error");
             if(confirm("This will expire old Lua scripts. Continue?")) {
-                db.ref('config/lua_version').set(ver).then(() => {
+                db.ref('config/version').set(ver).then(() => { // FIXED: Path is config/version
                     showToast("Lua Version Updated!");
                     document.getElementById('luaVersionInput').value = '';
                 });
@@ -858,10 +855,25 @@
             const days = parseInt(document.getElementById('vipLuaDays').value) || 30;
             const limit = parseInt(document.getElementById('vipLuaDev').value) || 1;
             
-            const expDate = new Date(); expDate.setDate(expDate.getDate() + days);
+            if(!key) return showToast("Enter Key Name!", "error");
+
+            // EXACT LUA LOGIC (YYYY-MM-DD Format)
+            const date = new Date();
+            date.setDate(date.getDate() + days);
+            const expiryStr = date.toISOString().split('T')[0];
             
-            db.ref('users/' + key).set({ devices: [], maxDevices: limit, status: 'active', creatorUid: "OWNER", isFreeTier: false, createdAt: Date.now(), expiry: expDate.getTime() })
-            .then(() => { showToast("VIP Lua Key Created!"); closeModal('luaVIPModal'); });
+            db.ref('users/' + key).set({ 
+                expiry: expiryStr,
+                maxDevices: limit, 
+                status: 'active', 
+                hwids: null, // As per original script.js
+                creatorUid: "OWNER", 
+                isFreeTier: false, 
+                createdAt: Date.now() 
+            }).then(() => { 
+                showToast("VIP Lua Key Created!"); 
+                closeModal('luaVIPModal'); 
+            });
         }
 
         function loadLuaKeys() {
@@ -871,16 +883,18 @@
                     snap.forEach(child => {
                         const data = child.val();
                         const hwidCount = data.hwids ? Object.keys(data.hwids).length : 0;
+                        const maxD = data.maxDevices == 999 ? "∞" : data.maxDevices;
                         const banClass = data.status === 'banned' ? 'color:var(--danger);' : 'color:#fff;';
                         tbody.innerHTML += `
                             <tr>
                                 <td><b>${child.key}</b></td>
-                                <td>${hwidCount} / ${data.maxDevices}</td>
+                                <td>${data.expiry || 'No Expiry'}</td>
+                                <td>${hwidCount} / ${maxD}</td>
                                 <td><span style="background:#333; padding:2px 6px; border-radius:4px; font-size:11px;">${data.creatorUid === 'OWNER' ? 'Owner' : 'Free User'}</span></td>
-                                <td><span style="${banClass} font-weight:bold;">${data.status.toUpperCase()}</span></td>
+                                <td><span style="${banClass} font-weight:bold;">${data.status ? data.status.toUpperCase() : 'ACTIVE'}</span></td>
                                 <td>
                                     <div class="action-btns">
-                                        <button style="background:var(--gold); border:none; padding:5px 10px; border-radius:5px; cursor:pointer;" onclick="resetLua('${child.key}')"><i class="fas fa-mobile-alt"></i></button>
+                                        <button style="background:var(--gold); border:none; padding:5px 10px; border-radius:5px; cursor:pointer;" onclick="resetLua('${child.key}')"><i class="fas fa-sync"></i></button>
                                         <button style="background:var(--warning); border:none; padding:5px 10px; border-radius:5px; cursor:pointer;" onclick="banLua('${child.key}', '${data.status}')"><i class="fas fa-ban"></i></button>
                                         <button style="background:var(--danger); border:none; padding:5px 10px; border-radius:5px; color:#fff; cursor:pointer;" onclick="delLua('${child.key}')"><i class="fas fa-trash"></i></button>
                                     </div>
@@ -975,7 +989,7 @@
                     });
                     listDiv.innerHTML = htmlContent;
                 } else {
-                    listDiv.innerHTML = `<tr><td colspan="5" style="text-align:center;">No users found.</td></tr>`;
+                    listDiv.innerHTML = `<tr><td colspan=\"5\" style=\"text-align:center;\">No users found.</td></tr>`;
                 }
                 document.getElementById('tmTotalUsers').innerText = total;
             });
@@ -983,7 +997,7 @@
         function deleteTm(key) { if(confirm("Permanently delete this user?")) db.ref(`Usuarios/${key}`).remove(); }
 
         // ==========================================
-        // 4. APP UPDATE LOGIC
+        // 4. APP UPDATE LOGIC (EXACT SKETCHWARE LOGIC)
         // ==========================================
         function sendAppUpdate() {
             const version = document.getElementById('appVersionUpd').value.trim();
@@ -992,11 +1006,11 @@
 
             if (!version || !news || !link) return showToast("Fill all update fields!", "error");
 
-            db.ref('AppUpdate').set({
-                "Version": version,
-                "News": news,
-                "Link": link,
-                "UpdateTime": new Date().toLocaleString()
+            // EXACT LOGIC FROM SKETCHWARE
+            db.ref('update').update({
+                "version": version,
+                "message": news,
+                "link": link
             }).then(() => {
                 showToast("App Update Pushed Successfully!");
                 document.getElementById('appVersionUpd').value = "";
@@ -1006,7 +1020,7 @@
         }
 
         // ==========================================
-        // 5. MASTER SETTINGS (SEPARATE LIMITS & LOCKS)
+        // 5. MASTER SETTINGS (LIMITS & LOCKS)
         // ==========================================
         function loadMasterSettings() {
             db.ref('config').on('value', snap => {

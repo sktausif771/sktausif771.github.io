@@ -199,12 +199,13 @@
                     <thead>
                         <tr>
                             <th>Key Name</th>
+                            <th>Expiry</th>
                             <th>Devices</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="luaTableBody">
-                        <tr><td colspan="3" style="text-align: center; color: var(--text-sub);">Loading keys...</td></tr>
+                        <tr><td colspan="4" style="text-align: center; color: var(--text-sub);">Loading keys...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -429,29 +430,39 @@
                             if (!lockLua) showTab('lua-tab'); // Auto-switch to LUA
                         } else {
                             navTm.style.display = 'flex';
-                            // If both are unlocked, default to LUA if no tab is currently showing
+                            // Default to LUA if no tab is currently showing
                             if(!lockLua && !lockTm && document.getElementById('lua-tab').style.display !== 'block' && document.getElementById('tm-tab').style.display !== 'block') {
                                 showTab('lua-tab');
                             }
                         }
                     }
                 } else {
-                    // Default to LUA if no config found
                     showTab('lua-tab');
                 }
             });
         }
 
         // ==========================================
-        // 2. LUA KEY LOGIC (DYNAMIC LIMITS)
+        // 2. LUA KEY LOGIC (FIXED DATE FORMAT YYYY-MM-DD)
         // ==========================================
         function openLuaModal() {
-            if(todayLuaCount >= ownerLimits.lua.limitCount) {
-                alert(`Limit Reached! Max ${ownerLimits.lua.limitCount} Lua key(s) allowed per day.`);
-                return;
-            }
-            document.getElementById('newLuaKey').value = "MVX_FREE_" + Math.floor(Math.random() * 9000 + 1000);
-            document.getElementById('luaModal').style.display = 'flex';
+            // Check daily limit
+            db.ref('users').orderByChild('creatorUid').equalTo(currentUser.uid).once('value', snap => {
+                let countToday = 0;
+                const todayStart = new Date().setHours(0,0,0,0);
+                if(snap.exists()) {
+                    snap.forEach(child => {
+                        if(child.val().createdAt && child.val().createdAt > todayStart) countToday++;
+                    });
+                }
+                if(countToday >= ownerLimits.lua.limitCount) {
+                    alert(`Limit Reached! Max ${ownerLimits.lua.limitCount} Lua key(s) allowed per day.`);
+                    return;
+                }
+                
+                document.getElementById('newLuaKey').value = "MVX_FREE_" + Math.floor(Math.random() * 9000 + 1000);
+                document.getElementById('luaModal').style.display = 'flex';
+            });
         }
 
         function createLuaKey() {
@@ -462,15 +473,18 @@
             const now = Date.now();
             const expDate = new Date();
             expDate.setDate(expDate.getDate() + parseInt(ownerLimits.lua.limitDays));
+            
+            // EXACT LUA LOGIC FROM YOUR SCRIPT (YYYY-MM-DD)
+            const expiryStr = expDate.toISOString().split('T')[0];
 
             db.ref('users/' + key).set({
-                devices: [], 
+                expiry: expiryStr, 
                 maxDevices: parseInt(ownerLimits.lua.limitDevice), 
                 status: 'active', 
+                hwids: null,
                 creatorUid: currentUser.uid, 
                 isFreeTier: true, 
-                createdAt: now,
-                expiry: expDate.getTime()
+                createdAt: now
             }).then(() => {
                 alert("Free Lua Key Generated!");
                 closeModal('luaModal');
@@ -494,19 +508,22 @@
                         if(data.createdAt && data.createdAt > todayStart) countToday++;
                         
                         const hwidCount = data.hwids ? Object.keys(data.hwids).length : 0;
+                        const maxD = data.maxDevices == 999 ? "∞" : data.maxDevices;
+
                         tbody.innerHTML += `
                             <tr>
                                 <td><b>${key}</b></td>
-                                <td>${hwidCount} / ${data.maxDevices}</td>
+                                <td>${data.expiry || 'No Expiry'}</td>
+                                <td>${hwidCount} / ${maxD}</td>
                                 <td>
-                                    <button class="lua-act-btn lua-act-reset" onclick="resetLuaDevice('${key}')"><i class="fas fa-mobile-alt"></i></button>
+                                    <button class="lua-act-btn lua-act-reset" onclick="resetLuaDevice('${key}')"><i class="fas fa-sync"></i></button>
                                     <button class="lua-act-btn lua-act-del" onclick="deleteLuaKey('${key}')"><i class="fas fa-trash"></i></button>
                                 </td>
                             </tr>
                         `;
                     });
                 } else {
-                    tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-sub);">No keys yet.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-sub);">No keys yet.</td></tr>`;
                 }
                 
                 todayLuaCount = countToday;
@@ -539,7 +556,6 @@
             document.getElementById('tmPass').value = pass;
         }
 
-        // DB EXACT MAPPING TO PREVENT CRASH
         function createTmPass() {
             const user = document.getElementById('tmUser').value.trim();
             const pass = document.getElementById('tmPass').value.trim();
