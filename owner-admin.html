@@ -376,8 +376,8 @@
         </div>
 
         <div id="tm-tab" class="tab-content">
-            <div class="tm-card" style="display: flex; flex-direction: column; min-height: calc(100vh - 120px);">
-                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ddd; padding-bottom: 15px; margin-bottom: 20px;">
+            <div class="tm-card" style="height: calc(100vh - 100px); display: flex; flex-direction: column;">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ddd; padding-bottom: 15px; margin-bottom: 15px; flex-shrink: 0;">
                     <div>
                         <h2 class="tm-title"><i class="fas fa-shield-alt" style="color: var(--gold);"></i> MASTER TM PANEL</h2>
                         <p style="color: var(--danger); font-size: 12px; margin-top: 2px; font-weight: bold;">Viewing All Sellers & Users</p>
@@ -385,28 +385,26 @@
                     <button style="background: #000; color: var(--gold); font-weight: bold; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;" onclick="openTmModal()"><i class="fas fa-plus"></i> VIP Pass</button>
                 </div>
 
-                <div>
+                <div style="flex-shrink: 0; margin-bottom: 10px;">
                     <h3 style="color: #555; font-size: 14px; margin-bottom: 5px;">Total Database Passwords</h3>
                     <div style="font-size: 24px; font-weight: bold; color: #000;" id="tmTotalUsers">0</div>
                 </div>
 
-                <div class="tm-table-box" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
-                    <div style="overflow-x: auto; overflow-y: auto; flex: 1;">
-                        <table class="tm-table">
-                            <thead>
-                                <tr>
-                                    <th>User Info</th>
-                                    <th>Password</th>
-                                    <th>Creator / Seller</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tmUsersList">
-                                <tr><td colspan="5" style="text-align:center;">Loading users...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="tm-table-box" style="flex: 1; overflow-y: auto; padding: 0; margin-top: 0; border: 1px solid #eee;">
+                    <table class="tm-table">
+                        <thead style="position: sticky; top: 0; z-index: 10;">
+                            <tr>
+                                <th>User Info</th>
+                                <th>Password</th>
+                                <th>Creator / Seller</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tmUsersList">
+                            <tr><td colspan="5" style="text-align:center;">Loading users...</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
