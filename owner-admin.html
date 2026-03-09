@@ -376,7 +376,7 @@
         </div>
 
         <div id="tm-tab" class="tab-content">
-            <div class="tm-card">
+            <div class="tm-card" style="display: flex; flex-direction: column; min-height: calc(100vh - 120px);">
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ddd; padding-bottom: 15px; margin-bottom: 20px;">
                     <div>
                         <h2 class="tm-title"><i class="fas fa-shield-alt" style="color: var(--gold);"></i> MASTER TM PANEL</h2>
@@ -390,8 +390,8 @@
                     <div style="font-size: 24px; font-weight: bold; color: #000;" id="tmTotalUsers">0</div>
                 </div>
 
-                <div class="tm-table-box">
-                    <div style="overflow-x: auto; overflow-y: auto; max-height: 400px;">
+                <div class="tm-table-box" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+                    <div style="overflow-x: auto; overflow-y: auto; flex: 1;">
                         <table class="tm-table">
                             <thead>
                                 <tr>
