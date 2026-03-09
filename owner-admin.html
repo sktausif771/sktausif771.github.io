@@ -47,7 +47,7 @@
         .toast { background: var(--bg-input); border-left: 4px solid var(--primary); padding: 15px 20px; margin-bottom: 10px; border-radius: 8px; display: flex; gap: 10px; align-items: center; color: #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
 
         /* ==========================================================================
-           TAB 1: WEBSITE ADMIN (EXACT COPY OF YOUR UPLOAD ENGINE)
+           TAB 1: WEBSITE ADMIN
            ========================================================================== */
         .card { background: var(--bg-card); border: var(--glass-border); border-radius: 16px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; margin-bottom: 20px; }
         .card-title { font-family: var(--font-head); color: var(--primary); margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; width: 100%; }
@@ -119,36 +119,13 @@
         .clean-title { color: var(--gold); font-family: 'Rajdhani', sans-serif; font-size: 1.5rem; margin-bottom: 20px; font-weight: 700; border-bottom: 1px dashed #333; padding-bottom: 10px;}
         .clean-btn { padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-family: 'Rajdhani'; transition: 0.3s; background: var(--gold); color: #000; display: inline-flex; align-items: center; gap: 5px;}
         
-        /* --- FIX FOR TM PANEL SCROLLING --- */
-        .tm-card {
-            background: #f4f7f6;
-            color: #000;
-            border-radius: 12px;
-            padding: 20px;
-            font-family: Arial, sans-serif;
-            /* new flex properties to fill remaining height */
-            display: flex;
-            flex-direction: column;
-            height: 100%;          /* take full height of parent tab */
-            overflow: hidden;       /* prevent card overflow */
-        }
-        .tm-table-box {
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            padding: 15px;
-            margin-top: 15px;
-            /* new scroll and flex */
-            flex: 1 1 auto;         /* grow to fill space */
-            overflow-y: auto;       /* enable vertical scroll */
-            min-height: 0;          /* important for flex child to shrink */
-        }
-        /* all other original styles remain untouched */
+        .tm-card { background: #f4f7f6; color: #000; border-radius: 12px; padding: 20px; font-family: Arial, sans-serif; }
         .tm-title { font-size: 20px; font-weight: 900; color: #000; margin-bottom: 5px;}
-        .tm-table-box { /* original props kept, added above */ }
-        .tm-table { width: 100%; border-collapse: collapse; background: #fff; }
-        .tm-table th { background: #f0f0f0; color: #000; font-family: Arial, sans-serif; font-size: 12px; padding: 10px; border-bottom: 2px solid #ddd;}
-        .tm-table td { padding: 12px 10px; border-bottom: 1px solid #eee; color: #000; font-size: 14px;}
+        
+        .tm-table-box { flex: 1; overflow-y: auto; overflow-x: auto; background: #fff; border-radius: 12px; border: 1px solid #ddd; margin-top: 15px; }
+        .tm-table { width: 100%; border-collapse: collapse; }
+        .tm-table th { background: #f0f0f0; color: #000; font-family: Arial, sans-serif; font-size: 12px; padding: 12px 10px; border-bottom: 2px solid #ddd; position: sticky; top: 0; z-index: 10; text-align: left; }
+        .tm-table td { padding: 12px 10px; border-bottom: 1px solid #eee; color: #000; font-size: 14px; text-align: left; }
         
         .switch-container { display: flex; justify-content: space-between; align-items: center; background: var(--bg-input); padding: 15px; border-radius: 8px; border: 1px solid #333; margin-bottom: 15px; }
         
@@ -400,8 +377,9 @@
         </div>
 
         <div id="tm-tab" class="tab-content">
-            <div class="tm-card">
-                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ddd; padding-bottom: 15px; margin-bottom: 20px;">
+            <div class="tm-card" style="height: calc(100vh - 100px); display: flex; flex-direction: column;">
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ddd; padding-bottom: 15px; margin-bottom: 15px; flex-shrink: 0;">
                     <div>
                         <h2 class="tm-title"><i class="fas fa-shield-alt" style="color: var(--gold);"></i> MASTER TM PANEL</h2>
                         <p style="color: var(--danger); font-size: 12px; margin-top: 2px; font-weight: bold;">Viewing All Sellers & Users</p>
@@ -409,28 +387,26 @@
                     <button style="background: #000; color: var(--gold); font-weight: bold; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;" onclick="openTmModal()"><i class="fas fa-plus"></i> VIP Pass</button>
                 </div>
 
-                <div>
+                <div style="flex-shrink: 0;">
                     <h3 style="color: #555; font-size: 14px; margin-bottom: 5px;">Total Database Passwords</h3>
                     <div style="font-size: 24px; font-weight: bold; color: #000;" id="tmTotalUsers">0</div>
                 </div>
 
                 <div class="tm-table-box">
-                    <div style="overflow-x: auto;">
-                        <table class="tm-table">
-                            <thead>
-                                <tr>
-                                    <th>User Info</th>
-                                    <th>Password</th>
-                                    <th>Creator / Seller</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tmUsersList">
-                                <tr><td colspan="5" style="text-align:center;">Loading users...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    <table class="tm-table">
+                        <thead>
+                            <tr>
+                                <th>User Info</th>
+                                <th>Password</th>
+                                <th>Creator / Seller</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tmUsersList">
+                            <tr><td colspan="5" style="text-align:center;">Loading users...</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -567,7 +543,6 @@
         const IMGBB_API_KEY = "820eb9aa6a57f863045a52c1929efc9c";
 
         let allAppsData = {};
-        let editId = null;
         let screenshotsArray = [];
 
         window.onload = function() {
@@ -616,7 +591,7 @@
         }
 
         // ==========================================
-        // 1. WEBSITE ADMIN (EXACT COPY OF YOUR UPLOAD ENGINE)
+        // 1. WEBSITE ADMIN 
         // ==========================================
         function loadApps() {
             database.ref(DB_PATH).on('value', snap => {
@@ -856,7 +831,7 @@
         }
 
         // ==========================================
-        // 2. MASTER LUA LOGIC (FIXED DATE FORMAT)
+        // 2. MASTER LUA LOGIC
         // ==========================================
         function updateLuaVersion() {
             const ver = document.getElementById('luaVersionInput').value.trim();
@@ -933,7 +908,7 @@
         function delLua(key) { if(confirm("Delete Key?")) db.ref(`users/${key}`).remove(); }
 
         // ==========================================
-        // 3. MASTER TM LOGIC
+        // 3. MASTER TM LOGIC (100% CRASH-PROOF)
         // ==========================================
         function openTmModal() {
             document.getElementById('vipTmUser').value = "VIP_" + Math.floor(Math.random() * 900);
@@ -976,32 +951,56 @@
 
         function loadTmPasswords() {
             db.ref('Usuarios').on('value', snap => {
-                const listDiv = document.getElementById('tmUsersList'); listDiv.innerHTML = '';
+                const listDiv = document.getElementById('tmUsersList'); 
+                listDiv.innerHTML = '';
                 let total = 0;
                 
                 if(snap.exists()) {
                     let htmlContent = '';
                     const allData = [];
-                    snap.forEach(child => allData.push({ dbKey: child.key, ...child.val() }));
-                    allData.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
+                    
+                    snap.forEach(child => {
+                        let dataObj = child.val();
+                        if (dataObj) {
+                            dataObj.dbKey = child.key;
+                            allData.push(dataObj);
+                        }
+                    });
+
+                    // 100% Safe sorting (will not crash if App data doesn't have createdAt)
+                    allData.sort((a, b) => {
+                        let timeA = a.createdAt ? Number(a.createdAt) : 0;
+                        let timeB = b.createdAt ? Number(b.createdAt) : 0;
+                        return timeB - timeA;
+                    });
 
                     allData.forEach(data => {
                         total++;
                         let isExpired = false;
-                        if(data.Validade && data.Validade !== "∞" && Date.now() > parseInt(data.Validade)) isExpired = true;
+                        
+                        if(data.Validade && data.Validade !== "∞") {
+                            let vTime = parseInt(data.Validade);
+                            if(!isNaN(vTime) && Date.now() > vTime) {
+                                isExpired = true;
+                            }
+                        }
 
                         const statusDisplay = isExpired ? `<span style="color:var(--danger); font-weight:bold;">Expired</span>` : `<span style="color:green; font-weight:bold;">Active</span>`;
-                        const creator = data.Revendedor || "Unknown";
+                        
+                        // Safe rendering for missing fields
+                        const creator = data.Revendedor || data.Cargo || "Unknown";
+                        const userName = data.Usuário || data.Usuario || "Unknown User";
+                        const pass = data.Senha || data.password || "No Pass";
 
                         htmlContent += `
                             <tr>
                                 <td>
                                     <div style="display:flex; align-items:center; gap:10px;">
                                         <div class="tm-user-icon"><i class="fas fa-user-shield"></i></div>
-                                        <strong style="color:#000;">${data.Usuário}</strong>
+                                        <strong style="color:#000;">${userName}</strong>
                                     </div>
                                 </td>
-                                <td>${data.Senha}</td>
+                                <td>${pass}</td>
                                 <td><span style="background:#000; color:#fff; padding:2px 6px; border-radius:4px; font-size:11px;">${creator}</span></td>
                                 <td>${statusDisplay}</td>
                                 <td>
@@ -1012,7 +1011,7 @@
                     });
                     listDiv.innerHTML = htmlContent;
                 } else {
-                    listDiv.innerHTML = `<tr><td colspan=\"5\" style=\"text-align:center;\">No users found.</td></tr>`;
+                    listDiv.innerHTML = `<tr><td colspan="5" style="text-align:center;">No users found.</td></tr>`;
                 }
                 document.getElementById('tmTotalUsers').innerText = total;
             });
@@ -1020,7 +1019,7 @@
         function deleteTm(key) { if(confirm("Permanently delete this user?")) db.ref(`Usuarios/${key}`).remove(); }
 
         // ==========================================
-        // 4. APP UPDATE LOGIC (EXACT SKETCHWARE LOGIC)
+        // 4. APP UPDATE LOGIC
         // ==========================================
         function sendAppUpdate() {
             const version = document.getElementById('appVersionUpd').value.trim();
@@ -1042,7 +1041,7 @@
         }
 
         // ==========================================
-        // 5. MASTER SETTINGS (LIMITS & LOCKS)
+        // 5. MASTER SETTINGS
         // ==========================================
         function loadMasterSettings() {
             db.ref('config').on('value', snap => {
