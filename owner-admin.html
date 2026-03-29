@@ -113,13 +113,12 @@
         .act-btn:hover { transform: scale(1.1); }
 
         /* ==========================================================================
-           TAB 2, 3, 4, 5: CLEAN PANELS (LUA, TM, UPDATE, SETTINGS)
+           TAB 2, 3, 4, 5, 6: CLEAN PANELS (LUA, TM, UPDATE, SETTINGS, LIBRARY)
            ========================================================================== */
         .clean-card { background: var(--bg-card); border: 1px solid #333; border-radius: 12px; padding: 25px; margin-bottom: 20px; }
         .clean-title { color: var(--gold); font-family: 'Rajdhani', sans-serif; font-size: 1.5rem; margin-bottom: 20px; font-weight: 700; border-bottom: 1px dashed #333; padding-bottom: 10px;}
         .clean-btn { padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-family: 'Rajdhani'; transition: 0.3s; background: var(--gold); color: #000; display: inline-flex; align-items: center; gap: 5px;}
         
-        /* RESTORED ORIGINAL LIGHT THEME CSS FOR TM PANEL */
         .tm-card { background: #f4f7f6; color: #000; border-radius: 12px; padding: 20px; font-family: Arial, sans-serif; }
         .tm-title { font-size: 20px; font-weight: 900; color: #000; margin-bottom: 5px;}
         .tm-table-box { flex: 1; overflow-y: auto; overflow-x: auto; background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-top: 15px; }
@@ -132,6 +131,10 @@
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 3000; backdrop-filter: blur(5px); }
         .modal-box { background: var(--bg-card); width: 90%; max-width: 400px; padding: 25px; border-radius: 12px; border: 1px solid var(--gold); box-shadow: 0 0 30px rgba(255, 215, 0, 0.2); }
 
+        /* Library Extra Styles */
+        .lib-settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;}
+        .lib-input-group label { color: var(--primary); }
+
         @media (max-width: 768px) {
             .sidebar { position: fixed; left: -260px; }
             .sidebar.active { left: 0; }
@@ -141,7 +144,7 @@
             .overlay.active { display: block; }
             .upload-engine-box { flex-direction: column; align-items: flex-start; }
             .upload-engine-icon { display: none; }
-            .form-grid-2, .form-grid-3, .img-grid { grid-template-columns: 1fr; }
+            .form-grid-2, .form-grid-3, .img-grid, .lib-settings-grid { grid-template-columns: 1fr; }
             .extra-link-row { display: flex; flex-direction: column; }
         }
     </style>
@@ -163,6 +166,9 @@
             </div>
             
             <div class="menu-label" style="margin-top: 20px;">OWNER PANELS</div>
+            <div class="menu-item" onclick="showTab('library-tab')" id="nav-library-tab">
+                <i class="fas fa-gamepad" style="color: var(--primary);"></i> MASTER LIBRARY
+            </div>
             <div class="menu-item" onclick="showTab('lua-tab')" id="nav-lua-tab">
                 <i class="fas fa-key"></i> MASTER LUA
             </div>
@@ -340,6 +346,149 @@
             </div>
         </div>
 
+        <div id="library-tab" class="tab-content">
+            
+            <div class="clean-card" style="border-top: 4px solid var(--primary);">
+                <h2 class="clean-title" style="color: var(--primary);"><i class="fas fa-key"></i> Generate VIP Library Key</h2>
+                <div class="lib-settings-grid">
+                    <div class="form-group lib-input-group">
+                        <label>Client Name</label>
+                        <input type="text" id="libUserName" placeholder="e.g. Rahul/Tausif">
+                    </div>
+                    <div class="form-group lib-input-group">
+                        <label>Duration Time</label>
+                        <input type="number" id="libTimeValue" value="24" min="1">
+                    </div>
+                    <div class="form-group lib-input-group">
+                        <label>Format</label>
+                        <select id="libTimeFormat">
+                            <option value="hours">Hours</option>
+                            <option value="days">Days</option>
+                        </select>
+                    </div>
+                    <div class="form-group lib-input-group">
+                        <label>Device Limit</label>
+                        <input type="number" id="libDeviceLimit" value="1" min="1">
+                    </div>
+                </div>
+                <button class="btn-submit" style="margin-top: 0; background: var(--primary);" onclick="generateLibraryVIPKey()"><i class="fas fa-plus"></i> GENERATE MASTER KEY</button>
+                <div id="libResultBox" style="display: none; margin-top: 15px; display: flex; gap: 10px;">
+                    <input type="text" id="libGeneratedKey" readonly style="flex: 1; text-align: center; color: var(--primary); font-weight: bold; letter-spacing: 2px;">
+                    <button class="clean-btn" style="background: #333; color: #fff;" onclick="copyLibraryKey()"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+            </div>
+
+            <div class="clean-card" style="border-top: 4px solid #ff9900;">
+                <h2 class="clean-title" style="color: #ff9900;"><i class="fas fa-server"></i> App Server & Links Settings</h2>
+                <div class="lib-settings-grid">
+                    <div class="form-group">
+                        <label>Live Version</label>
+                        <input type="text" id="libLiveVersion" placeholder="e.g. 1.0">
+                    </div>
+                    <div class="form-group">
+                        <label>Beta Version</label>
+                        <input type="text" id="libBetaVersion" placeholder="e.g. 1.1">
+                    </div>
+                    <div class="form-group">
+                        <label style="color: #ff3333;">Maintenance Mode (Block)</label>
+                        <select id="libIsMaintenance">
+                            <option value="false">OFF (Running)</option>
+                            <option value="true">ON (Blocked)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Block Message</label>
+                        <input type="text" id="libMaintenanceMsg" placeholder="e.g. Server is updating...">
+                    </div>
+                </div>
+                <div class="lib-settings-grid">
+                    <div class="form-group"><label>Update Link</label><input type="text" id="libUpdateLink"></div>
+                    <div class="form-group"><label>Free Key Link</label><input type="text" id="libFreeLink"></div>
+                    <div class="form-group"><label>Paid Key Link</label><input type="text" id="libPaidLink"></div>
+                    <div class="form-group"><label>Setup Video Link</label><input type="text" id="libVideoLink"></div>
+                </div>
+                <button class="btn-submit" style="margin-top: 0; background: #ff9900; color: #000;" onclick="saveLibrarySettings()"><i class="fas fa-save"></i> SAVE APP SETTINGS</button>
+            </div>
+
+            <div class="clean-card" style="border-top: 4px solid #00ccff;">
+                <h2 class="clean-title" style="color: #00ccff;"><i class="fas fa-cloud"></i> Cloud Feature Control (Free Users)</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Control which features are available to Free Users in the Library Mod.</p>
+                <div class="lib-settings-grid">
+                    <div class="form-group">
+                        <label>Free Aimbot FOV</label>
+                        <input type="number" id="libFreeFov" value="120">
+                    </div>
+                    <div class="form-group">
+                        <label>Speed Hack</label>
+                        <select id="libFreeSpeedHack">
+                            <option value="false">OFF (Disabled)</option>
+                            <option value="true">ON (Enabled)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>ESP Line</label>
+                        <select id="libFreeEspLine">
+                            <option value="true">ON</option>
+                            <option value="false">OFF</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>ESP Box</label>
+                        <select id="libFreeEspBox">
+                            <option value="true">ON</option>
+                            <option value="false">OFF</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>ESP Health (Name)</label>
+                        <select id="libFreeEspHealth">
+                            <option value="false">OFF</option>
+                            <option value="true">ON</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn-submit" style="margin-top: 0; background: #00ccff; color: #000;" onclick="saveLibraryCloudFeatures()"><i class="fas fa-upload"></i> UPDATE FREE FEATURES</button>
+            </div>
+
+            <div class="clean-card" style="border-top: 4px solid var(--gold);">
+                <h2 class="clean-title"><i class="fas fa-crown"></i> VIP / PAID Keys</h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Key & Client</th>
+                                <th>Status & Limit</th>
+                                <th>Logged Devices</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="libVipKeysTableBody">
+                            <tr><td colspan="4" style="text-align: center;">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="clean-card" style="border-top: 4px solid var(--success);">
+                <h2 class="clean-title" style="color: var(--success);"><i class="fas fa-gift"></i> Free Trial Keys</h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Key & User</th>
+                                <th>Status & Limit</th>
+                                <th>Logged Devices</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="libFreeKeysTableBody">
+                            <tr><td colspan="4" style="text-align: center;">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
         <div id="lua-tab" class="tab-content">
             <div class="clean-card">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -438,7 +587,7 @@
         <div id="settings-tab" class="tab-content">
             <div class="clean-card" style="max-width: 800px; margin: 0 auto;">
                 <h2 class="clean-title"><i class="fas fa-cogs"></i> Free User Limits</h2>
-                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Set separate generation limits for LUA and TM panels.</p>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Set separate generation limits for LUA, TM and LIBRARY panels.</p>
                 
                 <div style="background: rgba(255, 215, 0, 0.05); border: 1px solid var(--gold); border-radius: 8px; padding: 20px; margin-bottom: 20px;">
                     <h3 style="color: var(--gold); font-size: 1.1rem; margin-bottom: 15px;"><i class="fas fa-shield-alt"></i> TM Panel Limits</h3>
@@ -476,6 +625,24 @@
                     </div>
                 </div>
 
+                <div style="background: rgba(0, 204, 255, 0.05); border: 1px solid #00ccff; border-radius: 8px; padding: 20px; margin-bottom: 25px;">
+                    <h3 style="color: #00ccff; font-size: 1.1rem; margin-bottom: 15px;"><i class="fas fa-gamepad"></i> LIBRARY Panel Limits</h3>
+                    <div class="form-grid-3">
+                        <div class="form-group">
+                            <label>Max Keys / Day</label>
+                            <input type="number" id="libLimitCount" value="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Valid Hours</label>
+                            <input type="number" id="libLimitHours" value="2">
+                        </div>
+                        <div class="form-group">
+                            <label>Device Limit</label>
+                            <input type="number" id="libLimitDevice" value="1">
+                        </div>
+                    </div>
+                </div>
+
                 <h2 class="clean-title" style="margin-top: 30px; border-top: 1px dashed #333; padding-top: 20px;"><i class="fas fa-lock"></i> Panel Locks</h2>
                 <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Turn on to instantly lock Free Users out of these panels.</p>
 
@@ -487,6 +654,11 @@
                 <div class="switch-container">
                     <div style="font-weight: bold; color: #fff;"><i class="fas fa-shield-alt" style="color: var(--gold);"></i> Lock Free TM Panel</div>
                     <input type="checkbox" id="lockTmCheck" style="width: 20px; height: 20px; cursor: pointer;">
+                </div>
+
+                <div class="switch-container">
+                    <div style="font-weight: bold; color: #fff;"><i class="fas fa-gamepad" style="color: #00ccff;"></i> Lock Free LIBRARY Panel</div>
+                    <input type="checkbox" id="lockLibCheck" style="width: 20px; height: 20px; cursor: pointer;">
                 </div>
 
                 <button class="btn-submit" onclick="saveMasterSettings()">SAVE ALL SETTINGS</button>
@@ -515,6 +687,17 @@
             <input type="number" id="vipTmDev" style="width:100%; height:45px; background:var(--bg-input); border:1px solid #444; color:#fff; border-radius:8px; padding:0 15px; margin-bottom:20px; font-family:var(--font-body); outline:none;" placeholder="Device Limit">
             <button class="clean-btn" style="width: 100%; justify-content: center; background:var(--primary); margin-bottom:10px;" onclick="createTmPass()">Generate Password</button>
             <button class="clean-btn" style="width: 100%; justify-content: center; background:#333; color:#fff;" onclick="closeModal('tmVIPModal')">Cancel</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal-box" style="text-align: center;">
+            <h3 style="color: var(--danger);"><i class="fas fa-exclamation-triangle"></i> WARNING</h3>
+            <p id="confirmMessage" style="color: var(--text-muted); margin-bottom: 20px;">Are you sure you want to proceed?</p>
+            <div style="display: flex; gap: 10px;">
+                <button class="clean-btn" style="flex:1; justify-content: center; background: #333; color: #fff;" onclick="closeModal('confirmModal')">Cancel</button>
+                <button class="clean-btn" style="flex:1; justify-content: center; background: var(--danger); color: #fff;" id="confirmYesBtn">Yes, Execute</button>
+            </div>
         </div>
     </div>
 
@@ -552,6 +735,8 @@
             loadLuaKeys();
             loadTmPasswords();
             loadMasterSettings();
+            loadLibrarySettings(); // Load new Library Panel Settings
+            loadLibraryKeysData(); // Load new Library Keys
         };
 
         function showToast(msg, type='success') {
@@ -576,6 +761,11 @@
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
             document.getElementById('nav-' + tabId).classList.add('active');
 
+            if(tabId === 'lua-tab') document.getElementById('formTitleText') ? document.getElementById('formTitleText').innerText = "Lua Script Keys (Master)" : null;
+            else if(tabId === 'app-tab') document.getElementById('formTitleText') ? document.getElementById('formTitleText').innerText = "All App Passwords" : null;
+            else if(tabId === 'library-tab') document.getElementById('formTitleText') ? document.getElementById('formTitleText').innerText = "Library Mod Panel" : null;
+            else document.getElementById('formTitleText') ? document.getElementById('formTitleText').innerText = "Master Owner Panel" : null;
+            
             if(window.innerWidth <= 768) {
                 document.getElementById('sidebar').classList.remove('active');
                 document.querySelector('.overlay').classList.remove('active');
@@ -589,6 +779,20 @@
 
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
+        }
+
+        function showConfirm(message, confirmCallback) {
+            document.getElementById('confirmMessage').innerText = message;
+            document.getElementById('confirmModal').style.display = 'flex';
+            
+            const yesBtn = document.getElementById('confirmYesBtn');
+            const newYesBtn = yesBtn.cloneNode(true);
+            yesBtn.parentNode.replaceChild(newYesBtn, yesBtn);
+            
+            newYesBtn.addEventListener('click', () => {
+                closeModal('confirmModal');
+                confirmCallback();
+            });
         }
 
         // ==========================================
@@ -723,7 +927,7 @@
         }
 
         function toggleHide(id, status) { database.ref(`${DB_PATH}/${id}/isHidden`).set(!status); }
-        function deleteApp(id) { if(confirm("Permanently Delete App?")) database.ref(`${DB_PATH}/${id}`).remove(); }
+        function deleteApp(id) { showConfirm("Permanently Delete App?", () => database.ref(`${DB_PATH}/${id}`).remove()); }
 
         function loadEditData(id) {
             const app = allAppsData[id];
@@ -837,16 +1041,16 @@
         function updateLuaVersion() {
             const ver = document.getElementById('luaVersionInput').value.trim();
             if(!ver) return showToast("Enter a version!", "error");
-            if(confirm("This will expire old Lua scripts. Continue?")) {
+            showConfirm("This will expire old Lua scripts. Continue?", () => {
                 db.ref('config/version').set(ver).then(() => {
                     showToast("Lua Version Updated!");
                     document.getElementById('luaVersionInput').value = '';
                 });
-            }
+            });
         }
 
         function openLuaModal() {
-            document.getElementById('vipLuaKey').value = "MVX_VIP_" + Math.floor(Math.random() * 9000);
+            document.getElementById('vipLuaKey').value = "MVX_VIP_" + Math.floor(Math.random() * 90000);
             document.getElementById('luaVIPModal').style.display = 'flex';
         }
 
@@ -879,34 +1083,41 @@
             db.ref('users').on('value', snap => {
                 const tbody = document.getElementById('luaTableBody'); tbody.innerHTML = '';
                 if(snap.exists()) {
-                    snap.forEach(child => {
-                        const data = child.val();
+                    const allData = [];
+                    snap.forEach(child => allData.push({ key: child.key, ...child.val() }));
+                    
+                    // Sort by newest
+                    allData.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+                    allData.forEach(data => {
                         const hwidCount = data.hwids ? Object.keys(data.hwids).length : 0;
                         const maxD = data.maxDevices == 999 ? "∞" : data.maxDevices;
                         const banClass = data.status === 'banned' ? 'color:var(--danger);' : 'color:#fff;';
                         tbody.innerHTML += `
                             <tr>
-                                <td><b>${child.key}</b></td>
+                                <td><b>${data.key}</b></td>
                                 <td>${data.expiry || 'No Expiry'}</td>
                                 <td>${hwidCount} / ${maxD}</td>
                                 <td><span style="background:#333; padding:2px 6px; border-radius:4px; font-size:11px;">${data.creatorUid === 'OWNER' ? 'Owner' : 'Free User'}</span></td>
                                 <td><span style="${banClass} font-weight:bold;">${data.status ? data.status.toUpperCase() : 'ACTIVE'}</span></td>
                                 <td>
                                     <div class="action-btns">
-                                        <button style="background:var(--gold); border:none; padding:5px 10px; border-radius:5px; cursor:pointer;" onclick="resetLua('${child.key}')"><i class="fas fa-sync"></i></button>
-                                        <button style="background:var(--warning); border:none; padding:5px 10px; border-radius:5px; cursor:pointer;" onclick="banLua('${child.key}', '${data.status}')"><i class="fas fa-ban"></i></button>
-                                        <button style="background:var(--danger); border:none; padding:5px 10px; border-radius:5px; color:#fff; cursor:pointer;" onclick="delLua('${child.key}')"><i class="fas fa-trash"></i></button>
+                                        <button style="background:var(--gold); border:none; padding:5px 10px; border-radius:5px; cursor:pointer;" onclick="resetLua('${data.key}')"><i class="fas fa-sync"></i></button>
+                                        <button style="background:var(--warning); border:none; padding:5px 10px; border-radius:5px; cursor:pointer;" onclick="banLua('${data.key}', '${data.status}')"><i class="fas fa-ban"></i></button>
+                                        <button style="background:var(--danger); border:none; padding:5px 10px; border-radius:5px; color:#fff; cursor:pointer;" onclick="delLua('${data.key}')"><i class="fas fa-trash"></i></button>
                                     </div>
                                 </td>
                             </tr>
                         `;
                     });
+                } else {
+                    tbody.innerHTML = `<tr><td colspan="6" style="text-align: center;">No Lua Keys found.</td></tr>`;
                 }
             });
         }
-        function resetLua(key) { if(confirm("Reset HWID?")) db.ref(`users/${key}/hwids`).remove(); }
+        function resetLua(key) { showConfirm("Reset HWID?", () => db.ref(`users/${key}/hwids`).remove()); }
         function banLua(key, status) { db.ref(`users/${key}/status`).set(status === 'active' ? 'banned' : 'active'); }
-        function delLua(key) { if(confirm("Delete Key?")) db.ref(`users/${key}`).remove(); }
+        function delLua(key) { showConfirm("Delete Key?", () => db.ref(`users/${key}`).remove()); }
 
         // ==========================================
         // 3. MASTER TM LOGIC (CRASH-PROOF & WHITE THEME)
@@ -968,7 +1179,7 @@
                         }
                     });
 
-                    // 100% Safe sorting
+                    // Safe sorting
                     allData.sort((a, b) => {
                         let timeA = a.createdAt ? Number(a.createdAt) : 0;
                         let timeB = b.createdAt ? Number(b.createdAt) : 0;
@@ -997,7 +1208,7 @@
                             <tr>
                                 <td>
                                     <div style="display:flex; align-items:center; gap:10px;">
-                                        <div class="tm-user-icon"><i class="fas fa-user-shield"></i></div>
+                                        <div style="background:#000; color:#fff; width:30px; height:30px; border-radius:50%; display:flex; justify-content:center; align-items:center;"><i class="fas fa-user-shield"></i></div>
                                         <strong style="color:#000;">${userName}</strong>
                                     </div>
                                 </td>
@@ -1012,12 +1223,12 @@
                     });
                     listDiv.innerHTML = htmlContent;
                 } else {
-                    listDiv.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#000;">No users found.</td></tr>`;
+                    listDiv.innerHTML = `<tr><td colspan=\"5\" style=\"text-align:center; color:#000;\">No users found.</td></tr>`;
                 }
                 document.getElementById('tmTotalUsers').innerText = total;
             });
         }
-        function deleteTm(key) { if(confirm("Permanently delete this user?")) db.ref(`Usuarios/${key}`).remove(); }
+        function deleteTm(key) { showConfirm("Permanently delete this user?", () => db.ref(`Usuarios/${key}`).remove()); }
 
         // ==========================================
         // 4. APP UPDATE LOGIC
@@ -1054,22 +1265,23 @@
                             document.getElementById('tmLimitCount').value = data.free_limits.tm.limitCount || 2;
                             document.getElementById('tmLimitHours').value = data.free_limits.tm.limitHours || 6;
                             document.getElementById('tmLimitDevice').value = data.free_limits.tm.limitDevice || 1;
-                        } else {
-                            document.getElementById('tmLimitCount').value = data.free_limits.appPassLimit || 2;
-                            document.getElementById('tmLimitHours').value = data.free_limits.appPassHours || 6;
-                            document.getElementById('tmLimitDevice').value = data.free_limits.appPassDevice || 1;
-                        }
-                        
+                        } 
                         if(data.free_limits.lua) {
                             document.getElementById('luaLimitCount').value = data.free_limits.lua.limitCount || 1;
                             document.getElementById('luaLimitDays').value = data.free_limits.lua.limitDays || 1;
                             document.getElementById('luaLimitDevice').value = data.free_limits.lua.limitDevice || 1;
+                        }
+                        if(data.free_limits.library) {
+                            document.getElementById('libLimitCount').value = data.free_limits.library.limitCount || 1;
+                            document.getElementById('libLimitHours').value = data.free_limits.library.limitHours || 2;
+                            document.getElementById('libLimitDevice').value = data.free_limits.library.limitDevice || 1;
                         }
                     }
                     
                     if(data.panel_locks) {
                         document.getElementById('lockLuaCheck').checked = data.panel_locks.lua === true;
                         document.getElementById('lockTmCheck').checked = data.panel_locks.tm === true;
+                        document.getElementById('lockLibCheck').checked = data.panel_locks.library === true;
                     }
                 }
             });
@@ -1084,16 +1296,195 @@
             const luaLimitDays = parseInt(document.getElementById('luaLimitDays').value);
             const luaLimitDevice = parseInt(document.getElementById('luaLimitDevice').value);
 
+            const libLimitCount = parseInt(document.getElementById('libLimitCount').value);
+            const libLimitHours = parseInt(document.getElementById('libLimitHours').value);
+            const libLimitDevice = parseInt(document.getElementById('libLimitDevice').value);
+
             const lockLua = document.getElementById('lockLuaCheck').checked;
             const lockTm = document.getElementById('lockTmCheck').checked;
+            const lockLib = document.getElementById('lockLibCheck').checked;
 
             db.ref('config').update({
                 free_limits: { 
                     tm: { limitCount: tmLimitCount, limitHours: tmLimitHours, limitDevice: tmLimitDevice },
-                    lua: { limitCount: luaLimitCount, limitDays: luaLimitDays, limitDevice: luaLimitDevice }
+                    lua: { limitCount: luaLimitCount, limitDays: luaLimitDays, limitDevice: luaLimitDevice },
+                    library: { limitCount: libLimitCount, limitHours: libLimitHours, limitDevice: libLimitDevice }
                 },
-                panel_locks: { lua: lockLua, tm: lockTm }
+                panel_locks: { lua: lockLua, tm: lockTm, library: lockLib }
             }).then(() => showToast("All Settings Saved!"));
+        }
+
+        // ==========================================
+        // 6. MASTER LIBRARY (C++ MOD MENU) LOGIC
+        // ==========================================
+
+        function loadLibrarySettings() {
+            db.ref('app_settings').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    // App Server Settings
+                    document.getElementById("libLiveVersion").value = data.live_version || "1.0";
+                    document.getElementById("libBetaVersion").value = data.beta_version || "1.0";
+                    document.getElementById("libIsMaintenance").value = data.is_maintenance || "false";
+                    document.getElementById("libMaintenanceMsg").value = data.maintenance_msg || "";
+                    document.getElementById("libUpdateLink").value = data.update_link || "";
+                    document.getElementById("libFreeLink").value = data.free_link || "";
+                    document.getElementById("libPaidLink").value = data.paid_link || "";
+                    document.getElementById("libVideoLink").value = data.video_link || "";
+
+                    // Cloud Control for Free Users
+                    document.getElementById("libFreeFov").value = data.free_fov || "120";
+                    document.getElementById("libFreeSpeedHack").value = data.free_speedhack || "false";
+                    document.getElementById("libFreeEspLine").value = data.free_espline || "true";
+                    document.getElementById("libFreeEspBox").value = data.free_espbox || "true";
+                    document.getElementById("libFreeEspHealth").value = data.free_esphealth || "false";
+                }
+            });
+        }
+
+        function saveLibrarySettings() {
+            db.ref('app_settings').update({
+                live_version: document.getElementById("libLiveVersion").value,
+                beta_version: document.getElementById("libBetaVersion").value,
+                is_maintenance: document.getElementById("libIsMaintenance").value,
+                maintenance_msg: document.getElementById("libMaintenanceMsg").value,
+                update_link: document.getElementById("libUpdateLink").value,
+                free_link: document.getElementById("libFreeLink").value,
+                paid_link: document.getElementById("libPaidLink").value,
+                video_link: document.getElementById("libVideoLink").value
+            }).then(() => showToast("Library App Settings Updated!"));
+        }
+
+        function saveLibraryCloudFeatures() {
+            db.ref('app_settings').update({
+                free_fov: document.getElementById("libFreeFov").value,
+                free_speedhack: document.getElementById("libFreeSpeedHack").value,
+                free_espline: document.getElementById("libFreeEspLine").value,
+                free_espbox: document.getElementById("libFreeEspBox").value,
+                free_esphealth: document.getElementById("libFreeEspHealth").value
+            }).then(() => showToast("Free Features Updated for Library Mod!"));
+        }
+
+        function generateRandomNumber(length) {
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += Math.floor(Math.random() * 10);
+            }
+            return result;
+        }
+
+        function generateLibraryVIPKey() {
+            const userName = document.getElementById("libUserName").value || "Unknown Client";
+            const timeValue = parseInt(document.getElementById("libTimeValue").value);
+            const timeFormat = document.getElementById("libTimeFormat").value;
+            const deviceLimit = parseInt(document.getElementById("libDeviceLimit").value);
+
+            if (timeValue < 1 || deviceLimit < 1) return showToast("Duration and Limit must be at least 1!", "error");
+
+            let totalHours = timeValue;
+            if (timeFormat === "days") totalHours = timeValue * 24;
+
+            const newKey = generateRandomNumber(10); 
+
+            const keyData = {
+                type: "vip",          
+                status: "Unused",
+                duration: totalHours, 
+                maxDevices: deviceLimit, 
+                clientName: userName, 
+                expiresAt: 0,
+                devices: {}           
+            };
+
+            db.ref('licenses/' + newKey).set(keyData).then(() => {
+                document.getElementById("libResultBox").style.display = "flex";
+                document.getElementById("libGeneratedKey").value = newKey;
+                showToast("Library VIP Key Generated!");
+            }).catch((error) => showToast(error.message, "error"));
+        }
+
+        function copyLibraryKey() {
+            const copyText = document.getElementById("libGeneratedKey");
+            copyText.select();
+            document.execCommand("copy");
+            showToast("Key Copied!");
+        }
+
+        function loadLibraryKeysData() {
+            db.ref('licenses').on('value', (snapshot) => {
+                const data = snapshot.val();
+                
+                const vipTableBody = document.getElementById("libVipKeysTableBody");
+                const freeTableBody = document.getElementById("libFreeKeysTableBody");
+                vipTableBody.innerHTML = ""; 
+                freeTableBody.innerHTML = ""; 
+                
+                if (data) {
+                    Object.keys(data).reverse().forEach(keyName => {
+                        const keyInfo = data[keyName];
+
+                        let deviceListHTML = "<span style='color:#888; font-size:12px;'>No devices yet</span>";
+                        let currentDeviceCount = 0;
+                        
+                        if (keyInfo.devices) {
+                            currentDeviceCount = Object.keys(keyInfo.devices).length;
+                            deviceListHTML = "<div style='font-size:12px; color:#aaa;'>";
+                            Object.values(keyInfo.devices).forEach((modelName) => {
+                                deviceListHTML += `<span style='color:var(--primary);'>📱 ${modelName}</span><br>`;
+                            });
+                            deviceListHTML += "</div>";
+                        }
+
+                        let statusClass = "status-unused";
+                        if (keyInfo.status === "Active") statusClass = "status-active";
+                        else if (keyInfo.status === "Expired" || keyInfo.status === "Blocked") statusClass = "status-hidden";
+
+                        let limitText = `${currentDeviceCount} / ${keyInfo.maxDevices || 1} Used`;
+                        
+                        let clientNameDisplay = keyInfo.clientName || "Unknown / Old Key";
+                        let clientColor = keyInfo.type === "free" ? "#aaa" : "var(--gold)"; 
+                        let clientHtml = `<div style="color: ${clientColor}; font-size: 11px; margin-top: 3px;"><i class="fas fa-user"></i> ${clientNameDisplay}</div>`;
+
+                        const tr = document.createElement("tr");
+                        tr.innerHTML = `
+                            <td>
+                                <div style="font-family: monospace; font-weight: bold; color: #fff;">${keyName}</div>
+                                ${clientHtml}
+                                <div style="font-size: 10px; color: #888; margin-top: 3px;">${(keyInfo.type || "VIP").toUpperCase()} | ${keyInfo.duration || "N/A"} Hrs</div>
+                            </td>
+                            <td>
+                                <span class="status-badge ${statusClass}">${keyInfo.status}</span>
+                                <div style="font-size: 11px; color: #aaa; margin-top: 5px;">Limit: ${limitText}</div>
+                            </td>
+                            <td>${deviceListHTML}</td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="act-btn ${keyInfo.status === 'Blocked' ? 'act-edit' : 'act-hide'}" onclick="updateLibraryStatus('${keyName}', '${keyInfo.status === 'Blocked' ? 'Active' : 'Blocked'}')">
+                                        <i class="fas ${keyInfo.status === 'Blocked' ? 'fa-unlock' : 'fa-lock'}"></i>
+                                    </button>
+                                    <button class="act-btn act-del" onclick="deleteLibraryKey('${keyName}')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        `;
+
+                        if (keyInfo.type === "free") {
+                            freeTableBody.appendChild(tr);
+                        } else {
+                            vipTableBody.appendChild(tr);
+                        }
+                    });
+                }
+            });
+        }
+
+        function updateLibraryStatus(keyName, newStatus) {
+            showConfirm(`Are you sure you want to ${newStatus} this key?`, () => db.ref('licenses/' + keyName).update({ status: newStatus }));
+        }
+
+        function deleteLibraryKey(keyName) {
+            showConfirm("Permanently delete this Library key?", () => db.ref('licenses/' + keyName).remove());
         }
 
     </script>
