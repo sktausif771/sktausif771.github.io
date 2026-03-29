@@ -131,9 +131,12 @@
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 3000; backdrop-filter: blur(5px); }
         .modal-box { background: var(--bg-card); width: 90%; max-width: 400px; padding: 25px; border-radius: 12px; border: 1px solid var(--gold); box-shadow: 0 0 30px rgba(255, 215, 0, 0.2); }
 
-        /* Library Extra Styles */
         .lib-settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;}
         .lib-input-group label { color: var(--primary); }
+
+        /* Devices Dropdown Custom Style */
+        details summary::-webkit-details-marker { display:none; }
+        details summary { list-style: none; outline: none; }
 
         @media (max-width: 768px) {
             .sidebar { position: fixed; left: -260px; }
@@ -166,14 +169,22 @@
             </div>
             
             <div class="menu-label" style="margin-top: 20px;">OWNER PANELS</div>
-            <div class="menu-item" onclick="showTab('library-tab')" id="nav-library-tab">
-                <i class="fas fa-gamepad" style="color: var(--primary);"></i> MASTER LIBRARY
-            </div>
             <div class="menu-item" onclick="showTab('lua-tab')" id="nav-lua-tab">
                 <i class="fas fa-key"></i> MASTER LUA
             </div>
             <div class="menu-item" onclick="showTab('tm-tab')" id="nav-tm-tab">
                 <i class="fas fa-shield-alt"></i> MASTER TM
+            </div>
+            
+            <div class="menu-label" style="margin-top: 20px;">LIBRARY PANELS (C++)</div>
+            <div class="menu-item" onclick="showTab('library-keys-tab')" id="nav-library-keys-tab">
+                <i class="fas fa-key" style="color: var(--primary);"></i> MASTER LIBRARY KEYS
+            </div>
+            <div class="menu-item" onclick="showTab('library-update-tab')" id="nav-library-update-tab">
+                <i class="fas fa-server" style="color: #ff9900;"></i> LIBRARY UPDATE
+            </div>
+            <div class="menu-item" onclick="showTab('library-limit-tab')" id="nav-library-limit-tab">
+                <i class="fas fa-cloud" style="color: #00ccff;"></i> LIB LIMIT CONTROLLER
             </div>
             
             <div class="menu-label" style="margin-top: 20px;">SYSTEM SETTINGS</div>
@@ -346,8 +357,7 @@
             </div>
         </div>
 
-        <div id="library-tab" class="tab-content">
-            
+        <div id="library-keys-tab" class="tab-content">
             <div class="clean-card" style="border-top: 4px solid var(--primary);">
                 <h2 class="clean-title" style="color: var(--primary);"><i class="fas fa-key"></i> Generate VIP Library Key</h2>
                 <div class="lib-settings-grid">
@@ -378,6 +388,46 @@
                 </div>
             </div>
 
+            <div class="clean-card" style="border-top: 4px solid var(--gold);">
+                <h2 class="clean-title"><i class="fas fa-crown"></i> VIP / PAID Keys</h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Key & Client</th>
+                                <th>Status & Limit</th>
+                                <th>Logged Devices</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="libVipKeysTableBody">
+                            <tr><td colspan="4" style="text-align: center;">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="clean-card" style="border-top: 4px solid #00ff88;">
+                <h2 class="clean-title" style="color: #00ff88;"><i class="fas fa-gift"></i> Free Trial Keys</h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Key & User / Email</th>
+                                <th>Status & Limit</th>
+                                <th>Logged Devices (Click to view)</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="libFreeKeysTableBody">
+                            <tr><td colspan="4" style="text-align: center;">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="library-update-tab" class="tab-content">
             <div class="clean-card" style="border-top: 4px solid #ff9900;">
                 <h2 class="clean-title" style="color: #ff9900;"><i class="fas fa-server"></i> App Server & Links Settings</h2>
                 <div class="lib-settings-grid">
@@ -409,10 +459,12 @@
                 </div>
                 <button class="btn-submit" style="margin-top: 0; background: #ff9900; color: #000;" onclick="saveLibrarySettings()"><i class="fas fa-save"></i> SAVE APP SETTINGS</button>
             </div>
+        </div>
 
+        <div id="library-limit-tab" class="tab-content">
             <div class="clean-card" style="border-top: 4px solid #00ccff;">
                 <h2 class="clean-title" style="color: #00ccff;"><i class="fas fa-cloud"></i> Cloud Feature Control (Free Users)</h2>
-                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Control which features are available to Free Users in the Library Mod.</p>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Control which features are available to Free Users in the C++ Library Mod.</p>
                 <div class="lib-settings-grid">
                     <div class="form-group">
                         <label>Free Aimbot FOV</label>
@@ -448,44 +500,6 @@
                     </div>
                 </div>
                 <button class="btn-submit" style="margin-top: 0; background: #00ccff; color: #000;" onclick="saveLibraryCloudFeatures()"><i class="fas fa-upload"></i> UPDATE FREE FEATURES</button>
-            </div>
-
-            <div class="clean-card" style="border-top: 4px solid var(--gold);">
-                <h2 class="clean-title"><i class="fas fa-crown"></i> VIP / PAID Keys</h2>
-                <div class="table-responsive">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Key & Client</th>
-                                <th>Status & Limit</th>
-                                <th>Logged Devices</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="libVipKeysTableBody">
-                            <tr><td colspan="4" style="text-align: center;">Loading...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="clean-card" style="border-top: 4px solid var(--success);">
-                <h2 class="clean-title" style="color: var(--success);"><i class="fas fa-gift"></i> Free Trial Keys</h2>
-                <div class="table-responsive">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Key & User</th>
-                                <th>Status & Limit</th>
-                                <th>Logged Devices</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="libFreeKeysTableBody">
-                            <tr><td colspan="4" style="text-align: center;">Loading...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
             </div>
         </div>
 
@@ -735,8 +749,8 @@
             loadLuaKeys();
             loadTmPasswords();
             loadMasterSettings();
-            loadLibrarySettings(); // Load new Library Panel Settings
-            loadLibraryKeysData(); // Load new Library Keys
+            loadLibrarySettings(); 
+            loadLibraryKeysData();
         };
 
         function showToast(msg, type='success') {
@@ -761,9 +775,9 @@
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
             document.getElementById('nav-' + tabId).classList.add('active');
 
-            if(tabId === 'lua-tab') document.getElementById('formTitleText') ? document.getElementById('formTitleText').innerText = "Lua Script Keys (Master)" : null;
-            else if(tabId === 'app-tab') document.getElementById('formTitleText') ? document.getElementById('formTitleText').innerText = "All App Passwords" : null;
-            else if(tabId === 'library-tab') document.getElementById('formTitleText') ? document.getElementById('formTitleText').innerText = "Library Mod Panel" : null;
+            if(tabId === 'library-keys-tab') document.getElementById('formTitleText') ? document.getElementById('formTitleText').innerText = "Library Keys" : null;
+            else if(tabId === 'library-update-tab') document.getElementById('formTitleText') ? document.getElementById('formTitleText').innerText = "Library Update Settings" : null;
+            else if(tabId === 'library-limit-tab') document.getElementById('formTitleText') ? document.getElementById('formTitleText').innerText = "Library Feature Limits" : null;
             else document.getElementById('formTitleText') ? document.getElementById('formTitleText').innerText = "Master Owner Panel" : null;
             
             if(window.innerWidth <= 768) {
@@ -927,7 +941,7 @@
         }
 
         function toggleHide(id, status) { database.ref(`${DB_PATH}/${id}/isHidden`).set(!status); }
-        function deleteApp(id) { showConfirm("Permanently Delete App?", () => database.ref(`${DB_PATH}/${id}`).remove()); }
+        function deleteApp(id) { if(confirm("Permanently Delete App?")) database.ref(`${DB_PATH}/${id}`).remove(); }
 
         function loadEditData(id) {
             const app = allAppsData[id];
@@ -1041,16 +1055,16 @@
         function updateLuaVersion() {
             const ver = document.getElementById('luaVersionInput').value.trim();
             if(!ver) return showToast("Enter a version!", "error");
-            showConfirm("This will expire old Lua scripts. Continue?", () => {
+            if(confirm("This will expire old Lua scripts. Continue?")) {
                 db.ref('config/version').set(ver).then(() => {
                     showToast("Lua Version Updated!");
                     document.getElementById('luaVersionInput').value = '';
                 });
-            });
+            }
         }
 
         function openLuaModal() {
-            document.getElementById('vipLuaKey').value = "MVX_VIP_" + Math.floor(Math.random() * 90000);
+            document.getElementById('vipLuaKey').value = "MVX_VIP_" + Math.floor(Math.random() * 9000);
             document.getElementById('luaVIPModal').style.display = 'flex';
         }
 
@@ -1083,41 +1097,34 @@
             db.ref('users').on('value', snap => {
                 const tbody = document.getElementById('luaTableBody'); tbody.innerHTML = '';
                 if(snap.exists()) {
-                    const allData = [];
-                    snap.forEach(child => allData.push({ key: child.key, ...child.val() }));
-                    
-                    // Sort by newest
-                    allData.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
-
-                    allData.forEach(data => {
+                    snap.forEach(child => {
+                        const data = child.val();
                         const hwidCount = data.hwids ? Object.keys(data.hwids).length : 0;
                         const maxD = data.maxDevices == 999 ? "∞" : data.maxDevices;
                         const banClass = data.status === 'banned' ? 'color:var(--danger);' : 'color:#fff;';
                         tbody.innerHTML += `
                             <tr>
-                                <td><b>${data.key}</b></td>
+                                <td><b>${child.key}</b></td>
                                 <td>${data.expiry || 'No Expiry'}</td>
                                 <td>${hwidCount} / ${maxD}</td>
                                 <td><span style="background:#333; padding:2px 6px; border-radius:4px; font-size:11px;">${data.creatorUid === 'OWNER' ? 'Owner' : 'Free User'}</span></td>
                                 <td><span style="${banClass} font-weight:bold;">${data.status ? data.status.toUpperCase() : 'ACTIVE'}</span></td>
                                 <td>
                                     <div class="action-btns">
-                                        <button style="background:var(--gold); border:none; padding:5px 10px; border-radius:5px; cursor:pointer;" onclick="resetLua('${data.key}')"><i class="fas fa-sync"></i></button>
-                                        <button style="background:var(--warning); border:none; padding:5px 10px; border-radius:5px; cursor:pointer;" onclick="banLua('${data.key}', '${data.status}')"><i class="fas fa-ban"></i></button>
-                                        <button style="background:var(--danger); border:none; padding:5px 10px; border-radius:5px; color:#fff; cursor:pointer;" onclick="delLua('${data.key}')"><i class="fas fa-trash"></i></button>
+                                        <button style="background:var(--gold); border:none; padding:5px 10px; border-radius:5px; cursor:pointer;" onclick="resetLua('${child.key}')"><i class="fas fa-sync"></i></button>
+                                        <button style="background:var(--warning); border:none; padding:5px 10px; border-radius:5px; cursor:pointer;" onclick="banLua('${child.key}', '${data.status}')"><i class="fas fa-ban"></i></button>
+                                        <button style="background:var(--danger); border:none; padding:5px 10px; border-radius:5px; color:#fff; cursor:pointer;" onclick="delLua('${child.key}')"><i class="fas fa-trash"></i></button>
                                     </div>
                                 </td>
                             </tr>
                         `;
                     });
-                } else {
-                    tbody.innerHTML = `<tr><td colspan="6" style="text-align: center;">No Lua Keys found.</td></tr>`;
                 }
             });
         }
-        function resetLua(key) { showConfirm("Reset HWID?", () => db.ref(`users/${key}/hwids`).remove()); }
+        function resetLua(key) { if(confirm("Reset HWID?")) db.ref(`users/${key}/hwids`).remove(); }
         function banLua(key, status) { db.ref(`users/${key}/status`).set(status === 'active' ? 'banned' : 'active'); }
-        function delLua(key) { showConfirm("Delete Key?", () => db.ref(`users/${key}`).remove()); }
+        function delLua(key) { if(confirm("Delete Key?")) db.ref(`users/${key}`).remove(); }
 
         // ==========================================
         // 3. MASTER TM LOGIC (CRASH-PROOF & WHITE THEME)
@@ -1179,7 +1186,7 @@
                         }
                     });
 
-                    // Safe sorting
+                    // 100% Safe sorting
                     allData.sort((a, b) => {
                         let timeA = a.createdAt ? Number(a.createdAt) : 0;
                         let timeB = b.createdAt ? Number(b.createdAt) : 0;
@@ -1208,7 +1215,7 @@
                             <tr>
                                 <td>
                                     <div style="display:flex; align-items:center; gap:10px;">
-                                        <div style="background:#000; color:#fff; width:30px; height:30px; border-radius:50%; display:flex; justify-content:center; align-items:center;"><i class="fas fa-user-shield"></i></div>
+                                        <div class="tm-user-icon"><i class="fas fa-user-shield"></i></div>
                                         <strong style="color:#000;">${userName}</strong>
                                     </div>
                                 </td>
@@ -1223,12 +1230,12 @@
                     });
                     listDiv.innerHTML = htmlContent;
                 } else {
-                    listDiv.innerHTML = `<tr><td colspan=\"5\" style=\"text-align:center; color:#000;\">No users found.</td></tr>`;
+                    listDiv.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#000;">No users found.</td></tr>`;
                 }
                 document.getElementById('tmTotalUsers').innerText = total;
             });
         }
-        function deleteTm(key) { showConfirm("Permanently delete this user?", () => db.ref(`Usuarios/${key}`).remove()); }
+        function deleteTm(key) { if(confirm("Permanently delete this user?")) db.ref(`Usuarios/${key}`).remove(); }
 
         // ==========================================
         // 4. APP UPDATE LOGIC
@@ -1253,7 +1260,7 @@
         }
 
         // ==========================================
-        // 5. MASTER SETTINGS
+        // 5. MASTER SETTINGS & LIMITS
         // ==========================================
         function loadMasterSettings() {
             db.ref('config').on('value', snap => {
@@ -1311,18 +1318,16 @@
                     library: { limitCount: libLimitCount, limitHours: libLimitHours, limitDevice: libLimitDevice }
                 },
                 panel_locks: { lua: lockLua, tm: lockTm, library: lockLib }
-            }).then(() => showToast("All Settings Saved!"));
+            }).then(() => showToast("All Settings & Locks Saved!"));
         }
 
         // ==========================================
         // 6. MASTER LIBRARY (C++ MOD MENU) LOGIC
         // ==========================================
-
         function loadLibrarySettings() {
             db.ref('app_settings').on('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
-                    // App Server Settings
                     document.getElementById("libLiveVersion").value = data.live_version || "1.0";
                     document.getElementById("libBetaVersion").value = data.beta_version || "1.0";
                     document.getElementById("libIsMaintenance").value = data.is_maintenance || "false";
@@ -1332,7 +1337,6 @@
                     document.getElementById("libPaidLink").value = data.paid_link || "";
                     document.getElementById("libVideoLink").value = data.video_link || "";
 
-                    // Cloud Control for Free Users
                     document.getElementById("libFreeFov").value = data.free_fov || "120";
                     document.getElementById("libFreeSpeedHack").value = data.free_speedhack || "false";
                     document.getElementById("libFreeEspLine").value = data.free_espline || "true";
@@ -1352,7 +1356,7 @@
                 free_link: document.getElementById("libFreeLink").value,
                 paid_link: document.getElementById("libPaidLink").value,
                 video_link: document.getElementById("libVideoLink").value
-            }).then(() => showToast("Library App Settings Updated!"));
+            }).then(() => showToast("App Settings Updated!"));
         }
 
         function saveLibraryCloudFeatures() {
@@ -1367,9 +1371,7 @@
 
         function generateRandomNumber(length) {
             let result = '';
-            for (let i = 0; i < length; i++) {
-                result += Math.floor(Math.random() * 10);
-            }
+            for (let i = 0; i < length; i++) result += Math.floor(Math.random() * 10);
             return result;
         }
 
@@ -1385,16 +1387,7 @@
             if (timeFormat === "days") totalHours = timeValue * 24;
 
             const newKey = generateRandomNumber(10); 
-
-            const keyData = {
-                type: "vip",          
-                status: "Unused",
-                duration: totalHours, 
-                maxDevices: deviceLimit, 
-                clientName: userName, 
-                expiresAt: 0,
-                devices: {}           
-            };
+            const keyData = { type: "vip", status: "Unused", duration: totalHours, maxDevices: deviceLimit, clientName: userName, expiresAt: 0, devices: {} };
 
             db.ref('licenses/' + newKey).set(keyData).then(() => {
                 document.getElementById("libResultBox").style.display = "flex";
@@ -1410,6 +1403,9 @@
             showToast("Key Copied!");
         }
 
+        // ==========================================
+        // GMAIL & DEVICE TRACKING LOGIC IN TABLES
+        // ==========================================
         function loadLibraryKeysData() {
             db.ref('licenses').on('value', (snapshot) => {
                 const data = snapshot.val();
@@ -1423,16 +1419,19 @@
                     Object.keys(data).reverse().forEach(keyName => {
                         const keyInfo = data[keyName];
 
+                        // Device List Dropdown Logic
                         let deviceListHTML = "<span style='color:#888; font-size:12px;'>No devices yet</span>";
                         let currentDeviceCount = 0;
-                        
                         if (keyInfo.devices) {
                             currentDeviceCount = Object.keys(keyInfo.devices).length;
-                            deviceListHTML = "<div style='font-size:12px; color:#aaa;'>";
+                            // Clickable Dropdown for Devices
+                            deviceListHTML = `<details style="cursor:pointer;">
+                                <summary style="color:var(--primary); font-size:12px; font-weight:bold; outline:none; list-style:none;">View Devices (${currentDeviceCount}) <i class="fas fa-caret-down"></i></summary>
+                                <div style='font-size:11px; color:#aaa; margin-top:8px; padding-left:10px; border-left:2px solid var(--primary);'>`;
                             Object.values(keyInfo.devices).forEach((modelName) => {
-                                deviceListHTML += `<span style='color:var(--primary);'>📱 ${modelName}</span><br>`;
+                                deviceListHTML += `<span style="display:block; margin-bottom:3px;">📱 ${modelName}</span>`;
                             });
-                            deviceListHTML += "</div>";
+                            deviceListHTML += "</div></details>";
                         }
 
                         let statusClass = "status-unused";
@@ -1441,16 +1440,23 @@
 
                         let limitText = `${currentDeviceCount} / ${keyInfo.maxDevices || 1} Used`;
                         
+                        // Gmail and Name Logic
+                        let clientEmail = keyInfo.email || ""; 
                         let clientNameDisplay = keyInfo.clientName || "Unknown / Old Key";
                         let clientColor = keyInfo.type === "free" ? "#aaa" : "var(--gold)"; 
+                        
                         let clientHtml = `<div style="color: ${clientColor}; font-size: 11px; margin-top: 3px;"><i class="fas fa-user"></i> ${clientNameDisplay}</div>`;
+                        // If it's a free key, append the email below the name
+                        if(keyInfo.type === "free" && clientEmail !== "") {
+                            clientHtml += `<div style="color: #888; font-size: 10px; margin-top: 3px;"><i class="fas fa-envelope"></i> ${clientEmail}</div>`;
+                        }
 
                         const tr = document.createElement("tr");
                         tr.innerHTML = `
                             <td>
-                                <div style="font-family: monospace; font-weight: bold; color: #fff;">${keyName}</div>
+                                <div style="font-family: monospace; font-weight: bold; color: #fff; font-size: 14px;">${keyName}</div>
                                 ${clientHtml}
-                                <div style="font-size: 10px; color: #888; margin-top: 3px;">${(keyInfo.type || "VIP").toUpperCase()} | ${keyInfo.duration || "N/A"} Hrs</div>
+                                <div style="font-size: 10px; color: #888; margin-top: 5px;">${(keyInfo.type || "VIP").toUpperCase()} | ${keyInfo.duration || "N/A"} Hrs</div>
                             </td>
                             <td>
                                 <span class="status-badge ${statusClass}">${keyInfo.status}</span>
@@ -1469,11 +1475,8 @@
                             </td>
                         `;
 
-                        if (keyInfo.type === "free") {
-                            freeTableBody.appendChild(tr);
-                        } else {
-                            vipTableBody.appendChild(tr);
-                        }
+                        if (keyInfo.type === "free") freeTableBody.appendChild(tr);
+                        else vipTableBody.appendChild(tr);
                     });
                 }
             });
