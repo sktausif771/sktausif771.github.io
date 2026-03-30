@@ -463,8 +463,10 @@
 
         <div id="library-limit-tab" class="tab-content">
             <div class="clean-card" style="border-top: 4px solid #00ccff;">
-                <h2 class="clean-title" style="color: #00ccff;"><i class="fas fa-cloud"></i> Cloud Feature Control (Free Users)</h2>
-                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Control which features are available to Free Users in the C++ Library Mod.</p>
+                <h2 class="clean-title" style="color: #00ccff;"><i class="fas fa-cloud"></i> Cloud Feature Control</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Control which features are available to Free and VIP Users in the C++ Library Mod.</p>
+                
+                <h3 style="color: #00ccff; margin-bottom: 15px;"><i class="fas fa-user"></i> Free User Controls</h3>
                 <div class="lib-settings-grid">
                     <div class="form-group">
                         <label>Free Aimbot FOV</label>
@@ -499,7 +501,46 @@
                         </select>
                     </div>
                 </div>
-                <button class="btn-submit" style="margin-top: 0; background: #00ccff; color: #000;" onclick="saveLibraryCloudFeatures()"><i class="fas fa-upload"></i> UPDATE FREE FEATURES</button>
+
+                <hr style="border-color: #333; margin: 25px 0;">
+
+                <h3 style="color: var(--gold); margin-bottom: 15px;"><i class="fas fa-crown"></i> VIP User Controls</h3>
+                <div class="lib-settings-grid">
+                    <div class="form-group">
+                        <label style="color: var(--gold);">VIP Aimbot FOV</label>
+                        <input type="number" id="libVipFov" value="360">
+                    </div>
+                    <div class="form-group">
+                        <label style="color: var(--gold);">Speed Hack</label>
+                        <select id="libVipSpeedHack">
+                            <option value="true">ON (Enabled)</option>
+                            <option value="false">OFF (Disabled)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label style="color: var(--gold);">ESP Line</label>
+                        <select id="libVipEspLine">
+                            <option value="true">ON</option>
+                            <option value="false">OFF</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label style="color: var(--gold);">ESP Box</label>
+                        <select id="libVipEspBox">
+                            <option value="true">ON</option>
+                            <option value="false">OFF</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label style="color: var(--gold);">ESP Health (Name)</label>
+                        <select id="libVipEspHealth">
+                            <option value="true">ON</option>
+                            <option value="false">OFF</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn-submit" style="margin-top: 10px; background: #00ccff; color: #000;" onclick="saveLibraryCloudFeatures()"><i class="fas fa-upload"></i> UPDATE ALL CLOUD FEATURES</button>
             </div>
         </div>
 
@@ -1337,11 +1378,19 @@
                     document.getElementById("libPaidLink").value = data.paid_link || "";
                     document.getElementById("libVideoLink").value = data.video_link || "";
 
+                    // Free Users Controls Load
                     document.getElementById("libFreeFov").value = data.free_fov || "120";
                     document.getElementById("libFreeSpeedHack").value = data.free_speedhack || "false";
                     document.getElementById("libFreeEspLine").value = data.free_espline || "true";
                     document.getElementById("libFreeEspBox").value = data.free_espbox || "true";
                     document.getElementById("libFreeEspHealth").value = data.free_esphealth || "false";
+
+                    // VIP Users Controls Load
+                    document.getElementById("libVipFov").value = data.vip_fov || "360";
+                    document.getElementById("libVipSpeedHack").value = data.vip_speedhack || "true";
+                    document.getElementById("libVipEspLine").value = data.vip_espline || "true";
+                    document.getElementById("libVipEspBox").value = data.vip_espbox || "true";
+                    document.getElementById("libVipEspHealth").value = data.vip_esphealth || "true";
                 }
             });
         }
@@ -1359,14 +1408,23 @@
             }).then(() => showToast("App Settings Updated!"));
         }
 
+        // UPDATE BOTH FREE AND VIP CLOUD FEATURES
         function saveLibraryCloudFeatures() {
             db.ref('app_settings').update({
+                // Free
                 free_fov: document.getElementById("libFreeFov").value,
                 free_speedhack: document.getElementById("libFreeSpeedHack").value,
                 free_espline: document.getElementById("libFreeEspLine").value,
                 free_espbox: document.getElementById("libFreeEspBox").value,
-                free_esphealth: document.getElementById("libFreeEspHealth").value
-            }).then(() => showToast("Free Features Updated for Library Mod!"));
+                free_esphealth: document.getElementById("libFreeEspHealth").value,
+                
+                // VIP
+                vip_fov: document.getElementById("libVipFov").value,
+                vip_speedhack: document.getElementById("libVipSpeedHack").value,
+                vip_espline: document.getElementById("libVipEspLine").value,
+                vip_espbox: document.getElementById("libVipEspBox").value,
+                vip_esphealth: document.getElementById("libVipEspHealth").value
+            }).then(() => showToast("Cloud Features Updated for Free & VIP!"));
         }
 
         function generateRandomNumber(length) {
