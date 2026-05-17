@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#020617">
-    <title>MVX STORE | Play UI V5.0</title>
+    <meta name="theme-color" content="#121212">
+    <title>MVX STORE | Play Store Edition V5.5</title>
     
     <script>
         if (sessionStorage.getItem('mvx_session') !== 'ACTIVE') {
@@ -14,96 +14,147 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <header class="play-top-nav">
-        <div class="top-brand">
-            <img src="https://via.placeholder.com/40/020617/00e6b8?text=MVX" alt="Logo" class="nav-logo">
+    <header class="play-top-nav" id="globalHeader">
+        <div class="top-brand" onclick="switchTab('files', document.getElementById('defaultTabBtn'))">
+            <img src="https://via.placeholder.com/40/121212/00e6b8?text=MVX" alt="Store Logo" class="nav-logo" id="mainStoreLogo">
             <span class="brand-text">MVX STORE</span>
         </div>
         <div class="top-actions">
             <i class="fas fa-bars admin-menu-btn" id="adminMenuToggle" style="display: none;" onclick="toggleAdminSidebar()"></i>
-            <i class="fas fa-bell noti-icon"></i>
-            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=User" alt="Profile" class="top-profile-pic" id="topProfileBtn" onclick="openProfileEditModal()">
+            
+            <div class="noti-icon-box" onclick="openNotificationCenter()">
+                <i class="fas fa-bell noti-icon"></i>
+                <div class="noti-badge" id="notiAlert"></div>
+            </div>
+            
+            <img src="" alt="User Profile" class="top-profile-pic" id="topProfileBtn" onclick="openProfileEditModal()">
         </div>
     </header>
 
     <div class="admin-sidebar-overlay" id="adminOverlay" onclick="toggleAdminSidebar()"></div>
     <div class="admin-sidebar" id="adminSidebar">
         <div class="admin-header">
-            <h3><i class="fas fa-shield-alt"></i> SYSTEM PANEL</h3>
-            <i class="fas fa-times" onclick="toggleAdminSidebar()" style="cursor:pointer; color:#ff003c;"></i>
+            <h3><i class="fas fa-shield-alt" style="color: var(--primary);"></i> SYSTEM CONTROL</h3>
+            <i class="fas fa-times close-modal" onclick="toggleAdminSidebar()"></i>
         </div>
         <div class="admin-links">
-            <a href="admin.html" id="linkAdmin" style="display:none;"><i class="fas fa-tasks"></i> Admin Dashboard</a>
-            <a href="owner.html" id="linkOwner" style="display:none;"><i class="fas fa-crown" style="color:#ffd700;"></i> Master Owner</a>
+            <a href="admin.html" id="linkAdmin" style="display: none;"><i class="fas fa-tasks"></i> Admin Dashboard Panel</a>
+            <a href="owner.html" id="linkOwner" style="display: none;"><i class="fas fa-crown" style="color: var(--warning);"></i> Master Owner Control</a>
+            
+            <a href="#" onclick="openAdminNotificationModal(); toggleAdminSidebar();" id="linkPushNoti" style="color: var(--primary);"><i class="fas fa-paper-plane"></i> Push System Broadcast</a>
         </div>
     </div>
 
     <main class="play-main-content" id="mainStoreFeed">
         
         <div class="play-categories">
-            <button class="cat-chip active" data-filter="for_you">For you</button>
-            <button class="cat-chip" data-filter="premium">Premium</button>
-            <button class="cat-chip" data-filter="free">Free Games</button>
+            <button class="cat-chip active" id="defaultCatChip" data-filter="all">All Items</button>
+            <button class="cat-chip" data-filter="trending">Trending Now</button>
+            <button class="cat-chip" data-filter="premium">Premium Apps</button>
         </div>
 
-        <h2 class="play-section-title">Recommended for you <i class="fas fa-arrow-right"></i></h2>
+        <h2 class="play-section-title" id="feedSectionTitle">Recommended Files <i class="fas fa-arrow-right" style="font-size:12px; color:var(--text-secondary);"></i></h2>
         
         <div class="play-app-grid" id="storeAppGrid">
-            <div style="text-align:center; padding: 40px; grid-column: 1/-1;">
-                <i class="fas fa-spinner fa-spin" style="font-size:30px; color:#00e6b8;"></i>
-                <p style="margin-top:10px; color:#94a3b8;">Loading Store Data...</p>
+            <div style="text-align:center; padding: 50px; grid-column: 1/-1;">
+                <i class="fas fa-spinner fa-spin" style="font-size:32px; color:var(--primary);"></i>
+                <p style="margin-top:15px; color:var(--text-secondary); font-weight:500;">Scanning Database Infrastructure...</p>
             </div>
         </div>
+    </main>
 
+    <main class="play-main-content" id="searchTabContent" style="display: none;">
+        <h2 class="play-section-title">Smart Search Engine</h2>
+        <div style="position: relative; margin-bottom: 25px;">
+            <input type="text" id="storeSearchInput" class="play-input" placeholder="Search apps, files, mods or tags..." style="padding-left: 50px; margin-bottom: 0;">
+            <i class="fas fa-search" style="position: absolute; top: 18px; left: 20px; color: var(--text-secondary); font-size: 18px;"></i>
+        </div>
+        
+        <div class="play-app-grid" id="searchResultGrid">
+            <div style="text-align: center; padding: 40px; grid-column: 1/-1; color: var(--text-secondary);">
+                <i class="fas fa-search-plus" style="font-size: 40px; margin-bottom: 15px; color: var(--border-color);"></i>
+                <h3>Type any keyword or tag to fetch application data</h3>
+            </div>
+        </div>
+    </main>
+
+    <main class="play-main-content" id="notificationTabContent" style="display: none;">
+        <div class="play-section-title">
+            <h2><i class="fas fa-envelope-open-text" style="color: var(--primary);"></i> System Notifications</h2>
+            <button class="cat-chip" onclick="clearLocalNotifications()" style="padding: 5px 12px; font-size: 11px;">Clear Screen</button>
+        </div>
+        <div class="noti-container" id="notificationInboxDisplay">
+            <div class="noti-card">
+                <div class="noti-header">
+                    <span class="noti-title">System Alert</span>
+                    <span class="noti-time">Just Now</span>
+                </div>
+                <p class="noti-msg">Notification box is empty or sync is initializing.</p>
+            </div>
+        </div>
     </main>
 
     <main class="play-main-content" id="youTabContent" style="display: none;">
         <div class="you-header">
-            <img src="" id="youTabAvatar" alt="User">
+            <img src="" id="youTabAvatar" alt="User Avatar Image">
             <div class="you-info">
-                <h2 id="youTabName">Loading...</h2>
+                <h2 id="youTabName">Fetching Name...</h2>
                 <p id="youTabEmail">user@mvx.com</p>
+                
+                <div class="follow-stats">
+                    <span>Followers: <strong id="userFollowersCount">0</strong></span>
+                    <span>Following: <strong id="userFollowingCount">0</strong></span>
+                </div>
             </div>
+        </div>
+
+        <div class="redeem-box">
+            <h4><i class="fas fa-gift" style="color: var(--primary);"></i> Claim Premium Gift Code</h4>
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <input type="text" id="redeemInputCode" class="play-input" placeholder="Enter Redeem Voucher Code" style="margin-bottom:0; text-transform:uppercase; font-family:monospace; font-size:16px; font-weight:bold; letter-spacing:1px;">
+                <button class="play-btn" style="width: 120px; padding: 0;" onclick="executeRedeemProtocol()">CLAIM</button>
+            </div>
+            <p id="redeemStatusMsg" style="font-size:12px; font-weight:600; margin-top:10px; color:var(--primary);"></p>
         </div>
 
         <div class="you-menu-list">
             <div class="you-menu-item" onclick="openUploadModal()">
-                <i class="fas fa-cloud-upload-alt" style="color: #00e6b8;"></i>
-                <span>Upload Application</span>
+                <i class="fas fa-cloud-upload-alt" style="color: var(--primary);"></i>
+                <span>Publish Package File</span>
                 <i class="fas fa-chevron-right arrow"></i>
             </div>
-            <div class="you-menu-item">
-                <i class="fas fa-history" style="color: #94a3b8;"></i>
-                <span>Download History</span>
-                <i class="fas fa-chevron-right arrow"></i>
+            <div class="you-menu-item" id="themeToggleBtn">
+                <i class="fas fa-paint-brush" style="color: var(--warning);"></i>
+                <span>Theme Mode: <strong id="currentThemeLabel" style="color: var(--primary);">Dark</strong></span>
+                <i class="fas fa-exchange-alt arrow" style="font-size:14px;"></i>
             </div>
             <div class="you-menu-item">
                 <i class="fas fa-wallet" style="color: #ffd700;"></i>
-                <span>MVX Coins Wallet</span>
-                <span style="margin-left:auto; margin-right:15px; font-weight:bold; color:#ffd700;" id="youCoinBalance">0</span>
+                <span>MVX Coin Balance</span>
+                <span style="margin-left:auto; margin-right:15px; font-weight:900; color:#ffd700; font-size:16px;" id="navCoinDisplay">0</span>
             </div>
-            <div class="you-menu-item" style="color: #ff003c;" onclick="secureLogout()">
+            <div class="you-menu-item" style="color: var(--danger);" onclick="secureLogout()">
                 <i class="fas fa-sign-out-alt"></i>
-                <span>Sign Out</span>
+                <span>Secure Sign Out</span>
             </div>
         </div>
     </main>
 
     <nav class="play-bottom-nav">
-        <div class="nav-item active" onclick="switchTab('games', this)">
-            <i class="fas fa-gamepad"></i>
-            <span>Games</span>
+        <div class="nav-item active" id="defaultTabBtn" onclick="switchTab('files', this)">
+            <i class="fas fa-folder-open"></i>
+            <span>Files</span>
         </div>
-        <div class="nav-item" onclick="switchTab('apps', this)">
-            <i class="fas fa-layer-group"></i>
-            <span>Apps</span>
+        <div class="nav-item" onclick="switchTab('mod_app', this)">
+            <i class="fas fa-robot"></i>
+            <span>Mod App</span>
         </div>
         <div class="nav-item" onclick="switchTab('search', this)">
             <i class="fas fa-search"></i>
@@ -118,20 +169,50 @@
     <div class="modal-overlay" id="profileEditModal">
         <div class="play-modal">
             <div class="modal-header">
-                <h3>Edit Profile</h3>
+                <h3><i class="fas fa-user-edit" style="color:var(--primary);"></i> Account Settings</h3>
                 <i class="fas fa-times close-modal" onclick="closeProfileEditModal()"></i>
             </div>
             <div class="modal-body">
                 <div style="text-align: center; margin-bottom: 20px;">
-                    <img src="" id="editPreviewAvatar" style="width:80px; height:80px; border-radius:50%; object-fit:cover; border:2px solid #00e6b8; margin-bottom:10px;">
+                    <img src="" id="editPreviewAvatar" style="width:90px; height:90px; border-radius:50%; object-fit:cover; border:3px solid var(--primary); box-shadow:var(--primary-shadow);">
                 </div>
-                <label class="modal-label">Display Name</label>
-                <input type="text" id="editNameInput" class="play-input" placeholder="Enter your name">
                 
-                <label class="modal-label" style="margin-top:15px;">Profile Picture (ImgBB / URL)</label>
-                <input type="text" id="editAvatarInput" class="play-input" placeholder="Paste direct image link here">
+                <label class="modal-label">User Profile Name</label>
+                <input type="text" id="editNameInput" class="play-input" placeholder="Change profile name">
                 
-                <button class="play-btn" style="margin-top: 20px;" onclick="saveProfileChanges()">SAVE CHANGES</button>
+                <label class="modal-label">Custom Profile Picture Link (URL / ImgBB)</label>
+                <input type="text" id="editAvatarInput" class="play-input" placeholder="Paste image address URL">
+                
+                <div id="ownerLogoEditSection" style="display: none; border-top: 1px dashed var(--border-color); padding-top: 15px; margin-top: 15px;">
+                    <label class="modal-label" style="color: var(--warning);">Global Store Logo Link (Owner Only)</label>
+                    <input type="text" id="ownerLogoInput" class="play-input" placeholder="Paste new main logo URL link">
+                </div>
+                
+                <button class="play-btn" style="margin-top: 10px;" onclick="saveProfileChanges()">COMMIT METADATA CHANGES</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="adminNotiModal">
+        <div class="play-modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-paper-plane" style="color:var(--primary);"></i> Push System Notification</h3>
+                <i class="fas fa-times close-modal" onclick="document.getElementById('adminNotiModal').classList.remove('active')"></i>
+            </div>
+            <div class="modal-body">
+                <label class="modal-label">Alert Header/Title</label>
+                <input type="text" id="notiPushTitle" class="play-input" placeholder="e.g. Critical Core Update">
+                
+                <label class="modal-label">Alert Category</label>
+                <select id="notiPushType" class="play-input">
+                    <option value="normal">NORMAL BROADCAST (Teal Green)</option>
+                    <option value="alert">CRITICAL ALERT (Crimson Red)</option>
+                </select>
+                
+                <label class="modal-label">Detailed Notice Message</label>
+                <textarea id="notiPushMessage" class="play-input" placeholder="Write full details about down-time, update logs or warnings..." style="min-height: 120px; resize: vertical;"></textarea>
+                
+                <button class="play-btn" onclick="executeNotificationBroadcast()">BROADCAST MESSAGE NOW</button>
             </div>
         </div>
     </div>
@@ -145,39 +226,58 @@
     <script src="store-logic.js"></script>
 
     <script>
-        // Tab Switching Logic
+        // Global Tab Switching Sub-Engine
         function switchTab(tabName, element) {
-            // Update Active State on Nav
             document.querySelectorAll('.play-bottom-nav .nav-item').forEach(el => el.classList.remove('active'));
-            element.classList.add('active');
+            if(element) element.classList.add('active');
 
-            // Switch Content
-            const feed = document.getElementById('mainStoreFeed');
-            const youTab = document.getElementById('youTabContent');
+            const feedSection = document.getElementById('mainStoreFeed');
+            const searchSection = document.getElementById('searchTabContent');
+            const notificationSection = document.getElementById('notificationTabContent');
+            const youSection = document.getElementById('youTabContent');
+            const secTitle = document.getElementById('feedSectionTitle');
 
-            if(tabName === 'you') {
-                feed.style.display = 'none';
-                youTab.style.display = 'block';
+            // Reset view states
+            feedSection.style.display = 'none';
+            searchSection.style.display = 'none';
+            notificationSection.style.display = 'none';
+            youSection.style.display = 'none';
+
+            if(tabName === 'files') {
+                feedSection.style.display = 'block';
+                if(secTitle) secTitle.innerHTML = 'Recommended Files <i class="fas fa-arrow-right" style="font-size:12px; color:var(--text-secondary);"></i>';
+                if(typeof window.loadStoreFeed === 'function') window.loadStoreFeed('all', 'files');
+            } else if (tabName === 'mod_app') {
+                feedSection.style.display = 'block';
+                if(secTitle) secTitle.innerHTML = 'Premium Mod Apps <i class="fas fa-arrow-right" style="font-size:12px; color:var(--text-secondary);"></i>';
+                if(typeof window.loadStoreFeed === 'function') window.loadStoreFeed('all', 'mod_app');
             } else if (tabName === 'search') {
-                // Search logic can be implemented here later
-                feed.style.display = 'block';
-                youTab.style.display = 'none';
-            } else {
-                feed.style.display = 'block';
-                youTab.style.display = 'none';
+                searchSection.style.display = 'block';
+            } else if (tabName === 'you') {
+                youSection.style.display = 'block';
             }
         }
 
-        // Admin Sidebar Logic
+        // Notification Tab Opener Interface Hook
+        function openNotificationCenter() {
+            switchTab('none', null);
+            document.querySelectorAll('.play-bottom-nav .nav-item').forEach(el => el.classList.remove('active'));
+            document.getElementById('notificationTabContent').style.display = 'block';
+            const badge = document.getElementById('notiAlert');
+            if(badge) badge.style.display = 'none'; // Read notifications clear badge
+        }
+
+        // Admin Notification Input Controller
+        function openAdminNotificationModal() {
+            document.getElementById('adminNotiModal').classList.add('active');
+        }
+
+        // Active Layout Sidebar Engine Switcher
         function toggleAdminSidebar() {
             document.getElementById('adminSidebar').classList.toggle('active');
             document.getElementById('adminOverlay').classList.toggle('active');
         }
 
-        // Profile Edit Modal Logic
-        function openProfileEditModal() {
-            document.getElementById('profileEditModal').classList.add('active');
-        }
         function closeProfileEditModal() {
             document.getElementById('profileEditModal').classList.remove('active');
         }

@@ -4,71 +4,272 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#121212">
-    <title>System Admin | MVX STORE</title>
+    <title>System Architecture Admin | MVX STORE</title>
     
     <script>
-        const userRole = sessionStorage.getItem('mvx_role');
-        if (userRole !== 'admin' && userRole !== 'owner') {
+        const activeRole = sessionStorage.getItem('mvx_role');
+        if (activeRole !== 'admin' && activeRole !== 'owner') {
             window.location.replace('index.html');
         }
     </script>
     
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     
     <style>
-        body { background-color: var(--bg-base); padding: 20px; padding-bottom: 80px; }
+        /* Admin Panel Specific Structural Design */
+        body { 
+            background-color: var(--bg-base); 
+            padding: 20px; 
+            padding-bottom: 100px; 
+        }
         
-        .admin-header-box { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; }
-        .admin-header-box h1 { font-family: var(--font-tech); font-size: 24px; color: var(--primary); }
-        .btn-back-home { background: var(--bg-surface); color: var(--text-primary); padding: 10px 20px; border-radius: 8px; border: 1px solid var(--border-color); font-weight: 600; cursor: pointer; }
+        .admin-header-box { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 30px; 
+            border-bottom: 1px solid var(--border-color); 
+            padding-bottom: 20px; 
+        }
         
-        .admin-tabs { display: flex; gap: 10px; margin-bottom: 25px; }
-        .tab-btn { flex: 1; padding: 15px; background: var(--bg-surface); border: 1px solid var(--border-color); color: var(--text-secondary); border-radius: 10px; font-family: var(--font-body); font-weight: 700; cursor: pointer; transition: 0.3s; }
-        .tab-btn.active { background: var(--primary-dim); color: var(--primary); border-color: var(--primary); }
-
-        .data-panel { display: none; }
-        .data-panel.active { display: block; animation: fadeIn 0.4s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .list-card { background: var(--bg-surface); border: 1px solid var(--border-color); padding: 15px; border-radius: 12px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; gap: 15px; }
-        .list-card img { width: 50px; height: 50px; border-radius: 10px; object-fit: cover; }
-        .list-info { flex: 1; overflow: hidden; }
-        .list-info h3 { font-size: 16px; color: #fff; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .list-info p { font-size: 12px; color: var(--text-secondary); }
+        .admin-header-box h1 { 
+            font-family: var(--font-tech); 
+            font-size: 22px; 
+            color: var(--primary); 
+            letter-spacing: 1px;
+        }
         
-        .action-btns { display: flex; gap: 8px; }
-        .act-btn { width: 40px; height: 40px; border-radius: 8px; border: none; cursor: pointer; font-size: 16px; transition: 0.2s; display: flex; justify-content: center; align-items: center; }
-        .act-approve { background: rgba(0, 255, 136, 0.1); color: #00ff88; border: 1px solid rgba(0,255,136,0.3); }
-        .act-reject, .act-delete { background: rgba(255, 0, 60, 0.1); color: var(--danger); border: 1px solid rgba(255,0,60,0.3); }
-        .act-approve:hover { background: #00ff88; color: #000; }
-        .act-reject:hover, .act-delete:hover { background: var(--danger); color: #fff; }
+        .btn-back-home { 
+            background: var(--bg-surface); 
+            color: var(--text-primary); 
+            padding: 12px 24px; 
+            border-radius: 10px; 
+            border: 1px solid var(--border-color); 
+            font-weight: 700; 
+            cursor: pointer; 
+            transition: 0.3s;
+        }
+        .btn-back-home:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        /* Navigation Tabs Layout */
+        .admin-tabs { 
+            display: flex; 
+            gap: 10px; 
+            margin-bottom: 30px; 
+            flex-wrap: wrap;
+        }
+        
+        .tab-btn { 
+            flex: 1; 
+            min-width: 130px;
+            padding: 15px; 
+            background: var(--bg-surface); 
+            border: 1px solid var(--border-color); 
+            color: var(--text-secondary); 
+            border-radius: 12px; 
+            font-family: var(--font-body); 
+            font-weight: 700; 
+            font-size: 14px;
+            cursor: pointer; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+        
+        .tab-btn.active { 
+            background: var(--primary-dim); 
+            color: var(--primary); 
+            border-color: var(--primary); 
+            box-shadow: var(--primary-shadow);
+        }
 
-        .empty-msg { text-align: center; padding: 40px; color: var(--text-secondary); }
+        .data-panel { 
+            display: none; 
+        }
+        
+        .data-panel.active { 
+            display: block; 
+            animation: fadeIn 0.4s ease-out; 
+        }
+
+        /* Responsive Cards Matrix */
+        .list-card { 
+            background: var(--bg-surface); 
+            border: 1px solid var(--border-color); 
+            padding: 18px; 
+            border-radius: 14px; 
+            margin-bottom: 15px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            gap: 15px; 
+            flex-wrap: wrap; /* Mobile view crash preventer */
+        }
+        
+        .list-card img { 
+            width: 55px; 
+            height: 55px; 
+            border-radius: 12px; 
+            object-fit: cover; 
+            border: 1px solid var(--border-color);
+        }
+        
+        .list-info { 
+            flex: 1; 
+            min-width: 180px; 
+            overflow: hidden; 
+        }
+        
+        .list-info h3 { 
+            font-size: 17px; 
+            color: #fff; 
+            margin-bottom: 4px; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            font-weight: 700;
+        }
+        
+        .list-info p { 
+            font-size: 13px; 
+            color: var(--text-secondary); 
+            font-weight: 500;
+        }
+        
+        .action-btns { 
+            display: flex; 
+            gap: 10px; 
+            align-items: center;
+        }
+        
+        .act-btn { 
+            width: 44px; 
+            height: 44px; 
+            border-radius: 10px; 
+            border: none; 
+            cursor: pointer; 
+            font-size: 16px; 
+            transition: all 0.2s ease; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+        }
+        
+        .act-approve { background: rgba(0, 230, 118, 0.1); color: var(--free-color); border: 1px solid rgba(0, 230, 118, 0.3); }
+        .act-reject, .act-delete { background: rgba(255, 82, 82, 0.1); color: var(--danger); border: 1px solid rgba(255, 82, 82, 0.3); }
+        
+        .act-approve:hover { background: var(--free-color); color: #000; transform: scale(1.05); }
+        .act-reject:hover, .act-delete:hover { background: var(--danger); color: #fff; transform: scale(1.05); }
+
+        .empty-msg { 
+            text-align: center; 
+            padding: 50px 20px; 
+            color: var(--text-secondary); 
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        /* Redeem Generator Section CSS */
+        .generator-box {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            padding: 25px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .generator-box h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #fff;
+            font-family: var(--font-tech);
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        /* Responsive Form Layout */
+        @media (max-width: 600px) {
+            .list-card {
+                flex-direction: column;
+                align-items: flex-start;
+                text-align: left;
+            }
+            .action-btns {
+                width: 100%;
+                justify-content: flex-end;
+                margin-top: 10px;
+                border-top: 1px solid var(--border-color);
+                padding-top: 10px;
+            }
+            .list-card img {
+                align-self: center;
+                margin-bottom: 5px;
+            }
+        }
     </style>
 </head>
 <body>
 
     <div class="admin-header-box">
-        <h1><i class="fas fa-shield-alt"></i> ADMIN PANEL</h1>
-        <button class="btn-back-home" onclick="window.location.href='index.html'"><i class="fas fa-home"></i> Store</button>
+        <h1><i class="fas fa-database"></i> MVX SERVER NETWORK</h1>
+        <button class="btn-back-home" onclick="window.location.replace('index.html')"><i class="fas fa-store"></i> Store Terminal</button>
     </div>
 
     <div class="admin-tabs">
-        <button class="tab-btn active" onclick="switchTab('pending')">Pending Apps</button>
-        <button class="tab-btn" onclick="switchTab('live')">Live Store Apps</button>
+        <button class="tab-btn active" id="tabPendingBtn" onclick="switchAdminPanelSection('pending', this)">Pending System</button>
+        <button class="tab-btn" onclick="switchAdminPanelSection('live', this)">Live Warehouse</button>
+        <button class="tab-btn" onclick="switchAdminPanelSection('voucher', this)">Voucher Engine</button>
     </div>
 
     <div id="pendingPanel" class="data-panel active">
-        <div id="pendingList">
-            <div class="empty-msg"><i class="fas fa-spinner fa-spin" style="font-size:24px; color:var(--primary);"></i><br><br>Loading Pending Apps...</div>
+        <div id="pendingContainerQueue">
+            <div class="empty-msg"><i class="fas fa-circle-notch fa-spin" style="font-size:26px; color:var(--primary);"></i><br><br>Syncing Realtime Pending Nodes...</div>
         </div>
     </div>
 
     <div id="livePanel" class="data-panel">
-        <div id="liveList">
-            <div class="empty-msg"><i class="fas fa-spinner fa-spin" style="font-size:24px; color:var(--primary);"></i><br><br>Loading Live Apps...</div>
+        <div id="liveWarehouseContainer">
+            <div class="empty-msg"><i class="fas fa-circle-notch fa-spin" style="font-size:26px; color:var(--primary);"></i><br><br>Syncing Live Deployment Nodes...</div>
+        </div>
+    </div>
+
+    <div id="voucherPanel" class="data-panel">
+        
+        <div class="generator-box">
+            <h2><i class="fas fa-plus-circle" style="color:var(--primary);"></i> Mint New Gift Voucher</h2>
+            
+            <label class="modal-label">Custom Voucher Code String</label>
+            <input type="text" id="vCode" class="play-input" placeholder="e.g. MVX100BONUS" style="text-transform:uppercase; font-family:monospace; font-weight:bold; font-size:16px;">
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                <div>
+                    <label class="modal-label">Reward Category Mode</label>
+                    <select id="vType" class="play-input" onchange="adjustVoucherRewardPlaceholder(this.value)">
+                        <option value="coins">COINS WALLET DEPOSIT</option>
+                        <option value="premium_bypass">PREMIUM APP ACCESS BYPASS</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="modal-label">Maximum Claim Count Limit</label>
+                    <input type="number" id="vMaxClaims" class="play-input" placeholder="e.g. 50 Users" value="10">
+                </div>
+            </div>
+
+            <label class="modal-label" id="rewardValueLabel">Coins Quantity to Deposit</label>
+            <input type="text" id="vValue" class="play-input" placeholder="e.g. 100">
+
+            <button class="play-btn" onclick="executeVoucherMintingProtocol()">MINT VOUCHER CODE NOW</button>
+        </div>
+
+        <div class="play-section-title">Active Database Vouchers</div>
+        <div id="liveVouchersTrackingContainer">
+            <div class="empty-msg">No active vouchers generated in pipeline.</div>
         </div>
     </div>
 
@@ -77,24 +278,41 @@
     <script src="firebase-config.js"></script>
 
     <script>
-        const db = firebase.database();
+        const databaseRef = firebase.database();
 
-        // UI Tab Switcher
-        function switchTab(tabId) {
+        // 1. Tab Navigation Controller
+        function switchAdminPanelSection(panelId, btnElement) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.data-panel').forEach(panel => panel.classList.remove('active'));
             
-            event.target.classList.add('active');
-            document.getElementById(tabId + 'Panel').classList.add('active');
+            if(btnElement) btnElement.classList.add('active');
+            document.getElementById(panelId + 'Panel').classList.add('active');
         }
 
-        // =========================================================
-        // 1. LOAD PENDING APPS
-        // =========================================================
-        db.ref('pending_apps').on('value', (snapshot) => {
-            const list = document.getElementById('pendingList');
+        // Form Placeholder Adjuster
+        function adjustVoucherRewardPlaceholder(value) {
+            const label = document.getElementById('rewardValueLabel');
+            const input = document.getElementById('vValue');
+            if(value === 'coins') {
+                label.innerText = "Coins Quantity to Deposit";
+                input.placeholder = "e.g. 100";
+            } else {
+                label.innerText = "Target Premium Application Database ID";
+                input.placeholder = "Paste application unique firebase key string";
+            }
+        }
+
+        // ==========================================================================
+        // 2. PENDING QUEUE LISTENER & ARCHITECTURE RENDERING
+        // ==========================================================================
+        databaseRef.ref('pending_apps').on('value', (snapshot) => {
+            const container = document.getElementById('pendingContainerQueue');
             if (!snapshot.exists()) {
-                list.innerHTML = `<div class="empty-msg"><i class="fas fa-check-circle" style="font-size:30px; color:#00ff88;"></i><br><br>No pending applications.</div>`;
+                container.innerHTML = `
+                    <div class="empty-msg">
+                        <i class="fas fa-check-double" style="font-size:36px; color:var(--primary); margin-bottom:15px;"></i>
+                        <h3>All operational pipeline cleared. No items pending.</h3>
+                    </div>`;
                 return;
             }
 
@@ -103,80 +321,141 @@
                 const app = child.val();
                 html += `
                     <div class="list-card">
-                        <img src="${app.logoUrl}" onerror="this.src='https://via.placeholder.com/50/121212/00e6b8?text=APP'">
+                        <img src="${app.logoUrl}" onerror="this.src='https://via.placeholder.com/55/121212/00e6b8?text=FILE'">
                         <div class="list-info">
                             <h3>${app.appName}</h3>
-                            <p>By ${app.uploaderName} • Type: ${app.category}</p>
+                            <p>Uploader: ${app.uploaderName} • Tab: ${app.appType} • Access: ${app.category}</p>
                         </div>
                         <div class="action-btns">
-                            <button class="act-btn act-approve" onclick="approveApp('${child.key}')" title="Approve"><i class="fas fa-check"></i></button>
-                            <button class="act-btn act-reject" onclick="rejectPendingApp('${child.key}')" title="Reject"><i class="fas fa-times"></i></button>
+                            <button class="act-btn act-approve" onclick="approvePendingPackageNode('${child.key}')" title="Approve & Deploy"><i class="fas fa-check"></i></button>
+                            <button class="act-btn act-reject" onclick="deletePendingPackageNode('${child.key}')" title="Reject File"><i class="fas fa-times"></i></button>
                         </div>
                     </div>
                 `;
             });
-            list.innerHTML = html;
+            container.innerHTML = html;
         });
 
-        // =========================================================
-        // 2. LOAD LIVE APPS
-        // =========================================================
-        db.ref('store_apps').on('value', (snapshot) => {
-            const list = document.getElementById('liveList');
-            if (!snapshot.exists()) {
-                list.innerHTML = `<div class="empty-msg">Store is currently empty.</div>`;
-                return;
-            }
-
-            let html = '';
-            snapshot.forEach((child) => {
-                const app = child.val();
-                html += `
-                    <div class="list-card">
-                        <img src="${app.logoUrl}" onerror="this.src='https://via.placeholder.com/50/121212/00e6b8?text=APP'">
-                        <div class="list-info">
-                            <h3>${app.appName}</h3>
-                            <p>v${app.version} • ${app.downloads || 0} Downloads</p>
-                        </div>
-                        <div class="action-btns">
-                            <button class="act-btn act-delete" onclick="deleteLiveApp('${child.key}', '${app.appName}')" title="Delete from Store"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </div>
-                `;
-            });
-            list.innerHTML = html;
-        });
-
-        // =========================================================
-        // 3. ADMIN ACTIONS (Approve, Reject, Delete)
-        // =========================================================
-        window.approveApp = function(appId) {
-            if(confirm("Approve this app and publish to store?")) {
-                db.ref(`pending_apps/${appId}`).once('value').then(snap => {
+        window.approvePendingPackageNode = function(key) {
+            if(confirm("Deploy this file node directly to the live store database layer?")) {
+                databaseRef.ref(`pending_apps/${key}`).once('value').then(snap => {
                     let appData = snap.val();
                     appData.status = 'approved';
                     appData.approvedAt = firebase.database.ServerValue.TIMESTAMP;
 
-                    db.ref(`store_apps/${appId}`).set(appData).then(() => {
-                        db.ref(`pending_apps/${appId}`).remove();
-                        alert("App Published Successfully!");
+                    // Move object block to live nodes
+                    databaseRef.ref(`store_apps/${key}`).set(appData).then(() => {
+                        databaseRef.ref(`pending_apps/${key}`).remove();
+                        alert("Package deployed to live catalog successfully!");
                     });
                 });
             }
         };
 
-        window.rejectPendingApp = function(appId) {
-            if(confirm("Reject and delete this pending request?")) {
-                db.ref(`pending_apps/${appId}`).remove().then(() => alert("Request Deleted."));
+        window.deletePendingPackageNode = function(key) {
+            if(confirm("Reject and permanently wipe this pending application stack?")) {
+                databaseRef.ref(`pending_apps/${key}`).remove().then(() => alert("Pending package removed from pipeline."));
             }
         };
 
-        window.deleteLiveApp = function(appId, appName) {
-            if(confirm(`⚠️ WARNING: Are you sure you want to PERMANENTLY DELETE "${appName}" from the live store?`)) {
-                db.ref(`store_apps/${appId}`).remove().then(() => alert(`${appName} has been deleted from the store.`));
+        // ==========================================================================
+        // 3. LIVE WAREHOUSE (STORE REMOVAL CONTROL ENGINE)
+        // ==========================================================================
+        databaseRef.ref('store_apps').on('value', (snapshot) => {
+            const warehouse = document.getElementById('liveWarehouseContainer');
+            if (!snapshot.exists()) {
+                warehouse.innerHTML = `<div class="empty-msg">Store live catalog is currently empty.</div>`;
+                return;
+            }
+
+            let html = '';
+            snapshot.forEach((child) => {
+                const app = child.val();
+                html += `
+                    <div class="list-card">
+                        <img src="${app.logoUrl}" onerror="this.src='https://via.placeholder.com/55/121212/00e6b8?text=LIVE'">
+                        <div class="list-info">
+                            <h3>${app.appName}</h3>
+                            <p>ID: ${child.key} • Size: ${app.size} • DL Count: ${app.downloads || 0}</p>
+                        </div>
+                        <div class="action-btns">
+                            <button class="act-btn act-delete" onclick="executeLiveAppWipeProtocol('${child.key}', '${app.appName}')" title="Wipe From Catalog"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+            warehouse.innerHTML = html;
+        });
+
+        window.executeLiveAppWipeProtocol = function(key, name) {
+            if(confirm(`⚠️ CRITICAL COMMAND: Are you absolutely certain you want to WIPE "${name}" permanently from the live store database infrastructure?`)) {
+                databaseRef.ref(`store_apps/${key}`).remove().then(() => {
+                    alert(`${name} has been dropped from core live nodes.`);
+                });
             }
         };
 
+        // ==========================================================================
+        // 4. MINT VOUCHER ENGINE CODE EXECUTION PROTOCOL
+        // ==========================================================================
+        window.executeVoucherMintingProtocol = function() {
+            const code = document.getElementById('vCode').value.trim().toUpperCase();
+            const type = document.getElementById('vType').value;
+            const max = parseInt(document.getElementById('vMaxClaims').value);
+            const val = document.getElementById('vValue').value.trim();
+
+            if(!code || !val) {
+                alert("⚠️ Cannot complete generation. Code string and Reward definition empty.");
+                return;
+            }
+
+            const payload = {
+                codeString: code,
+                rewardType: type,
+                maxClaims: max,
+                currentClaims: 0,
+                rewardValue: val,
+                mintedAt: firebase.database.ServerValue.TIMESTAMP
+            };
+
+            databaseRef.ref('redeem_codes/' + code).set(payload).then(() => {
+                alert(`🚀 Security Voucher [${code}] generated and deployed to server authentication banks!`);
+                document.getElementById('vCode').value = '';
+                document.getElementById('vValue').value = '';
+            });
+        };
+
+        // Live Vouchers Realtime Sync Dashboard
+        databaseRef.ref('redeem_codes').on('value', (snapshot) => {
+            const logs = document.getElementById('liveVouchersTrackingContainer');
+            if(!snapshot.exists()) {
+                logs.innerHTML = `<div class="empty-msg">No vouchers active inside auth layers.</div>`;
+                return;
+            }
+
+            let html = '';
+            snapshot.forEach(child => {
+                const voucher = child.val();
+                html += `
+                    <div class="list-card" style="border-left: 3px solid var(--warning);">
+                        <div class="list-info">
+                            <h3 style="font-family:monospace; color:var(--warning); letter-spacing:1px;">${voucher.codeString}</h3>
+                            <p>Type: ${voucher.rewardType} (${voucher.rewardValue}) • Claims Used: [${voucher.currentClaims} / ${voucher.maxClaims}]</p>
+                        </div>
+                        <div class="action-btns">
+                            <button class="act-btn act-delete" onclick="dropActiveVoucherFromNetwork('${child.key}')" title="Drop Voucher Token"><i class="fas fa-minus-circle"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+            logs.innerHTML = html;
+        });
+
+        window.dropActiveVoucherFromNetwork = function(key) {
+            if(confirm("Deactivate and drop this voucher code authentication node from servers?")) {
+                databaseRef.ref(`redeem_codes/${key}`).remove().then(() => alert("Token node deleted."));
+            }
+        };
     </script>
 </body>
 </html>
