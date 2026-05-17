@@ -1,187 +1,186 @@
 /* ==========================================================================
-   MVX SYSTEM - GLOBAL JAVASCRIPT ENGINE V4.0 (UPDATED)
-   ==========================================================================
-   - Global UI Controls (Toast, Modals)
-   - Security Modules (Anti-Inspect)
-   - Low-End Device Optimization (Smooth Mode)
-   - Global Event Listeners & Network Detection
-   - NEW: Dark Loader Controls & Global Confirm Modal (Yes/Cancel)
+   MVX STORE V4.0 - MASTER UI & GLOBAL LOGIC ENGINE
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Console Branding (হ্যাকার থিম কনসোল লগ)
-    console.log('%c┌──────────────────────────────────────────────────┐', 'color: #00e6b8; font-size: 12px; font-family: monospace');
-    console.log('%c│     MVX CYBER SYSTEM v4.0 - INITIALIZED...       │', 'color: #00e6b8; font-size: 12px; font-family: monospace; font-weight: bold');
-    console.log('%c└──────────────────────────────────────────────────┘', 'color: #00e6b8; font-size: 12px; font-family: monospace');
+    // সিকিউরিটি কনসোল ওয়ার্নিং
+    console.log('%c[MVX SYSTEM V4.0] Core Engine Initialized...', 'color: #00e6b8; font-size: 14px; font-weight: bold;');
+    console.log('%cWARNING: Unauthorized modification is prohibited.', 'color: #ff003c; font-size: 12px;');
 
     // ==========================================================================
-    // 2. GLOBAL TOAST NOTIFICATION SYSTEM
+    // 1. GLOBAL TOAST NOTIFICATION SYSTEM (পপ-আপ মেসেজ)
     // ==========================================================================
     window.showGlobalToast = function(message, type = 'success') {
-        let toastContainer = document.getElementById('toast-global-container');
-        if (!toastContainer) {
-            toastContainer = document.createElement('div');
-            toastContainer.id = 'toast-global-container';
-            toastContainer.className = 'toast-global-container';
-            document.body.appendChild(toastContainer);
+        let container = document.getElementById('toast-global-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'toast-global-container';
+            document.body.appendChild(container);
         }
 
         const toast = document.createElement('div');
-        toast.className = `toast-global ${type}`;
+        toast.className = `toast-msg ${type}`;
         
-        let icon = 'fa-check-circle';
-        if(type === 'error') icon = 'fa-times-circle';
-        if(type === 'warning') icon = 'fa-exclamation-triangle';
+        // টাইপ অনুযায়ী আইকন সেট করা
+        const icon = type === 'success' ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-exclamation-circle" style="color: #ff003c;"></i>';
+        
+        toast.innerHTML = `${icon} <span>${message}</span>`;
+        container.appendChild(toast);
 
-        toast.innerHTML = `<i class="fas ${icon}"></i> <span>${message}</span>`;
-        toastContainer.appendChild(toast);
-
+        // ৩ সেকেন্ড পর অটোমেটিক গায়েব হয়ে যাবে
         setTimeout(() => {
-            toast.style.opacity = '0';
-            toast.style.transform = 'translateX(100%)';
-            toast.style.transition = '0.3s ease-in';
-            setTimeout(() => toast.remove(), 300);
+            toast.style.animation = 'fadeOutToast 0.4s forwards';
+            setTimeout(() => toast.remove(), 400);
         }, 3000);
     };
 
     // ==========================================================================
-    // 3. SECURITY MODULE (Anti-Inspect & Anti-Copy)
+    // 2. GLOBAL CONFIRMATION MODAL (যেকোনো কিছু ডিলিট করার আগে ওয়ার্নিং বক্স)
     // ==========================================================================
-    // Disable Right Click
-    document.addEventListener('contextmenu', event => {
-        event.preventDefault();
-        showGlobalToast('Right-click is disabled for security reasons.', 'warning');
-    });
-
-    // Disable Inspect Element Keyboard Shortcuts
-    document.onkeydown = function(e) {
-        if(e.keyCode == 123) { // F12
-            showGlobalToast('Developer tools are blocked!', 'error');
-            return false; 
-        }
-        if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false; // Ctrl+Shift+I
-        if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) return false; // Ctrl+Shift+C
-        if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false; // Ctrl+Shift+J
-        if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { // Ctrl+U
-            showGlobalToast('Source code viewing is disabled.', 'error');
-            return false; 
-        }
-    };
-
-    // ==========================================================================
-    // 4. LOW-END DEVICE OPTIMIZATION (Smooth Mode Auto-Applier)
-    // ==========================================================================
-    if(localStorage.getItem('smoothMode') === 'true') {
-        document.body.classList.add('smooth-mode');
-    }
-
-    // ==========================================================================
-    // 5. GLOBAL KEYBOARD SHORTCUTS
-    // ==========================================================================
-    document.addEventListener('keydown', (e) => {
-        // Ctrl + K for Search
-        if (e.ctrlKey && e.key === 'k') {
-            e.preventDefault();
-            const searchInput = document.getElementById('searchInput');
-            const searchContainer = document.getElementById('searchContainer');
-            
-            if (searchContainer && searchInput) {
-                searchContainer.style.display = 'block';
-                searchInput.focus();
-            }
-        }
+    window.showConfirmModal = function(message, onConfirm) {
+        let overlay = document.getElementById('globalConfirmOverlay');
         
-        // Escape key to close search, modals, or sidebars
-        if (e.key === 'Escape') {
-            const searchContainer = document.getElementById('searchContainer');
-            if (searchContainer) searchContainer.style.display = 'none';
-            
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('overlay');
-            if (sidebar && sidebar.classList.contains('active')) {
-                sidebar.classList.remove('active');
-                if(overlay) overlay.classList.remove('active');
-            }
-        }
-    });
-
-    // ==========================================================================
-    // 6. OFFLINE/ONLINE NETWORK DETECTION
-    // ==========================================================================
-    window.addEventListener('offline', () => {
-        showGlobalToast('You are offline! Check your internet connection.', 'error');
-    });
-
-    window.addEventListener('online', () => {
-        showGlobalToast('Connection restored! You are back online.', 'success');
-    });
-
-    // ==========================================================================
-    // 7. NEW: DARK LOADER CONTROLS
-    // ==========================================================================
-    window.showDarkLoader = function(text = 'Loading') {
-        let loader = document.getElementById('global-dark-loader');
-        if(!loader) {
-            loader = document.createElement('div');
-            loader.id = 'global-dark-loader';
-            loader.className = 'dark-loader-overlay';
-            loader.innerHTML = `
-                <div class="dark-loader-spinner"></div>
-                <div class="dark-loader-text" id="dark-loader-msg">${text}</div>
-            `;
-            document.body.appendChild(loader);
-        } else {
-            document.getElementById('dark-loader-msg').innerText = text;
-        }
-        loader.style.display = 'flex';
-    };
-
-    window.hideDarkLoader = function() {
-        const loader = document.getElementById('global-dark-loader');
-        if(loader) loader.style.display = 'none';
-    };
-
-    // ==========================================================================
-    // 8. NEW: GLOBAL CONFIRMATION MODAL (Yes/Cancel for Deletions)
-    // ==========================================================================
-    window.showConfirmModal = function(message, onConfirmCallback) {
-        let modal = document.getElementById('global-confirm-modal');
-        if(!modal) {
-            modal = document.createElement('div');
-            modal.id = 'global-confirm-modal';
-            modal.className = 'confirm-overlay';
-            modal.innerHTML = `
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'globalConfirmOverlay';
+            overlay.className = 'global-confirm-overlay';
+            overlay.innerHTML = `
                 <div class="confirm-box">
-                    <h3><i class="fas fa-exclamation-triangle"></i> WARNING</h3>
-                    <p id="confirm-modal-msg"></p>
-                    <div class="confirm-btns">
-                        <button class="btn-cancel-modal" id="confirm-cancel-btn">Cancel</button>
-                        <button class="btn-yes-modal" id="confirm-yes-btn">Yes, Delete</button>
+                    <i class="fas fa-exclamation-triangle confirm-icon"></i>
+                    <h3>SYSTEM WARNING</h3>
+                    <p id="confirmMessageText">Are you sure you want to proceed?</p>
+                    <div class="confirm-actions">
+                        <button class="btn-outline" style="width: 100%; padding: 12px; border-radius: 8px; cursor: pointer;" id="btnCancelConfirm">CANCEL</button>
+                        <button class="btn-danger" style="width: 100%; padding: 12px; border-radius: 8px; border: none; cursor: pointer;" id="btnYesConfirm">CONFIRM</button>
                     </div>
                 </div>
             `;
-            document.body.appendChild(modal);
+            document.body.appendChild(overlay);
         }
 
-        document.getElementById('confirm-modal-msg').innerText = message;
-        modal.style.display = 'flex';
+        document.getElementById('confirmMessageText').innerText = message;
+        overlay.classList.add('active');
 
-        // Clear previous event listeners by cloning buttons
-        const oldYesBtn = document.getElementById('confirm-yes-btn');
-        const newYesBtn = oldYesBtn.cloneNode(true);
-        oldYesBtn.parentNode.replaceChild(newYesBtn, oldYesBtn);
+        // পুরোনো ইভেন্ট লিসেনার রিমুভ করার জন্য বাটন ক্লোন করা
+        const oldYes = document.getElementById('btnYesConfirm');
+        const newYes = oldYes.cloneNode(true);
+        oldYes.parentNode.replaceChild(newYes, oldYes);
 
-        const oldCancelBtn = document.getElementById('confirm-cancel-btn');
-        const newCancelBtn = oldCancelBtn.cloneNode(true);
-        oldCancelBtn.parentNode.replaceChild(newCancelBtn, oldCancelBtn);
+        const oldCancel = document.getElementById('btnCancelConfirm');
+        const newCancel = oldCancel.cloneNode(true);
+        oldCancel.parentNode.replaceChild(newCancel, oldCancel);
 
-        newCancelBtn.addEventListener('click', () => {
-            modal.style.display = 'none';
+        newCancel.addEventListener('click', () => {
+            overlay.classList.remove('active');
         });
 
-        newYesBtn.addEventListener('click', () => {
-            modal.style.display = 'none';
-            if(typeof onConfirmCallback === 'function') onConfirmCallback();
+        newYes.addEventListener('click', () => {
+            overlay.classList.remove('active');
+            if(typeof onConfirm === 'function') onConfirm();
         });
+    };
+
+    // ==========================================================================
+    // 3. GLOBAL FULL-SCREEN LOADER (পেজ লোড বা প্রসেসিং এর সময়)
+    // ==========================================================================
+    window.toggleGlobalLoader = function(show, text = "PROCESSING...") {
+        let loader = document.getElementById('globalScreenLoader');
+        if (!loader) {
+            loader = document.createElement('div');
+            loader.id = 'globalScreenLoader';
+            loader.className = 'global-screen-loader';
+            loader.innerHTML = `
+                <div class="cyber-spinner"></div>
+                <div class="loader-text-glow" id="globalLoaderText">${text}</div>
+            `;
+            document.body.appendChild(loader);
+        }
+
+        if (show) {
+            document.getElementById('globalLoaderText').innerText = text;
+            loader.style.display = 'flex';
+        } else {
+            loader.style.display = 'none';
+        }
+    };
+
+    // ==========================================================================
+    // 4. NETWORK STATUS DETECTION (নেটওয়ার্ক চলে গেলে ওয়ার্নিং)
+    // ==========================================================================
+    window.addEventListener('offline', () => {
+        showGlobalToast('NETWORK DISCONNECTED. Please check your internet.', 'error');
+    });
+
+    window.addEventListener('online', () => {
+        showGlobalToast('NETWORK RESTORED. System back online.', 'success');
+    });
+
+    // ==========================================================================
+    // 5. THEME SWITCHER LOGIC (ডার্ক এবং লাইট মোড)
+    // ==========================================================================
+    window.changeTheme = function(theme) {
+        if(theme === 'light') {
+            document.documentElement.style.setProperty('--bg-base', '#f1f5f9');
+            document.documentElement.style.setProperty('--bg-panel', '#ffffff');
+            document.documentElement.style.setProperty('--bg-panel-solid', '#e2e8f0');
+            document.documentElement.style.setProperty('--bg-card', '#ffffff');
+            document.documentElement.style.setProperty('--text-main', '#0f172a');
+            document.documentElement.style.setProperty('--text-muted', '#475569');
+            showGlobalToast('Light Theme Activated (Beta)');
+        } else {
+            // Reset to dark
+            document.documentElement.style.setProperty('--bg-base', '#020617');
+            document.documentElement.style.setProperty('--bg-panel', 'rgba(15, 23, 42, 0.7)');
+            document.documentElement.style.setProperty('--bg-panel-solid', '#0f172a');
+            document.documentElement.style.setProperty('--bg-card', 'rgba(30, 41, 59, 0.7)');
+            document.documentElement.style.setProperty('--text-main', '#f8fafc');
+            document.documentElement.style.setProperty('--text-muted', '#94a3b8');
+            showGlobalToast('Dark Theme Activated');
+        }
+        localStorage.setItem('mvx_theme', theme);
+    };
+
+    // অটোমেটিক সেভ করা থিম লোড করা
+    const savedTheme = localStorage.getItem('mvx_theme');
+    if(savedTheme) {
+        changeTheme(savedTheme);
+    }
+
+    // ==========================================================================
+    // 6. LANGUAGE SWITCHER LOGIC (ভাষা পরিবর্তন)
+    // ==========================================================================
+    window.changeLanguage = function(lang) {
+        localStorage.setItem('mvx_lang', lang);
+        showGlobalToast(`Language changing to ${lang.toUpperCase()}...`);
+        setTimeout(() => { window.location.reload(); }, 1500);
+    };
+
+    // ==========================================================================
+    // 7. DYNAMIC TIME FORMATTER (সময়ের হিসেব: দিন, সপ্তাহ, মাস, বছর)
+    // ==========================================================================
+    window.formatTimeDynamic = function(timestamp) {
+        if (!timestamp) return "Unknown Time";
+        
+        const seconds = Math.floor((new Date() - new Date(timestamp)) / 1000);
+        
+        let interval = Math.floor(seconds / 31536000);
+        if (interval >= 1) return interval + (interval === 1 ? " year ago" : " years ago");
+        
+        interval = Math.floor(seconds / 2592000);
+        if (interval >= 1) return interval + (interval === 1 ? " month ago" : " months ago");
+        
+        interval = Math.floor(seconds / 604800);
+        if (interval >= 1) return interval + (interval === 1 ? " week ago" : " weeks ago");
+        
+        interval = Math.floor(seconds / 86400);
+        if (interval >= 1) return interval + (interval === 1 ? " day ago" : " days ago");
+        
+        interval = Math.floor(seconds / 3600);
+        if (interval >= 1) return interval + (interval === 1 ? " hr ago" : " hrs ago");
+        
+        interval = Math.floor(seconds / 60);
+        if (interval >= 1) return interval + (interval === 1 ? " min ago" : " mins ago");
+        
+        return "Just now";
     };
 });

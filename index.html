@@ -3,430 +3,254 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#00e6b8">
-    <title>MVX STORE | Premium Mods & VIP Game Hacks</title>
+    <meta name="theme-color" content="#020617">
+    <title>MVX STORE | Premium App Gateway</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
+    <link rel="stylesheet" href="style.css">
+    
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        
-        :root {
-            --primary: #00e6b8; --primary-dim: rgba(0, 230, 184, 0.15);
-            --gold: #ffd700; --gold-dim: rgba(255, 215, 0, 0.15);
-            --danger: #ff003c; --danger-dim: rgba(255, 0, 60, 0.15);
-            --bg-void: #000000; --bg-card: #0c101a; --bg-input: #1a1f2c;
-            --text-primary: #ffffff; --text-muted: #9ca3af;
-            --glass-bg: rgba(8, 11, 18, 0.8); --glass-border: 1px solid rgba(0, 230, 184, 0.2);
-            --font-head: 'Rajdhani', sans-serif; --font-body: 'Space Grotesk', sans-serif;
+        /* Navbar & Header Structure */
+        .top-navbar {
+            position: fixed; top: 0; left: 0; width: 100%; height: 70px;
+            background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px); border-bottom: 1px solid rgba(0, 230, 184, 0.2);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 20px; z-index: 1000; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
         }
-
-        body { background: var(--bg-void); color: var(--text-primary); font-family: var(--font-body); min-height: 100vh; overflow-x: hidden; }
-
-        /* Background Effects */
-        .grid-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(0, 230, 184, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 230, 184, 0.03) 1px, transparent 1px); background-size: 50px 50px; pointer-events: none; z-index: -1; animation: gridShift 15s linear infinite; }
-        .glow-orb { position: fixed; width: 60vmax; height: 60vmax; border-radius: 50%; background: radial-gradient(circle at center, rgba(0, 230, 184, 0.1) 0%, transparent 70%); filter: blur(50px); pointer-events: none; z-index: -1; top: -20vmax; left: -20vmax; animation: orbFloat 20s ease-in-out infinite alternate; }
-        @keyframes gridShift { 0% { background-position: 0 0; } 100% { background-position: 50px 50px; } }
-        @keyframes orbFloat { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(10%,10%) scale(1.2); } }
-
-        /* Header */
-        .header { position: sticky; top: 0; background: var(--glass-bg); backdrop-filter: blur(10px); border-bottom: var(--glass-border); height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 100; }
-        .header-left { display: flex; align-items: center; gap: 15px; }
-        .menu-btn, .search-btn { font-size: 1.5rem; color: var(--text-primary); cursor: pointer; background: none; border: none; }
-        .brand { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--primary); }
         
-        /* Sidebar */
-        .sidebar { position: fixed; top: 0; left: -300px; width: 300px; height: 100%; background: #080b12; border-right: var(--glass-border); z-index: 1000; transition: 0.3s; padding: 20px; overflow-y: auto; }
-        .sidebar.active { left: 0; }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 999; display: none; }
-        .overlay.active { display: block; }
-        .close-btn { position: absolute; top: 20px; right: 20px; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; }
+        .nav-left { display: flex; align-items: center; gap: 15px; }
+        .menu-toggle { font-size: 24px; color: #00e6b8; cursor: pointer; transition: 0.3s; }
+        .menu-toggle:hover { color: #ffffff; text-shadow: 0 0 10px #00e6b8; }
         
-        .sidebar-logo { text-align: center; margin-bottom: 30px; margin-top: 20px; font-family: 'Orbitron', sans-serif; font-size: 1.5rem; color: var(--primary); }
-        .sidebar-menu a { display: flex; align-items: center; gap: 15px; padding: 15px; color: var(--text-primary); text-decoration: none; border-radius: 8px; margin-bottom: 10px; transition: 0.3s; cursor: pointer; font-weight: 600; font-family: var(--font-head); font-size: 1.1rem;}
-        .sidebar-menu a:hover { background: var(--bg-input); color: var(--primary); }
+        .store-brand { display: flex; flex-direction: column; }
+        .store-brand h1 { font-family: 'Orbitron', sans-serif; font-size: 20px; font-weight: 800; color: #ffffff; letter-spacing: 1px; }
+        .store-brand h1 span { color: #00e6b8; }
+        .store-brand small { font-family: 'Rajdhani', sans-serif; font-size: 11px; color: #00e6b8; letter-spacing: 2px; text-transform: uppercase; }
         
-        .login-redirect-btn { width: 100%; padding: 15px; background: var(--primary); color: #000; border: none; border-radius: 8px; font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; cursor: pointer; margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s;}
-        .login-redirect-btn:hover { box-shadow: 0 0 15px var(--primary-dim); }
+        .nav-right { display: flex; align-items: center; gap: 15px; }
+        .user-wallet { display: flex; align-items: center; gap: 8px; background: rgba(0, 230, 184, 0.1); padding: 5px 12px; border-radius: 20px; border: 1px solid rgba(0, 230, 184, 0.3); }
+        .user-wallet i { color: #ffd700; font-size: 14px; }
+        .user-wallet span { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600; color: #ffffff; }
+        .noti-bell { font-size: 20px; color: #94a3b8; cursor: pointer; position: relative; transition: 0.3s; }
+        .noti-bell:hover { color: #00e6b8; }
+        .noti-dot { position: absolute; top: -2px; right: -2px; width: 8px; height: 8px; background: #ff003c; border-radius: 50%; box-shadow: 0 0 8px #ff003c; display: none; }
 
-        /* Main Nav Tabs */
-        .main-tabs { display: flex; gap: 10px; padding: 15px 20px; background: var(--bg-void); position: sticky; top: 70px; z-index: 90; overflow-x: auto; }
-        .main-tabs::-webkit-scrollbar { display: none; }
-        .tab-btn { flex: 1; min-width: 100px; padding: 12px; background: var(--bg-input); border: 1px solid #333; color: var(--text-primary); border-radius: 8px; font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: 0.3s; text-align: center; }
-        .tab-btn.active[data-type="Free"] { background: var(--primary-dim); border-color: var(--primary); color: var(--primary); }
-        .tab-btn.active[data-type="Premium"] { background: var(--gold-dim); border-color: var(--gold); color: var(--gold); }
-        .tab-btn.active[data-type="Paid"] { background: var(--danger-dim); border-color: var(--danger); color: var(--danger); }
-
-        /* Sub Categories */
-        .sub-categories { display: flex; gap: 10px; padding: 10px 20px; overflow-x: auto; background: var(--bg-void); display: none; animation: slideDown 0.3s ease; }
-        .sub-categories::-webkit-scrollbar { display: none; }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        .cat-pill { padding: 8px 20px; background: var(--bg-card); border: 1px solid #333; border-radius: 100px; color: var(--text-muted); cursor: pointer; white-space: nowrap; transition: 0.3s; }
-        .cat-pill.active { background: #fff; color: #000; border-color: #fff; }
-
-        /* Search Bar */
-        .search-container { padding: 15px 20px; display: none; }
-        .search-box { width: 100%; background: var(--bg-input); border: var(--glass-border); border-radius: 8px; padding: 12px 15px; color: #fff; font-size: 1rem; outline: none; }
-
-        /* Feed System (App Cards) */
-        .feed-container { max-width: 800px; margin: 0 auto; padding: 20px; display: flex; flex-direction: column; gap: 30px; }
-        .yt-card { display: flex; flex-direction: column; cursor: pointer; transition: 0.3s; position: relative; }
-        .yt-card:hover { transform: translateY(-5px); }
-        .yt-banner-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; border-radius: 12px; overflow: hidden; background: var(--bg-input); border: var(--glass-border); }
-        .yt-banner { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
-        .yt-card:hover .yt-banner { transform: scale(1.05); }
+        /* Sidebar / Drawer Architecture */
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(3px); z-index: 1001; opacity: 0; visibility: hidden; transition: 0.3s; }
+        .sidebar-overlay.active { opacity: 1; visibility: visible; }
         
-        /* Opposing Badges */
-        .type-badge { position: absolute; top: 10px; right: 10px; padding: 5px 12px; border-radius: 5px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; z-index: 2; }
-        .type-badge.Free { background: var(--primary); color: #000; }
-        .type-badge.Premium { background: var(--gold); color: #000; }
-        .type-badge.Paid { background: var(--danger); color: #fff; }
+        .sidebar-menu { position: fixed; top: 0; left: -320px; width: 300px; height: 100%; background: #0f172a; border-right: 1px solid rgba(0, 230, 184, 0.2); z-index: 1002; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; overflow-y: auto; }
+        .sidebar-menu.active { left: 0; box-shadow: 20px 0 50px rgba(0, 0, 0, 0.5); }
+        
+        .sidebar-header { padding: 30px 20px; background: linear-gradient(180deg, rgba(0, 230, 184, 0.1) 0%, transparent 100%); border-bottom: 1px solid rgba(255, 255, 255, 0.05); position: relative; }
+        .close-sidebar { position: absolute; top: 15px; right: 15px; font-size: 20px; color: #94a3b8; cursor: pointer; }
+        .profile-avatar { width: 70px; height: 70px; border-radius: 50%; border: 2px solid #00e6b8; padding: 3px; margin-bottom: 15px; }
+        .profile-name { font-family: 'Orbitron', sans-serif; font-size: 18px; font-weight: 700; color: #ffffff; margin-bottom: 5px; }
+        .profile-uid { font-family: 'Space Grotesk', sans-serif; font-size: 12px; color: #94a3b8; background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 4px; display: inline-block; margin-bottom: 10px; }
+        .profile-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; color: #00e6b8; background: rgba(0,230,184,0.1); padding: 3px 8px; border-radius: 12px; }
 
-        .badge-update { position: absolute; top: 10px; left: 10px; background: var(--danger); color: #fff; padding: 5px 12px; border-radius: 5px; font-size: 0.8rem; font-family: var(--font-head); font-weight: bold; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 0 10px var(--danger-dim); z-index: 2; }
+        .sidebar-links { padding: 20px 0; flex-grow: 1; display: flex; flex-direction: column; }
+        .side-link { display: flex; align-items: center; gap: 15px; padding: 15px 25px; color: #cbd5e1; text-decoration: none; font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 500; transition: 0.3s; border-left: 3px solid transparent; }
+        .side-link i { font-size: 18px; width: 25px; text-align: center; color: #64748b; transition: 0.3s; }
+        .side-link:hover { background: rgba(0, 230, 184, 0.05); color: #ffffff; border-left-color: #00e6b8; }
+        .side-link:hover i { color: #00e6b8; }
+        
+        .sidebar-divider { height: 1px; background: rgba(255,255,255,0.05); margin: 15px 20px; }
+        
+        .admin-section { margin-top: auto; padding-bottom: 20px; }
+        .admin-link { display: none; color: #ff003c; } /* Hidden by default */
+        .admin-link i { color: #ff003c; }
+        .admin-link:hover { background: rgba(255, 0, 60, 0.05); border-left-color: #ff003c; color: #ff003c; }
+        .owner-link { display: none; color: #ffd700; } /* Hidden by default */
+        .owner-link i { color: #ffd700; }
+        .owner-link:hover { background: rgba(255, 215, 0, 0.05); border-left-color: #ffd700; color: #ffd700; }
 
-        .yt-info { display: flex; gap: 15px; margin-top: 15px; align-items: flex-start; }
-        .yt-logo { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; background: var(--bg-input); border: 1px solid #333; }
-        .yt-text { flex: 1; }
-        .yt-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 5px; color: var(--text-primary); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .yt-meta { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
+        /* Main Content & Categories */
+        .main-wrapper { padding: 90px 20px 100px 20px; max-width: 1200px; margin: 0 auto; }
+        
+        .category-tabs { display: flex; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 5px; margin-bottom: 25px; }
+        .tab-btn { flex: 1; padding: 12px 0; background: transparent; border: none; color: #94a3b8; font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 700; border-radius: 8px; cursor: pointer; transition: 0.3s; letter-spacing: 1px; }
+        .tab-btn.active { background: #00e6b8; color: #020617; box-shadow: 0 0 15px rgba(0, 230, 184, 0.3); }
 
-        .empty-state { text-align: center; padding: 50px 20px; color: var(--text-muted); }
-        .empty-state i { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; }
+        /* Store Feed / App Grid */
+        .section-title { font-family: 'Orbitron', sans-serif; font-size: 18px; color: #ffffff; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .section-title i { color: #00e6b8; }
+        
+        .app-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        
+        .empty-state { grid-column: 1 / -1; text-align: center; padding: 50px 20px; background: rgba(15, 23, 42, 0.5); border-radius: 15px; border: 1px dashed rgba(255,255,255,0.1); }
+        .empty-state i { font-size: 40px; color: #334155; margin-bottom: 15px; }
+        .empty-state h3 { color: #94a3b8; font-family: 'Orbitron', sans-serif; font-size: 16px; }
 
-        /* Load More */
-        .load-more-container { text-align: center; margin: 20px 0 50px; width: 100%; display: none; }
-        .btn-load-more { background: var(--bg-input); border: 1px solid var(--primary); color: var(--primary); padding: 12px 30px; border-radius: 8px; font-family: var(--font-head); font-size: 1.1rem; cursor: pointer; transition: 0.3s; }
-        .btn-load-more:hover { background: var(--primary-dim); box-shadow: 0 0 15px var(--primary-dim); }
+        /* Floating Action Button (Upload) */
+        .fab-upload { position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px; background: #00e6b8; color: #020617; border: none; border-radius: 50%; font-size: 24px; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 10px 25px rgba(0, 230, 184, 0.4); z-index: 999; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .fab-upload:hover { transform: scale(1.1) rotate(90deg); background: #ffffff; box-shadow: 0 15px 35px rgba(255, 255, 255, 0.4); }
 
-        /* Custom Admin Password Modal */
-        .pass-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
-        .pass-modal { background: var(--bg-card); padding: 25px; border-radius: 15px; border: 1px solid var(--primary); text-align: center; width: 90%; max-width: 350px; box-shadow: 0 0 30px var(--primary-dim); }
-        .pass-modal h3 { color: var(--primary); font-family: var(--font-head); margin-bottom: 15px; }
-        .pass-modal input { width: 100%; background: var(--bg-input); border: 1px solid #333; color: #fff; padding: 12px; border-radius: 8px; margin-bottom: 20px; outline: none; font-size: 1rem; text-align: center; letter-spacing: 3px; }
-        .pass-modal input:focus { border-color: var(--primary); }
-        .pass-btns { display: flex; gap: 10px; }
-        .pass-btns button { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn-cancel { background: #333; color: #fff; }
-        .btn-verify { background: var(--primary); color: #000; }
-        .btn-verify:hover { box-shadow: 0 0 15px var(--primary-dim); }
-
-        /* Local Toast */
-        .local-toast { position: fixed; top: 80px; right: 20px; background: var(--bg-input); border-left: 4px solid var(--primary); padding: 15px 20px; border-radius: 8px; display: none; gap: 10px; align-items: center; color: #fff; z-index: 9999; box-shadow: 0 5px 15px rgba(0,0,0,0.5); font-weight: 500;}
     </style>
 </head>
 <body>
-    <div class="grid-overlay"></div>
-    <div class="glow-orb"></div>
 
-    <div class="local-toast" id="localToast">
-        <i class="fas fa-info-circle"></i> <span id="localToastMsg">Message</span>
-    </div>
-
-    <header class="header">
-        <div class="header-left">
-            <button class="menu-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-            <span class="brand">MVX STORE</span>
-        </div>
-        <div class="header-right">
-            <button class="search-btn" onclick="toggleSearch()"><i class="fas fa-search"></i></button>
-        </div>
-    </header>
-
-    <div class="search-container" id="searchContainer">
-        <input type="text" id="searchInput" class="search-box" placeholder="Search apps, games, tools..." onkeyup="handleSearch()">
-    </div>
-
-    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
-    <div class="sidebar" id="sidebar">
-        <i class="fas fa-times close-btn" onclick="toggleSidebar()"></i>
-        <div class="sidebar-logo">MVX SYSTEM</div>
-        
-        <button class="login-redirect-btn" onclick="window.location.href='user-login.html'">
-            <i class="fas fa-user-circle"></i> <span id="sidebarUserText">LOGIN / SETTINGS</span>
-        </button>
-
-        <div class="sidebar-menu" style="margin-top: 30px;">
-            <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 10px;">COMMUNITY</p>
-            <a href="feedback.html"><i class="fas fa-comments" style="color: #00e6b8;"></i> Community Feedback</a>
-
-            <hr style="border-color: #333; margin: 25px 0 15px;">
-            
-            <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 10px;">MOD & ADMIN PANELS</p>
-            
-            <a onclick="checkLoginAndGoFree()"><i class="fas fa-gamepad" style="color: #00ccff;"></i> FREE PANELS (Lib/Lua/TM)</a>
-            
-            <a onclick="openPassModal('owner-admin.html')"><i class="fas fa-crown" style="color: #ffd700;"></i> OWNER MASTER PANEL</a>
-        </div>
-    </div>
-
-    <div class="pass-modal-overlay" id="passModalOverlay">
-        <div class="pass-modal">
-            <h3><i class="fas fa-shield-alt"></i> ADMIN ACCESS</h3>
-            <input type="password" id="adminPassInput" placeholder="••••••" autocomplete="off">
-            <div class="pass-btns">
-                <button class="btn-cancel" onclick="closePassModal()">Cancel</button>
-                <button class="btn-verify" onclick="verifyAdminPass()">Authorize</button>
+    <nav class="top-navbar">
+        <div class="nav-left">
+            <i class="fas fa-bars menu-toggle" id="openMenuBtn"></i>
+            <div class="store-brand">
+                <h1 id="globalStoreTitle">MVX <span>STORE</span></h1>
+                <small id="globalStoreSubtitle">PREMIUM GATEWAY</small>
             </div>
         </div>
+        <div class="nav-right">
+            <div class="user-wallet" title="Your Coins">
+                <i class="fas fa-coins"></i>
+                <span id="navCoinDisplay">0</span>
+            </div>
+            <div class="noti-bell" id="notificationBtn">
+                <i class="fas fa-bell"></i>
+                <div class="noti-dot" id="notiAlert"></div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="sidebar-menu" id="sidebarMenu">
+        <div class="sidebar-header">
+            <i class="fas fa-times close-sidebar" id="closeMenuBtn"></i>
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=MVX" alt="User" class="profile-avatar" id="sidebarAvatar">
+            <h2 class="profile-name" id="sidebarName">Loading User...</h2>
+            <div class="profile-uid" id="sidebarUID">UID: FETCHING...</div>
+            <div class="profile-badge" id="sidebarBadge"><i class="fas fa-check-circle"></i> Verified User</div>
+        </div>
+        
+        <div class="sidebar-links">
+            <a href="#" class="side-link"><i class="fas fa-user-circle"></i> My Profile</a>
+            <a href="#" class="side-link"><i class="fas fa-history"></i> Download History</a>
+            <a href="#" class="side-link"><i class="fas fa-heart"></i> Wishlist</a>
+            <a href="#" class="side-link"><i class="fas fa-wallet"></i> Coin Wallet</a>
+            
+            <div class="sidebar-divider"></div>
+            
+            <a href="#" class="side-link"><i class="fas fa-paint-brush"></i> Theme: Dark Mode</a>
+            <a href="#" class="side-link"><i class="fas fa-language"></i> Language: English</a>
+            <a href="#" class="side-link" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Secure Logout</a>
+        </div>
+
+        <div class="admin-section">
+            <a href="admin.html" class="side-link admin-link" id="navAdminPanel">
+                <i class="fas fa-shield-check"></i> Admin Panel
+            </a>
+            <a href="owner.html" class="side-link owner-link" id="navOwnerPanel">
+                <i class="fas fa-crown"></i> Owner Panel
+            </a>
+        </div>
     </div>
 
-    <div class="main-tabs">
-        <button class="tab-btn active" data-type="Free" onclick="setAccessType('Free')">🔓 FREE</button>
-        <button class="tab-btn" data-type="Premium" onclick="setAccessType('Premium')">👑 PREMIUM</button>
-        <button class="tab-btn" data-type="Paid" onclick="setAccessType('Paid')">🛒 PAID</button>
-    </div>
+    <main class="main-wrapper">
+        
+        <div class="category-tabs">
+            <button class="tab-btn active" data-target="free">FREE APPS</button>
+            <button class="tab-btn" data-target="paid">PAID APPS</button>
+        </div>
 
-    <div class="sub-categories" id="subCategories">
-        <button class="cat-pill active" onclick="setCategory('All')">All</button>
-        <button class="cat-pill" onclick="setCategory('Free Fire')">Free Fire</button>
-        <button class="cat-pill" onclick="setCategory('PUBG')">PUBG</button>
-        <button class="cat-pill" onclick="setCategory('Blood Strike')">Blood Strike</button>
-        <button class="cat-pill" onclick="setCategory('Tools')">Tools</button>
-        <button class="cat-pill" onclick="setCategory('Other Game')">Others</button>
-    </div>
+        <h2 class="section-title"><i class="fas fa-fire"></i> Trending Now</h2>
+        <div class="app-grid" id="trendingGrid">
+            <div class="empty-state">
+                <i class="fas fa-satellite-dish"></i>
+                <h3>Fetching Trending Data...</h3>
+            </div>
+        </div>
 
-    <main class="feed-container" id="feedContainer">
-        <p style="text-align: center; color: gray; margin-top: 50px;"><i class="fas fa-circle-notch fa-spin"></i> Loading Data...</p>
+        <h2 class="section-title"><i class="fas fa-layer-group"></i> Store Feed</h2>
+        <div class="app-grid" id="mainFeedGrid">
+            <div class="empty-state">
+                <i class="fas fa-box-open"></i>
+                <h3>No Applications Found</h3>
+            </div>
+        </div>
+
     </main>
 
-    <div class="load-more-container" id="loadMoreContainer">
-        <button class="btn-load-more" onclick="loadMoreApps()">Load More Apps <i class="fas fa-angle-down"></i></button>
-    </div>
+    <button class="fab-upload" id="uploadBtn" title="Upload New App">
+        <i class="fas fa-plus"></i>
+    </button>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    
+    <script src="firebase-config.js"></script>
+    <script src="main.js"></script>
+    <script src="store-logic.js"></script>
 
     <script>
-        // Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyAS3UXXrio_-c9uPbHwpDuTVrP-p8d903w",
-            authDomain: "white-2k-17-v4.firebaseapp.com",
-            databaseURL: "https://white-2k-17-v4-default-rtdb.firebaseio.com",
-            projectId: "white-2k-17-v4",
-            storageBucket: "white-2k-17-v4.firebasestorage.app",
-            messagingSenderId: "180909174928",
-            appId: "1:180909174928:android:148861a87d66c6980ca815"
-        };
-        
-        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
-        const database = firebase.database();
-        const auth = firebase.auth();
-        const DB_PATH = "MVX_VIP_SERVER_V5";
+        document.addEventListener('DOMContentLoaded', () => {
+            // Sidebar Controls
+            const sidebar = document.getElementById('sidebarMenu');
+            const overlay = document.getElementById('sidebarOverlay');
+            const openBtn = document.getElementById('openMenuBtn');
+            const closeBtn = document.getElementById('closeMenuBtn');
 
-        let allApps = [];
-        let currentAccess = "Free";
-        let currentCategory = "All";
-        let searchQuery = "";
-        let targetAdminUrl = ""; 
-        let currentLoggedUser = null;
-        let displayLimit = 10;
-
-        function showMessage(msg, type='success') {
-            const toast = document.getElementById('localToast');
-            document.getElementById('localToastMsg').innerText = msg;
-            toast.style.borderLeftColor = type === 'error' ? 'var(--danger)' : 'var(--primary)';
-            toast.style.display = 'flex';
-            setTimeout(() => { toast.style.display = 'none'; }, 3000);
-        }
-
-        // Exact format you asked for (e.g., 1 days ago)
-        function timeAgo(timestamp) {
-            if (!timestamp) return "";
-            const seconds = Math.floor((Date.now() - timestamp) / 1000);
-            
-            let interval = seconds / 86400; // Days
-            if (interval >= 1) return Math.floor(interval) + " days ago";
-            
-            interval = seconds / 3600; // Hours
-            if (interval >= 1) return Math.floor(interval) + " hours ago";
-            
-            interval = seconds / 60; // Mins
-            if (interval >= 1) return Math.floor(interval) + " mins ago";
-            
-            return "Just now";
-        }
-
-        auth.onAuthStateChanged((user) => {
-            currentLoggedUser = user;
-            if(user) {
-                document.getElementById('sidebarUserText').innerText = "MY PROFILE";
-            } else {
-                document.getElementById('sidebarUserText').innerText = "LOGIN / SETTINGS";
+            function toggleMenu() {
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
             }
-        });
 
-        // Directs to free-admin.html
-        function checkLoginAndGoFree() {
-            if(currentLoggedUser) {
-                window.location.href = 'free-admin.html';
-            } else {
-                showMessage('লগইন ছাড়া ফ্রি এডমিনে ঢোকা নিষেধ!', 'error');
-                setTimeout(() => { window.location.href = 'user-login.html?redirect=free-admin.html'; }, 2000);
-            }
-        }
+            openBtn.addEventListener('click', toggleMenu);
+            closeBtn.addEventListener('click', toggleMenu);
+            overlay.addEventListener('click', toggleMenu);
 
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
-            document.getElementById('overlay').classList.toggle('active');
-        }
+            // Tab Switching Logic
+            const tabs = document.querySelectorAll('.tab-btn');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    // Logic to filter store feed will connect to store-logic.js
+                    const filterType = tab.getAttribute('data-target');
+                    if(typeof window.filterStoreData === 'function') {
+                        window.filterStoreData(filterType);
+                    }
+                });
+            });
 
-        function toggleSearch() {
-            const box = document.getElementById('searchContainer');
-            box.style.display = box.style.display === 'block' ? 'none' : 'block';
-            if(box.style.display === 'block') document.getElementById('searchInput').focus();
-        }
+            // Role-Based UI Rendering (Reveals Admin/Owner links securely)
+            setTimeout(() => {
+                const userRole = sessionStorage.getItem('mvx_role') || 'user';
+                if(userRole === 'admin' || userRole === 'owner') {
+                    document.getElementById('navAdminPanel').style.display = 'flex';
+                }
+                if(userRole === 'owner') {
+                    document.getElementById('navOwnerPanel').style.display = 'flex';
+                }
+            }, 1000);
 
-        // Owner Login Check
-        function openPassModal(url) {
-            targetAdminUrl = url;
-            document.getElementById('passModalOverlay').style.display = 'flex';
-            document.getElementById('adminPassInput').value = '';
-            document.getElementById('adminPassInput').focus();
-            toggleSidebar(); 
-        }
-
-        function closePassModal() {
-            document.getElementById('passModalOverlay').style.display = 'none';
-        }
-
-        function verifyAdminPass() {
-            const pass = document.getElementById('adminPassInput').value;
-            if (pass === "121345") {
-                sessionStorage.setItem('mvx_admin_token', 'SECURE_AUTHORIZED');
-                window.location.href = targetAdminUrl;
-            } else {
-                showMessage("Incorrect Access Code!", "error");
-                document.getElementById('adminPassInput').value = '';
-            }
-        }
-
-        document.getElementById('adminPassInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') verifyAdminPass();
-        });
-
-        function setAccessType(type) {
-            currentAccess = type;
-            currentCategory = "All";
-            displayLimit = 10;
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`.tab-btn[data-type="${type}"]`).classList.add('active');
-            
-            document.getElementById('subCategories').style.display = 'flex';
-            document.querySelectorAll('.cat-pill').forEach(btn => btn.classList.remove('active'));
-            document.querySelector('.cat-pill').classList.add('active');
-            filterAndRender();
-        }
-
-        function setCategory(cat) {
-            currentCategory = cat;
-            displayLimit = 10;
-            document.querySelectorAll('.cat-pill').forEach(btn => {
-                btn.classList.remove('active');
-                if(btn.innerText.trim() === cat || (cat === 'Other Game' && btn.innerText.trim() === 'Others')) {
-                    btn.classList.add('active');
+            // Logout Function
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                if(confirm("Are you sure you want to securely logout?")) {
+                    sessionStorage.clear();
+                    if(typeof firebase !== 'undefined') {
+                        firebase.auth().signOut().then(() => {
+                            window.location.replace('login.html');
+                        });
+                    } else {
+                        window.location.replace('login.html');
+                    }
                 }
             });
-            filterAndRender();
-        }
 
-        function handleSearch() {
-            searchQuery = document.getElementById('searchInput').value.toLowerCase();
-            displayLimit = 10;
-            filterAndRender();
-        }
-
-        function goToDetails(appId) {
-            window.location.href = `details.html?id=${appId}`;
-        }
-
-        function loadMoreApps() {
-            displayLimit += 10;
-            filterAndRender();
-        }
-
-        // Firebase Fetch
-        database.ref(DB_PATH).on('value', (snap) => {
-            const data = snap.val();
-            if(!data) {
-                document.getElementById('feedContainer').innerHTML = `<div class="empty-state"><i class="fas fa-box-open"></i><h3>No Apps Available</h3></div>`;
-                return;
-            }
-
-            allApps = Object.entries(data)
-                .map(([key, val]) => ({ id: key, ...val, isHidden: val.isHidden || false }))
-                .filter(app => !app.isHidden)
-                .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0)); // Latest updated comes on top
-            
-            filterAndRender();
-        });
-
-        function filterAndRender() {
-            const feed = document.getElementById('feedContainer');
-            const loadMoreBtn = document.getElementById('loadMoreContainer');
-            feed.innerHTML = '';
-
-            let filtered = allApps.filter(app => app.accessType === currentAccess);
-            if(currentCategory !== "All") filtered = filtered.filter(app => app.gameCategory === currentCategory);
-            if(searchQuery) filtered = filtered.filter(app => app.appName.toLowerCase().includes(searchQuery));
-
-            if(filtered.length === 0) {
-                feed.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><h3>No Results Found</h3></div>`;
-                loadMoreBtn.style.display = 'none';
-                return;
-            }
-
-            const appsToShow = filtered.slice(0, displayLimit);
-            const now = Date.now();
-            const threeDaysInMs = 3 * 24 * 60 * 60 * 1000; // 3 Days
-
-            let htmlContent = '';
-            appsToShow.forEach(app => {
-                const bannerSrc = app.bannerBase64 || 'https://via.placeholder.com/800x450/1a1f2c/00e6b8?text=NO+BANNER';
-                const logoSrc = app.logoBase64 || 'https://cdn-icons-png.flaticon.com/512/564/564619.png';
-                
-                // Update Logic: Shows "UPDATE" badge only if marked updated AND within last 3 days
-                let updateBadge = '';
-                if (app.isUpdated && app.timestamp && (now - app.timestamp) <= threeDaysInMs) {
-                    updateBadge = `<div class="badge-update">UPDATE</div>`;
+            // Upload Button Logic
+            document.getElementById('uploadBtn').addEventListener('click', () => {
+                // This will trigger the modal/page located in store-logic.js
+                if(typeof window.openUploadDashboard === 'function') {
+                    window.openUploadDashboard();
+                } else {
+                    alert("Upload system is initializing. Please wait.");
                 }
-
-                // Meta String exactly as requested: Category • Version • Size • Time Ago
-                const timeString = app.timestamp ? ` • ${timeAgo(app.timestamp)}` : '';
-                const sizeString = app.size ? ` • ${app.size}` : '';
-                const versionString = app.version || 'v1.0';
-
-                htmlContent += `
-                    <div class="yt-card" onclick="goToDetails('${app.id}')">
-                        <div class="yt-banner-wrapper">
-                            ${updateBadge}
-                            <span class="type-badge ${app.accessType}">${app.accessType}</span>
-                            <img src="${bannerSrc}" class="yt-banner" loading="lazy">
-                        </div>
-                        <div class="yt-info">
-                            <img src="${logoSrc}" class="yt-logo" loading="lazy">
-                            <div class="yt-text">
-                                <h3 class="yt-title">${app.appName}</h3>
-                                <div class="yt-meta">
-                                    ${app.gameCategory} • ${versionString}${sizeString}${timeString}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
             });
-            
-            feed.innerHTML = htmlContent;
-
-            if (filtered.length > displayLimit) {
-                loadMoreBtn.style.display = 'block';
-            } else {
-                loadMoreBtn.style.display = 'none';
-            }
-        }
-        
-        document.getElementById('subCategories').style.display = 'flex';
+        });
     </script>
 </body>
 </html>
