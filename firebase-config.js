@@ -2,7 +2,6 @@
    MVX SYSTEM V5.5 - CORE FIREBASE & AUTHENTICATION ENGINE
    ========================================================================== */
 
-// ১. ফায়ারবেস কনফিগারেশন (আপনার আসল API Key সহ)
 const firebaseConfig = {
     apiKey: "AIzaSyAS3UXXrio_-c9uPbHwpDuTVrP-p8d903w",
     authDomain: "white-2k-17-v4.firebaseapp.com",
@@ -13,7 +12,6 @@ const firebaseConfig = {
     appId: "1:180909174928:android:148861a87d66c6980ca815"
 };
 
-// ফায়ারবেস ইনিশিয়ালাইজেশন
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
@@ -21,18 +19,16 @@ const auth = firebase.auth();
 const db = firebase.database();
 
 /* ==========================================================================
-   ২. গ্লোবাল লগইন চেকার ও অটো-রিডাইরেক্ট
+   1. GLOBAL LOGIN CHECKER & REDIRECT
    ========================================================================== */
 auth.onAuthStateChanged((user) => {
     const currentPage = window.location.pathname.split("/").pop();
     
     if (!user) {
-        // লগইন না থাকলে লগইন পেজে পাঠাবে
         if (currentPage !== 'login.html' && currentPage !== '') {
             window.location.replace('login.html');
         }
     } else {
-        // লগইন থাকলে মেইন স্টোরে পাঠাবে
         if (currentPage === 'login.html' || currentPage === '') {
             processUserEntry(user);
         }
@@ -40,24 +36,22 @@ auth.onAuthStateChanged((user) => {
 });
 
 /* ==========================================================================
-   ৩. রোল বাইপাস সিস্টেম (অ্যাডমিন এবং মাস্টার ওনার এক্সেস)
+   2. MASTER OWNER ROLE DEFINITION (NO NORMAL ADMINS)
    ========================================================================== */
-const MASTER_OWNER = "sktausif771@gmail.com";
-
-const SYSTEM_ADMINS = [
+const MASTER_OWNERS = [
+    "sktausif771@gmail.com",
     "sktausif07ff@gmail.com",
     "sktausifhhh@gmail.com",
     "white2k177@gmail.com"
 ];
 
 function determineUserRole(email) {
-    if (email === MASTER_OWNER) return 'owner';
-    if (SYSTEM_ADMINS.includes(email)) return 'admin';
-    return 'user';
+    if (MASTER_OWNERS.includes(email)) return 'owner';
+    return 'user'; // সাধারণ ইউজার
 }
 
 /* ==========================================================================
-   ৪. মেইন গুগল লগইন প্রোটোকল (পপ-আপ মেথড)
+   3. GOOGLE LOGIN PROTOCOL (POPUP METHOD)
    ========================================================================== */
 window.startGoogleLogin = function() {
     const provider = new firebase.auth.GoogleAuthProvider();
@@ -72,7 +66,7 @@ window.startGoogleLogin = function() {
         if(loader) loader.style.display = 'none';
         const statusMsg = document.getElementById('status-message');
         if(statusMsg) {
-            statusMsg.innerText = "লগইন বাতিল বা এরর: " + error.message;
+            statusMsg.innerText = "Login Cancelled or Error: " + error.message;
             statusMsg.className = "";
         }
         console.error("Login Error Details: ", error);
@@ -80,13 +74,13 @@ window.startGoogleLogin = function() {
 };
 
 /* ==========================================================================
-   ৫. ইউজার ডাটাবেস এন্ট্রি ও জিমেইল ছবি সিঙ্ক (Gmail Profile Pic Fetch)
+   4. USER DATABASE ENTRY & GMAIL AVATAR SYNC
    ========================================================================== */
 function processUserEntry(user) {
     const userRef = db.ref('users/' + user.uid);
     const role = determineUserRole(user.email);
     
-    // গুগল থেকে অরিজিনাল এইচডি ছবি বের করার ট্রিক (s96-c কে s400-c তে কনভার্ট করা)
+    // Fetch high-res Google profile image (s96-c to s400-c)
     let googlePhoto = user.photoURL;
     if (googlePhoto && googlePhoto.includes('=s96-c')) {
         googlePhoto = googlePhoto.replace('=s96-c', '=s400-c');
@@ -94,7 +88,7 @@ function processUserEntry(user) {
 
     userRef.once('value').then((snapshot) => {
         if (!snapshot.exists()) {
-            // নতুন ইউজার এন্ট্রি
+            // New User Registration
             userRef.set({
                 uid: user.uid,
                 name: user.displayName,
@@ -102,27 +96,28 @@ function processUserEntry(user) {
                 avatarUrl: googlePhoto || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.displayName}`,
                 role: role,
                 coins: 0,
-                followers: 0,       // নতুন ফলোয়ার সিস্টেম
+                followers: 0,
                 following: 0,
                 uploadCount: 0,
                 status: 'active',
+                language: 'en', // Default language setting
                 joinedAt: firebase.database.ServerValue.TIMESTAMP
             }).then(() => redirectBasedOnRole(role));
         } else {
-            // পুরোনো ইউজার হলে শুধু টাইম এবং রোল আপডেট করবে
+            // Existing User Update
             let updates = { 
                 role: role, 
                 lastLogin: firebase.database.ServerValue.TIMESTAMP 
             };
             
-            // যদি ইউজারের কোনো ছবি সেভ না থাকে, তাহলে গুগলের ছবিটা বসিয়ে দেবে
+            // Sync image if not present
             if (!snapshot.val().avatarUrl && googlePhoto) {
                 updates.avatarUrl = googlePhoto;
             }
 
             userRef.update(updates).then(() => {
                 if(snapshot.val().status === 'blocked') {
-                    alert("⚠️ আপনার অ্যাকাউন্ট অ্যাডমিন দ্বারা ব্যান করা হয়েছে!");
+                    alert("⚠️ Your account has been suspended by the Master Administrator.");
                     auth.signOut();
                     window.location.reload();
                 } else {
@@ -134,7 +129,7 @@ function processUserEntry(user) {
 }
 
 /* ==========================================================================
-   ৬. সিকিউর রাউটিং (সবাই সরাসরি হোমপেজে যাবে)
+   5. SECURE ROUTING
    ========================================================================== */
 function redirectBasedOnRole(role) {
     sessionStorage.setItem('mvx_session', 'ACTIVE');

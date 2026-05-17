@@ -1,11 +1,12 @@
 /* ==========================================================================
-   MVX STORE V5.5 - CORE RUNTIME INTERACTIONS, SMART SEARCH & REDEEM ENGINE
+   MVX STORE V5.5 - MAIN SYSTEM ARCHITECTURE, HIDDEN ENCRYPTED GATE & LOCALES
    ========================================================================== */
 
+let userProfile = null; // গ্লোবাল ইউজার ক্যাশ অবজেক্ট
+
 document.addEventListener('DOMContentLoaded', () => {
-    // ফায়ারবেস ডিপেন্ডেন্সি ভেরিফিকেশন
     if (typeof firebase === 'undefined') {
-        console.error("Critical Failure: Firebase SDK not found in main.js pipeline.");
+        console.error("Critical Runtime Failure: Firebase Core SDK Missing inside main.js pipeline.");
         return;
     }
 
@@ -13,12 +14,157 @@ document.addEventListener('DOMContentLoaded', () => {
     const auth = firebase.auth();
 
     // ==========================================================================
-    // ১. ডার্ক / লাইট থিম কন্ট্রোল ইঞ্জিন (Theme Switcher Module)
+    // ১. ডাইনামিক রিয়েলটাইম ল্যাংগুয়েজ ডিকশনারি (A-Z Translation Engine)
     // ==========================================================================
+    const languageDictionary = {
+        en: {
+            storeTitle: "MVX STORE",
+            loadingStore: "Scanning Database Infrastructure...",
+            catAll: "All Items",
+            catTrending: "Trending Now",
+            catPremium: "Premium Apps",
+            searchTitle: "Smart Search Engine",
+            searchPrompt: "Type any keyword or tag to fetch application data",
+            searchInput: "Search apps, files, mods or tags...",
+            notiTitle: "System Notifications",
+            clearScreen: "Clear Screen",
+            followers: "Followers: ",
+            following: "Following: ",
+            claimTitle: "Claim Premium Gift Code",
+            claimInput: "Enter Redeem Voucher Code",
+            btnClaim: "CLAIM",
+            uploadApp: "Publish Package File",
+            coinBalance: "MVX Coin Balance",
+            signOut: "Secure Sign Out",
+            navFiles: "Files",
+            navModApp: "Mod App",
+            navSearch: "Search",
+            navYou: "You",
+            passPrompt: "Enter Access Token Pin Key Sequence"
+        },
+        bn: {
+            storeTitle: "এমভিএক্স স্টোর",
+            loadingStore: "ডাটাবেজ কানেকশন চেক করা হচ্ছে...",
+            catAll: "সব ফাইল",
+            catTrending: "ট্রেন্ডিং ফাইল",
+            catPremium: "প্রিমিয়াম অ্যাপস",
+            searchTitle: "স্মার্ট সার্চ ইঞ্জিন",
+            searchPrompt: "অ্যাপের নাম অথবা ট্যাগ লিখে সার্চ করুন",
+            searchInput: "অ্যাপস, ফাইল, মড বা ট্যাগ খুঁজুন...",
+            notiTitle: "সিস্টেম নোটিফিকেশন",
+            clearScreen: "স্ক্রিন ক্লিয়ার করুন",
+            followers: "অনুসারী: ",
+            following: "অনুগমন: ",
+            claimTitle: "প্রিমিয়াম গিফট কোড ক্লেইম করুন",
+            claimInput: "রিডিম ভাউচার কোড দিন",
+            btnClaim: "ক্লেইম",
+            uploadApp: "নতুন ফাইল আপলোড করুন",
+            coinBalance: "এমভিএক্স কয়েন ব্যালেন্স",
+            signOut: "নিরাপদ লগআউট",
+            navFiles: "ফাইলস",
+            navModApp: "মড অ্যাপ",
+            navSearch: "সার্চ",
+            navYou: "প্রোফাইল",
+            passPrompt: "অ্যাডমিন প্যানেল সিকিউরিটি পিন কোড দিন"
+        }
+    };
+
+    // সিস্টেম ল্যাংগুয়েজ রেন্ডারিং ফাংশন
+    window.applySystemLanguageLocalization = function(lang) {
+        localStorage.setItem('mvx_lang', lang);
+        const dict = languageDictionary[lang];
+
+        // UI টেক্সট রিপ্লেসমেন্ট লুপ
+        const mapping = {
+            'lblStoreTitle': dict.storeTitle,
+            'lblLoadingStore': dict.loadingStore,
+            'btnCatAll': dict.catAll,
+            'btnCatTrending': dict.catTrending,
+            'btnCatPremium': dict.catPremium,
+            'lblSearchTitle': dict.searchTitle,
+            'lblSearchPrompt': `<h3>${dict.searchPrompt}</h3>`,
+            'lblNotiTitle': `<i class="fas fa-envelope-open-text" style="color: var(--primary);"></i> ${dict.notiTitle}`,
+            'btnClearScreen': dict.clearScreen,
+            'lblClaimTitle': `<i class="fas fa-gift" style="color: var(--primary);"></i> ${dict.claimTitle}`,
+            'btnClaimCode': dict.btnClaim,
+            'lblUploadApp': dict.uploadApp,
+            'lblCoinBalance': dict.coinBalance,
+            'lblSignOut': dict.signOut,
+            'navFiles': dict.navFiles,
+            'navModApp': dict.navModApp,
+            'navSearch': dict.navSearch,
+            'navYou': dict.navYou,
+            'lblPassPrompt': dict.passPrompt
+        };
+
+        for (const [id, value] of Object.entries(mapping)) {
+            const el = document.getElementById(id);
+            if (el) {
+                if (id === 'lblSearchPrompt' || id === 'lblNotiTitle' || id === 'lblClaimTitle') {
+                    el.innerHTML = value;
+                } else {
+                    el.innerText = value;
+                }
+            }
+        }
+
+        // ইনপুট প্লেসহোল্ডার ডাইনামিক চেঞ্জ
+        const sInput = document.getElementById('storeSearchInput');
+        if(sInput) sInput.placeholder = dict.searchInput;
+        const rInput = document.getElementById('redeemInputCode');
+        if(rInput) rInput.placeholder = dict.claimInput;
+
+        const langLabel = document.getElementById('currentLanguageLabel');
+        if(langLabel) langLabel.innerText = (lang === 'en') ? "English" : "বাংলা";
+    };
+
+    // ল্যাংগুয়েজ টগল বাটন ফাংশন
+    window.toggleSystemLanguageConfig = function() {
+        let currentLang = localStorage.getItem('mvx_lang') || 'en';
+        let newLang = (currentLang === 'en') ? 'bn' : 'en';
+        applySystemLanguageLocalization(newLang);
+    };
+
+    // সেভ থাকা ল্যাংগুয়েজ ইনিশিয়াল লোড
+    let savedLang = localStorage.getItem('mvx_lang') || 'en';
+    applySystemLanguageLocalization(savedLang);
+
+    /* ==========================================================================
+       ২. সিকিউর হিডেন পাসওয়ার্ড গেটওয়ে সিস্টেম (Profile Picture Click Gate)
+       ========================================================================== */
+    const HIDDEN_MASTER_PASSKEY = "ADMIN@MVX#2026"; // আপনার গোপন সিকিউরিটি মাস্টার পাসওয়ার্ড
+
+    window.triggerHiddenPasswordGate = function() {
+        const gateModal = document.getElementById('hiddenGateModal');
+        const passInput = document.getElementById('gatePasswordInput');
+        if (gateModal) {
+            if(passInput) passInput.value = ''; // আগের ডাটা রিসেট
+            gateModal.classList.add('active');
+        }
+    };
+
+    window.verifyHiddenGatePasswordCredentials = function() {
+        const passInput = document.getElementById('gatePasswordInput');
+        if (!passInput) return;
+
+        const inputKey = passInput.value.trim();
+
+        if (inputKey === HIDDEN_MASTER_PASSKEY) {
+            // পাসওয়ার্ড ম্যাচ করলে মডাল বন্ধ হবে এবং সরাসরি প্যানেলে ঢুকে যাবে
+            document.getElementById('hiddenGateModal').classList.remove('active');
+            window.location.href = 'admin.html';
+        } else {
+            alert("❌ SECURITY VIOLATION: Unauthorized Key Sequence Intercepted.");
+            passInput.value = '';
+        }
+    };
+
+    /* ==========================================================================
+       ৩. ডার্ক / লাইট থিম মোড সুইচ মডিউল
+       ========================================================================== */
     const themeBtn = document.getElementById('themeToggleBtn');
     const themeLabel = document.getElementById('currentThemeLabel');
     
-    // লোকাল স্টোরেজ থেকে আগের সেভ করা থিম লোড করা
     let savedTheme = localStorage.getItem('mvx_theme') || 'dark';
     document.documentElement.setAttribute('data-theme', savedTheme);
     updateThemeUIElements(savedTheme);
@@ -29,30 +175,50 @@ document.addEventListener('DOMContentLoaded', () => {
             let newTheme = (activeTheme === 'dark') ? 'light' : 'dark';
             
             document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('mvx_theme', newTheme); // মেমোরিতে সেভ রাখা
+            localStorage.setItem('mvx_theme', newTheme);
             updateThemeUIElements(newTheme);
         });
     }
 
     function updateThemeUIElements(theme) {
         if (!themeLabel) return;
-        if (theme === 'dark') {
-            themeLabel.innerText = "Dark Mode";
-            themeLabel.style.color = "var(--primary)";
-        } else {
-            themeLabel.innerText = "Light Mode";
-            themeLabel.style.color = "#00c49a";
-        }
+        themeLabel.innerText = (theme === 'dark') ? "Dark Mode" : "Light Mode";
     }
 
-    // ==========================================================================
-    // ২. এডভান্সড পাওয়ারফুল স্মার্ট সার্চ ইঞ্জিন (Fuzzy & Tag Matching Search)
-    // ==========================================================================
+    /* ==========================================================================
+       ৪. ইউজার সেশন রিয়েলটাইম লিসেনার ও ইউআই সিঙ্ক
+       ========================================================================== */
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            db.ref('users/' + user.uid).on('value', (snapshot) => {
+                if (!snapshot.exists()) return;
+                
+                userProfile = snapshot.val();
+
+                // মেইন হেডার এবং প্রোফাইল ট্যাবে জিমেইলের লোগো ইমেজ সিঙ্ক
+                const topProfilePic = document.getElementById('topProfileBtn');
+                const youTabAvatar = document.getElementById('youTabAvatar');
+                
+                if (topProfilePic) topProfilePic.src = userProfile.avatarUrl;
+                if (youTabAvatar) youTabAvatar.src = userProfile.avatarUrl;
+
+                // প্রোফাইল টেক্সট ডাটা রেন্ডার
+                if (document.getElementById('youTabName')) document.getElementById('youTabName').innerText = userProfile.name;
+                if (document.getElementById('youTabEmail')) document.getElementById('youTabEmail').innerText = userProfile.email;
+                if (document.getElementById('navCoinDisplay')) document.getElementById('navCoinDisplay').innerText = userProfile.coins || 0;
+                if (document.getElementById('userFollowersCount')) document.getElementById('userFollowersCount').innerText = userProfile.followers || 0;
+                if (document.getElementById('userFollowingCount')) document.getElementById('userFollowingCount').innerText = userProfile.following || 0;
+            });
+        }
+    });
+
+    /* ==========================================================================
+       ৫. রিয়েলটাইম স্মার্ট সার্চ কোড লজিক
+       ========================================================================== */
     const searchInput = document.getElementById('storeSearchInput');
     const searchGrid = document.getElementById('searchResultGrid');
 
     if (searchInput) {
-        // ইউজার টাইপ করার সাথে সাথে সার্চ ট্রিগার হবে (রিয়েলটাইম লিসেনার)
         searchInput.addEventListener('input', (e) => {
             const query = e.target.value.trim().toLowerCase();
             executeSmartSearchProtocol(query);
@@ -61,24 +227,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function executeSmartSearchProtocol(query) {
         if (!searchGrid) return;
+        let activeLang = localStorage.getItem('mvx_lang') || 'en';
 
-        // ইনপুট বক্স ফাঁকা থাকলে ডিফল্ট মেসেজ দেখাবে
         if (query.length === 0) {
             searchGrid.innerHTML = `
                 <div style="text-align: center; padding: 40px; grid-column: 1/-1; color: var(--text-secondary);">
                     <i class="fas fa-search-plus" style="font-size: 40px; margin-bottom: 15px; color: var(--border-color);"></i>
-                    <h3>Type any keyword or tag to fetch application data</h3>
+                    <h3>${languageDictionary[activeLang].searchPrompt}</h3>
                 </div>
             `;
             return;
         }
 
-        // সার্চ লোডার অ্যানিমেশন
         searchGrid.innerHTML = `<div style="text-align:center; padding: 30px; grid-column: 1/-1;"><i class="fas fa-spinner fa-spin" style="font-size:26px; color:var(--primary);"></i></div>`;
 
         db.ref('store_apps').orderByChild('status').equalTo('approved').once('value').then((snapshot) => {
             if (!snapshot.exists()) {
-                searchGrid.innerHTML = `<div style="text-align:center; padding:30px; grid-column:1/-1; color:var(--text-secondary);">No apps available in store database.</div>`;
+                searchGrid.innerHTML = `<div style="text-align:center; padding:30px; grid-column:1/-1; color:var(--text-secondary);">No items match query inside catalog nodes.</div>`;
                 return;
             }
 
@@ -89,22 +254,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 const app = child.val();
                 const appTitle = app.appName.toLowerCase();
                 const appDesc = (app.description || "").toLowerCase();
-                const appTags = app.tags || []; // আপলোডের সময় দেওয়া ট্যাগের অ্যারে
+                const appTags = app.tags || [];
 
-                // স্মার্ট ম্যাচিং লজিক (টাইটেল, ডেসক্রিপশন বা ট্যাগের ভেতর কীওয়ার্ড আছে কি না চেক করা)
                 let isMatch = appTitle.includes(query) || appDesc.includes(query);
                 
-                // যদি ডিরেক্ট ম্যাচ না হয়, তবে ট্যাগ লিস্টের প্রতিটি আইটেম চেক করবে
                 if (!isMatch) {
                     for (let i = 0; i < appTags.length; i++) {
-                        if (appTags[i].toLowerCase().includes(query) || query.includes(appTags[i].toLowerCase())) {
+                        if (appTags[i].toLowerCase().includes(query)) {
                             isMatch = true;
                             break;
                         }
                     }
                 }
 
-                // স্পেশাল স্পেস-রিমুভার ম্যাচিং (যেমন: cap cut কে capcut লিখে সার্চ করলেও ম্যাচ করবে)
                 const flatTitle = appTitle.replace(/\s+/g, '');
                 const flatQuery = query.replace(/\s+/g, '');
                 if (!isMatch && flatTitle.includes(flatQuery)) {
@@ -146,84 +308,68 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ==========================================================================
-    // ৩. মাস্টার রিডিম কোড ইঞ্জিন (Premium Gift Voucher Claim Protocol)
-    // ==========================================================================
+    /* ==========================================================================
+       ৬. মাস্টার রিডিম কোড ইঞ্জিন ক্লেইম প্রসেস
+       ========================================================================== */
     window.executeRedeemProtocol = function() {
         const codeInput = document.getElementById('redeemInputCode');
         const statusTxt = document.getElementById('redeemStatusMsg');
         
         if (!codeInput || !statusTxt) return;
-        
-        const rawCode = codeInput.value.trim().toUpperCase(); // কোড সবসময় বড় হাতের হবে
+        const rawCode = codeInput.value.trim().toUpperCase();
 
         if (rawCode.length === 0) {
-            statusTxt.innerText = "Please enter a voucher code first.";
+            statusTxt.innerText = "Please input a valid coupon code sequence.";
             statusTxt.style.color = "var(--danger)";
             return;
         }
 
-        statusTxt.innerText = "Connecting to Secure Bank Gateway...";
+        statusTxt.innerText = "Connecting Gateway Authentication Banks...";
         statusTxt.style.color = "var(--warning)";
 
         const user = auth.currentUser;
-        if (!user) {
-            statusTxt.innerText = "Session Error. Re-login required.";
-            statusTxt.style.color = "var(--danger)";
-            return;
-        }
-
         const redeemRef = db.ref('redeem_codes/' + rawCode);
         
         redeemRef.once('value').then((snapshot) => {
             if (!snapshot.exists()) {
-                statusTxt.innerText = "❌ Invalid or Expired Redeem Code!";
+                statusTxt.innerText = "❌ Invalid or Expired Redeem Token!";
                 statusTxt.style.color = "var(--danger)";
                 return;
             }
 
             const codeData = snapshot.val();
             
-            // ক্লেইম লিমিট চেক করা (কোডটি অলরেডি ম্যাক্সিমাম ইউজার ইউজ করে ফেলেছে কি না)
             if (codeData.currentClaims >= codeData.maxClaims) {
-                statusTxt.innerText = "⚠️ This voucher code has reached its usage limit.";
+                statusTxt.innerText = "⚠️ Code has reached maximum claim saturation threshold.";
                 statusTxt.style.color = "var(--danger)";
                 return;
             }
 
-            // এই নির্দিষ্ট ইউজার অলরেডি ক্লেইম করেছে কি না চেক করা (Duplicate Preventer)
             if (codeData.claimed_users && codeData.claimed_users[user.uid]) {
-                statusTxt.innerText = "🚫 You have already claimed this voucher code once!";
+                statusTxt.innerText = "🚫 Token node usage redundancy constraint: Already claimed once!";
                 statusTxt.style.color = "var(--danger)";
                 return;
             }
 
-            // যদি কোড ভ্যালিড হয়, তবে রিওয়ার্ড প্রসেস করা হবে
             db.ref('users/' + user.uid).once('value').then((userSnap) => {
                 if (!userSnap.exists()) return;
-                
                 const userData = userSnap.val();
                 let rewardUpdate = {};
 
                 if (codeData.rewardType === 'coins') {
-                    // কয়েন রিওয়ার্ড প্রসেসিং
                     const bonusCoins = parseInt(codeData.rewardValue) || 0;
                     const currentBalance = parseInt(userData.coins) || 0;
                     rewardUpdate['coins'] = currentBalance + bonusCoins;
-                    statusTxt.innerText = `🎉 Success! +${bonusCoins} MVX Coins added to your wallet!`;
+                    statusTxt.innerText = `🎉 Wallet Successfully Allocated +${bonusCoins} MVX Coins!`;
                 } else if (codeData.rewardType === 'premium_bypass') {
-                    // স্পেসিফিক প্রিমিয়াম অ্যাপ ডিরেক্ট আনলক করার রিওয়ার্ড
                     const targetAppId = codeData.rewardValue;
                     rewardUpdate[`unlocked_apps/${targetAppId}`] = true;
-                    statusTxt.innerText = "🚀 Access Granted! Premium Application unlocked for your account.";
+                    statusTxt.innerText = "🚀 Package Access Bypass Authentication Node Cleared.";
                 }
 
                 statusTxt.style.color = "var(--success)";
-
-                // ১. ইউজারের ওয়ালেটে রিওয়ার্ড আপডেট
                 db.ref('users/' + user.uid).update(rewardUpdate);
 
-                // ২. রিডিম কোডের ক্লেইম হিস্ট্রি এবং কাউন্টার আপডেট করা
                 let codeUpdates = {};
                 codeUpdates['currentClaims'] = (codeData.currentClaims || 0) + 1;
                 codeUpdates[`claimed_users/${user.uid}`] = {
@@ -232,85 +378,44 @@ document.addEventListener('DOMContentLoaded', () => {
                     timestamp: firebase.database.ServerValue.TIMESTAMP
                 };
                 redeemRef.update(codeUpdates);
-
-                // ইনপুট বক্স ক্লিয়ার করা
                 codeInput.value = '';
             });
         }).catch((err) => {
-            statusTxt.innerText = "System error during validation: " + err.message;
+            statusTxt.innerText = "Sync failure token mismatch: " + err.message;
             statusTxt.style.color = "var(--danger)";
         });
     };
 
-    // ==========================================================================
-    // ৪. প্রোফাইল এবং ওনার লোগো মেটাডাটা আপডেট সাবমিশন
-    // ==========================================================================
+    // প্রোফাইল এডিট মেটাডাটা সাবমিট
     window.saveProfileChanges = function() {
         const user = auth.currentUser;
         if (!user || !userProfile) return;
 
         const editNameInput = document.getElementById('editNameInput');
         const editAvatarInput = document.getElementById('editAvatarInput');
-        const ownerLogoInput = document.getElementById('ownerLogoInput');
-
         const newName = editNameInput ? editNameInput.value.trim() : "";
         const newAvatar = editAvatarInput ? editAvatarInput.value.trim() : "";
 
         if (!newName) {
-            alert("⚠️ User display name is mandatory.");
+            alert("⚠️ Display identity parameter missing.");
             return;
         }
 
-        const saveBtn = document.querySelector('#profileEditModal .play-btn');
-        if (saveBtn) {
-            saveBtn.innerText = "SYNCHRONIZING...";
-            saveBtn.disabled = true;
-        }
-
-        let userUpdates = {
+        db.ref('users/' + user.uid).update({
             name: newName,
             avatarUrl: newAvatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${newName}`
-        };
-
-        // ডাটাবেজে প্রোফাইল রাইট করা
-        db.ref('users/' + user.uid).update(userUpdates).then(() => {
-            // যদি ইউজার ওনার হয় এবং লোগো ইনপুট চেঞ্জ করে, তবে গ্লোবাল লোগো আপডেট হবে
-            if (userProfile.role === 'owner' && ownerLogoInput && ownerLogoInput.value.trim() !== "") {
-                if (typeof window.processOwnerStoreLogoChange === 'function') {
-                    window.processOwnerStoreLogoChange(ownerLogoInput.value.trim());
-                }
-            }
-
-            if (saveBtn) {
-                saveBtn.innerText = "COMMIT METADATA CHANGES";
-                saveBtn.disabled = false;
-            }
-            
-            // মডাল ক্লোজ করা
+        }).then(() => {
             const modal = document.getElementById('profileEditModal');
             if (modal) modal.classList.remove('active');
-            
-            alert("Database synchronized. Metadata update complete!");
-        }).catch((err) => {
-            if (saveBtn) {
-                saveBtn.innerText = "COMMIT METADATA CHANGES";
-                saveBtn.disabled = false;
-            }
-            alert("Sync Failed: " + err.message);
+            alert("Database synchronized profile changes complete!");
         });
     };
 
-    // ==========================================================================
-    // ৫. সিকিউর লগআউট ইঞ্জিন
-    // ==========================================================================
+    // সিকিউর সাইন আউট
     window.secureLogout = function() {
-        if (confirm("Execute absolute sign-out protocol? All active local tokens will clear.")) {
+        if (confirm("Clear local cache and close active storage network pipeline?")) {
             sessionStorage.clear();
-            auth.signOut().then(() => {
-                window.location.replace('login.html');
-            }).catch(() => {
-                window.location.replace('login.html');
-            });
+            auth.signOut().then(() => window.location.replace('login.html'));
         }
     };
 });

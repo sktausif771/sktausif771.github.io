@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#121212">
-    <title>System Architecture Admin | MVX STORE</title>
+    <title>Master Network Terminal | MVX STORE</title>
     
     <script>
+        // Only accounts marked as 'owner' can maintain persistence on this dashboard layer
         const activeRole = sessionStorage.getItem('mvx_role');
-        if (activeRole !== 'admin' && activeRole !== 'owner') {
+        if (activeRole !== 'owner') {
             window.location.replace('index.html');
         }
     </script>
@@ -20,11 +21,11 @@
     <link rel="stylesheet" href="style.css">
     
     <style>
-        /* Admin Panel Specific Structural Design */
+        /* Admin Panel Structural Stylesheets (Guarantees No Component Overlapping) */
         body { 
             background-color: var(--bg-base); 
             padding: 20px; 
-            padding-bottom: 100px; 
+            padding-bottom: 120px; 
         }
         
         .admin-header-box { 
@@ -33,7 +34,8 @@
             align-items: center; 
             margin-bottom: 30px; 
             border-bottom: 1px solid var(--border-color); 
-            padding-bottom: 20px; 
+            padding-bottom: 20px;
+            gap: 15px;
         }
         
         .admin-header-box h1 { 
@@ -41,6 +43,7 @@
             font-size: 22px; 
             color: var(--primary); 
             letter-spacing: 1px;
+            font-weight: 900;
         }
         
         .btn-back-home { 
@@ -51,25 +54,27 @@
             border: 1px solid var(--border-color); 
             font-weight: 700; 
             cursor: pointer; 
-            transition: 0.3s;
+            transition: all 0.3s ease;
+            white-space: nowrap;
         }
         .btn-back-home:hover {
             border-color: var(--primary);
             color: var(--primary);
+            box-shadow: var(--primary-shadow);
         }
         
-        /* Navigation Tabs Layout */
+        /* Navigation Tabs Control Matrix */
         .admin-tabs { 
             display: flex; 
-            gap: 10px; 
+            gap: 12px; 
             margin-bottom: 30px; 
             flex-wrap: wrap;
         }
         
         .tab-btn { 
             flex: 1; 
-            min-width: 130px;
-            padding: 15px; 
+            min-width: 140px;
+            padding: 16px; 
             background: var(--bg-surface); 
             border: 1px solid var(--border-color); 
             color: var(--text-secondary); 
@@ -97,7 +102,7 @@
             animation: fadeIn 0.4s ease-out; 
         }
 
-        /* Responsive Cards Matrix */
+        /* Fully Responsive Cards Matrix (Guarantees Text Wrap and Scaling) */
         .list-card { 
             background: var(--bg-surface); 
             border: 1px solid var(--border-color); 
@@ -107,50 +112,54 @@
             display: flex; 
             align-items: center; 
             justify-content: space-between; 
-            gap: 15px; 
-            flex-wrap: wrap; /* Mobile view crash preventer */
+            gap: 20px; 
+            flex-wrap: wrap;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
         
         .list-card img { 
-            width: 55px; 
-            height: 55px; 
+            width: 60px; 
+            height: 60px; 
             border-radius: 12px; 
             object-fit: cover; 
             border: 1px solid var(--border-color);
+            flex-shrink: 0;
         }
         
         .list-info { 
             flex: 1; 
-            min-width: 180px; 
+            min-width: 200px; 
             overflow: hidden; 
         }
         
         .list-info h3 { 
-            font-size: 17px; 
+            font-size: 18px; 
             color: #fff; 
-            margin-bottom: 4px; 
+            margin-bottom: 5px; 
             white-space: nowrap; 
             overflow: hidden; 
             text-overflow: ellipsis; 
-            font-weight: 700;
+            font-weight: 800;
         }
         
         .list-info p { 
             font-size: 13px; 
             color: var(--text-secondary); 
             font-weight: 500;
+            line-height: 1.4;
         }
         
         .action-btns { 
             display: flex; 
-            gap: 10px; 
+            gap: 12px; 
             align-items: center;
+            flex-wrap: nowrap;
         }
         
         .act-btn { 
-            width: 44px; 
-            height: 44px; 
-            border-radius: 10px; 
+            width: 46px; 
+            height: 46px; 
+            border-radius: 12px; 
             border: none; 
             cursor: pointer; 
             font-size: 16px; 
@@ -168,20 +177,21 @@
 
         .empty-msg { 
             text-align: center; 
-            padding: 50px 20px; 
+            padding: 60px 20px; 
             color: var(--text-secondary); 
             font-size: 15px;
             font-weight: 500;
+            line-height: 1.6;
         }
 
-        /* Redeem Generator Section CSS */
+        /* Voucher Generation Section Box Layout */
         .generator-box {
             background: var(--bg-surface);
             border: 1px solid var(--border-color);
             padding: 25px;
             border-radius: 16px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin-bottom: 35px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
 
         .generator-box h2 {
@@ -190,35 +200,28 @@
             color: #fff;
             font-family: var(--font-tech);
             border-bottom: 1px dashed var(--border-color);
-            padding-bottom: 10px;
+            padding-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        /* Responsive Form Layout */
+        /* Responsive Mobile Layout Adaptations (Zero Overlap Mechanics) */
         @media (max-width: 600px) {
-            .list-card {
-                flex-direction: column;
-                align-items: flex-start;
-                text-align: left;
-            }
-            .action-btns {
-                width: 100%;
-                justify-content: flex-end;
-                margin-top: 10px;
-                border-top: 1px solid var(--border-color);
-                padding-top: 10px;
-            }
-            .list-card img {
-                align-self: center;
-                margin-bottom: 5px;
-            }
+            body { padding: 12px; }
+            .admin-header-box { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .btn-back-home { width: 100%; text-align: center; }
+            .list-card { flex-direction: column; align-items: flex-start; padding: 15px; gap: 12px; }
+            .list-info { width: 100%; min-width: 100%; }
+            .action-btns { width: 100%; justify-content: flex-end; border-top: 1px solid var(--border-color); padding-top: 12px; }
+            .list-card img { align-self: center; }
         }
     </style>
 </head>
 <body>
 
     <div class="admin-header-box">
-        <h1><i class="fas fa-database"></i> MVX SERVER NETWORK</h1>
-        <button class="btn-back-home" onclick="window.location.replace('index.html')"><i class="fas fa-store"></i> Store Terminal</button>
+        <h1><i class="fas fa-shield-alt"></i> MASTER ADMIN PANEL</h1>
+        <button class="btn-back-home" onclick="window.location.replace('index.html')"><i class="fas fa-store"></i> Return Terminal</button>
     </div>
 
     <div class="admin-tabs">
@@ -245,31 +248,31 @@
             <h2><i class="fas fa-plus-circle" style="color:var(--primary);"></i> Mint New Gift Voucher</h2>
             
             <label class="modal-label">Custom Voucher Code String</label>
-            <input type="text" id="vCode" class="play-input" placeholder="e.g. MVX100BONUS" style="text-transform:uppercase; font-family:monospace; font-weight:bold; font-size:16px;">
+            <input type="text" id="vCode" class="play-input" placeholder="e.g. MVX500COINS" style="text-transform:uppercase; font-family:monospace; font-weight:bold; font-size:16px; letter-spacing:1px;">
 
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
                 <div>
                     <label class="modal-label">Reward Category Mode</label>
-                    <select id="vType" class="play-input" onchange="adjustVoucherRewardPlaceholder(this.value)">
+                    <select id="vType" class="play-input" onchange="adjustVoucherRewardPlaceholderText(this.value)">
                         <option value="coins">COINS WALLET DEPOSIT</option>
                         <option value="premium_bypass">PREMIUM APP ACCESS BYPASS</option>
                     </select>
                 </div>
                 <div>
                     <label class="modal-label">Maximum Claim Count Limit</label>
-                    <input type="number" id="vMaxClaims" class="play-input" placeholder="e.g. 50 Users" value="10">
+                    <input type="number" id="vMaxClaims" class="play-input" placeholder="e.g. 100" value="10">
                 </div>
             </div>
 
             <label class="modal-label" id="rewardValueLabel">Coins Quantity to Deposit</label>
-            <input type="text" id="vValue" class="play-input" placeholder="e.g. 100">
+            <input type="text" id="vValue" class="play-input" placeholder="e.g. 500">
 
-            <button class="play-btn" onclick="executeVoucherMintingProtocol()">MINT VOUCHER CODE NOW</button>
+            <button class="play-btn" onclick="executeVoucherMintingProtocolToServer()">MINT VOUCHER CODE NOW</button>
         </div>
 
         <div class="play-section-title">Active Database Vouchers</div>
         <div id="liveVouchersTrackingContainer">
-            <div class="empty-msg">No active vouchers generated in pipeline.</div>
+            <div class="empty-msg">No active vouchers generated inside server networks.</div>
         </div>
     </div>
 
@@ -280,7 +283,7 @@
     <script>
         const databaseRef = firebase.database();
 
-        // 1. Tab Navigation Controller
+        // 1. Control Panel Navigation Manager
         function switchAdminPanelSection(panelId, btnElement) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.data-panel').forEach(panel => panel.classList.remove('active'));
@@ -289,21 +292,22 @@
             document.getElementById(panelId + 'Panel').classList.add('active');
         }
 
-        // Form Placeholder Adjuster
-        function adjustVoucherRewardPlaceholder(value) {
+        // Handle dynamic placeholder labelling switches inside reward settings
+        function adjustVoucherRewardPlaceholderText(value) {
             const label = document.getElementById('rewardValueLabel');
             const input = document.getElementById('vValue');
             if(value === 'coins') {
                 label.innerText = "Coins Quantity to Deposit";
-                input.placeholder = "e.g. 100";
+                input.placeholder = "e.g. 500";
             } else {
                 label.innerText = "Target Premium Application Database ID";
                 input.placeholder = "Paste application unique firebase key string";
             }
+            input.value = '';
         }
 
         // ==========================================================================
-        // 2. PENDING QUEUE LISTENER & ARCHITECTURE RENDERING
+        // 2. STAGING QUEUE REALTIME SYNCHRONIZATION & RENDERING
         // ==========================================================================
         databaseRef.ref('pending_apps').on('value', (snapshot) => {
             const container = document.getElementById('pendingContainerQueue');
@@ -311,7 +315,7 @@
                 container.innerHTML = `
                     <div class="empty-msg">
                         <i class="fas fa-check-double" style="font-size:36px; color:var(--primary); margin-bottom:15px;"></i>
-                        <h3>All operational pipeline cleared. No items pending.</h3>
+                        <h3>Operational pipeline cleared. No packages pending review.</h3>
                     </div>`;
                 return;
             }
@@ -321,14 +325,14 @@
                 const app = child.val();
                 html += `
                     <div class="list-card">
-                        <img src="${app.logoUrl}" onerror="this.src='https://via.placeholder.com/55/121212/00e6b8?text=FILE'">
+                        <img src="${app.logoUrl}" onerror="this.src='https://via.placeholder.com/60/121212/00e6b8?text=FILE'">
                         <div class="list-info">
                             <h3>${app.appName}</h3>
-                            <p>Uploader: ${app.uploaderName} • Tab: ${app.appType} • Access: ${app.category}</p>
+                            <p>Uploader: ${app.uploaderName}<br>Tab Section: ${app.appType} • Access Model: ${app.category}</p>
                         </div>
                         <div class="action-btns">
-                            <button class="act-btn act-approve" onclick="approvePendingPackageNode('${child.key}')" title="Approve & Deploy"><i class="fas fa-check"></i></button>
-                            <button class="act-btn act-reject" onclick="deletePendingPackageNode('${child.key}')" title="Reject File"><i class="fas fa-times"></i></button>
+                            <button class="act-btn act-approve" onclick="approvePendingPackageNode('${child.key}')" title="Deploy Live Asset"><i class="fas fa-check"></i></button>
+                            <button class="act-btn act-reject" onclick="deletePendingPackageNode('${child.key}')" title="Drop Application Stack"><i class="fas fa-trash-alt"></i></button>
                         </div>
                     </div>
                 `;
@@ -343,7 +347,6 @@
                     appData.status = 'approved';
                     appData.approvedAt = firebase.database.ServerValue.TIMESTAMP;
 
-                    // Move object block to live nodes
                     databaseRef.ref(`store_apps/${key}`).set(appData).then(() => {
                         databaseRef.ref(`pending_apps/${key}`).remove();
                         alert("Package deployed to live catalog successfully!");
@@ -354,17 +357,19 @@
 
         window.deletePendingPackageNode = function(key) {
             if(confirm("Reject and permanently wipe this pending application stack?")) {
-                databaseRef.ref(`pending_apps/${key}`).remove().then(() => alert("Pending package removed from pipeline."));
+                databaseRef.ref(`pending_apps/${key}`).remove().then(() => {
+                    alert("Pending package removed from pipeline.");
+                });
             }
         };
 
         // ==========================================================================
-        // 3. LIVE WAREHOUSE (STORE REMOVAL CONTROL ENGINE)
+        // 3. LIVE WAREHOUSE CATALOG EXTRACTION & WIPE ACTIONS ENGINE
         // ==========================================================================
         databaseRef.ref('store_apps').on('value', (snapshot) => {
             const warehouse = document.getElementById('liveWarehouseContainer');
             if (!snapshot.exists()) {
-                warehouse.innerHTML = `<div class="empty-msg">Store live catalog is currently empty.</div>`;
+                warehouse.innerHTML = `<div class="empty-msg">Live warehouse records match null value maps.</div>`;
                 return;
             }
 
@@ -373,13 +378,13 @@
                 const app = child.val();
                 html += `
                     <div class="list-card">
-                        <img src="${app.logoUrl}" onerror="this.src='https://via.placeholder.com/55/121212/00e6b8?text=LIVE'">
+                        <img src="${app.logoUrl}" onerror="this.src='https://via.placeholder.com/60/121212/00e6b8?text=LIVE'">
                         <div class="list-info">
                             <h3>${app.appName}</h3>
-                            <p>ID: ${child.key} • Size: ${app.size} • DL Count: ${app.downloads || 0}</p>
+                            <p>Database Key Node: ${child.key}<br>Size: ${app.size} • Total Downloads: ${app.downloads || 0}</p>
                         </div>
                         <div class="action-btns">
-                            <button class="act-btn act-delete" onclick="executeLiveAppWipeProtocol('${child.key}', '${app.appName}')" title="Wipe From Catalog"><i class="fas fa-trash-alt"></i></button>
+                            <button class="act-btn act-delete" onclick="executeLiveAppWipeProtocol('${child.key}', '${app.appName}')" title="Wipe Asset Node From Main Storage"><i class="fas fa-trash-alt"></i></button>
                         </div>
                     </div>
                 `;
@@ -388,24 +393,24 @@
         });
 
         window.executeLiveAppWipeProtocol = function(key, name) {
-            if(confirm(`⚠️ CRITICAL COMMAND: Are you absolutely certain you want to WIPE "${name}" permanently from the live store database infrastructure?`)) {
+            if(confirm(`CRITICAL SYSTEM WARNING: Are you absolutely sure you want to drop "${name}" permanently from live production servers?`)) {
                 databaseRef.ref(`store_apps/${key}`).remove().then(() => {
-                    alert(`${name} has been dropped from core live nodes.`);
+                    alert("Target asset structure dropped from active database clusters.");
                 });
             }
         };
 
         // ==========================================================================
-        // 4. MINT VOUCHER ENGINE CODE EXECUTION PROTOCOL
+        // 4. PROTOCOL INTERFACES FOR SECURITY VOUCHER MINTING
         // ==========================================================================
-        window.executeVoucherMintingProtocol = function() {
+        window.executeVoucherMintingProtocolToServer = function() {
             const code = document.getElementById('vCode').value.trim().toUpperCase();
             const type = document.getElementById('vType').value;
             const max = parseInt(document.getElementById('vMaxClaims').value);
             const val = document.getElementById('vValue').value.trim();
 
             if(!code || !val) {
-                alert("⚠️ Cannot complete generation. Code string and Reward definition empty.");
+                alert("Mint Aborted: Verification strings or structural payload variables cannot map to null.");
                 return;
             }
 
@@ -419,17 +424,17 @@
             };
 
             databaseRef.ref('redeem_codes/' + code).set(payload).then(() => {
-                alert(`🚀 Security Voucher [${code}] generated and deployed to server authentication banks!`);
+                alert(`Security authorization token voucher [${code}] compiled and loaded to auth instances.`);
                 document.getElementById('vCode').value = '';
                 document.getElementById('vValue').value = '';
             });
         };
 
-        // Live Vouchers Realtime Sync Dashboard
+        // Realtime sync rendering monitor for active gift tokens inside network bank
         databaseRef.ref('redeem_codes').on('value', (snapshot) => {
             const logs = document.getElementById('liveVouchersTrackingContainer');
             if(!snapshot.exists()) {
-                logs.innerHTML = `<div class="empty-msg">No vouchers active inside auth layers.</div>`;
+                logs.innerHTML = `<div class="empty-msg">No active security authorization vouchers live in auth arrays.</div>`;
                 return;
             }
 
@@ -437,13 +442,13 @@
             snapshot.forEach(child => {
                 const voucher = child.val();
                 html += `
-                    <div class="list-card" style="border-left: 3px solid var(--warning);">
+                    <div class="list-card" style="border-left: 4px solid var(--warning);">
                         <div class="list-info">
-                            <h3 style="font-family:monospace; color:var(--warning); letter-spacing:1px;">${voucher.codeString}</h3>
-                            <p>Type: ${voucher.rewardType} (${voucher.rewardValue}) • Claims Used: [${voucher.currentClaims} / ${voucher.maxClaims}]</p>
+                            <h3 style="font-family:monospace; color:var(--warning); letter-spacing:1.5px; font-weight:900;">${voucher.codeString}</h3>
+                            <p>Reward Track: ${voucher.rewardType} (${voucher.rewardValue})<br>Active Claim Balance Rates: [ ${voucher.currentClaims} / ${voucher.maxClaims} ] used</p>
                         </div>
                         <div class="action-btns">
-                            <button class="act-btn act-delete" onclick="dropActiveVoucherFromNetwork('${child.key}')" title="Drop Voucher Token"><i class="fas fa-minus-circle"></i></button>
+                            <button class="act-btn act-delete" onclick="dropActiveVoucherFromNetwork('${child.key}')" title="Drop Security Token Node"><i class="fas fa-minus-circle"></i></button>
                         </div>
                     </div>
                 `;
@@ -452,8 +457,10 @@
         });
 
         window.dropActiveVoucherFromNetwork = function(key) {
-            if(confirm("Deactivate and drop this voucher code authentication node from servers?")) {
-                databaseRef.ref(`redeem_codes/${key}`).remove().then(() => alert("Token node deleted."));
+            if(confirm("Revoke authorization rights and terminate this gift voucher node instantly?")) {
+                databaseRef.ref(`redeem_codes/${key}`).remove().then(() => {
+                    alert("Token voucher record pruned from system registries.");
+                });
             }
         };
     </script>

@@ -1,27 +1,29 @@
 /* ==========================================================================
-   MVX STORE V5.5 - CORE DATA CORE ENGINE & ADVANCED UPLOAD PROTOCOL
+   MVX STORE V5.5 - CORE DATA ENGINE & ADVANCED UPLOAD PROTOCOL (ENGLISH ONLY)
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
-    // ফায়ারবেস চেক করা
+    // Firebase Security Verification Check
     if (typeof firebase === 'undefined') {
-        console.error("Firebase Core SDK Error: Systems cannot link.");
+        console.error("Firebase Core SDK Critical Error: Architecture links dropped.");
         return;
     }
 
     const db = firebase.database();
     const auth = firebase.auth();
     
-    // গ্লোবাল ভেরিয়েবল
+    // Global Engine Scope Variables
     let currentUser = null;
     let userProfile = null;
-    let activeContentType = 'files'; // default tab
-    let activeFilterType = 'all';    // default filter
+    let activeContentType = 'files'; // Defaults window route
+    let activeFilterType = 'all';    // Defaults catalog grid
 
-    // আপনার দেওয়া অরিজিনাল ImgBB API Key (১০০% ওয়ার্কিং)
+    // Your Explicit ImgBB API Cloud Authentication Token Key
     const IMGBB_API_KEY = "820eb9aa6a57f863045a52c1929efc9c"; 
 
-    // ১. গ্লোবাল লোগো সিঙ্ক ইঞ্জিন (ডাটাবেজ থেকে মেইন লোগো লোড করা)
+    // ==========================================================================
+    // 1. GLOBAL STORE BRAND LOGO SYNCHRONIZER
+    // ==========================================================================
     db.ref('settings/storeLogo').on('value', (snapshot) => {
         const logoImg = document.getElementById('mainStoreLogo');
         if (logoImg && snapshot.exists() && snapshot.val().trim() !== "") {
@@ -29,31 +31,34 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // ২. লগইন স্টেট এবং প্রোফাইল ডাটা লোডার সিঙ্ক
+    // ==========================================================================
+    // 2. AUTH STATE TRIGGER & BACKGROUND CONTROLLERS
+    // ==========================================================================
     auth.onAuthStateChanged((user) => {
         if (user) {
             currentUser = user;
             
-            // রিয়েলটাইম ইউজার ডাটা ট্র্যাকার
+            // Realtime user account profile tracking sync channel
             db.ref('users/' + user.uid).on('value', (snapshot) => {
                 if (snapshot.exists()) {
                     userProfile = snapshot.val();
-                    updateUserInterfaceElements();
+                    executeSystemInterfacePipelineUpdates();
                 }
             });
 
-            // ব্যাকগ্রাউন্ডে ১ ঘণ্টার অটো-অ্যাপ্রুভ ইঞ্জিন চালু করা
+            // Launch backend structural cron simulators
             runSystemAutoApproveEngine();
-            // নোটিফিকেশন লিসেনার চালু করা
             listenForLiveSystemNotifications();
         }
     });
 
-    // ৩. ইউজার ইন্টারফেস ডাটা আপডেট ইঞ্জিন
-    function updateUserInterfaceElements() {
+    // ==========================================================================
+    // 3. SYSTEM INTERFACE PIPELINE ELEMENTS MANAGER
+    // ==========================================================================
+    function executeSystemInterfacePipelineUpdates() {
         if (!userProfile) return;
 
-        // 'You' ট্যাব এলিমেন্ট আপডেট
+        // Populate elements inside user dashboard tab
         const tabName = document.getElementById('youTabName');
         const tabEmail = document.getElementById('youTabEmail');
         const tabAvatar = document.getElementById('youTabAvatar');
@@ -71,27 +76,19 @@ document.addEventListener('DOMContentLoaded', () => {
             tabAvatar.src = userProfile.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile.name}`;
         }
 
-        // রোল অনুযায়ী হিডেন বাটন কন্ট্রোল (অ্যাডমিন/ওনার হাইড লজিক)
-        const menuToggle = document.getElementById('adminMenuToggle');
-        const linkAdmin = document.getElementById('linkAdmin');
-        const linkOwner = document.getElementById('linkOwner');
+        // Role-Based Hidden System Element Control (Strict Master Owner Override)
         const ownerLogoSection = document.getElementById('ownerLogoEditSection');
-
-        if (userProfile.role === 'admin' || userProfile.role === 'owner') {
-            if (menuToggle) menuToggle.style.display = 'block';
-            if (linkAdmin) linkAdmin.style.display = 'flex';
-        }
-        
         if (userProfile.role === 'owner') {
-            if (linkOwner) linkOwner.style.display = 'flex';
             if (ownerLogoSection) ownerLogoSection.style.display = 'block';
         }
 
-        // প্রথমবার ডাটাবেজ থেকে অ্যাপ লোড করা
+        // Initialize primary live stream rendering feed fetch data
         loadStoreFeed(activeFilterType, activeContentType);
     }
 
-    // ৪. প্লে স্টোর ফিড রেন্ডারার (স্মার্ট ট্যাগ ও টাইপ ফিল্টার সহ)
+    // ==========================================================================
+    // 4. PLAY STORE DATA RENDERING GRID (MULTILINGUAL AND FILTER ALIGNED)
+    // ==========================================================================
     window.loadStoreFeed = function(filter, contentType) {
         activeFilterType = filter || activeFilterType;
         activeContentType = contentType || activeContentType;
@@ -99,15 +96,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const grid = document.getElementById('storeAppGrid');
         if (!grid) return;
 
+        let activeLang = localStorage.getItem('mvx_lang') || 'en';
+        let loadingMsg = (activeLang === 'en') ? "Scanning Database Infrastructure..." : "ডাটাবেজ কানেকশন চেক করা হচ্ছে...";
+
         grid.innerHTML = `
             <div style="text-align:center; padding: 50px; grid-column: 1/-1;">
                 <i class="fas fa-spinner fa-spin" style="font-size:32px; color:var(--primary);"></i>
+                <p style="margin-top:15px; color:var(--text-secondary); font-weight:500;">${loadingMsg}</p>
             </div>
         `;
 
         db.ref('store_apps').orderByChild('status').equalTo('approved').once('value').then((snapshot) => {
             if (!snapshot.exists()) {
-                grid.innerHTML = `<div style="text-align:center; padding:50px; grid-column:1/-1; color:var(--text-secondary);">No applications live in database.</div>`;
+                grid.innerHTML = `<div style="text-align:center; padding:50px; grid-column:1/-1; color:var(--text-secondary);">No applications live in database database.</div>`;
                 return;
             }
 
@@ -118,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 appsList.push({ id: child.key, ...child.val() });
             });
             
-            // নতুন আপলোড আগে দেখানোর জন্য রিভার্স করা
+            // Sort database nodes by timestamp descending order
             appsList.reverse();
 
             appsList.forEach((app) => {
@@ -127,8 +128,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (activeFilterType === 'all') matchFilter = true;
                 if (activeFilterType === 'premium' && app.category === 'paid') matchFilter = true;
-                
-                // ট্রেন্ডিং লজিক (১০০ এর বেশি ভিউ হলে ট্রেন্ডিংয়ে দেখাবে)
                 if (activeFilterType === 'trending' && (app.views || 0) >= 100) matchFilter = true;
 
                 if (matchType && matchFilter) {
@@ -152,11 +151,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
-            grid.innerHTML = html || `<div style="text-align:center; padding:50px; grid-column:1/-1; color:var(--text-secondary);">No content found inside this layout.</div>`;
+            grid.innerHTML = html || `<div style="text-align:center; padding:50px; grid-column:1/-1; color:var(--text-secondary);">No content found inside this layout card grid.</div>`;
         });
     };
 
-    // ফিড ফিল্টার চিপস লিসেনারস
+    // Category Chip OnClick Event Iterations
     document.querySelectorAll('.cat-chip').forEach(chip => {
         chip.addEventListener('click', (e) => {
             document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
@@ -165,14 +164,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // ৫. কাস্টম স্মার্ট ট্যাগ ইনপুট ইঞ্জিন (Tags Manager UI)
+    // ==========================================================================
+    // 5. SMART TAGS FIELD ARRAY CONTROLLER CONTEXT
+    // ==========================================================================
     let uploadedTagsList = [];
+    
     function initializeTagsInputEngine() {
         const input = document.getElementById('tagInputField');
         const container = document.getElementById('tagsInputContainer');
         if(!input || !container) return;
 
-        uploadedTagsList = []; // reset
+        uploadedTagsList = []; // Clean instance array allocations
 
         input.addEventListener('keydown', (e) => {
             if (e.key === ',' || e.key === 'Enter') {
@@ -180,19 +182,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 let tag = input.value.trim().toLowerCase().replace(/,/g, '');
                 if (tag && !uploadedTagsList.includes(tag)) {
                     uploadedTagsList.push(tag);
-                    renderTagsChips();
+                    renderTagsChipsInsideInputBox();
                 }
                 input.value = '';
             }
         });
     }
 
-    function renderTagsChips() {
+    function renderTagsChipsInsideInputBox() {
         const container = document.getElementById('tagsInputContainer');
         const input = document.getElementById('tagInputField');
         if(!container) return;
 
-        // পুরোনো চিপস ফেলে দিয়ে নতুন করে সাজানো
         container.querySelectorAll('.tag-chip').forEach(chip => chip.remove());
 
         uploadedTagsList.forEach((tag, index) => {
@@ -205,15 +206,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.removeSelectedTagChip = function(index) {
         uploadedTagsList.splice(index, 1);
-        renderTagsChips();
+        renderTagsChipsInsideInputBox();
     };
 
-    // ৬. অ্যাডভান্সড প্লে স্টোর আপলোড মডাল জেনারেটর (ImgBB + Base64 + Tags + Pricing)
+    // ==========================================================================
+    // 6. MASTER PLAY STORE APPLICATION PUBLISH MODAL FORM LAYOUT
+    // ==========================================================================
     window.openUploadModal = function() {
         if (!userProfile) return;
 
-        const isAdmin = (userProfile.role === 'admin' || userProfile.role === 'owner');
-        
+        const isMasterOwner = (userProfile.role === 'owner');
+        const paidOptionHTML = isMasterOwner ? `<option value="paid">PREMIUM COIN ACCESS (Owner Verified)</option>` : `<option value="free" disabled>PREMIUM ACCESS (Master Owner Clearance Required)</option>`;
+
         let uploadModal = document.createElement('div');
         uploadModal.id = 'dynamicUploadModal';
         uploadModal.className = 'modal-overlay active';
@@ -225,20 +229,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div class="modal-body">
                     <p style="font-size:12px; color:var(--text-secondary); margin-bottom:15px; background:rgba(255,255,255,0.02); padding:10px; border-radius:6px; border:1px solid var(--border-color);">
-                        <i class="fas fa-history"></i> ইউজার আপলোড করার ১ ঘণ্টার মধ্যে অ্যাডমিন চেক না করলে ফাইল অটোমেটিক মেইন স্টোরে লাইভ হয়ে যাবে।
+                        <i class="fas fa-history"></i> NOTICE: Submissions default to queue logic. Unchecked payloads auto-deploy to store maps after exactly 1 hour.
                     </p>
 
                     <label class="modal-label">Application Title / File Name</label>
-                    <input type="text" id="pName" class="play-input" placeholder="e.g. CapCut Premium Mod">
+                    <input type="text" id="pName" class="play-input" placeholder="e.g. Free Fire Hack Menu">
 
                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
                         <div>
                             <label class="modal-label">Version</label>
-                            <input type="text" id="pVer" class="play-input" placeholder="e.g. v5.4.2">
+                            <input type="text" id="pVer" class="play-input" placeholder="e.g. v1.99.X">
                         </div>
                         <div>
                             <label class="modal-label">File Size</label>
-                            <input type="text" id="pSize" class="play-input" placeholder="e.g. 120 MB">
+                            <input type="text" id="pSize" class="play-input" placeholder="e.g. 85 MB">
                         </div>
                     </div>
 
@@ -252,98 +256,94 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                         <div>
                             <label class="modal-label">Access Model</label>
-                            <select id="pCat" class="play-input" onchange="toggleCoinPriceInput(this.value)">
-                                <option value="free">FREE ACCESS</option>
-                                <option value="paid" ${isAdmin ? "" : "disabled"}>PREMIUM COIN ACCESS (${isAdmin ? 'Allowed' : 'Admins Only'})</option>
+                            <select id="pCat" class="play-input" onchange="toggleCoinPriceInputBoxField(this.value)">
+                                <option value="free">FREE ACCESS MODEL</option>
+                                ${paidOptionHTML}
                             </select>
                         </div>
                     </div>
 
                     <div id="coinPriceWrapper" style="display:none;">
-                        <label class="modal-label" style="color:var(--warning);">Unlock Price (In Coins)</label>
-                        <input type="number" id="pCoinPrice" class="play-input" placeholder="e.g. 50" value="0">
+                        <label class="modal-label" style="color:var(--warning);">Unlock Charge Pricing (In MVX Coins)</label>
+                        <input type="number" id="pCoinPrice" class="play-input" placeholder="e.g. 150" value="0">
                     </div>
 
                     <hr style="border:0; border-top:1px solid var(--border-color); margin:15px 0;">
 
-                    <label class="modal-label" style="color:var(--primary);">Logo Upload Engine Method</label>
-                    <select id="logoMethod" class="play-input" onchange="toggleUploadMethodInputs('logo', this.value)">
-                        <option value="imgbb">ImgBB Cloud API Method (Recommended)</option>
-                        <option value="base64">Base64 Direct Hex Encoding Method</option>
+                    <label class="modal-label" style="color:var(--primary);">Logo Image Encoding Method</label>
+                    <select id="logoMethod" class="play-input" onchange="toggleUploadMethodInputsStructure('logo', this.value)">
+                        <option value="imgbb">ImgBB Cloud API Method (Standard High Speed)</option>
+                        <option value="base64">Base64 Direct Raw Byte Hex String Method</option>
                     </select>
 
                     <div id="logoFileBox">
                         <input type="file" id="logoFile" class="play-input" accept="image/*" style="padding:10px;">
                     </div>
-                    <input type="text" id="logoUrlOutput" class="play-input" placeholder="Logo Link/String Output Result" readonly>
+                    <input type="text" id="logoUrlOutput" class="play-input" placeholder="Cloud Storage Token Asset Path Address" readonly>
                     <p id="logoProcessStatus" style="font-size:11px; color:var(--warning); margin-top:-15px; margin-bottom:15px;"></p>
 
-                    <label class="modal-label" style="color:var(--primary);">Banner Upload Engine Method</label>
-                    <select id="bannerMethod" class="play-input" onchange="toggleUploadMethodInputs('banner', this.value)">
-                        <option value="imgbb">ImgBB Cloud API Method</option>
-                        <option value="base64">Base64 Direct Hex Encoding Method</option>
+                    <label class="modal-label" style="color:var(--primary);">Banner Display Image Encoding Method</label>
+                    <select id="bannerMethod" class="play-input" onchange="toggleUploadMethodInputsStructure('banner', this.value)">
+                        <option value="imgbb">ImgBB Cloud API Method (Standard High Speed)</option>
+                        <option value="base64">Base64 Direct Raw Byte Hex String Method</option>
                     </select>
 
                     <div id="bannerFileBox">
                         <input type="file" id="bannerFile" class="play-input" accept="image/*" style="padding:10px;">
                     </div>
-                    <input type="text" id="bannerUrlOutput" class="play-input" placeholder="Banner Link/String Output Result" readonly>
+                    <input type="text" id="bannerUrlOutput" class="play-input" placeholder="Cloud Storage Token Asset Path Address" readonly>
                     <p id="bannerProcessStatus" style="font-size:11px; color:var(--warning); margin-top:-15px; margin-bottom:15px;"></p>
 
                     <hr style="border:0; border-top:1px solid var(--border-color); margin:15px 0;">
 
-                    <label class="modal-label">Main Secure Download Link</label>
-                    <input type="text" id="pMainLink" class="play-input" placeholder="https://secure-link.com/download">
+                    <label class="modal-label">Main Secure Download Endpoint URL Link</label>
+                    <input type="text" id="pMainLink" class="play-input" placeholder="https://mediafire.com/file/download_hash">
 
                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
                         <div>
-                            <label class="modal-label">Custom Action Button (Optional)</label>
-                            <input type="text" id="pAltName" class="play-input" placeholder="e.g. Get Key">
+                            <label class="modal-label">Custom Action Label Name</label>
+                            <input type="text" id="pAltName" class="play-input" placeholder="e.g. Get Verification Key">
                         </div>
                         <div>
-                            <label class="modal-label">Action URL Link</label>
-                            <input type="text" id="pAltUrl" class="play-input" placeholder="https://get-key-link.com">
+                            <label class="modal-label">Action Redirection URL Link</label>
+                            <input type="text" id="pAltUrl" class="play-input" placeholder="https://linkvertise.com/bypass_route">
                         </div>
                     </div>
 
-                    <label class="modal-label">Unzip Archive Password (Optional)</label>
-                    <input type="text" id="pPassword" class="play-input" placeholder="Leave empty if file has no password lock">
+                    <label class="modal-label">Archive Unzip Cryptographic Password</label>
+                    <input type="text" id="pPassword" class="play-input" placeholder="Leave parameter blank if package has no unzip password">
 
-                    <label class="modal-label">Search Keywords & Tags (Press Comma ',' to add)</label>
+                    <label class="modal-label">Fuzzy Search Target Keywords (Type Comma ',' to link item tag)</label>
                     <div class="tags-container" id="tagsInputContainer">
                         <input type="text" id="tagInputField" class="tag-input-field" placeholder="Add keywords...">
                     </div>
 
-                    <label class="modal-label">Description & Release logs</label>
-                    <textarea id="pDescription" class="play-input" placeholder="Write features or instruction guidelines..." style="min-height:100px; resize:vertical;"></textarea>
+                    <label class="modal-label">Application Description Documentation & Changeglog</label>
+                    <textarea id="pDescription" class="play-input" placeholder="Document feature releases, setup steps, or injector anti-ban safety parameters..." style="min-height:100px; resize:vertical;"></textarea>
 
-                    <button class="play-btn" id="executePublishBtn" onclick="commitPackageToPendingDatabase()">PUBLISH APPLICATION</button>
+                    <button class="play-btn" id="executePublishBtn" onclick="commitPackageToPendingDatabaseNode()">SUBMIT FOR PROCESSING AND DEPLOYMENT</button>
                 </div>
             </div>
         `;
         document.body.appendChild(uploadModal);
 
-        // ট্যাগ সিস্টেম ইনিশিয়েলাইজ করা
+        // Bind core tags script interface listeners
         initializeTagsInputEngine();
 
-        // রিয়েলটাইম লিসেনারস ইমেজ প্রসেসিং এর জন্য
-        document.getElementById('logoFile').addEventListener('change', (e) => processSelectedImageFile(e.target.files[0], 'logoMethod', 'logoUrlOutput', 'logoProcessStatus'));
-        document.getElementById('bannerFile').addEventListener('change', (e) => processSelectedImageFile(e.target.files[0], 'bannerMethod', 'bannerUrlOutput', 'bannerProcessStatus'));
+        // Establish operational change streams listeners
+        document.getElementById('logoFile').addEventListener('change', (e) => executeBinaryAssetProcessingStream(e.target.files[0], 'logoMethod', 'logoUrlOutput', 'logoProcessStatus'));
+        document.getElementById('bannerFile').addEventListener('change', (e) => executeBinaryAssetProcessingStream(e.target.files[0], 'bannerMethod', 'bannerUrlOutput', 'bannerProcessStatus'));
     };
 
-    // ৭. কয়েন প্রাইস বক্স হাইড/শো করার মেকানিজম
-    window.toggleCoinPriceInput = function(val) {
-        document.getElementById('coinPriceWrapper').style.display = (val === 'paid') ? 'block' : 'none';
+    window.toggleCoinPriceInputBoxField = function(value) {
+        document.getElementById('coinPriceWrapper').style.display = (value === 'paid') ? 'block' : 'none';
     };
 
-    // ৮. আপলোড মেথড সিলেকশন টগল
-    window.toggleUploadMethodInputs = function(type, method) {
-        const fileBox = document.getElementById(`${type}FileBox`);
+    window.toggleUploadMethodInputsStructure = function(type, method) {
         const output = document.getElementById(`${type}UrlOutput`);
-        
         if (method === 'base64') {
             output.removeAttribute('readonly');
-            output.placeholder = "Paste Base64 Image String Code Data Here...";
+            output.placeholder = "Inject direct Base64 stream data text sequence raw character block here...";
         } else {
             output.setAttribute('readonly', 'true');
             output.placeholder = "Link will generate automatically via ImgBB...";
@@ -351,29 +351,32 @@ document.addEventListener('DOMContentLoaded', () => {
         output.value = '';
     };
 
-    // ৯. ইমেজ কনভার্টার ও আপলোডার কোর ফাংশন (ImgBB & Base64 Dual Mode)
-    function processSelectedImageFile(file, methodSelectId, outputInputId, statusParaId) {
+    // ==========================================================================
+    // 7. CORE BINARY CONVERTER & CLOUD API ENGINE (DUAL METHOD INTEGRITY)
+    // ==========================================================================
+    function executeBinaryAssetProcessingStream(file, methodSelectId, outputInputId, statusParaId) {
         if (!file) return;
 
         const method = document.getElementById(methodSelectId).value;
         const output = document.getElementById(outputInputId);
         const status = document.getElementById(statusParaId);
 
-        status.innerText = "Processing Image Engine Data...";
+        status.innerText = "Processing system binary streams. Awaiting buffer data allocation...";
         status.style.color = "var(--warning)";
 
         if (method === 'base64') {
-            // Base64 কনভার্সন মেথড
             const reader = new FileReader();
             reader.onload = function(e) {
                 output.value = e.target.result;
-                status.innerText = "Base64 Byte String Encoding Success!";
+                status.innerText = "Base64 Byte String Character Hex Stream Processing Success!";
                 status.style.color = "var(--success)";
             };
-            reader.onerror = () => { status.innerText = "Failed encoding Base64."; status.style.color = "var(--danger)"; };
+            reader.onerror = () => { 
+                status.innerText = "Fatal stream reader fault. Encoding failed."; 
+                status.style.color = "var(--danger)"; 
+            };
             reader.readAsDataURL(file);
         } else {
-            // অরিজিনাল ImgBB ক্লাউড এপিআই মেথড (১০০% ফিক্সড)
             const formData = new FormData();
             formData.append("image", file);
 
@@ -385,40 +388,42 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(json => {
                 if (json.success) {
                     output.value = json.data.url;
-                    status.innerText = "Cloud API Sync Complete: " + json.data.url;
+                    status.innerText = "Cloud Platform Asset Sync Complete: URL Created.";
                     status.style.color = "var(--success)";
                 } else {
-                    status.innerText = "ImgBB rejected token or error occurred.";
+                    status.innerText = "Cloud upload request rejected. Server drop error token.";
                     status.style.color = "var(--danger)";
                 }
             })
             .catch(() => {
-                status.innerText = "Network pipeline drop. Upload failed.";
+                status.innerText = "Network transmission interrupt pipeline dropped. Upload halted.";
                 status.style.color = "var(--danger)";
             });
         }
     }
 
-    // ১০. ডাটাবেজ কমিট প্রোটোকল (Pending Area তে ডাটা পাঠানো)
-    window.commitPackageToPendingDatabase = function() {
+    // ==========================================================================
+    // 8. DATABASE COMMIT PACKAGES CONTROLLER
+    // ==========================================================================
+    window.commitPackageToPendingDatabaseNode = function() {
         const name = document.getElementById('pName').value.trim();
         const mainLink = document.getElementById('pMainLink').value.trim();
         const logoData = document.getElementById('logoUrlOutput').value.trim();
         const bannerData = document.getElementById('bannerUrlOutput').value.trim();
 
         if (!name || !mainLink) {
-            alert("⚠️ Critical Fields Missing: Title and Download Link required.");
+            alert("Upload Terminated: Packagename and main endpoint link path strings are non-negotiable parameters.");
             return;
         }
 
         const btn = document.getElementById('executePublishBtn');
-        btn.innerText = "COMMITTING PACKAGE...";
+        btn.innerText = "WRITING TRANSACTION TO NETWORKS...";
         btn.disabled = true;
 
-        const finalPackageData = {
+        const transactionalPackagePayload = {
             appName: name,
-            version: document.getElementById('pVer').value.trim() || "1.0",
-            size: document.getElementById('pSize').value.trim() || "Unknown Size",
+            version: document.getElementById('pVer').value.trim() || "1.0.0",
+            size: document.getElementById('pSize').value.trim() || "0 MB",
             appType: document.getElementById('pType').value,
             category: document.getElementById('pCat').value,
             coinPrice: parseInt(document.getElementById('pCoinPrice').value) || 0,
@@ -428,28 +433,30 @@ document.addEventListener('DOMContentLoaded', () => {
             altLinkName: document.getElementById('pAltName').value.trim(),
             altLinkUrl: document.getElementById('pAltUrl').value.trim(),
             zipPassword: document.getElementById('pPassword').value.trim(),
-            tags: uploadedTagsList, // স্মার্ট ট্যাগ অ্যারে এন্ট্রি
-            description: document.getElementById('pDescription').value.trim() || "No description provided.",
+            tags: uploadedTagsList, 
+            description: document.getElementById('pDescription').value.trim() || "System Description Data Block Uninitialized.",
             uploaderUid: currentUser.uid,
             uploaderName: userProfile.name,
             timestamp: firebase.database.ServerValue.TIMESTAMP,
-            autoApproveTime: Date.now() + 3600000, // ১ ঘণ্টা পরের টাইম ক্যালকুলেশন
+            autoApproveTime: Date.now() + 3600000, // Exactly 1 hour safety offset window block 
             status: 'pending',
             downloads: 0,
             views: 0
         };
 
-        db.ref('pending_apps').push(finalPackageData).then(() => {
-            alert("🚀 আলহামদুলিল্লাহ, আপনার ফাইল সাবমিট হয়েছে! ১ ঘণ্টার মধ্যে কোনো অ্যাডমিন ফাইলটি চেক না করলে সিস্টেম এটি অটোমেটিক লাইভ করে দেবে।");
+        db.ref('pending_apps').push(transactionalPackagePayload).then(() => {
+            alert("Package transaction committed to holding staging queues successfully. If no validation actions occur from administrators, the system will auto-deploy the payload in exactly 1 hour.");
             document.getElementById('dynamicUploadModal').remove();
         }).catch((err) => {
-            alert("Database drop error: " + err.message);
-            btn.innerText = "PUBLISH APPLICATION";
+            alert("Database interface fault exception: " + err.message);
+            btn.innerText = "SUBMIT FOR PROCESSING AND DEPLOYMENT";
             btn.disabled = false;
         });
     };
 
-    // ১১. গ্লোবাল নোটিফিকেশন রিয়েলটাইম লিসেনার (ইনবক্স ডাটা লোডার)
+    // ==========================================================================
+    // 9. LIVE BROADCAST INBOX CHANNEL SYNCHRONIZER
+    // ==========================================================================
     function listenForLiveSystemNotifications() {
         const inbox = document.getElementById('notificationInboxDisplay');
         const badge = document.getElementById('notiAlert');
@@ -457,11 +464,11 @@ document.addEventListener('DOMContentLoaded', () => {
         db.ref('system_broadcasts').on('value', (snapshot) => {
             if(!inbox) return;
             if(!snapshot.exists()) {
-                inbox.innerHTML = `<div class="empty-msg">No structural notices live.</div>`;
+                inbox.innerHTML = `<div class="empty-msg">No structural notices live inside system channel nodes.</div>`;
                 return;
             }
 
-            if(badge) badge.style.display = 'block'; // নতুন নোটিফিকেশন আসলে রেড ডট শো করবে
+            if(badge) badge.style.display = 'block'; 
 
             let html = '';
             let notices = [];
@@ -484,14 +491,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ১২. অ্যাডমিন নোটিফিকেশন ব্রডকাস্টার মেকানিজম (অ্যাডমিন প্যানেল পুশ লজিক)
+    // ==========================================================================
+    // 10. SYSTEM NOTIFICATION ADMIN BROADCAST INTERFACE DISPATCHER
+    // ==========================================================================
     window.executeNotificationBroadcast = function() {
         const title = document.getElementById('notiPushTitle').value.trim();
         const msg = document.getElementById('notiPushMessage').value.trim();
         const type = document.getElementById('notiPushType').value;
 
         if(!title || !msg) {
-            alert("Notice text cannot be empty.");
+            alert("Notice broadcast content bounds violation. Execution dropped.");
             return;
         }
 
@@ -506,16 +515,17 @@ document.addEventListener('DOMContentLoaded', () => {
             sender: userProfile.name,
             timestamp: firebase.database.ServerValue.TIMESTAMP
         }).then(() => {
-            alert("Broadcast sent globally to all connected channels!");
+            alert("Broadcast signal successfully dispatched across global framework hooks.");
             document.getElementById('adminNotiModal').classList.remove('active');
             document.getElementById('notiPushTitle').value = '';
             document.getElementById('notiPushMessage').value = '';
         });
     };
 
-    // ১৩. ১ ঘণ্টার অটো-অ্যাপ্রুভ ব্যাকগ্রাউন্ড সিমুলেটর ইঞ্জিন (ক্লিন লুপ ট্র্যাকার)
+    // ==========================================================================
+    // 11. CRON TIMEOUT CRITICAL SIMULATOR ENGINE (1-HOUR RESOLUTION LOOKUP)
+    // ==========================================================================
     function runSystemAutoApproveEngine() {
-        // প্রতি ৩ মিনিটে চেক করবে
         setInterval(() => {
             db.ref('pending_apps').once('value').then((snapshot) => {
                 if (snapshot.exists()) {
@@ -523,7 +533,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     snapshot.forEach((child) => {
                         let appRecord = child.val();
                         
-                        // টাইম ওভার হয়ে গেলে অটোমেটিক মেইন স্টোরে ট্রান্সফার হবে
                         if (currentTimeStamp >= appRecord.autoApproveTime) {
                             appRecord.status = 'approved';
                             appRecord.approvedBy = 'System-Auto';
@@ -531,17 +540,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
                             db.ref(`store_apps/${child.key}`).set(appRecord).then(() => {
                                 db.ref(`pending_apps/${child.key}`).remove();
-                                console.log(`[ENGINE LOG]: Auto-Approved package data for ${appRecord.appName}`);
+                                console.log(`[STAGING CONTROL LOG]: Target threshold saturated. Automated layout deployment successful for node: ${appRecord.appName}`);
                             });
                         }
                     });
                 }
             });
-        }, 180000); 
+        }, 180000); // Evaluates structural state map loops every 3 minutes
     }
 
-    // ১৪. ওনার কর্তৃক গ্লোবাল লোগো চেঞ্জ কমপ্লিট সাবমিশন ইঞ্জিন
-    // এই প্রো-ফাংশনটি সেভ প্রোফাইল মেথডের সাথে ইন্টিগ্রেট হবে
     window.processOwnerStoreLogoChange = function(logoUrl) {
         if(userProfile && userProfile.role === 'owner' && logoUrl.trim() !== "") {
             db.ref('settings').update({ storeLogo: logoUrl.trim() });
