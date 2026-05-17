@@ -1,5 +1,5 @@
 /* ==========================================================================
-   MVX SYSTEM V5.0 - CORE FIREBASE & AUTHENTICATION ENGINE
+   MVX SYSTEM V5.0 - CORE FIREBASE & AUTHENTICATION ENGINE (FIXED LOGIN)
    ========================================================================== */
 
 const firebaseConfig = {
@@ -19,26 +19,8 @@ const auth = firebase.auth();
 const db = firebase.database();
 
 /* ==========================================================================
-   রিডাইরেক্ট এরর চেকার (লগইন ফেইল হলে স্ক্রিনে দেখাবে)
+   লগইন স্টেট চেকার (ইউজার লগইন থাকলে ডাইরেক্ট হোমপেজে পাঠাবে)
    ========================================================================== */
-auth.getRedirectResult().then((result) => {
-    if (result && result.user) {
-        processUserEntry(result.user);
-    }
-}).catch((error) => {
-    const loader = document.getElementById('systemLoader');
-    if(loader) loader.style.display = 'none';
-    const statusMsg = document.getElementById('status-message');
-    if(statusMsg) {
-        if(error.code === 'auth/unauthorized-domain') {
-            statusMsg.innerText = "Error: Firebase Authorized Domains-এ sktausif771.github.io অ্যাড করা নেই!";
-        } else {
-            statusMsg.innerText = "লগইন ফেইল: " + error.message;
-        }
-        statusMsg.className = "";
-    }
-});
-
 auth.onAuthStateChanged((user) => {
     const currentPage = window.location.pathname.split("/").pop();
     
@@ -63,7 +45,7 @@ function determineUserRole(email) {
 }
 
 /* ==========================================================================
-   মেইন গুগল লগইন প্রোটোকল
+   মেইন গুগল লগইন প্রোটোকল (পপ-আপ মেথড - এখন ১০০% কাজ করবে)
    ========================================================================== */
 window.startGoogleLogin = function() {
     const provider = new firebase.auth.GoogleAuthProvider();
@@ -72,13 +54,23 @@ window.startGoogleLogin = function() {
     const loader = document.getElementById('systemLoader');
     if(loader) loader.style.display = 'flex';
 
-    auth.signInWithRedirect(provider).catch((error) => {
+    auth.signInWithPopup(provider).then((result) => {
+        // লগইন সাকসেস হলে ডাটাবেজে এন্ট্রি করবে
+        processUserEntry(result.user);
+    }).catch((error) => {
         if(loader) loader.style.display = 'none';
         const statusMsg = document.getElementById('status-message');
-        if(statusMsg) statusMsg.innerText = "Redirect Error: " + error.message;
+        if(statusMsg) {
+            statusMsg.innerText = "লগইন বাতিল হয়েছে বা এরর: " + error.message;
+            statusMsg.className = "";
+        }
+        console.error("Login Error: ", error);
     });
 };
 
+/* ==========================================================================
+   ইউজার ডাটাবেস এন্ট্রি
+   ========================================================================== */
 function processUserEntry(user) {
     const userRef = db.ref('users/' + user.uid);
     const role = determineUserRole(user.email);
@@ -110,13 +102,10 @@ function processUserEntry(user) {
 }
 
 /* ==========================================================================
-   ফিক্স করা সিকিউর রাউটিং (সবাই সরাসরি হোমপেজে যাবে)
+   সিকিউর রাউটিং
    ========================================================================== */
 function redirectBasedOnRole(role) {
     sessionStorage.setItem('mvx_session', 'ACTIVE');
     sessionStorage.setItem('mvx_role', role);
-
-    // এখন অ্যাডমিন, ওনার এবং ইউজার সবাই লগইন করার পর সরাসরি হোমপেজে (index.html) যাবে।
-    // অ্যাডমিনরা হোমপেজের প্রোফাইল সেটিং থেকে তাদের প্যানেলে ঢুকতে পারবে।
     window.location.replace('index.html'); 
 }
