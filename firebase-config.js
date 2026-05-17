@@ -1,5 +1,5 @@
 /* ==========================================================================
-   MVX SYSTEM V4.0 - CORE FIREBASE & AUTHENTICATION ENGINE
+   MVX SYSTEM V5.0 - CORE FIREBASE & AUTHENTICATION ENGINE
    ========================================================================== */
 
 const firebaseConfig = {
@@ -63,7 +63,7 @@ function determineUserRole(email) {
 }
 
 /* ==========================================================================
-   মেইন গুগল লগইন প্রোটোকল (মোবাইলের জন্য Redirect সিস্টেম)
+   মেইন গুগল লগইন প্রোটোকল
    ========================================================================== */
 window.startGoogleLogin = function() {
     const provider = new firebase.auth.GoogleAuthProvider();
@@ -72,7 +72,6 @@ window.startGoogleLogin = function() {
     const loader = document.getElementById('systemLoader');
     if(loader) loader.style.display = 'flex';
 
-    // পপ-আপের বদলে রিডাইরেক্ট (মোবাইলে ১০০% কাজ করবে)
     auth.signInWithRedirect(provider).catch((error) => {
         if(loader) loader.style.display = 'none';
         const statusMsg = document.getElementById('status-message');
@@ -110,10 +109,14 @@ function processUserEntry(user) {
     });
 }
 
+/* ==========================================================================
+   ফিক্স করা সিকিউর রাউটিং (সবাই সরাসরি হোমপেজে যাবে)
+   ========================================================================== */
 function redirectBasedOnRole(role) {
     sessionStorage.setItem('mvx_session', 'ACTIVE');
     sessionStorage.setItem('mvx_role', role);
-    if (role === 'owner') window.location.replace('owner.html');
-    else if (role === 'admin') window.location.replace('admin.html');
-    else window.location.replace('index.html');
+
+    // এখন অ্যাডমিন, ওনার এবং ইউজার সবাই লগইন করার পর সরাসরি হোমপেজে (index.html) যাবে।
+    // অ্যাডমিনরা হোমপেজের প্রোফাইল সেটিং থেকে তাদের প্যানেলে ঢুকতে পারবে।
+    window.location.replace('index.html'); 
 }

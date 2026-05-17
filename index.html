@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#020617">
-    <title>MVX STORE | Premium App Gateway</title>
+    <title>MVX STORE | Play UI V5.0</title>
     
     <script>
         if (sessionStorage.getItem('mvx_session') !== 'ACTIVE') {
@@ -18,170 +18,123 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
     <link rel="stylesheet" href="style.css">
-    
-    <style>
-        /* Navbar & Header Structure */
-        .top-navbar {
-            position: fixed; top: 0; left: 0; width: 100%; height: 70px;
-            background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px); border-bottom: 1px solid rgba(0, 230, 184, 0.2);
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 0 20px; z-index: 1000; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-        }
-        
-        .nav-left { display: flex; align-items: center; gap: 15px; }
-        .menu-toggle { font-size: 24px; color: #00e6b8; cursor: pointer; transition: 0.3s; }
-        .menu-toggle:hover { color: #ffffff; text-shadow: 0 0 10px #00e6b8; }
-        
-        .store-brand { display: flex; flex-direction: column; }
-        .store-brand h1 { font-family: 'Orbitron', sans-serif; font-size: 20px; font-weight: 800; color: #ffffff; letter-spacing: 1px; }
-        .store-brand h1 span { color: #00e6b8; }
-        .store-brand small { font-family: 'Rajdhani', sans-serif; font-size: 11px; color: #00e6b8; letter-spacing: 2px; text-transform: uppercase; }
-        
-        .nav-right { display: flex; align-items: center; gap: 15px; }
-        .user-wallet { display: flex; align-items: center; gap: 8px; background: rgba(0, 230, 184, 0.1); padding: 5px 12px; border-radius: 20px; border: 1px solid rgba(0, 230, 184, 0.3); }
-        .user-wallet i { color: #ffd700; font-size: 14px; }
-        .user-wallet span { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600; color: #ffffff; }
-        .noti-bell { font-size: 20px; color: #94a3b8; cursor: pointer; position: relative; transition: 0.3s; }
-        .noti-bell:hover { color: #00e6b8; }
-        .noti-dot { position: absolute; top: -2px; right: -2px; width: 8px; height: 8px; background: #ff003c; border-radius: 50%; box-shadow: 0 0 8px #ff003c; display: none; }
-
-        /* Sidebar / Drawer Architecture */
-        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(3px); z-index: 1001; opacity: 0; visibility: hidden; transition: 0.3s; }
-        .sidebar-overlay.active { opacity: 1; visibility: visible; }
-        
-        .sidebar-menu { position: fixed; top: 0; left: -320px; width: 300px; height: 100%; background: #0f172a; border-right: 1px solid rgba(0, 230, 184, 0.2); z-index: 1002; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; overflow-y: auto; }
-        .sidebar-menu.active { left: 0; box-shadow: 20px 0 50px rgba(0, 0, 0, 0.5); }
-        
-        .sidebar-header { padding: 30px 20px; background: linear-gradient(180deg, rgba(0, 230, 184, 0.1) 0%, transparent 100%); border-bottom: 1px solid rgba(255, 255, 255, 0.05); position: relative; }
-        .close-sidebar { position: absolute; top: 15px; right: 15px; font-size: 20px; color: #94a3b8; cursor: pointer; }
-        .profile-avatar { width: 70px; height: 70px; border-radius: 50%; border: 2px solid #00e6b8; padding: 3px; margin-bottom: 15px; }
-        .profile-name { font-family: 'Orbitron', sans-serif; font-size: 18px; font-weight: 700; color: #ffffff; margin-bottom: 5px; }
-        .profile-uid { font-family: 'Space Grotesk', sans-serif; font-size: 12px; color: #94a3b8; background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 4px; display: inline-block; margin-bottom: 10px; }
-        .profile-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; color: #00e6b8; background: rgba(0,230,184,0.1); padding: 3px 8px; border-radius: 12px; }
-
-        .sidebar-links { padding: 20px 0; flex-grow: 1; display: flex; flex-direction: column; }
-        .side-link { display: flex; align-items: center; gap: 15px; padding: 15px 25px; color: #cbd5e1; text-decoration: none; font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 500; transition: 0.3s; border-left: 3px solid transparent; }
-        .side-link i { font-size: 18px; width: 25px; text-align: center; color: #64748b; transition: 0.3s; }
-        .side-link:hover { background: rgba(0, 230, 184, 0.05); color: #ffffff; border-left-color: #00e6b8; }
-        .side-link:hover i { color: #00e6b8; }
-        
-        .sidebar-divider { height: 1px; background: rgba(255,255,255,0.05); margin: 15px 20px; }
-        
-        .admin-section { margin-top: auto; padding-bottom: 20px; }
-        .admin-link { display: none; color: #ff003c; } /* Hidden by default */
-        .admin-link i { color: #ff003c; }
-        .admin-link:hover { background: rgba(255, 0, 60, 0.05); border-left-color: #ff003c; color: #ff003c; }
-        .owner-link { display: none; color: #ffd700; } /* Hidden by default */
-        .owner-link i { color: #ffd700; }
-        .owner-link:hover { background: rgba(255, 215, 0, 0.05); border-left-color: #ffd700; color: #ffd700; }
-
-        /* Main Content & Categories */
-        .main-wrapper { padding: 90px 20px 100px 20px; max-width: 1200px; margin: 0 auto; }
-        
-        .category-tabs { display: flex; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 5px; margin-bottom: 25px; }
-        .tab-btn { flex: 1; padding: 12px 0; background: transparent; border: none; color: #94a3b8; font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 700; border-radius: 8px; cursor: pointer; transition: 0.3s; letter-spacing: 1px; }
-        .tab-btn.active { background: #00e6b8; color: #020617; box-shadow: 0 0 15px rgba(0, 230, 184, 0.3); }
-
-        /* Store Feed / App Grid */
-        .section-title { font-family: 'Orbitron', sans-serif; font-size: 18px; color: #ffffff; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
-        .section-title i { color: #00e6b8; }
-        
-        .app-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-bottom: 40px; }
-        
-        .empty-state { grid-column: 1 / -1; text-align: center; padding: 50px 20px; background: rgba(15, 23, 42, 0.5); border-radius: 15px; border: 1px dashed rgba(255,255,255,0.1); }
-        .empty-state i { font-size: 40px; color: #334155; margin-bottom: 15px; }
-        .empty-state h3 { color: #94a3b8; font-family: 'Orbitron', sans-serif; font-size: 16px; }
-
-        /* Floating Action Button (Upload) */
-        .fab-upload { position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px; background: #00e6b8; color: #020617; border: none; border-radius: 50%; font-size: 24px; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 10px 25px rgba(0, 230, 184, 0.4); z-index: 999; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .fab-upload:hover { transform: scale(1.1) rotate(90deg); background: #ffffff; box-shadow: 0 15px 35px rgba(255, 255, 255, 0.4); }
-
-    </style>
 </head>
 <body>
 
-    <nav class="top-navbar">
-        <div class="nav-left">
-            <i class="fas fa-bars menu-toggle" id="openMenuBtn"></i>
-            <div class="store-brand">
-                <h1 id="globalStoreTitle">MVX <span>STORE</span></h1>
-                <small id="globalStoreSubtitle">PREMIUM GATEWAY</small>
-            </div>
+    <header class="play-top-nav">
+        <div class="top-brand">
+            <img src="https://via.placeholder.com/40/020617/00e6b8?text=MVX" alt="Logo" class="nav-logo">
+            <span class="brand-text">MVX STORE</span>
         </div>
-        <div class="nav-right">
-            <div class="user-wallet" title="Your Coins">
-                <i class="fas fa-coins"></i>
-                <span id="navCoinDisplay">0</span>
-            </div>
-            <div class="noti-bell" id="notificationBtn">
-                <i class="fas fa-bell"></i>
-                <div class="noti-dot" id="notiAlert"></div>
-            </div>
+        <div class="top-actions">
+            <i class="fas fa-bars admin-menu-btn" id="adminMenuToggle" style="display: none;" onclick="toggleAdminSidebar()"></i>
+            <i class="fas fa-bell noti-icon"></i>
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=User" alt="Profile" class="top-profile-pic" id="topProfileBtn" onclick="openProfileEditModal()">
         </div>
-    </nav>
+    </header>
 
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-    <div class="sidebar-menu" id="sidebarMenu">
-        <div class="sidebar-header">
-            <i class="fas fa-times close-sidebar" id="closeMenuBtn"></i>
-            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=MVX" alt="User" class="profile-avatar" id="sidebarAvatar">
-            <h2 class="profile-name" id="sidebarName">Loading User...</h2>
-            <div class="profile-uid" id="sidebarUID">UID: FETCHING...</div>
-            <div class="profile-badge" id="sidebarBadge"><i class="fas fa-check-circle"></i> Verified User</div>
+    <div class="admin-sidebar-overlay" id="adminOverlay" onclick="toggleAdminSidebar()"></div>
+    <div class="admin-sidebar" id="adminSidebar">
+        <div class="admin-header">
+            <h3><i class="fas fa-shield-alt"></i> SYSTEM PANEL</h3>
+            <i class="fas fa-times" onclick="toggleAdminSidebar()" style="cursor:pointer; color:#ff003c;"></i>
         </div>
-        
-        <div class="sidebar-links">
-            <a href="#" class="side-link"><i class="fas fa-user-circle"></i> My Profile</a>
-            <a href="#" class="side-link"><i class="fas fa-history"></i> Download History</a>
-            <a href="#" class="side-link"><i class="fas fa-heart"></i> Wishlist</a>
-            <a href="#" class="side-link"><i class="fas fa-wallet"></i> Coin Wallet</a>
-            
-            <div class="sidebar-divider"></div>
-            
-            <a href="#" class="side-link"><i class="fas fa-paint-brush"></i> Theme: Dark Mode</a>
-            <a href="#" class="side-link"><i class="fas fa-language"></i> Language: English</a>
-            <a href="#" class="side-link" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Secure Logout</a>
-        </div>
-
-        <div class="admin-section">
-            <a href="admin.html" class="side-link admin-link" id="navAdminPanel">
-                <i class="fas fa-shield-check"></i> Admin Panel
-            </a>
-            <a href="owner.html" class="side-link owner-link" id="navOwnerPanel">
-                <i class="fas fa-crown"></i> Owner Panel
-            </a>
+        <div class="admin-links">
+            <a href="admin.html" id="linkAdmin" style="display:none;"><i class="fas fa-tasks"></i> Admin Dashboard</a>
+            <a href="owner.html" id="linkOwner" style="display:none;"><i class="fas fa-crown" style="color:#ffd700;"></i> Master Owner</a>
         </div>
     </div>
 
-    <main class="main-wrapper">
+    <main class="play-main-content" id="mainStoreFeed">
         
-        <div class="category-tabs">
-            <button class="tab-btn active" data-target="free">FREE APPS</button>
-            <button class="tab-btn" data-target="paid">PAID APPS</button>
+        <div class="play-categories">
+            <button class="cat-chip active" data-filter="for_you">For you</button>
+            <button class="cat-chip" data-filter="premium">Premium</button>
+            <button class="cat-chip" data-filter="free">Free Games</button>
         </div>
 
-        <h2 class="section-title"><i class="fas fa-fire"></i> Trending Now</h2>
-        <div class="app-grid" id="trendingGrid">
-            <div class="empty-state">
-                <i class="fas fa-satellite-dish"></i>
-                <h3>Fetching Trending Data...</h3>
-            </div>
-        </div>
-
-        <h2 class="section-title"><i class="fas fa-layer-group"></i> Store Feed</h2>
-        <div class="app-grid" id="mainFeedGrid">
-            <div class="empty-state">
-                <i class="fas fa-box-open"></i>
-                <h3>No Applications Found</h3>
+        <h2 class="play-section-title">Recommended for you <i class="fas fa-arrow-right"></i></h2>
+        
+        <div class="play-app-grid" id="storeAppGrid">
+            <div style="text-align:center; padding: 40px; grid-column: 1/-1;">
+                <i class="fas fa-spinner fa-spin" style="font-size:30px; color:#00e6b8;"></i>
+                <p style="margin-top:10px; color:#94a3b8;">Loading Store Data...</p>
             </div>
         </div>
 
     </main>
 
-    <button class="fab-upload" id="uploadBtn" title="Upload New App">
-        <i class="fas fa-plus"></i>
-    </button>
+    <main class="play-main-content" id="youTabContent" style="display: none;">
+        <div class="you-header">
+            <img src="" id="youTabAvatar" alt="User">
+            <div class="you-info">
+                <h2 id="youTabName">Loading...</h2>
+                <p id="youTabEmail">user@mvx.com</p>
+            </div>
+        </div>
+
+        <div class="you-menu-list">
+            <div class="you-menu-item" onclick="openUploadModal()">
+                <i class="fas fa-cloud-upload-alt" style="color: #00e6b8;"></i>
+                <span>Upload Application</span>
+                <i class="fas fa-chevron-right arrow"></i>
+            </div>
+            <div class="you-menu-item">
+                <i class="fas fa-history" style="color: #94a3b8;"></i>
+                <span>Download History</span>
+                <i class="fas fa-chevron-right arrow"></i>
+            </div>
+            <div class="you-menu-item">
+                <i class="fas fa-wallet" style="color: #ffd700;"></i>
+                <span>MVX Coins Wallet</span>
+                <span style="margin-left:auto; margin-right:15px; font-weight:bold; color:#ffd700;" id="youCoinBalance">0</span>
+            </div>
+            <div class="you-menu-item" style="color: #ff003c;" onclick="secureLogout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Sign Out</span>
+            </div>
+        </div>
+    </main>
+
+    <nav class="play-bottom-nav">
+        <div class="nav-item active" onclick="switchTab('games', this)">
+            <i class="fas fa-gamepad"></i>
+            <span>Games</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('apps', this)">
+            <i class="fas fa-layer-group"></i>
+            <span>Apps</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('search', this)">
+            <i class="fas fa-search"></i>
+            <span>Search</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('you', this)">
+            <i class="fas fa-user-circle"></i>
+            <span>You</span>
+        </div>
+    </nav>
+
+    <div class="modal-overlay" id="profileEditModal">
+        <div class="play-modal">
+            <div class="modal-header">
+                <h3>Edit Profile</h3>
+                <i class="fas fa-times close-modal" onclick="closeProfileEditModal()"></i>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <img src="" id="editPreviewAvatar" style="width:80px; height:80px; border-radius:50%; object-fit:cover; border:2px solid #00e6b8; margin-bottom:10px;">
+                </div>
+                <label class="modal-label">Display Name</label>
+                <input type="text" id="editNameInput" class="play-input" placeholder="Enter your name">
+                
+                <label class="modal-label" style="margin-top:15px;">Profile Picture (ImgBB / URL)</label>
+                <input type="text" id="editAvatarInput" class="play-input" placeholder="Paste direct image link here">
+                
+                <button class="play-btn" style="margin-top: 20px;" onclick="saveProfileChanges()">SAVE CHANGES</button>
+            </div>
+        </div>
+    </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -192,71 +145,42 @@
     <script src="store-logic.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Sidebar Controls
-            const sidebar = document.getElementById('sidebarMenu');
-            const overlay = document.getElementById('sidebarOverlay');
-            const openBtn = document.getElementById('openMenuBtn');
-            const closeBtn = document.getElementById('closeMenuBtn');
+        // Tab Switching Logic
+        function switchTab(tabName, element) {
+            // Update Active State on Nav
+            document.querySelectorAll('.play-bottom-nav .nav-item').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
 
-            function toggleMenu() {
-                sidebar.classList.toggle('active');
-                overlay.classList.toggle('active');
+            // Switch Content
+            const feed = document.getElementById('mainStoreFeed');
+            const youTab = document.getElementById('youTabContent');
+
+            if(tabName === 'you') {
+                feed.style.display = 'none';
+                youTab.style.display = 'block';
+            } else if (tabName === 'search') {
+                // Search logic can be implemented here later
+                feed.style.display = 'block';
+                youTab.style.display = 'none';
+            } else {
+                feed.style.display = 'block';
+                youTab.style.display = 'none';
             }
+        }
 
-            openBtn.addEventListener('click', toggleMenu);
-            closeBtn.addEventListener('click', toggleMenu);
-            overlay.addEventListener('click', toggleMenu);
+        // Admin Sidebar Logic
+        function toggleAdminSidebar() {
+            document.getElementById('adminSidebar').classList.toggle('active');
+            document.getElementById('adminOverlay').classList.toggle('active');
+        }
 
-            // Tab Switching Logic
-            const tabs = document.querySelectorAll('.tab-btn');
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    tabs.forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    // Logic to filter store feed will connect to store-logic.js
-                    const filterType = tab.getAttribute('data-target');
-                    if(typeof window.filterStoreData === 'function') {
-                        window.filterStoreData(filterType);
-                    }
-                });
-            });
-
-            // Role-Based UI Rendering (Reveals Admin/Owner links securely)
-            setTimeout(() => {
-                const userRole = sessionStorage.getItem('mvx_role') || 'user';
-                if(userRole === 'admin' || userRole === 'owner') {
-                    document.getElementById('navAdminPanel').style.display = 'flex';
-                }
-                if(userRole === 'owner') {
-                    document.getElementById('navOwnerPanel').style.display = 'flex';
-                }
-            }, 1000);
-
-            // Logout Function
-            document.getElementById('logoutBtn').addEventListener('click', () => {
-                if(confirm("Are you sure you want to securely logout?")) {
-                    sessionStorage.clear();
-                    if(typeof firebase !== 'undefined') {
-                        firebase.auth().signOut().then(() => {
-                            window.location.replace('login.html');
-                        });
-                    } else {
-                        window.location.replace('login.html');
-                    }
-                }
-            });
-
-            // Upload Button Logic
-            document.getElementById('uploadBtn').addEventListener('click', () => {
-                // This will trigger the modal/page located in store-logic.js
-                if(typeof window.openUploadDashboard === 'function') {
-                    window.openUploadDashboard();
-                } else {
-                    alert("Upload system is initializing. Please wait.");
-                }
-            });
-        });
+        // Profile Edit Modal Logic
+        function openProfileEditModal() {
+            document.getElementById('profileEditModal').classList.add('active');
+        }
+        function closeProfileEditModal() {
+            document.getElementById('profileEditModal').classList.remove('active');
+        }
     </script>
 </body>
 </html>

@@ -1,118 +1,102 @@
 /* ==========================================================================
-   MVX STORE V4.0 - ADVANCED STORE LOGIC & ECONOMY ENGINE
-   ==========================================================================
-   - Real-time Store Feed Rendering
-   - Dynamic Upload System with Limit Checking
-   - Coin & Economy Rewards Engine
-   - App Details Fetching & Deep Linking
+   MVX STORE V5.0 - MAIN STORE LOGIC & UPLOAD ENGINE
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
-    
-    // Safety check for Firebase Initialization
     if (typeof firebase === 'undefined') {
-        console.error("Firebase SDK not loaded. Store Logic halted.");
+        console.error("Firebase SDK missing.");
         return;
     }
 
     const db = firebase.database();
     const auth = firebase.auth();
     
-    // Global State
     let currentUser = null;
     let userProfile = null;
 
-    // Listen for Auth State
+    // ImgBB API Key (আপনার নিজের API Key এখানে বসান)
+    const IMGBB_API_KEY = "YOUR_IMGBB_API_KEY_HERE"; 
+
+    // Auth State Check
     auth.onAuthStateChanged((user) => {
         if (user) {
             currentUser = user;
-            fetchUserProfile(user.uid);
+            loadUserProfile(user.uid);
+            runAutoApproveEngine(); // স্টার্ট অটো-অ্যাপ্রুভ চেকার
         }
     });
 
     // ==========================================================================
-    // 1. USER PROFILE & ECONOMY FETCHING
+    // 1. LOAD USER PROFILE
     // ==========================================================================
-    function fetchUserProfile(uid) {
+    function loadUserProfile(uid) {
         db.ref('users/' + uid).on('value', (snapshot) => {
             if (snapshot.exists()) {
                 userProfile = snapshot.val();
                 
-                // Update UI elements if they exist
-                const coinDisplay = document.getElementById('navCoinDisplay');
-                if(coinDisplay) coinDisplay.innerText = userProfile.coins || 0;
+                // You Tab Data Update
+                const tabName = document.getElementById('youTabName');
+                const tabEmail = document.getElementById('youTabEmail');
+                const tabCoin = document.getElementById('youCoinBalance');
+                const tabAvatar = document.getElementById('youTabAvatar');
 
-                const sidebarName = document.getElementById('sidebarName');
-                if(sidebarName) sidebarName.innerText = userProfile.name || 'MVX User';
+                if(tabName) tabName.innerText = userProfile.name;
+                if(tabEmail) tabEmail.innerText = userProfile.email;
+                if(tabCoin) tabCoin.innerText = userProfile.coins || 0;
+                if(tabAvatar) tabAvatar.src = userProfile.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile.name}`;
 
-                const sidebarUID = document.getElementById('sidebarUID');
-                if(sidebarUID) sidebarUID.innerText = `UID: ${uid.substring(0, 8).toUpperCase()}`;
-
-                // Verified Badge Logic
-                const sidebarBadge = document.getElementById('sidebarBadge');
-                if(sidebarBadge) {
-                    if(userProfile.verified) {
-                        sidebarBadge.style.display = 'inline-flex';
-                    } else {
-                        sidebarBadge.style.display = 'none';
-                    }
+                // Admin Menu Toggle
+                if(userProfile.role === 'admin' || userProfile.role === 'owner') {
+                    document.getElementById('adminMenuToggle').style.display = 'block';
+                    document.getElementById('linkAdmin').style.display = 'flex';
                 }
+                if(userProfile.role === 'owner') {
+                    document.getElementById('linkOwner').style.display = 'flex';
+                }
+
+                // Load Store Data after profile loads
+                loadStoreFeed('for_you');
             }
         });
     }
 
     // ==========================================================================
-    // 2. STORE FEED & FILTERING LOGIC (HOME PAGE)
+    // 2. STORE FEED RENDER (Play Store Style)
     // ==========================================================================
-    window.filterStoreData = function(type) {
-        const feedGrid = document.getElementById('mainFeedGrid');
-        if(!feedGrid) return;
+    window.loadStoreFeed = function(filterType) {
+        const grid = document.getElementById('storeAppGrid');
+        if(!grid) return;
 
-        feedGrid.innerHTML = `
-            <div style="text-align:center; padding: 40px; width: 100%; grid-column: 1/-1;">
-                <div class="spinner" style="margin: 0 auto;"></div>
-                <p style="color:#00e6b8; margin-top:15px; font-family:'Orbitron', sans-serif;">SCANNING DATABASE...</p>
-            </div>
-        `;
+        grid.innerHTML = `<div style="text-align:center; padding: 40px; grid-column: 1/-1;"><i class="fas fa-spinner fa-spin" style="font-size:30px; color:#00e6b8;"></i></div>`;
 
-        // Fetch Approved Apps Only
-        db.ref('store_apps').orderByChild('status').equalTo('approved').once('value')
-        .then((snapshot) => {
+        db.ref('store_apps').orderByChild('status').equalTo('approved').once('value').then((snapshot) => {
             if(!snapshot.exists()) {
-                feedGrid.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-box-open"></i>
-                        <h3>No ${type.toUpperCase()} Applications Found</h3>
-                    </div>`;
+                grid.innerHTML = `<div style="text-align:center; padding:40px; grid-column: 1/-1; color:#94a3b8;">No applications found.</div>`;
                 return;
             }
 
-            let appsHTML = '';
-            let count = 0;
+            let html = '';
+            let apps = [];
+            snapshot.forEach(child => apps.push({ id: child.key, ...child.val() }));
+            apps.reverse(); // Newest first
 
-            // Reverse for newest first
-            const appsList = [];
-            snapshot.forEach(child => { appsList.push({ id: child.key, ...child.val() }); });
-            appsList.reverse();
+            apps.forEach(app => {
+                let show = false;
+                if(filterType === 'for_you') show = true;
+                if(filterType === 'free' && app.category === 'free') show = true;
+                if(filterType === 'premium' && app.category === 'paid') show = true;
 
-            appsList.forEach(app => {
-                if(app.category.toLowerCase() === type.toLowerCase()) {
-                    count++;
-                    const isNew = (Date.now() - app.timestamp) < (3 * 24 * 60 * 60 * 1000); // Under 3 days
-                    const badgeHTML = isNew ? `<span class="badge" style="position:absolute; top:10px; right:10px; background:#ff003c; color:#fff;">NEW</span>` : '';
-                    
-                    appsHTML += `
-                        <div class="yt-card" onclick="window.location.href='details.html?id=${app.id}'" style="background: rgba(15,23,42,0.8); border: 1px solid rgba(0,230,184,0.2); border-radius: 15px; overflow:hidden; cursor:pointer; transition:0.3s;">
-                            <div style="position:relative; height: 160px; background:#000;">
-                                ${badgeHTML}
-                                <span style="position:absolute; bottom:10px; left:10px; background:rgba(0,0,0,0.7); color:#00e6b8; padding:3px 10px; border-radius:5px; font-family:'Orbitron', sans-serif; font-size:10px; font-weight:bold;"><i class="fas fa-star"></i> ${app.accessType.toUpperCase()}</span>
-                                <img src="${app.bannerUrl}" style="width:100%; height:100%; object-fit:cover; opacity:0.8; transition:0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                            </div>
-                            <div style="padding: 15px; display:flex; gap:15px; align-items:center;">
-                                <img src="${app.logoUrl}" style="width:50px; height:50px; border-radius:12px; border:2px solid #334155;">
-                                <div style="flex:1; overflow:hidden;">
-                                    <h3 style="color:#fff; font-size:16px; font-family:'Orbitron', sans-serif; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${app.appName}</h3>
-                                    <p style="color:#94a3b8; font-size:12px; font-weight:600;">v${app.version} • ${app.size} • <i class="fas fa-download"></i> ${app.downloads || 0}</p>
+                if(show) {
+                    html += `
+                        <div class="app-card" onclick="window.location.href='details.html?id=${app.id}'">
+                            <img src="${app.logoUrl}" class="app-icon-large" loading="lazy">
+                            <div class="app-info-list">
+                                <h3 class="app-title-list">${app.appName}</h3>
+                                <div class="app-dev-list">${app.uploaderName} • ${app.size}</div>
+                                <div class="app-meta-list">
+                                    <span class="rating">4.5 <i class="fas fa-star"></i></span>
+                                    <span>${app.downloads || 0} Downloads</span>
+                                    <span style="color:${app.category === 'paid' ? '#ffd700' : '#00ff88'}; font-weight:bold; text-transform:uppercase;">${app.category}</span>
                                 </div>
                             </div>
                         </div>
@@ -120,247 +104,202 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
-            if(count === 0) {
-                feedGrid.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-ghost" style="font-size:40px; color:#334155; margin-bottom:15px;"></i>
-                        <h3>No ${type.toUpperCase()} Applications Yet</h3>
-                    </div>`;
-            } else {
-                feedGrid.innerHTML = appsHTML;
-            }
+            grid.innerHTML = html || `<div style="text-align:center; padding:40px; grid-column: 1/-1; color:#94a3b8;">No apps in this category.</div>`;
         });
     };
 
-    // Auto-load FREE apps if on home page
-    if(document.getElementById('mainFeedGrid')) {
-        setTimeout(() => window.filterStoreData('free'), 1000);
+    // Category Chip Clicks
+    document.querySelectorAll('.cat-chip').forEach(chip => {
+        chip.addEventListener('click', (e) => {
+            document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+            e.target.classList.add('active');
+            loadStoreFeed(e.target.getAttribute('data-filter'));
+        });
+    });
+
+    // ==========================================================================
+    // 3. ADVANCED UPLOAD MODAL (ImgBB, Password, Multi-Link)
+    // ==========================================================================
+    window.openUploadModal = function() {
+        if(!userProfile) return;
+
+        // Restriction Logic
+        const isAdmin = (userProfile.role === 'admin' || userProfile.role === 'owner');
+        const paidOptionHTML = isAdmin ? `<option value="paid">PREMIUM (Paid)</option>` : `<option value="free" disabled>PREMIUM (Admins Only)</option>`;
+
+        let uploadUI = document.createElement('div');
+        uploadUI.id = 'uploadEngineModal';
+        uploadUI.className = 'modal-overlay active';
+        uploadUI.innerHTML = `
+            <div class="play-modal" style="max-width: 600px;">
+                <div class="modal-header">
+                    <h3><i class="fas fa-cloud-upload-alt" style="color:var(--primary);"></i> Publish Application</h3>
+                    <i class="fas fa-times close-modal" onclick="document.getElementById('uploadEngineModal').remove()"></i>
+                </div>
+                <div class="modal-body" style="padding-bottom: 30px;">
+                    <p style="font-size:12px; color:var(--text-secondary); margin-bottom:15px;">
+                        <i class="fas fa-info-circle"></i> Uploads will be checked by admins. If unchecked, it will Auto-Approve in 1 hour.
+                    </p>
+
+                    <label class="modal-label">Application Name</label>
+                    <input type="text" id="upName" class="play-input" placeholder="Enter App Name">
+
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+                        <div>
+                            <label class="modal-label">Version</label>
+                            <input type="text" id="upVer" class="play-input" placeholder="e.g. 1.0.0">
+                        </div>
+                        <div>
+                            <label class="modal-label">Size</label>
+                            <input type="text" id="upSize" class="play-input" placeholder="e.g. 50 MB">
+                        </div>
+                    </div>
+
+                    <label class="modal-label">Category / Access</label>
+                    <select id="upCat" class="play-input">
+                        <option value="free">FREE (Public)</option>
+                        ${paidOptionHTML}
+                    </select>
+
+                    <hr style="border:0; border-top:1px solid var(--border-color); margin:15px 0;">
+
+                    <label class="modal-label">App Logo (Upload via ImgBB)</label>
+                    <input type="file" id="upLogoFile" class="play-input" accept="image/*" style="padding:10px;">
+                    <input type="hidden" id="upLogoUrl">
+                    <p id="logoStatus" style="font-size:11px; color:var(--primary); margin-top:-10px; margin-bottom:10px;"></p>
+
+                    <label class="modal-label">App Banner (Upload via ImgBB)</label>
+                    <input type="file" id="upBannerFile" class="play-input" accept="image/*" style="padding:10px;">
+                    <input type="hidden" id="upBannerUrl">
+                    <p id="bannerStatus" style="font-size:11px; color:var(--primary); margin-top:-10px; margin-bottom:10px;"></p>
+
+                    <hr style="border:0; border-top:1px solid var(--border-color); margin:15px 0;">
+
+                    <label class="modal-label">Main Download Link</label>
+                    <input type="text" id="upLinkMain" class="play-input" placeholder="https://...">
+
+                    <label class="modal-label">Alternative / Key Link (Optional)</label>
+                    <div style="display:flex; gap:10px;">
+                        <input type="text" id="upLinkAltName" class="play-input" placeholder="Button Name (e.g. Get Key)" style="width:40%;">
+                        <input type="text" id="upLinkAltUrl" class="play-input" placeholder="https://..." style="width:60%;">
+                    </div>
+
+                    <label class="modal-label">Unzip Password (Optional)</label>
+                    <input type="text" id="upPass" class="play-input" placeholder="Leave blank if no password">
+
+                    <label class="modal-label">Description & Changes</label>
+                    <textarea id="upDesc" class="play-input" placeholder="What's new in this version?"></textarea>
+
+                    <button class="play-btn" onclick="processUploadData()" id="finalUploadBtn">SUBMIT TO SYSTEM</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(uploadUI);
+
+        // ImgBB Auto-Upload Listeners
+        document.getElementById('upLogoFile').addEventListener('change', (e) => uploadToImgBB(e.target.files[0], 'upLogoUrl', 'logoStatus'));
+        document.getElementById('upBannerFile').addEventListener('change', (e) => uploadToImgBB(e.target.files[0], 'upBannerUrl', 'bannerStatus'));
+    };
+
+    // ImgBB Upload Function
+    function uploadToImgBB(file, targetInputId, statusId) {
+        if(!file) return;
+        const statusTxt = document.getElementById(statusId);
+        statusTxt.innerText = "Uploading to ImgBB...";
+        statusTxt.style.color = "var(--warning)";
+
+        const formData = new FormData();
+        formData.append("image", file);
+
+        fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+            method: "POST",
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) {
+                document.getElementById(targetInputId).value = data.data.url;
+                statusTxt.innerText = "Upload Complete: " + data.data.url;
+                statusTxt.style.color = "var(--primary)";
+            } else {
+                statusTxt.innerText = "ImgBB Error. Check API Key.";
+                statusTxt.style.color = "var(--danger)";
+            }
+        })
+        .catch(err => {
+            statusTxt.innerText = "Upload failed.";
+            statusTxt.style.color = "var(--danger)";
+        });
     }
 
-    // ==========================================================================
-    // 3. UPLOAD SYSTEM (DYNAMIC MODAL & LIMIT CHECK)
-    // ==========================================================================
-    window.openUploadDashboard = function() {
-        if(!currentUser || !userProfile) {
-            alert("⚠️ SYSTEM ERROR: User profile not loaded. Please login again.");
-            return;
-        }
-
-        // Limit Check Logic
-        const maxLimit = userProfile.uploadLimit || 5; 
-        const currentUploads = userProfile.uploadCount || 0;
-
-        if(currentUploads >= maxLimit && userProfile.role !== 'owner' && userProfile.role !== 'admin') {
-            alert(`⚠️ UPLOAD LIMIT REACHED: You have reached your limit of ${maxLimit} uploads. Please wait for an admin to upgrade your quota.`);
-            return;
-        }
-
-        // Create Full-Screen Upload Modal
-        let uploadModal = document.getElementById('uploadEngineModal');
-        if(!uploadModal) {
-            uploadModal = document.createElement('div');
-            uploadModal.id = 'uploadEngineModal';
-            uploadModal.style.cssText = `position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(2,6,23,0.95); backdrop-filter:blur(10px); z-index:9999; display:flex; justify-content:center; align-items:center; opacity:0; transition:0.3s;`;
-            
-            uploadModal.innerHTML = `
-                <div style="background:#0f172a; width:95%; max-width:600px; height:85vh; border-radius:20px; border:1px solid #00e6b8; box-shadow:0 0 30px rgba(0,230,184,0.2); display:flex; flex-direction:column; overflow:hidden; transform:scale(0.9); transition:0.3s;" id="uploadBoxScale">
-                    
-                    <div style="padding:20px; background:rgba(0,0,0,0.3); border-bottom:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; align-items:center;">
-                        <h2 style="color:#00e6b8; font-family:'Orbitron', sans-serif; font-size:18px;"><i class="fas fa-cloud-upload-alt"></i> PUBLISH APPLICATION</h2>
-                        <i class="fas fa-times" style="color:#ff003c; font-size:24px; cursor:pointer;" onclick="closeUploadModal()"></i>
-                    </div>
-
-                    <div style="padding:25px; overflow-y:auto; flex:1;">
-                        <div style="background:rgba(0,230,184,0.1); border:1px solid rgba(0,230,184,0.3); color:#fff; padding:15px; border-radius:10px; margin-bottom:20px; font-size:13px;">
-                            <i class="fas fa-info-circle" style="color:#00e6b8;"></i> You have <b>${maxLimit - currentUploads}</b> uploads remaining in your quota. All uploads require admin approval before publishing.
-                        </div>
-
-                        <label style="color:#94a3b8; font-size:12px; font-weight:bold; letter-spacing:1px; margin-bottom:5px; display:block;">APPLICATION NAME</label>
-                        <input type="text" id="upAppName" placeholder="Enter app title..." style="width:100%; background:#020617; border:1px solid #334155; padding:15px; border-radius:8px; color:#fff; margin-bottom:15px; outline:none; font-family:'Space Grotesk', sans-serif;">
-
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:15px;">
-                            <div>
-                                <label style="color:#94a3b8; font-size:12px; font-weight:bold; letter-spacing:1px; margin-bottom:5px; display:block;">VERSION</label>
-                                <input type="text" id="upAppVer" placeholder="e.g. 1.0.4" style="width:100%; background:#020617; border:1px solid #334155; padding:15px; border-radius:8px; color:#fff; outline:none; font-family:'Space Grotesk', sans-serif;">
-                            </div>
-                            <div>
-                                <label style="color:#94a3b8; font-size:12px; font-weight:bold; letter-spacing:1px; margin-bottom:5px; display:block;">FILE SIZE</label>
-                                <input type="text" id="upAppSize" placeholder="e.g. 45 MB" style="width:100%; background:#020617; border:1px solid #334155; padding:15px; border-radius:8px; color:#fff; outline:none; font-family:'Space Grotesk', sans-serif;">
-                            </div>
-                        </div>
-
-                        <label style="color:#94a3b8; font-size:12px; font-weight:bold; letter-spacing:1px; margin-bottom:5px; display:block;">CATEGORY</label>
-                        <select id="upAppCat" style="width:100%; background:#020617; border:1px solid #334155; padding:15px; border-radius:8px; color:#fff; margin-bottom:15px; outline:none; font-family:'Space Grotesk', sans-serif; cursor:pointer;">
-                            <option value="free">FREE APP</option>
-                            <option value="paid">PAID APP</option>
-                        </select>
-
-                        <label style="color:#94a3b8; font-size:12px; font-weight:bold; letter-spacing:1px; margin-bottom:5px; display:block;">DOWNLOAD LINK</label>
-                        <input type="text" id="upAppLink" placeholder="Direct or Drive link..." style="width:100%; background:#020617; border:1px solid #334155; padding:15px; border-radius:8px; color:#fff; margin-bottom:15px; outline:none; font-family:'Space Grotesk', sans-serif;">
-
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:15px;">
-                            <div>
-                                <label style="color:#94a3b8; font-size:12px; font-weight:bold; letter-spacing:1px; margin-bottom:5px; display:block;">LOGO URL</label>
-                                <input type="text" id="upLogoUrl" placeholder="Image link..." style="width:100%; background:#020617; border:1px solid #334155; padding:15px; border-radius:8px; color:#fff; outline:none; font-family:'Space Grotesk', sans-serif;">
-                            </div>
-                            <div>
-                                <label style="color:#94a3b8; font-size:12px; font-weight:bold; letter-spacing:1px; margin-bottom:5px; display:block;">BANNER URL</label>
-                                <input type="text" id="upBannerUrl" placeholder="Wide image link..." style="width:100%; background:#020617; border:1px solid #334155; padding:15px; border-radius:8px; color:#fff; outline:none; font-family:'Space Grotesk', sans-serif;">
-                            </div>
-                        </div>
-
-                        <label style="color:#94a3b8; font-size:12px; font-weight:bold; letter-spacing:1px; margin-bottom:5px; display:block;">FULL DESCRIPTION</label>
-                        <textarea id="upAppDesc" placeholder="Describe the features, changes, etc..." style="width:100%; background:#020617; border:1px solid #334155; padding:15px; border-radius:8px; color:#fff; margin-bottom:15px; outline:none; font-family:'Space Grotesk', sans-serif; resize:vertical; min-height:100px;"></textarea>
-
-                        <button onclick="submitAppToPending()" style="width:100%; background:#00e6b8; color:#020617; border:none; padding:18px; border-radius:10px; font-family:'Orbitron', sans-serif; font-size:16px; font-weight:bold; cursor:pointer; box-shadow:0 10px 20px rgba(0,230,184,0.3); transition:0.3s;" onmouseover="this.style.background='#fff'" onmouseout="this.style.background='#00e6b8'"><i class="fas fa-paper-plane"></i> SUBMIT FOR REVIEW</button>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(uploadModal);
-        }
-
-        document.getElementById('uploadEngineModal').style.opacity = '1';
-        document.getElementById('uploadBoxScale').style.transform = 'scale(1)';
-    };
-
-    window.closeUploadModal = function() {
-        const modal = document.getElementById('uploadEngineModal');
-        if(modal) {
-            document.getElementById('uploadBoxScale').style.transform = 'scale(0.9)';
-            modal.style.opacity = '0';
-            setTimeout(() => modal.remove(), 300);
-        }
-    };
-
-    window.submitAppToPending = function() {
-        const title = document.getElementById('upAppName').value.trim();
-        const link = document.getElementById('upAppLink').value.trim();
+    // Submit Logic
+    window.processUploadData = function() {
+        const name = document.getElementById('upName').value.trim();
+        const mainLink = document.getElementById('upLinkMain').value.trim();
         
-        if(!title || !link) {
-            alert("⚠️ Missing Fields: Title and Download Link are mandatory.");
+        if(!name || !mainLink) {
+            alert("App Name and Main Download Link are required.");
             return;
         }
 
-        // Show Processing
-        if(typeof toggleGlobalLoader === 'function') toggleGlobalLoader(true, "ENCRYPTING DATA...");
+        const btn = document.getElementById('finalUploadBtn');
+        btn.innerText = "PROCESSING...";
+        btn.disabled = true;
 
         const appData = {
-            appName: title,
-            version: document.getElementById('upAppVer').value.trim() || '1.0',
-            size: document.getElementById('upAppSize').value.trim() || 'Unknown',
-            category: document.getElementById('upAppCat').value,
-            accessType: document.getElementById('upAppCat').value,
-            downloadUrl: link,
-            logoUrl: document.getElementById('upLogoUrl').value.trim() || 'https://via.placeholder.com/150/020617/00e6b8?text=APP',
-            bannerUrl: document.getElementById('upBannerUrl').value.trim() || 'https://via.placeholder.com/600x300/020617/00e6b8?text=MVX+STORE',
-            description: document.getElementById('upAppDesc').value.trim() || 'No description provided.',
+            appName: name,
+            version: document.getElementById('upVer').value || '1.0',
+            size: document.getElementById('upSize').value || 'Unknown',
+            category: document.getElementById('upCat').value,
+            logoUrl: document.getElementById('upLogoUrl').value || 'https://via.placeholder.com/150/121212/00e6b8?text=APP',
+            bannerUrl: document.getElementById('upBannerUrl').value || 'https://via.placeholder.com/500x250/121212/00e6b8?text=BANNER',
+            downloadUrl: mainLink,
+            altLinkName: document.getElementById('upLinkAltName').value.trim(),
+            altLinkUrl: document.getElementById('upLinkAltUrl').value.trim(),
+            zipPassword: document.getElementById('upPass').value.trim(),
+            description: document.getElementById('upDesc').value.trim(),
             uploaderUid: currentUser.uid,
             uploaderName: userProfile.name,
             timestamp: firebase.database.ServerValue.TIMESTAMP,
-            status: 'pending', // Requires admin approval
-            views: 0,
-            downloads: 0
+            autoApproveTime: Date.now() + 3600000, // 1 Hour from now
+            status: 'pending',
+            downloads: 0,
+            views: 0
         };
 
-        const newAppRef = db.ref('pending_apps').push();
-        newAppRef.set(appData).then(() => {
-            // Update User Upload Count
-            db.ref(`users/${currentUser.uid}/uploadCount`).set((userProfile.uploadCount || 0) + 1);
-            
-            if(typeof toggleGlobalLoader === 'function') toggleGlobalLoader(false);
-            if(typeof showGlobalToast === 'function') showGlobalToast('Application Submitted for Review!');
-            closeUploadModal();
-        }).catch(err => {
-            if(typeof toggleGlobalLoader === 'function') toggleGlobalLoader(false);
-            alert("Error: " + err.message);
+        db.ref('pending_apps').push(appData).then(() => {
+            alert("Application submitted successfully! It will be Auto-Approved in 1 Hour if admins do not check it.");
+            document.getElementById('uploadEngineModal').remove();
         });
     };
 
     // ==========================================================================
-    // 4. DETAILS PAGE ENGINE & DOWNLOAD REWARDS
+    // 4. 1-HOUR AUTO-APPROVE BACKGROUND ENGINE
     // ==========================================================================
-    window.fetchAppDetails = function(appId) {
-        db.ref('store_apps/' + appId).once('value').then((snapshot) => {
-            if(!snapshot.exists()) {
-                alert("Application not found or removed by admin.");
-                window.location.replace("index.html");
-                return;
-            }
-
-            const app = snapshot.val();
-
-            // Populate UI Elements
-            document.getElementById('appName').innerText = app.appName;
-            document.getElementById('uploaderName').innerText = app.uploaderName;
-            document.getElementById('appBanner').src = app.bannerUrl;
-            document.getElementById('appLogo').src = app.logoUrl;
-            document.getElementById('appDesc').innerText = app.description;
-            
-            document.getElementById('viewCount').innerText = app.views || 0;
-            document.getElementById('downloadCount').innerText = app.downloads || 0;
-            document.getElementById('appSize').innerText = app.size;
-            document.getElementById('appVersion').innerText = "v" + app.version;
-
-            // Increment Views natively
-            db.ref(`store_apps/${appId}/views`).set((app.views || 0) + 1);
-
-            // Verified Badge logic
-            db.ref('users/' + app.uploaderUid).once('value').then(usrSnap => {
-                if(usrSnap.exists() && usrSnap.val().verified) {
-                    document.getElementById('verifiedIcon').style.display = 'inline-block';
+    function runAutoApproveEngine() {
+        // Runs every 5 minutes
+        setInterval(() => {
+            db.ref('pending_apps').once('value').then(snapshot => {
+                if(snapshot.exists()) {
+                    const now = Date.now();
+                    snapshot.forEach(child => {
+                        let app = child.val();
+                        // Check if 1 hour has passed based on client time calculation
+                        if (now >= app.autoApproveTime) {
+                            app.status = 'approved';
+                            app.approvedBy = 'Auto-System';
+                            app.approvedAt = firebase.database.ServerValue.TIMESTAMP;
+                            
+                            // Move to store
+                            db.ref(`store_apps/${child.key}`).set(app).then(() => {
+                                // Delete from pending
+                                db.ref(`pending_apps/${child.key}`).remove();
+                                console.log(`Auto-Approved: ${app.appName}`);
+                            });
+                        }
+                    });
                 }
             });
-
-            // Download Button Logic with Coin Economy
-            const dlBtn = document.getElementById('downloadBtn');
-            dlBtn.addEventListener('click', () => {
-                
-                // Increase Download Count
-                db.ref(`store_apps/${appId}/downloads`).set((app.downloads || 0) + 1);
-
-                // Give Uploader a Coin Reward (e.g., 1 coin per 10 downloads can be set, here we do 1 per dl for demo)
-                db.ref(`users/${app.uploaderUid}/coins`).set((usrSnap.val().coins || 0) + 1);
-
-                // Start Download securely
-                let finalUrl = app.downloadUrl;
-                if(finalUrl.includes('drive.google.com/file/d/')) {
-                    const match = finalUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
-                    if (match) finalUrl = `https://drive.google.com/uc?export=download&id=${match[1]}`;
-                }
-                
-                showGlobalToast("Download Initiated!", "success");
-                setTimeout(() => window.open(finalUrl, '_blank'), 1500);
-            });
-
-            // Hide Loader
-            const loader = document.getElementById('detailsLoader');
-            if(loader) {
-                loader.style.opacity = '0';
-                setTimeout(() => loader.style.display = 'none', 500);
-            }
-        });
-    };
-
-    // ==========================================================================
-    // 5. REPORT SYSTEM (SEND TO ADMIN)
-    // ==========================================================================
-    window.submitAppReport = function(appId, reason) {
-        if(!currentUser) {
-            alert("You must be logged in to report.");
-            return;
-        }
-
-        const reportData = {
-            appId: appId,
-            reporterUid: currentUser.uid,
-            reporterEmail: currentUser.email,
-            reason: reason,
-            status: 'unresolved',
-            timestamp: firebase.database.ServerValue.TIMESTAMP
-        };
-
-        db.ref('reports').push(reportData).then(() => {
-            if(typeof showGlobalToast === 'function') showGlobalToast('Report Sent to Admins.', 'success');
-        }).catch(err => alert("Error submitting report: " + err.message));
-    };
+        }, 300000); // 300,000 ms = 5 minutes
+    }
 });
