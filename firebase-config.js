@@ -1,8 +1,8 @@
 /* ==========================================================================
-   MVX SYSTEM V4.0 - CORE FIREBASE & AUTHENTICATION ENGINE
+   MVX SYSTEM V4.0 - CORE FIREBASE & AUTHENTICATION ENGINE (UPDATED)
    ========================================================================== */
 
-// ১. ফায়ারবেস কনফিগারেশন (আপনার আসল ফায়ারবেস ডিটেইলস এখানে বসাবেন)
+// ১. ফায়ারবেস কনফিগারেশন (আপনার আগের প্রজেক্টের রিয়েল API Key গুলো এখানে বসাতে হবে)
 const firebaseConfig = {
     apiKey: "YOUR_API_KEY_HERE",
     authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
@@ -21,7 +21,27 @@ const auth = firebase.auth();
 const db = firebase.database();
 
 /* ==========================================================================
-   ২. রোল বাইপাস সিস্টেম (অটো-অ্যাডমিন এবং মাস্টার ওনার এক্সেস)
+   ২. গ্লোবাল অটো-লক সিকিউরিটি (লগইন ছাড়া অন্য পেজে ঢোকা বন্ধ করবে)
+   ========================================================================== */
+auth.onAuthStateChanged((user) => {
+    // বর্তমান পেজের নাম বের করা
+    const currentPage = window.location.pathname.split("/").pop();
+    
+    if (!user) {
+        // ইউজার যদি লগইন করা না থাকে এবং লগইন পেজে না থাকে, তাহলে লগইন পেজে পাঠাবে
+        if (currentPage !== 'login.html' && currentPage !== '') {
+            window.location.replace('login.html');
+        }
+    } else {
+        // ইউজার যদি লগইন করা থাকে এবং লগইন পেজে থাকে, তাহলে তার রোল চেক করে স্টোরে পাঠাবে
+        if (currentPage === 'login.html' || currentPage === '') {
+            processUserEntry(user);
+        }
+    }
+});
+
+/* ==========================================================================
+   ৩. রোল বাইপাস সিস্টেম (অটো-অ্যাডমিন এবং মাস্টার ওনার এক্সেস)
    ========================================================================== */
 const MASTER_OWNER = "sktausif771@gmail.com";
 
@@ -35,16 +55,21 @@ const SYSTEM_ADMINS = [
 function determineUserRole(email) {
     if (email === MASTER_OWNER) return 'owner';
     if (SYSTEM_ADMINS.includes(email)) return 'admin';
-    return 'user'; // বাকি সবাই সাধারণ ইউজার
+    return 'user';
 }
 
 /* ==========================================================================
-   ৩. মেইন গুগল লগইন প্রোটোকল (login.html থেকে কল হবে)
+   ৪. মেইন গুগল লগইন প্রোটোকল (Account Selector ফিক্স করা হয়েছে)
    ========================================================================== */
 window.startGoogleLogin = function() {
     const provider = new firebase.auth.GoogleAuthProvider();
     
-    // লোডার দেখানো (যদি login.html এ থাকে)
+    // প্রতিবার নতুন করে ইমেইল সিলেক্ট করার অপশন ফোর্স করবে (যাতে পপ-আপ ক্র্যাশ না করে)
+    provider.setCustomParameters({
+        prompt: 'select_account'
+    });
+    
+    // লোডার দেখানো
     const loader = document.getElementById('systemLoader');
     if(loader) loader.style.display = 'flex';
 
@@ -55,14 +80,17 @@ window.startGoogleLogin = function() {
         })
         .catch((error) => {
             if(loader) loader.style.display = 'none';
-            document.getElementById('status-message').innerText = "লগইন বাতিল হয়েছে বা ইন্টারনেট সমস্যা। আবার চেষ্টা করুন।";
-            document.getElementById('status-message').className = "";
-            console.error("Auth Error: ", error.message);
+            const statusMsg = document.getElementById('status-message');
+            if(statusMsg) {
+                statusMsg.innerText = "লগইন বাতিল হয়েছে বা কনফিগারেশন সেট করা নেই।";
+                statusMsg.className = "";
+            }
+            console.error("Auth Error Details: ", error);
         });
 };
 
 /* ==========================================================================
-   ৪. ইউজার ডাটাবেস এন্ট্রি এবং রিডাইরেক্ট লজিক
+   ৫. ইউজার ডাটাবেস এন্ট্রি এবং রিডাইরেক্ট লজিক
    ========================================================================== */
 function processUserEntry(user) {
     const userRef = db.ref('users/' + user.uid);
@@ -70,24 +98,25 @@ function processUserEntry(user) {
 
     userRef.once('value').then((snapshot) => {
         if (!snapshot.exists()) {
-            // নতুন ইউজার হলে ডাটাবেজে তার প্রোফাইল তৈরি করা হবে
+            // নতুন ইউজার এন্ট্রি
             userRef.set({
                 uid: user.uid,
                 name: user.displayName,
                 email: user.email,
                 role: role,
-                coins: 0,              // নতুন ইউজারের জিরো কয়েন থাকবে
-                uploadCount: 0,        // অ্যাপ আপলোড লিমিট ট্র্যাকিং
-                status: 'active',      // Owner চাইলে পরে 'blocked' করতে পারবে
+                coins: 0,
+                uploadCount: 0,
+                status: 'active',
                 joinedAt: firebase.database.ServerValue.TIMESTAMP
             }).then(() => {
                 redirectBasedOnRole(role);
             });
         } else {
-            // পুরোনো ইউজার হলে সরাসরি রিডাইরেক্ট
-            // সিকিউরিটি: যদি ইমেইল মিলে যায়, কিন্তু রোল আপডেট না থাকে, তবে অটো আপডেট করবে
-            userRef.update({ role: role, lastLogin: firebase.database.ServerValue.TIMESTAMP }).then(() => {
-                // ইউজারের স্ট্যাটাস চেক (ব্যান করা থাকলে ঢুকতে পারবে না)
+            // পুরোনো ইউজার এন্ট্রি আপডেট
+            userRef.update({ 
+                role: role, 
+                lastLogin: firebase.database.ServerValue.TIMESTAMP 
+            }).then(() => {
                 if(snapshot.val().status === 'blocked') {
                     alert("⚠️ আপনার অ্যাকাউন্ট অ্যাডমিন দ্বারা ব্যান করা হয়েছে!");
                     auth.signOut();
@@ -101,18 +130,17 @@ function processUserEntry(user) {
 }
 
 /* ==========================================================================
-   ৫. সিকিউর রাউটিং (রোল অনুযায়ী নির্দিষ্ট পেজে পাঠানো)
+   ৬. সিকিউর রাউটিং (রোল অনুযায়ী নির্দিষ্ট পেজে পাঠানো)
    ========================================================================== */
 function redirectBasedOnRole(role) {
-    // সেশনে টোকেন সেভ করে রাখা যাতে অন্য পেজগুলো বুঝতে পারে লগইন হয়েছে
     sessionStorage.setItem('mvx_session', 'ACTIVE');
     sessionStorage.setItem('mvx_role', role);
 
     if (role === 'owner') {
-        window.location.replace('owner.html'); // মাস্টার প্যানেলে যাবে
+        window.location.replace('owner.html');
     } else if (role === 'admin') {
-        window.location.replace('admin.html'); // নরমাল অ্যাডমিন প্যানেলে যাবে
+        window.location.replace('admin.html');
     } else {
-        window.location.replace('index.html'); // সাধারণ ইউজার স্টোরে যাবে
+        window.location.replace('index.html');
     }
 }
