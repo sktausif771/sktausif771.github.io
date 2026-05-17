@@ -1,16 +1,16 @@
 /* ==========================================================================
-   MVX SYSTEM V4.0 - CORE FIREBASE & AUTHENTICATION ENGINE (UPDATED)
+   MVX SYSTEM V4.0 - CORE FIREBASE & AUTHENTICATION ENGINE
    ========================================================================== */
 
-// ১. ফায়ারবেস কনফিগারেশন (আপনার আগের প্রজেক্টের রিয়েল API Key গুলো এখানে বসাতে হবে)
+// ১. ফায়ারবেস কনফিগারেশন (আপনার দেওয়া অরিজিনাল API ডেটা)
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY_HERE",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyAS3UXXrio_-c9uPbHwpDuTVrP-p8d903w",
+    authDomain: "white-2k-17-v4.firebaseapp.com",
+    databaseURL: "https://white-2k-17-v4-default-rtdb.firebaseio.com",
+    projectId: "white-2k-17-v4",
+    storageBucket: "white-2k-17-v4.firebasestorage.app",
+    messagingSenderId: "180909174928",
+    appId: "1:180909174928:android:148861a87d66c6980ca815"
 };
 
 // ফায়ারবেস ইনিশিয়ালাইজেশন
@@ -24,16 +24,13 @@ const db = firebase.database();
    ২. গ্লোবাল অটো-লক সিকিউরিটি (লগইন ছাড়া অন্য পেজে ঢোকা বন্ধ করবে)
    ========================================================================== */
 auth.onAuthStateChanged((user) => {
-    // বর্তমান পেজের নাম বের করা
     const currentPage = window.location.pathname.split("/").pop();
     
     if (!user) {
-        // ইউজার যদি লগইন করা না থাকে এবং লগইন পেজে না থাকে, তাহলে লগইন পেজে পাঠাবে
         if (currentPage !== 'login.html' && currentPage !== '') {
             window.location.replace('login.html');
         }
     } else {
-        // ইউজার যদি লগইন করা থাকে এবং লগইন পেজে থাকে, তাহলে তার রোল চেক করে স্টোরে পাঠাবে
         if (currentPage === 'login.html' || currentPage === '') {
             processUserEntry(user);
         }
@@ -51,7 +48,6 @@ const SYSTEM_ADMINS = [
     "white2k177@gmail.com"
 ];
 
-// ইউজারের ইমেইল অনুযায়ী তার পাওয়ার/রোল চেক করা
 function determineUserRole(email) {
     if (email === MASTER_OWNER) return 'owner';
     if (SYSTEM_ADMINS.includes(email)) return 'admin';
@@ -59,30 +55,28 @@ function determineUserRole(email) {
 }
 
 /* ==========================================================================
-   ৪. মেইন গুগল লগইন প্রোটোকল (Account Selector ফিক্স করা হয়েছে)
+   ৪. মেইন গুগল লগইন প্রোটোকল 
    ========================================================================== */
 window.startGoogleLogin = function() {
     const provider = new firebase.auth.GoogleAuthProvider();
     
-    // প্রতিবার নতুন করে ইমেইল সিলেক্ট করার অপশন ফোর্স করবে (যাতে পপ-আপ ক্র্যাশ না করে)
+    // প্রতিবার নতুন করে ইমেইল সিলেক্ট করার অপশন ফোর্স করবে
     provider.setCustomParameters({
         prompt: 'select_account'
     });
     
-    // লোডার দেখানো
     const loader = document.getElementById('systemLoader');
     if(loader) loader.style.display = 'flex';
 
     auth.signInWithPopup(provider)
         .then((result) => {
-            const user = result.user;
-            processUserEntry(user);
+            processUserEntry(result.user);
         })
         .catch((error) => {
             if(loader) loader.style.display = 'none';
             const statusMsg = document.getElementById('status-message');
             if(statusMsg) {
-                statusMsg.innerText = "লগইন বাতিল হয়েছে বা কনফিগারেশন সেট করা নেই।";
+                statusMsg.innerText = "লগইন বাতিল হয়েছে। আবার চেষ্টা করুন।";
                 statusMsg.className = "";
             }
             console.error("Auth Error Details: ", error);
@@ -98,7 +92,6 @@ function processUserEntry(user) {
 
     userRef.once('value').then((snapshot) => {
         if (!snapshot.exists()) {
-            // নতুন ইউজার এন্ট্রি
             userRef.set({
                 uid: user.uid,
                 name: user.displayName,
@@ -112,7 +105,6 @@ function processUserEntry(user) {
                 redirectBasedOnRole(role);
             });
         } else {
-            // পুরোনো ইউজার এন্ট্রি আপডেট
             userRef.update({ 
                 role: role, 
                 lastLogin: firebase.database.ServerValue.TIMESTAMP 
