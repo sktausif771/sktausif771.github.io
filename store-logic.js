@@ -1,9 +1,8 @@
 /* ==========================================================================
-   MVX STORE V5.6 - CORE DATA ENGINE & ADVANCED UPLOAD PROTOCOL
+   MVX STORE V5.6 - CORE DATA ENGINE & ADVANCED UPLOAD PROTOCOL (CLEAN UI)
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Firebase Security Verification Check
     if (typeof firebase === 'undefined') {
         console.error("Firebase Core SDK Critical Error: Architecture links dropped.");
         return;
@@ -12,13 +11,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const db = firebase.database();
     const auth = firebase.auth();
     
-    // Global Engine Scope Variables
     let currentUser = null;
     let userProfile = null;
     let activeContentType = 'files'; 
     let activeFilterType = 'all';    
 
-    // ImgBB API Authentication Token
     const IMGBB_API_KEY = "820eb9aa6a57f863045a52c1929efc9c"; 
 
     // ==========================================================================
@@ -37,16 +34,12 @@ document.addEventListener('DOMContentLoaded', () => {
     auth.onAuthStateChanged((user) => {
         if (user) {
             currentUser = user;
-            
-            // Realtime user account profile tracking sync channel
             db.ref('users/' + user.uid).on('value', (snapshot) => {
                 if (snapshot.exists()) {
                     userProfile = snapshot.val();
                     executeSystemInterfacePipelineUpdates();
                 }
             });
-
-            // Launch backend structural cron simulators
             runSystemAutoApproveEngine();
             listenForLiveSystemNotifications();
         }
@@ -208,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let uploadedScreenshotsList = [];
 
     // ==========================================================================
-    // 6. MASTER PLAY STORE APPLICATION PUBLISH MODAL FORM LAYOUT
+    // 6. MASTER PLAY STORE APPLICATION PUBLISH MODAL FORM LAYOUT (CLEAN UI)
     // ==========================================================================
     window.openUploadModal = function() {
         if (!userProfile) return;
@@ -216,54 +209,51 @@ document.addEventListener('DOMContentLoaded', () => {
         const isMasterOwner = (userProfile.role === 'owner');
         uploadedScreenshotsList = []; 
 
-        let categoryOptionsHTML = `<option value="free">FREE ACCESS MODEL</option>`;
+        let categoryOptionsHTML = `<option value="free">Free App</option>`;
         if (isMasterOwner) {
-            categoryOptionsHTML += `<option value="paid">PREMIUM COIN ACCESS (Owner Verified)</option>`;
+            categoryOptionsHTML += `<option value="paid">Premium (Coins)</option>`;
         }
 
-        let encodingMethodsHTML = `<option value="imgbb">ImgBB Cloud API Method (Standard High Speed)</option>`;
+        let encodingMethodsHTML = `<option value="imgbb">ImgBB Upload</option>`;
         if (isMasterOwner) {
-            encodingMethodsHTML += `<option value="base64">Base64 Direct Raw Byte Hex String Method</option>`;
+            encodingMethodsHTML += `<option value="base64">Base64 Code</option>`;
         }
 
         let uploadModal = document.createElement('div');
         uploadModal.id = 'dynamicUploadModal';
         uploadModal.className = 'modal-overlay active';
         uploadModal.innerHTML = `
-            <div class="play-modal" style="max-width: 580px;">
+            <div class="play-modal" style="max-width: 550px;">
                 <div class="modal-header">
-                    <h3><i class="fas fa-upload" style="color:var(--primary);"></i> Core Package Publisher</h3>
+                    <h3><i class="fas fa-upload" style="color:var(--primary);"></i> Upload New App</h3>
                     <i class="fas fa-times close-modal" onclick="document.getElementById('dynamicUploadModal').remove()"></i>
                 </div>
                 <div class="modal-body">
-                    <p style="font-size:12px; color:var(--text-secondary); margin-bottom:15px; background:rgba(255,255,255,0.02); padding:10px; border-radius:6px; border:1px solid var(--border-color);">
-                        <i class="fas fa-clock"></i> NOTICE: Submissions will auto-deploy to store maps after exactly 1 minute.
-                    </p>
-
-                    <label class="modal-label">Title</label>
-                    <input type="text" id="pName" class="play-input" placeholder="Enter package or app title">
+                    
+                    <label class="modal-label">App Name</label>
+                    <input type="text" id="pName" class="play-input" placeholder="Enter app name">
 
                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
                         <div>
-                            <label class="modal-label">Size</label>
-                            <input type="text" id="pSize" class="play-input" placeholder="e.g. 45 MB">
+                            <label class="modal-label">Version</label>
+                            <input type="text" id="pVer" class="play-input" placeholder="e.g. 1.0">
                         </div>
                         <div>
-                            <label class="modal-label">Version</label>
-                            <input type="text" id="pVer" class="play-input" placeholder="e.g. v1.0.2">
+                            <label class="modal-label">Size</label>
+                            <input type="text" id="pSize" class="play-input" placeholder="e.g. 45 MB">
                         </div>
                     </div>
 
                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
                         <div>
-                            <label class="modal-label">Target Layout Tab</label>
+                            <label class="modal-label">Select Tab</label>
                             <select id="pType" class="play-input">
-                                <option value="files">FILES (Bottom Tab 1)</option>
-                                <option value="mod_app">MOD APP (Bottom Tab 2)</option>
+                                <option value="files">Files Tab</option>
+                                <option value="mod_app">Mod App Tab</option>
                             </select>
                         </div>
                         <div>
-                            <label class="modal-label">Access Model</label>
+                            <label class="modal-label">Access Type</label>
                             <select id="pCat" class="play-input" onchange="toggleCoinPriceInputBoxField(this.value)">
                                 ${categoryOptionsHTML}
                             </select>
@@ -271,85 +261,85 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
 
                     <div id="coinPriceWrapper" style="display:none;">
-                        <label class="modal-label" style="color:var(--warning);">Unlock Charge Pricing (In MVX Coins)</label>
-                        <input type="number" id="pCoinPrice" class="play-input" placeholder="e.g. 150" value="0">
+                        <label class="modal-label" style="color:var(--warning);">Coin Price</label>
+                        <input type="number" id="pCoinPrice" class="play-input" placeholder="0" value="0">
                     </div>
 
-                    <div style="margin-bottom: 15px;">
-                        <label class="modal-label" style="font-weight: bold; color: var(--primary);">Trending Badge Activation</label>
-                        <div style="display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; border: 1px solid var(--border-color);">
-                            <input type="checkbox" id="pTrendingCheck" style="width: 18px; height: 18px; cursor: pointer;">
-                            <span style="font-size: 14px; color: var(--text-primary);">Mark this package as 'Trending Now'</span>
+                    <div style="display:flex; gap:20px; margin-bottom:20px; background: rgba(255,255,255,0.02); padding: 15px; border-radius: 10px; border: 1px solid var(--border-color);">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" id="pTrendingCheck" style="width: 16px; height: 16px; cursor: pointer;">
+                            <span style="font-size: 13px; color: var(--text-primary);">Trending Status</span>
                         </div>
-                    </div>
-
-                    <div style="margin-bottom: 20px;">
-                        <label class="modal-label" style="font-weight: bold; color: var(--success);">Push Notification Alert</label>
-                        <div style="display: flex; align-items: center; gap: 10px; background: rgba(0,230,118,0.02); padding: 12px; border-radius: 10px; border: 1px solid var(--border-color);">
-                            <input type="checkbox" id="pPushNotificationCheck" style="width: 18px; height: 18px; cursor: pointer;">
-                            <span style="font-size: 14px; color: var(--text-primary);">Send live notification to all users upon approval</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" id="pPushNotificationCheck" style="width: 16px; height: 16px; cursor: pointer;">
+                            <span style="font-size: 13px; color: var(--success);">Send Notification</span>
                         </div>
                     </div>
 
                     <hr style="border:0; border-top:1px solid var(--border-color); margin:15px 0;">
 
-                    <label class="modal-label" style="color:var(--primary);">Logo</label>
-                    <select id="logoMethod" class="play-input" onchange="toggleUploadMethodInputsStructure('logo', this.value)">
-                        ${encodingMethodsHTML}
-                    </select>
-
-                    <div id="logoFileBox">
-                        <input type="file" id="logoFile" class="play-input" accept="image/*" style="padding:10px;">
-                    </div>
-                    <img id="logoPreviewImg" class="preview-thumbnail" alt="Logo Preview">
-                    <input type="hidden" id="logoUrlOutput">
-                    <p id="logoProcessStatus" style="font-size:11px; color:var(--warning); margin-top:-10px; margin-bottom:15px;"></p>
-
-                    <label class="modal-label" style="color:var(--primary);">Play Store Gallery Screenshots (Max 5)</label>
-                    <div style="background: rgba(255,255,255,0.02); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 20px;">
-                        <input type="file" id="screenshotFileBtn" class="play-input" accept="image/*" style="padding:10px; margin-bottom: 10px;">
-                        <div class="screenshot-preview-container" id="screenshotPreviewWrapper"></div>
-                        <p id="screenshotProcessStatus" style="font-size:11px; color:var(--warning);"></p>
+                    <div style="display:grid; grid-template-columns: 1fr; gap:15px;">
+                        <div>
+                            <label class="modal-label" style="color:var(--primary);">App Logo</label>
+                            <select id="logoMethod" class="play-input" onchange="toggleUploadMethodInputsStructure('logo', this.value)" style="margin-bottom:10px;">
+                                ${encodingMethodsHTML}
+                            </select>
+                            <div id="logoFileBox">
+                                <input type="file" id="logoFile" class="play-input" accept="image/*" style="padding:10px; margin-bottom:5px;">
+                            </div>
+                            <img id="logoPreviewImg" class="preview-thumbnail" alt="Preview">
+                            <input type="hidden" id="logoUrlOutput">
+                            <p id="logoProcessStatus" style="font-size:11px; color:var(--warning); margin-bottom:10px;"></p>
+                        </div>
+                        
+                        <div>
+                            <label class="modal-label" style="color:var(--primary);">Screenshots (Max 5)</label>
+                            <div style="background: rgba(255,255,255,0.02); padding: 10px; border-radius: 10px; border: 1px solid var(--border-color);">
+                                <input type="file" id="screenshotFileBtn" class="play-input" accept="image/*" style="padding:10px; margin-bottom:5px;">
+                                <div class="screenshot-preview-container" id="screenshotPreviewWrapper"></div>
+                                <p id="screenshotProcessStatus" style="font-size:11px; color:var(--warning);"></p>
+                            </div>
+                        </div>
                     </div>
 
                     <hr style="border:0; border-top:1px solid var(--border-color); margin:15px 0;">
 
-                    <label class="modal-label">Download Link</label>
-                    <input type="text" id="pMainLink" class="play-input" placeholder="Paste main download link URL">
+                    <label class="modal-label">Main Download Link</label>
+                    <input type="text" id="pMainLink" class="play-input" placeholder="Paste URL here">
 
                     <div style="background: rgba(255,82,82,0.02); padding: 15px; border-radius: 12px; border: 1px dashed rgba(255,82,82,0.2); margin-bottom: 20px;">
-                        <label class="modal-label" style="color: var(--danger); font-weight: bold;">Secure Archive Password Protection</label>
-                        <input type="password" id="pPassword" class="play-input" placeholder="Set installation unlock password sequence" style="margin-bottom: 12px;">
+                        <label class="modal-label" style="color: var(--danger); font-weight: bold;">Zip Password (Optional)</label>
+                        <input type="password" id="pPassword" class="play-input" placeholder="Enter password" style="margin-bottom: 12px;">
                         
                         <label class="modal-label">Get Password Link</label>
-                        <input type="text" id="pGetPassLink" class="play-input" placeholder="URL destination to fetch password" style="margin-bottom: 0;">
+                        <input type="text" id="pGetPassLink" class="play-input" placeholder="URL to get password" style="margin-bottom: 0;">
                     </div>
 
-                    <label class="modal-label" style="color: var(--warning);">Extra Redirection Alternatives (Up to 3 Nodes)</label>
+                    <label class="modal-label" style="color: var(--warning);">Extra Links (Up to 3)</label>
                     <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 20px; display: flex; flex-direction: column; gap: 12px;" id="extraLinksInputContainer">
-                        <div class="ex-link-box-wrapper">
-                            <input type="text" class="play-input ex-link-title" placeholder="Alternative Link 1 - Custom Title" style="margin-bottom:8px; padding:10px; font-size:13px;">
-                            <input type="text" class="play-input ex-link-url" placeholder="Alternative Link 1 - Target URL" style="margin-bottom:0; padding:10px; font-size:13px;">
+                        <div style="display:flex; gap:10px;">
+                            <input type="text" class="play-input ex-link-title" placeholder="Title 1" style="margin-bottom:0; flex:1;">
+                            <input type="text" class="play-input ex-link-url" placeholder="URL 1" style="margin-bottom:0; flex:2;">
                         </div>
-                        <div class="ex-link-box-wrapper">
-                            <input type="text" class="play-input ex-link-title" placeholder="Alternative Link 2 - Custom Title" style="margin-bottom:8px; padding:10px; font-size:13px;">
-                            <input type="text" class="play-input ex-link-url" placeholder="Alternative Link 2 - Target URL" style="margin-bottom:0; padding:10px; font-size:13px;">
+                        <div style="display:flex; gap:10px;">
+                            <input type="text" class="play-input ex-link-title" placeholder="Title 2" style="margin-bottom:0; flex:1;">
+                            <input type="text" class="play-input ex-link-url" placeholder="URL 2" style="margin-bottom:0; flex:2;">
                         </div>
-                        <div class="ex-link-box-wrapper">
-                            <input type="text" class="play-input ex-link-title" placeholder="Alternative Link 3 - Custom Title" style="margin-bottom:8px; padding:10px; font-size:13px;">
-                            <input type="text" class="play-input ex-link-url" placeholder="Alternative Link 3 - Target URL" style="margin-bottom:0; padding:10px; font-size:13px;">
+                        <div style="display:flex; gap:10px;">
+                            <input type="text" class="play-input ex-link-title" placeholder="Title 3" style="margin-bottom:0; flex:1;">
+                            <input type="text" class="play-input ex-link-url" placeholder="URL 3" style="margin-bottom:0; flex:2;">
                         </div>
                     </div>
 
-                    <label class="modal-label">Fuzzy Search Target Keywords (Type Comma ',' to link item tag)</label>
-                    <div class="tags-container" id="tagsInputContainer">
-                        <input type="text" id="tagInputField" class="tag-input-field" placeholder="Add keywords...">
+                    <label class="modal-label">Search Tags (Comma separated)</label>
+                    <div class="tags-container" id="tagsInputContainer" style="padding: 8px;">
+                        <input type="text" id="tagInputField" class="tag-input-field" placeholder="Add tags..." style="padding: 5px;">
                     </div>
 
-                    <label class="modal-label">Description & Changelog Documentation</label>
-                    <textarea id="pDescription" class="play-input" placeholder="Document feature releases..." style="min-height:100px; resize:vertical;"></textarea>
+                    <label class="modal-label">Description</label>
+                    <textarea id="pDescription" class="play-input" placeholder="App description & details..." style="min-height:80px; resize:vertical;"></textarea>
 
-                    <button class="play-btn" id="executePublishBtn" onclick="commitPackageToPendingDatabaseNode()">SUBMIT FOR DEPLOYMENT</button>
+                    <button class="play-btn" id="executePublishBtn" onclick="commitPackageToPendingDatabaseNode()">UPLOAD APP</button>
                 </div>
             </div>
         `;
@@ -385,7 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if(preview) preview.style.display = 'none';
             output.type = 'text';
             output.className = 'play-input';
-            output.placeholder = "Inject direct Base64 stream data text sequence here...";
+            output.placeholder = "Paste Base64 code...";
         } else {
             if(fileBox) fileBox.style.display = 'block';
             output.type = 'hidden';
@@ -405,14 +395,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const status = document.getElementById(statusParaId);
         const preview = document.getElementById(previewImgId);
 
-        status.innerText = "Processing system binary streams...";
+        status.innerText = "Processing...";
         status.style.color = "var(--warning)";
 
         if (method === 'base64') {
             const reader = new FileReader();
             reader.onload = function(e) {
                 output.value = e.target.result;
-                status.innerText = "Base64 Character Stream Success!";
+                status.innerText = "Base64 Success!";
                 status.style.color = "var(--success)";
                 if(preview) {
                     preview.src = e.target.result;
@@ -432,19 +422,19 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(json => {
                 if (json.success) {
                     output.value = json.data.url;
-                    status.innerText = "Cloud Sync Complete: Asset loaded.";
+                    status.innerText = "Upload Complete!";
                     status.style.color = "var(--success)";
                     if(preview) {
                         preview.src = json.data.url;
                         preview.style.display = 'block';
                     }
                 } else {
-                    status.innerText = "Cloud upload request rejected.";
+                    status.innerText = "Upload failed.";
                     status.style.color = "var(--danger)";
                 }
             })
             .catch(() => {
-                status.innerText = "Network transmission interrupt pipeline dropped.";
+                status.innerText = "Network error.";
                 status.style.color = "var(--danger)";
             });
         }
@@ -455,7 +445,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const status = document.getElementById('screenshotProcessStatus');
         const wrapper = document.getElementById('screenshotPreviewWrapper');
 
-        status.innerText = "Uploading screenshot to cloud vaults...";
+        status.innerText = "Uploading...";
         status.style.color = "var(--warning)";
 
         const formData = new FormData();
@@ -476,22 +466,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 thumb.className = 'sc-preview-thumb';
                 wrapper.appendChild(thumb);
 
-                status.innerText = `Screenshot ${uploadedScreenshotsList.length}/5 Synced Successfully!`;
+                status.innerText = `Screenshot ${uploadedScreenshotsList.length}/5 Synced!`;
                 status.style.color = "var(--success)";
             } else {
-                status.innerText = "Gallery index upload fault context.";
+                status.innerText = "Upload failed.";
                 status.style.color = "var(--danger)";
             }
             document.getElementById('screenshotFileBtn').value = '';
         })
         .catch(() => {
-            status.innerText = "Network transmission timeout failure.";
+            status.innerText = "Network error.";
             status.style.color = "var(--danger)";
         });
     }
 
     // ==========================================================================
-    // 8. DATABASE COMMIT PACKAGES CONTROLLER (WITH NEW RATING STRINGS)
+    // 8. DATABASE COMMIT PACKAGES CONTROLLER
     // ==========================================================================
     window.commitPackageToPendingDatabaseNode = function() {
         const name = document.getElementById('pName').value.trim();
@@ -501,11 +491,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const isPushNotificationChecked = document.getElementById('pPushNotificationCheck').checked;
 
         if (!name || !mainLink) {
-            alert("Upload Terminated: Title and Main Download Link are required fields.");
+            alert("App Name and Download Link are required.");
             return;
         }
 
-        // NEW V5.6: COLLECT EXTRA LINKS WITH CUSTOM TITLES AS OBJECT MATRIX
         let collectedExtraLinks = [];
         const titles = document.querySelectorAll('.ex-link-title');
         const urls = document.querySelectorAll('.ex-link-url');
@@ -515,33 +504,33 @@ document.addEventListener('DOMContentLoaded', () => {
             let uVal = urls[i].value.trim();
             if(uVal !== "") {
                 collectedExtraLinks.push({
-                    title: tVal || `Alternative Link ${i + 1}`,
+                    title: tVal || `Link ${i + 1}`,
                     url: uVal
                 });
             }
         }
 
         const btn = document.getElementById('executePublishBtn');
-        btn.innerText = "COMMITTING STACK DATA TO CLOUD...";
+        btn.innerText = "UPLOADING...";
         btn.disabled = true;
 
         const transactionalPackagePayload = {
             appName: name,
-            version: document.getElementById('pVer').value.trim() || "1.0.0",
+            version: document.getElementById('pVer').value.trim() || "1.0",
             size: document.getElementById('pSize').value.trim() || "0 MB",
             appType: document.getElementById('pType').value,
             category: document.getElementById('pCat').value,
             coinPrice: parseInt(document.getElementById('pCoinPrice').value) || 0,
             isTrending: isTrendingChecked,
-            sendNotification: isPushNotificationChecked, // Notification flag sync
+            sendNotification: isPushNotificationChecked, 
             logoUrl: logoData || "https://via.placeholder.com/150/121212/00e6b8?text=APP",
             screenshots: uploadedScreenshotsList, 
             downloadUrl: mainLink,
             zipPassword: document.getElementById('pPassword').value.trim() || "",
             getPasswordLink: document.getElementById('pGetPassLink').value.trim() || "",
-            extraLinks: collectedExtraLinks, // Saved as Title + URL objects list
+            extraLinks: collectedExtraLinks, 
             tags: uploadedTagsList, 
-            description: document.getElementById('pDescription').value.trim() || "System Description Data Block Uninitialized.",
+            description: document.getElementById('pDescription').value.trim() || "No description provided.",
             uploaderUid: currentUser.uid,
             uploaderName: userProfile.name,
             timestamp: firebase.database.ServerValue.TIMESTAMP,
@@ -549,25 +538,19 @@ document.addEventListener('DOMContentLoaded', () => {
             status: 'pending',
             downloads: 0,
             views: 0,
-            
-            // NEW V5.6: ORIGINAL SYSTEM ZERO RATING SCHEMAS INITIALIZE
             rating: 0,
             totalRatingsCount: 0,
             ratingDistribution: {
-                1: 0,
-                2: 0,
-                3: 0,
-                4: 0,
-                5: 0
+                1: 0, 2: 0, 3: 0, 4: 0, 5: 0
             }
         };
 
         db.ref('pending_apps').push(transactionalPackagePayload).then(() => {
-            alert("Package committed to staging loops. Please wait 1 minute for background validation routines.");
+            alert("App uploaded successfully! It will be live in 1 minute.");
             document.getElementById('dynamicUploadModal').remove();
         }).catch((err) => {
-            alert("Database deployment error: " + err.message);
-            btn.innerText = "SUBMIT FOR PROCESSING AND DEPLOYMENT";
+            alert("Error: " + err.message);
+            btn.innerText = "UPLOAD APP";
             btn.disabled = false;
         });
     };
@@ -627,7 +610,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                             db.ref(`store_apps/${child.key}`).set(appRecord).then(() => {
                                 
-                                // NEW V5.6: AUTOMATED SYSTEM BROADCAST TRIGGER PUSH LOGIC
                                 if (appRecord.sendNotification === true) {
                                     const date = new Date();
                                     const timeStr = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) + " | " + date.toLocaleDateString();
