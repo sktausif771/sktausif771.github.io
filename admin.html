@@ -167,6 +167,7 @@
         <button class="tab-btn" onclick="switchAdminPanelSection('live', this)"><i class="fas fa-server"></i> Live Catalog</button>
         <button class="tab-btn" onclick="switchAdminPanelSection('voucher', this)"><i class="fas fa-ticket-alt"></i> Voucher Engine</button>
         <button class="tab-btn" onclick="switchAdminPanelSection('reports', this)"><i class="fas fa-flag"></i> User Reports</button>
+        <button class="tab-btn" onclick="switchAdminPanelSection('notices', this)"><i class="fas fa-bullhorn"></i> System Notices</button>
     </div>
 
     <div id="pendingPanel" class="data-panel active">
@@ -221,6 +222,12 @@
         </div>
     </div>
 
+    <div id="noticesPanel" class="data-panel">
+        <div id="globalNoticesTrackingContainer">
+            <div class="empty-msg"><i class="fas fa-circle-notch fa-spin" style="font-size:26px; color:var(--primary);"></i><br><br>Fetching live system broadcasts...</div>
+        </div>
+    </div>
+
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script src="firebase-config.js"></script>
@@ -254,7 +261,7 @@
         }
 
         // ==========================================================================
-        // 2. STAGING QUEUE REALTIME SYNCHRONIZATION & RENDERING
+        // 2. STAGING QUEUE REALTIME SYNCHRONIZATION
         // ==========================================================================
         databaseRef.ref('pending_apps').on('value', (snapshot) => {
             const container = document.getElementById('pendingContainerQueue');
@@ -308,7 +315,7 @@
         };
 
         // ==========================================================================
-        // 3. LIVE WAREHOUSE CATALOG EXTRACTION & WIPE ACTIONS ENGINE
+        // 3. LIVE WAREHOUSE CATALOG EXTRACTION & WIPE
         // ==========================================================================
         databaseRef.ref('store_apps').on('value', (snapshot) => {
             const warehouse = document.getElementById('liveWarehouseContainer');
@@ -423,7 +430,7 @@
 
             let html = '';
             let reportsArr = [];
-            snapshot.forEach(child => rreportsArr.push({id: child.key, ...child.val()}));
+            snapshot.forEach(child => reportsArr.push({id: child.key, ...child.val()}));
             reportsArr.reverse();
 
             reportsArr.forEach(rpt => {
@@ -447,6 +454,44 @@
         window.dropReportNodeFromRegistry = function(reportKey) {
             if(confirm("Acknowledge and clear this security violation report from the database logs?")) {
                 databaseRef.ref(`reports/${reportKey}`).remove();
+            }
+        };
+
+        // ==========================================================================
+        // 6. NEW: SYSTEM NOTIFICATIONS/NOTICES CONTROL TRACKER
+        // ==========================================================================
+        databaseRef.ref('system_broadcasts').on('value', (snapshot) => {
+            const noticesBox = document.getElementById('globalNoticesTrackingContainer');
+            if (!snapshot.exists()) {
+                noticesBox.innerHTML = `<div class="empty-msg">No active notification alerts broadcasted inside network paths.</div>`;
+                return;
+            }
+
+            let html = '';
+            let noticesArr = [];
+            snapshot.forEach(child => noticesArr.push({id: child.key, ...child.val()}));
+            noticesArr.reverse();
+
+            noticesArr.forEach(note => {
+                html += `
+                    <div class="list-card" style="border-left: 4px solid var(--primary);">
+                        <div class="list-info">
+                            <h3 style="color:#fff;"><i class="fas fa-bullhorn"></i> ${note.title}</h3>
+                            <p style="margin-top:4px;">${note.message}</p>
+                            <p style="font-size:11px; color:var(--text-secondary); margin-top:4px;">Time: ${note.timeString || "Unknown"} • Sender: ${note.sender || "System"}</p>
+                        </div>
+                        <div class="action-btns">
+                            <button class="act-btn act-delete" onclick="dropBroadcastNoticeFromLiveDatabase('${note.id}')" title="Delete/Wipe Broadcast Notice"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+            noticesBox.innerHTML = html;
+        });
+
+        window.dropBroadcastNoticeFromLiveDatabase = function(key) {
+            if(confirm("Wipe this live broadcast notification alert from everyone's bell index instantly?")) {
+                databaseRef.ref(`system_broadcasts/${key}`).remove();
             }
         };
     </script>

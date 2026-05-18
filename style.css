@@ -1,5 +1,5 @@
 /* ==========================================================================
-   MVX STORE V5.5 - MASTER STYLESHEET (NO DESIGN OVERRIDES, ONLY ADDITIONS)
+   MVX STORE V5.6 - MASTER STYLESHEET (NO DESIGN OVERRIDES, ONLY ADDITIONS)
    ========================================================================== */
 
 :root {
@@ -136,7 +136,14 @@ body {
     object-fit: cover;
     border: 2px solid var(--border-color);
     cursor: pointer;
-    transition: border-color 0.3s;
+    transition: border-color 0.3s, transform 0.2s;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+}
+
+.top-profile-pic:active {
+    transform: scale(0.9);
 }
 
 .top-profile-pic:hover {
@@ -520,7 +527,7 @@ body {
 .nav-item.active i { transform: translateY(-3px); }
 
 /* ==========================================================================
-   [NEW V5.5 FIXES] - IMAGE PREVIEW & SCREENSHOT GALLERY
+   IMAGE PREVIEW & SCREENSHOT GALLERY
    ========================================================================== */
 .preview-thumbnail {
     width: 70px;
@@ -528,7 +535,7 @@ body {
     border-radius: 12px;
     object-fit: cover;
     border: 2px dashed var(--primary);
-    display: none; /* Shows when image is selected */
+    display: none;
     margin-top: 10px;
     margin-bottom: 15px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
@@ -550,7 +557,6 @@ body {
     border: 1px solid var(--primary);
 }
 
-/* App Details Page - Horizontal Screenshot Gallery */
 .screenshot-gallery {
     display: flex;
     overflow-x: auto;
@@ -562,7 +568,7 @@ body {
 }
 
 .screenshot-gallery::-webkit-scrollbar {
-    display: none; /* Hide scrollbar for clean look */
+    display: none; 
 }
 
 .screenshot-img {
@@ -573,10 +579,11 @@ body {
     border: 1px solid var(--border-color);
     flex-shrink: 0;
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    cursor: zoom-in; /* NEW: Indicates clickable zoom */
 }
 
 /* ==========================================================================
-   [NEW V5.5 FIXES] - 3-DOT MENU & DROPDOWN (DETAILS PAGE)
+   3-DOT MENU & DROPDOWN (DETAILS PAGE)
    ========================================================================== */
 .three-dot-container {
     position: relative;
@@ -650,7 +657,6 @@ body {
     color: var(--primary);
 }
 
-/* Special Report Item Style */
 .dropdown-item.report-btn:hover {
     background-color: rgba(255, 82, 82, 0.1);
     color: var(--danger);
@@ -659,9 +665,6 @@ body {
     color: var(--danger);
 }
 
-/* ==========================================================================
-   [NEW V5.5 FIXES] - SECURE PASSWORD / INSTALL POPUP
-   ========================================================================== */
 .install-popup-body {
     text-align: center;
     padding: 20px 10px;
@@ -688,3 +691,112 @@ body {
     display: inline-block;
 }
 
+/* ==========================================================================
+   [NEW V5.6] - SCREENSHOT ZOOM LIGHTBOX (FULL SCREEN)
+   ========================================================================== */
+.lightbox-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(8px);
+}
+.lightbox-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+.lightbox-img {
+    max-width: 95%;
+    max-height: 95%;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.lightbox-overlay.active .lightbox-img {
+    transform: scale(1);
+}
+.lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 35px;
+    color: #fff;
+    cursor: pointer;
+    z-index: 10000;
+    transition: color 0.2s;
+}
+.lightbox-close:hover {
+    color: var(--danger);
+}
+
+/* ==========================================================================
+   [NEW V5.6] - DETAILED RATING PERCENTAGE BARS
+   ========================================================================== */
+.rating-interactive {
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.rating-interactive:hover {
+    color: var(--primary);
+}
+.rating-details-wrapper {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    padding: 20px;
+    border-radius: 16px;
+    margin-top: -10px;
+    margin-bottom: 25px;
+    display: none; /* Initially hidden */
+    animation: fadeIn 0.3s ease-out;
+}
+.rating-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+.rating-row:last-child { margin-bottom: 0; }
+.rating-star-lbl {
+    font-size: 13px;
+    color: var(--text-secondary);
+    width: 45px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 700;
+}
+.rating-bar-bg {
+    flex: 1;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.rating-bar-fill {
+    height: 100%;
+    background: var(--primary);
+    border-radius: 10px;
+    width: 0%; /* Dynamic width via JS */
+    transition: width 0.5s ease-out;
+}
+
+/* ==========================================================================
+   [NEW V5.6] - EXTRA LINKS TITLE + LINK INPUT BOX STYLING
+   ========================================================================== */
+.ex-link-box-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+    padding: 15px;
+    background: rgba(0,0,0,0.2);
+    border: 1px dashed var(--border-color);
+    border-radius: 10px;
+}

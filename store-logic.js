@@ -1,5 +1,5 @@
 /* ==========================================================================
-   MVX STORE V5.5 - CORE DATA ENGINE & ADVANCED UPLOAD PROTOCOL (ENGLISH ONLY)
+   MVX STORE V5.6 - CORE DATA ENGINE & ADVANCED UPLOAD PROTOCOL
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let activeContentType = 'files'; 
     let activeFilterType = 'all';    
 
-    // Your Explicit ImgBB API Cloud Authentication Token Key
+    // ImgBB API Authentication Token
     const IMGBB_API_KEY = "820eb9aa6a57f863045a52c1929efc9c"; 
 
     // ==========================================================================
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================================================
-    // 4. PLAY STORE DATA RENDERING GRID (MULTILINGUAL AND FILTER ALIGNED)
+    // 4. PLAY STORE DATA RENDERING GRID
     // ==========================================================================
     window.loadStoreFeed = function(filter, contentType) {
         activeFilterType = filter || activeFilterType;
@@ -94,7 +94,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!grid) return;
 
         let activeLang = localStorage.getItem('mvx_lang') || 'en';
-        let loadingMsg = (activeLang === 'en') ? "Scanning Database Infrastructure..." : "ডাটাবেজ কানেকশন চেক করা হচ্ছে...";
+        let loadingMsg = "Scanning Database Infrastructure...";
+        if(activeLang === 'bn') loadingMsg = "ডাটাবেজ কানেকশন চেক করা হচ্ছে...";
 
         grid.innerHTML = `
             <div style="text-align:center; padding: 50px; grid-column: 1/-1;">
@@ -204,7 +205,6 @@ document.addEventListener('DOMContentLoaded', () => {
         renderTagsChipsInsideInputBox();
     };
 
-    // Global arrays to store uploaded screenshot URLs
     let uploadedScreenshotsList = [];
 
     // ==========================================================================
@@ -214,9 +214,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!userProfile) return;
 
         const isMasterOwner = (userProfile.role === 'owner');
-        uploadedScreenshotsList = []; // Reset screenshot array instance
+        uploadedScreenshotsList = []; 
 
-        // Dynamic view logic based on User Roles (Strict Admin Override)
         let categoryOptionsHTML = `<option value="free">FREE ACCESS MODEL</option>`;
         if (isMasterOwner) {
             categoryOptionsHTML += `<option value="paid">PREMIUM COIN ACCESS (Owner Verified)</option>`;
@@ -238,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div class="modal-body">
                     <p style="font-size:12px; color:var(--text-secondary); margin-bottom:15px; background:rgba(255,255,255,0.02); padding:10px; border-radius:6px; border:1px solid var(--border-color);">
-                        <i class="fas fa-clock"></i> NOTICE: Submissions will auto-deploy to store maps after exactly 1 minute. Please wait for the initialization window.
+                        <i class="fas fa-clock"></i> NOTICE: Submissions will auto-deploy to store maps after exactly 1 minute.
                     </p>
 
                     <label class="modal-label">Title</label>
@@ -276,11 +275,19 @@ document.addEventListener('DOMContentLoaded', () => {
                         <input type="number" id="pCoinPrice" class="play-input" placeholder="e.g. 150" value="0">
                     </div>
 
-                    <div style="margin-bottom: 20px;">
+                    <div style="margin-bottom: 15px;">
                         <label class="modal-label" style="font-weight: bold; color: var(--primary);">Trending Badge Activation</label>
                         <div style="display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; border: 1px solid var(--border-color);">
                             <input type="checkbox" id="pTrendingCheck" style="width: 18px; height: 18px; cursor: pointer;">
-                            <span style="font-size: 14px; color: var(--text-primary);">Mark this package as 'Trending Now' on catalog headers</span>
+                            <span style="font-size: 14px; color: var(--text-primary);">Mark this package as 'Trending Now'</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label class="modal-label" style="font-weight: bold; color: var(--success);">Push Notification Alert</label>
+                        <div style="display: flex; align-items: center; gap: 10px; background: rgba(0,230,118,0.02); padding: 12px; border-radius: 10px; border: 1px solid var(--border-color);">
+                            <input type="checkbox" id="pPushNotificationCheck" style="width: 18px; height: 18px; cursor: pointer;">
+                            <span style="font-size: 14px; color: var(--text-primary);">Send live notification to all users upon approval</span>
                         </div>
                     </div>
 
@@ -298,7 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <input type="hidden" id="logoUrlOutput">
                     <p id="logoProcessStatus" style="font-size:11px; color:var(--warning); margin-top:-10px; margin-bottom:15px;"></p>
 
-                    <label class="modal-label" style="color:var(--primary);">Play Store Gallery Screenshots (Add up to 5 images)</label>
+                    <label class="modal-label" style="color:var(--primary);">Play Store Gallery Screenshots (Max 5)</label>
                     <div style="background: rgba(255,255,255,0.02); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 20px;">
                         <input type="file" id="screenshotFileBtn" class="play-input" accept="image/*" style="padding:10px; margin-bottom: 10px;">
                         <div class="screenshot-preview-container" id="screenshotPreviewWrapper"></div>
@@ -308,31 +315,30 @@ document.addEventListener('DOMContentLoaded', () => {
                     <hr style="border:0; border-top:1px solid var(--border-color); margin:15px 0;">
 
                     <label class="modal-label">Download Link</label>
-                    <input type="text" id="pMainLink" class="play-input" placeholder="Paste main operational download link path URL">
+                    <input type="text" id="pMainLink" class="play-input" placeholder="Paste main download link URL">
 
                     <div style="background: rgba(255,82,82,0.02); padding: 15px; border-radius: 12px; border: 1px dashed rgba(255,82,82,0.2); margin-bottom: 20px;">
-                        <label class="modal-label" style="color: var(--danger); font-weight: bold;">Secure Archive Password Protection (Hidden From Public)</label>
+                        <label class="modal-label" style="color: var(--danger); font-weight: bold;">Secure Archive Password Protection</label>
                         <input type="password" id="pPassword" class="play-input" placeholder="Set installation unlock password sequence" style="margin-bottom: 12px;">
                         
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
-                            <div>
-                                <label class="modal-label">Get Password Link</label>
-                                <input type="text" id="pGetPassLink" class="play-input" placeholder="URL destination to fetch password" style="margin-bottom: 0;">
-                            </div>
-                            <div>
-                                <label class="modal-label">Password Video Link</label>
-                                <input type="text" id="pPassVideoLink" class="play-input" placeholder="Tutorial video link path" style="margin-bottom: 0;">
-                            </div>
-                        </div>
+                        <label class="modal-label">Get Password Link</label>
+                        <input type="text" id="pGetPassLink" class="play-input" placeholder="URL destination to fetch password" style="margin-bottom: 0;">
                     </div>
 
-                    <label class="modal-label" style="color: var(--warning);">Extra Redirection Alternatives (Add up to 5 optional links)</label>
-                    <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px;" id="extraLinksInputContainer">
-                        <input type="text" class="play-input extra-link-item" placeholder="Extra Redirection Link 1" style="margin-bottom:0;">
-                        <input type="text" class="play-input extra-link-item" placeholder="Extra Redirection Link 2" style="margin-bottom:0;">
-                        <input type="text" class="play-input extra-link-item" placeholder="Extra Redirection Link 3" style="margin-bottom:0;">
-                        <input type="text" class="play-input extra-link-item" placeholder="Extra Redirection Link 4" style="margin-bottom:0;">
-                        <input type="text" class="play-input extra-link-item" placeholder="Extra Redirection Link 5" style="margin-bottom:0;">
+                    <label class="modal-label" style="color: var(--warning);">Extra Redirection Alternatives (Up to 3 Nodes)</label>
+                    <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 20px; display: flex; flex-direction: column; gap: 12px;" id="extraLinksInputContainer">
+                        <div class="ex-link-box-wrapper">
+                            <input type="text" class="play-input ex-link-title" placeholder="Alternative Link 1 - Custom Title" style="margin-bottom:8px; padding:10px; font-size:13px;">
+                            <input type="text" class="play-input ex-link-url" placeholder="Alternative Link 1 - Target URL" style="margin-bottom:0; padding:10px; font-size:13px;">
+                        </div>
+                        <div class="ex-link-box-wrapper">
+                            <input type="text" class="play-input ex-link-title" placeholder="Alternative Link 2 - Custom Title" style="margin-bottom:8px; padding:10px; font-size:13px;">
+                            <input type="text" class="play-input ex-link-url" placeholder="Alternative Link 2 - Target URL" style="margin-bottom:0; padding:10px; font-size:13px;">
+                        </div>
+                        <div class="ex-link-box-wrapper">
+                            <input type="text" class="play-input ex-link-title" placeholder="Alternative Link 3 - Custom Title" style="margin-bottom:8px; padding:10px; font-size:13px;">
+                            <input type="text" class="play-input ex-link-url" placeholder="Alternative Link 3 - Target URL" style="margin-bottom:0; padding:10px; font-size:13px;">
+                        </div>
                     </div>
 
                     <label class="modal-label">Fuzzy Search Target Keywords (Type Comma ',' to link item tag)</label>
@@ -341,7 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
 
                     <label class="modal-label">Description & Changelog Documentation</label>
-                    <textarea id="pDescription" class="play-input" placeholder="Document feature releases or setup parameters..." style="min-height:100px; resize:vertical;"></textarea>
+                    <textarea id="pDescription" class="play-input" placeholder="Document feature releases..." style="min-height:100px; resize:vertical;"></textarea>
 
                     <button class="play-btn" id="executePublishBtn" onclick="commitPackageToPendingDatabaseNode()">SUBMIT FOR DEPLOYMENT</button>
                 </div>
@@ -351,15 +357,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         initializeTagsInputEngine();
 
-        // Logo upload listeners
         document.getElementById('logoFile').addEventListener('change', (e) => {
             executeBinaryAssetProcessingStream(e.target.files[0], 'logoMethod', 'logoUrlOutput', 'logoProcessStatus', 'logoPreviewImg');
         });
 
-        // Gallery screenshot multiple uploads tracker handler
         document.getElementById('screenshotFileBtn').addEventListener('change', (e) => {
             if (uploadedScreenshotsList.length >= 5) {
-                alert("Upload Limit Reached: Maximum of 5 gallery screenshots allocated per file node.");
+                alert("Upload Limit Reached: Maximum of 5 gallery screenshots allocated.");
                 e.target.value = '';
                 return;
             }
@@ -381,7 +385,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if(preview) preview.style.display = 'none';
             output.type = 'text';
             output.className = 'play-input';
-            output.placeholder = "Inject direct Base64 stream data text sequence raw character block here...";
+            output.placeholder = "Inject direct Base64 stream data text sequence here...";
         } else {
             if(fileBox) fileBox.style.display = 'block';
             output.type = 'hidden';
@@ -391,7 +395,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // ==========================================================================
-    // 7. CORE BINARY CONVERTER & CLOUD API ENGINE (IMAGE PREVIEW ATTACHED)
+    // 7. CORE BINARY CONVERTER & CLOUD API ENGINE
     // ==========================================================================
     function executeBinaryAssetProcessingStream(file, methodSelectId, outputInputId, statusParaId, previewImgId) {
         if (!file) return;
@@ -401,14 +405,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const status = document.getElementById(statusParaId);
         const preview = document.getElementById(previewImgId);
 
-        status.innerText = "Processing system binary streams. Awaiting allocation...";
+        status.innerText = "Processing system binary streams...";
         status.style.color = "var(--warning)";
 
         if (method === 'base64') {
             const reader = new FileReader();
             reader.onload = function(e) {
                 output.value = e.target.result;
-                status.innerText = "Base64 Hex Character Stream Processing Success!";
+                status.innerText = "Base64 Character Stream Success!";
                 status.style.color = "var(--success)";
                 if(preview) {
                     preview.src = e.target.result;
@@ -435,7 +439,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         preview.style.display = 'block';
                     }
                 } else {
-                    status.innerText = "Cloud upload request rejected by API.";
+                    status.innerText = "Cloud upload request rejected.";
                     status.style.color = "var(--danger)";
                 }
             })
@@ -446,7 +450,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Processing logic for multiple ImgBB screenshots uploads loop
     function executeGalleryScreenshotUploadProcessingStream(file) {
         if(!file) return;
         const status = document.getElementById('screenshotProcessStatus');
@@ -468,7 +471,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const imgUrl = json.data.url;
                 uploadedScreenshotsList.push(imgUrl);
 
-                // Dynamically render screenshot thumbnail block inside container
                 let thumb = document.createElement('img');
                 thumb.src = imgUrl;
                 thumb.className = 'sc-preview-thumb';
@@ -477,39 +479,47 @@ document.addEventListener('DOMContentLoaded', () => {
                 status.innerText = `Screenshot ${uploadedScreenshotsList.length}/5 Synced Successfully!`;
                 status.style.color = "var(--success)";
             } else {
-                status.innerText = "Gallery index upload authentication fault context.";
+                status.innerText = "Gallery index upload fault context.";
                 status.style.color = "var(--danger)";
             }
-            document.getElementById('screenshotFileBtn').value = ''; // Flush input file path values
+            document.getElementById('screenshotFileBtn').value = '';
         })
         .catch(() => {
-            status.innerText = "Network transmission framework timeout failure exception.";
+            status.innerText = "Network transmission timeout failure.";
             status.style.color = "var(--danger)";
         });
     }
 
     // ==========================================================================
-    // 8. DATABASE COMMIT PACKAGES CONTROLLER (1-MINUTE HOLD PROTOCOLS)
+    // 8. DATABASE COMMIT PACKAGES CONTROLLER (WITH NEW RATING STRINGS)
     // ==========================================================================
     window.commitPackageToPendingDatabaseNode = function() {
         const name = document.getElementById('pName').value.trim();
         const mainLink = document.getElementById('pMainLink').value.trim();
         const logoData = document.getElementById('logoUrlOutput').value.trim();
         const isTrendingChecked = document.getElementById('pTrendingCheck').checked;
+        const isPushNotificationChecked = document.getElementById('pPushNotificationCheck').checked;
 
         if (!name || !mainLink) {
-            alert("Upload Terminated: Title and Main Download Link strings are non-negotiable mandatory fields.");
+            alert("Upload Terminated: Title and Main Download Link are required fields.");
             return;
         }
 
-        // Collect extra links inputs data stack arrays loops
+        // NEW V5.6: COLLECT EXTRA LINKS WITH CUSTOM TITLES AS OBJECT MATRIX
         let collectedExtraLinks = [];
-        document.querySelectorAll('.extra-link-item').forEach(input => {
-            let val = input.value.trim();
-            if(val !== "") {
-                collectedExtraLinks.push(val);
+        const titles = document.querySelectorAll('.ex-link-title');
+        const urls = document.querySelectorAll('.ex-link-url');
+        
+        for(let i = 0; i < urls.length; i++) {
+            let tVal = titles[i].value.trim();
+            let uVal = urls[i].value.trim();
+            if(uVal !== "") {
+                collectedExtraLinks.push({
+                    title: tVal || `Alternative Link ${i + 1}`,
+                    url: uVal
+                });
             }
-        });
+        }
 
         const btn = document.getElementById('executePublishBtn');
         btn.innerText = "COMMITTING STACK DATA TO CLOUD...";
@@ -523,29 +533,40 @@ document.addEventListener('DOMContentLoaded', () => {
             category: document.getElementById('pCat').value,
             coinPrice: parseInt(document.getElementById('pCoinPrice').value) || 0,
             isTrending: isTrendingChecked,
+            sendNotification: isPushNotificationChecked, // Notification flag sync
             logoUrl: logoData || "https://via.placeholder.com/150/121212/00e6b8?text=APP",
-            screenshots: uploadedScreenshotsList, // Linked array list index nodes map
+            screenshots: uploadedScreenshotsList, 
             downloadUrl: mainLink,
             zipPassword: document.getElementById('pPassword').value.trim() || "",
             getPasswordLink: document.getElementById('pGetPassLink').value.trim() || "",
-            passwordVideoLink: document.getElementById('pPassVideoLink').value.trim() || "",
-            extraLinks: collectedExtraLinks,
+            extraLinks: collectedExtraLinks, // Saved as Title + URL objects list
             tags: uploadedTagsList, 
             description: document.getElementById('pDescription').value.trim() || "System Description Data Block Uninitialized.",
             uploaderUid: currentUser.uid,
             uploaderName: userProfile.name,
             timestamp: firebase.database.ServerValue.TIMESTAMP,
-            autoApproveTime: Date.now() + 60000, // Exactly 1 minute safety buffer timeline delay allocation
+            autoApproveTime: Date.now() + 60000, 
             status: 'pending',
             downloads: 0,
-            views: 0
+            views: 0,
+            
+            // NEW V5.6: ORIGINAL SYSTEM ZERO RATING SCHEMAS INITIALIZE
+            rating: 0,
+            totalRatingsCount: 0,
+            ratingDistribution: {
+                1: 0,
+                2: 0,
+                3: 0,
+                4: 0,
+                5: 0
+            }
         };
 
         db.ref('pending_apps').push(transactionalPackagePayload).then(() => {
-            alert("Package transaction committed to holding staging loops successfully. Please wait 1 minute for automatic background validation deployment processing routines.");
+            alert("Package committed to staging loops. Please wait 1 minute for background validation routines.");
             document.getElementById('dynamicUploadModal').remove();
         }).catch((err) => {
-            alert("Database deployment pipeline error exception: " + err.message);
+            alert("Database deployment error: " + err.message);
             btn.innerText = "SUBMIT FOR PROCESSING AND DEPLOYMENT";
             btn.disabled = false;
         });
@@ -561,7 +582,7 @@ document.addEventListener('DOMContentLoaded', () => {
         db.ref('system_broadcasts').on('value', (snapshot) => {
             if(!inbox) return;
             if(!snapshot.exists()) {
-                inbox.innerHTML = `<div class="empty-msg">No structural notices live inside system channel nodes.</div>`;
+                inbox.innerHTML = `<div class="empty-msg">No notices live inside system nodes.</div>`;
                 return;
             }
 
@@ -589,38 +610,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================================================
-    // 10. SYSTEM NOTIFICATION ADMIN BROADCAST INTERFACE DISPATCHER
-    // ==========================================================================
-    window.executeNotificationBroadcast = function() {
-        const title = document.getElementById('notiPushTitle').value.trim();
-        const msg = document.getElementById('notiPushMessage').value.trim();
-        const type = document.getElementById('notiPushType').value;
-
-        if(!title || !msg) {
-            alert("Notice broadcast content bounds violation. Execution dropped.");
-            return;
-        }
-
-        const date = new Date();
-        const timeStr = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) + " | " + date.toLocaleDateString();
-
-        db.ref('system_broadcasts').push({
-            title: title,
-            message: msg,
-            type: type,
-            timeString: timeStr,
-            sender: userProfile.name,
-            timestamp: firebase.database.ServerValue.TIMESTAMP
-        }).then(() => {
-            alert("Broadcast signal successfully dispatched across global framework hooks.");
-            document.getElementById('adminNotiModal').classList.remove('active');
-            document.getElementById('notiPushTitle').value = '';
-            document.getElementById('notiPushMessage').value = '';
-        });
-    };
-
-    // ==========================================================================
-    // 11. CRON TIMEOUT CRITICAL SIMULATOR ENGINE (1-MINUTE RESOLUTION LOOKUP)
+    // 10. AUTOMATED APP DEPLOYMENT & AUTO-NOTIFICATION BOT (CRON SIMULATOR)
     // ==========================================================================
     function runSystemAutoApproveEngine() {
         setInterval(() => {
@@ -630,26 +620,35 @@ document.addEventListener('DOMContentLoaded', () => {
                     snapshot.forEach((child) => {
                         let appRecord = child.val();
                         
-                        // Validates if the exact 1 minute queue constraint window has been saturated
                         if (currentTimeStamp >= appRecord.autoApproveTime) {
                             appRecord.status = 'approved';
                             appRecord.approvedBy = 'System-Auto-1Min';
                             appRecord.approvedAt = firebase.database.ServerValue.TIMESTAMP;
 
                             db.ref(`store_apps/${child.key}`).set(appRecord).then(() => {
+                                
+                                // NEW V5.6: AUTOMATED SYSTEM BROADCAST TRIGGER PUSH LOGIC
+                                if (appRecord.sendNotification === true) {
+                                    const date = new Date();
+                                    const timeStr = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) + " | " + date.toLocaleDateString();
+                                    
+                                    db.ref('system_broadcasts').push({
+                                        title: "New Application Live!",
+                                        message: `🚀 '${appRecord.appName}' (v${appRecord.version}) has been deployed successfully. Tap to explore details.`,
+                                        type: "normal",
+                                        timeString: timeStr,
+                                        sender: "System Bot",
+                                        timestamp: firebase.database.ServerValue.TIMESTAMP
+                                    });
+                                }
+
                                 db.ref(`pending_apps/${child.key}`).remove();
-                                console.log(`[STAGING QUEUE SYNC]: 1-Minute expiration reached. Auto-deploy finished for item: ${appRecord.appName}`);
+                                console.log(`[STAGING QUEUE]: Auto-deploy completed for: ${appRecord.appName}`);
                             });
                         }
                     });
                 }
             });
-        }, 15000); // Scans the map registries layout indexes every 15 seconds for blazing speed updates
+        }, 15000); 
     }
-
-    window.processOwnerStoreLogoChange = function(logoUrl) {
-        if(userProfile && userProfile.role === 'owner' && logoUrl.trim() !== "") {
-            db.ref('settings').update({ storeLogo: logoUrl.trim() });
-        }
-    };
 });

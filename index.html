@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#121212">
-    <title>MVX STORE | Play Store Edition V5.5</title>
+    <title>MVX STORE | Play Store Edition V5.6</title>
     
     <script>
         if (sessionStorage.getItem('mvx_session') !== 'ACTIVE') {
@@ -32,7 +32,13 @@
                 <div class="noti-badge" id="notiAlert"></div>
             </div>
             
-            <img src="" alt="User Profile" class="top-profile-pic" id="topProfileBtn" onclick="triggerHiddenPasswordGate()">
+            <img src="" alt="User Profile" class="top-profile-pic" id="topProfileBtn" 
+                 onmousedown="startMasterLockTimer()" 
+                 onmouseup="clearMasterLockTimer()" 
+                 onmouseleave="clearMasterLockTimer()" 
+                 ontouchstart="startMasterLockTimer()" 
+                 ontouchend="clearMasterLockTimer()" 
+                 onclick="openProfileQuickSettings()">
         </div>
     </header>
 
@@ -115,10 +121,10 @@
                 <i class="fas fa-chevron-right arrow"></i>
             </div>
             
-            <div class="you-menu-item" onclick="toggleSystemLanguageConfig()">
+            <div class="you-menu-item" onclick="document.getElementById('languageSelectModal').classList.add('active')">
                 <i class="fas fa-language" style="color: #00ff88;"></i>
                 <span>Language: <strong id="currentLanguageLabel" style="color: var(--primary);">English</strong></span>
-                <i class="fas fa-exchange-alt arrow" style="font-size:14px;"></i>
+                <i class="fas fa-chevron-right arrow"></i>
             </div>
 
             <div class="you-menu-item" id="themeToggleBtn">
@@ -158,6 +164,25 @@
             <span id="navYou">You</span>
         </div>
     </nav>
+
+    <div class="modal-overlay" id="languageSelectModal">
+        <div class="play-modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-globe" style="color:var(--primary);"></i> Select Region Language</h3>
+                <i class="fas fa-times close-modal" onclick="document.getElementById('languageSelectModal').classList.remove('active')"></i>
+            </div>
+            <div class="modal-body">
+                <label class="modal-label">Choose Interface Language</label>
+                <select id="sysLanguageSelector" class="play-input" onchange="changeSystemLanguage(this.value)">
+                    <option value="en">English (Default)</option>
+                    <option value="bn">বাংলা (Bengali)</option>
+                    <option value="es">Español (Spanish)</option>
+                    <option value="hi">हिन्दी (Hindi)</option>
+                    <option value="ar">العربية (Arabic)</option>
+                </select>
+            </div>
+        </div>
+    </div>
 
     <div class="modal-overlay" id="hiddenGateModal">
         <div class="play-modal">
@@ -200,30 +225,6 @@
         </div>
     </div>
 
-    <div class="modal-overlay" id="adminNotiModal">
-        <div class="play-modal">
-            <div class="modal-header">
-                <h3><i class="fas fa-paper-plane" style="color:var(--primary);"></i> Push System Notification</h3>
-                <i class="fas fa-times close-modal" onclick="document.getElementById('adminNotiModal').classList.remove('active')"></i>
-            </div>
-            <div class="modal-body">
-                <label class="modal-label">Alert Header/Title</label>
-                <input type="text" id="notiPushTitle" class="play-input" placeholder="e.g. Critical Core Update">
-                
-                <label class="modal-label">Alert Category</label>
-                <select id="notiPushType" class="play-input">
-                    <option value="normal">NORMAL BROADCAST (Teal Green)</option>
-                    <option value="alert">CRITICAL ALERT (Crimson Red)</option>
-                </select>
-                
-                <label class="modal-label">Detailed Notice Message</label>
-                <textarea id="notiPushMessage" class="play-input" placeholder="Write full details about down-time, update logs or warnings..." style="min-height: 120px; resize: vertical;"></textarea>
-                
-                <button class="play-btn" onclick="executeNotificationBroadcast()">BROADCAST MESSAGE NOW</button>
-            </div>
-        </div>
-    </div>
-
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -241,26 +242,17 @@
             const searchSection = document.getElementById('searchTabContent');
             const notificationSection = document.getElementById('notificationTabContent');
             const youSection = document.getElementById('youTabContent');
-            const secTitle = document.getElementById('feedSectionTitle');
 
             feedSection.style.display = 'none';
             searchSection.style.display = 'none';
             notificationSection.style.display = 'none';
             youSection.style.display = 'none';
 
-            let currentLang = localStorage.getItem('mvx_lang') || 'en';
-
             if(tabName === 'files') {
                 feedSection.style.display = 'block';
-                if(secTitle) {
-                    secTitle.innerHTML = (currentLang === 'en' ? 'Recommended Files' : 'সুপারিশকৃত ফাইলসমূহ') + ' <i class="fas fa-arrow-right" style="font-size:12px; color:var(--text-secondary);"></i>';
-                }
                 if(typeof window.loadStoreFeed === 'function') window.loadStoreFeed('all', 'files');
             } else if (tabName === 'mod_app') {
                 feedSection.style.display = 'block';
-                if(secTitle) {
-                    secTitle.innerHTML = (currentLang === 'en' ? 'Premium Mod Apps' : 'প্রিমিয়াম মড অ্যাপস') + ' <i class="fas fa-arrow-right" style="font-size:12px; color:var(--text-secondary);"></i>';
-                }
                 if(typeof window.loadStoreFeed === 'function') window.loadStoreFeed('all', 'mod_app');
             } else if (tabName === 'search') {
                 searchSection.style.display = 'block';
@@ -277,12 +269,16 @@
             if(badge) badge.style.display = 'none';
         }
 
-        function openAdminNotificationModal() {
-            document.getElementById('adminNotiModal').classList.add('active');
-        }
-
         function closeProfileEditModal() {
             document.getElementById('profileEditModal').classList.remove('active');
+        }
+
+        // Handle single click to open profile edit modal
+        function openProfileQuickSettings() {
+            if (typeof window.isMasterTimerActive !== 'undefined' && window.isMasterTimerActive) {
+                return; // Ignore click if 5 second hold was triggered
+            }
+            document.getElementById('profileEditModal').classList.add('active');
         }
     </script>
 </body>

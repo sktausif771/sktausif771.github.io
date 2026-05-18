@@ -1,8 +1,10 @@
 /* ==========================================================================
-   MVX STORE V5.5 - MAIN SYSTEM ARCHITECTURE, HIDDEN ENCRYPTED GATE & LOCALES
+   MVX STORE V5.6 - MAIN SYSTEM ARCHITECTURE, FIVE-SEC HOLD GATE & MULTI-LANG
    ========================================================================== */
 
 let userProfile = null; // Global User Cache Object Mappings
+let masterPressTimer = null;
+window.isMasterTimerActive = false;
 
 document.addEventListener('DOMContentLoaded', () => {
     if (typeof firebase === 'undefined') {
@@ -14,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const auth = firebase.auth();
 
     // ==========================================================================
-    // ১. ডাইনামিক রিয়েলটাইম ল্যাংগুয়েজ ডিকশনারি (A-Z Translation Engine)
+    // ১. ডাইনামিক ৫টি ভাষার রিয়েলটাইম ডিকশনারি (Multi-Language Engine)
     // ==========================================================================
     const languageDictionary = {
         en: {
@@ -28,8 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
             searchInput: "Search apps, files, mods or tags...",
             notiTitle: "System Notifications",
             clearScreen: "Clear Screen",
-            followers: "Followers: ",
-            following: "Following: ",
             claimTitle: "Claim Premium Gift Code",
             claimInput: "Enter Redeem Voucher Code",
             btnClaim: "CLAIM",
@@ -53,8 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
             searchInput: "অ্যাপস, ফাইল, মড বা ট্যাগ খুঁজুন...",
             notiTitle: "সিস্টেম নোটিফিকেশন",
             clearScreen: "স্ক্রিন ক্লিয়ার করুন",
-            followers: "অনুসারী: ",
-            following: "অনুগমন: ",
             claimTitle: "প্রিমিয়াম গিফট কোড ক্লেইম করুন",
             claimInput: "রিডিম ভাউচার কোড দিন",
             btnClaim: "ক্লেইম",
@@ -66,15 +64,82 @@ document.addEventListener('DOMContentLoaded', () => {
             navSearch: "সার্চ",
             navYou: "প্রোফাইল",
             passPrompt: "অ্যাডমিন প্যানেল সিকিউরিটি পিন কোড দিন"
+        },
+        es: {
+            storeTitle: "TIENDA MVX",
+            loadingStore: "Escaneando la infraestructura de la base de datos...",
+            catAll: "Todos los artículos",
+            catTrending: "Tendencias ahora",
+            catPremium: "Aplicaciones Premium",
+            searchTitle: "Motor de búsqueda inteligente",
+            searchPrompt: "Escriba cualquier palabra clave para obtener datos",
+            searchInput: "Buscar aplicaciones, archivos o etiquetas...",
+            notiTitle: "Notificaciones del sistema",
+            clearScreen: "Limpiar pantalla",
+            claimTitle: "Reclamar código de regalo premium",
+            claimInput: "Ingrese el código del cupón",
+            btnClaim: "RECLAMAR",
+            uploadApp: "Publicar archivo de paquete",
+            coinBalance: "Saldo de monedas MVX",
+            signOut: "Cierre de sesión seguro",
+            navFiles: "Archivos",
+            navModApp: "Aplicación Mod",
+            navSearch: "Buscar",
+            navYou: "Tú",
+            passPrompt: "Ingrese la secuencia de la clave pin de acceso"
+        },
+        hi: {
+            storeTitle: "एमवीएक्स स्टोर",
+            loadingStore: "डेटाबेस इन्फ्रास्ट्रक्चर स्कैन किया जा रहा है...",
+            catAll: "सभी आइटम",
+            catTrending: "अभी ट्रेंडिंग",
+            catPremium: "प्रीमियम ऐप्स",
+            searchTitle: "स्मार्ट सर्च थैंक्स",
+            searchPrompt: "एप्लिकेशन डेटा लाने के लिए कोई भी कीवर्ड टाइप करें",
+            searchInput: "ऐप्स, फ़ाइलें, मॉड या टैग खोजें...",
+            notiTitle: "सिस्टम सूचनाएं",
+            clearScreen: "स्क्रीन साफ़ करें",
+            claimTitle: "प्रीमियम उपहार कोड का दावा करें",
+            claimInput: "रिडीम वाउचर कोड दर्ज करें",
+            btnClaim: "दावा करें",
+            uploadApp: "पैकेज फ़ाइल प्रकाशित करें",
+            coinBalance: "एमवीएक्स सिक्का शेष",
+            signOut: "सुरक्षित साइन आउट",
+            navFiles: "फ़ाइलें",
+            navModApp: "मोड ऐप",
+            navSearch: "खोजें",
+            navYou: "आप",
+            passPrompt: "एक्सेस टोकन पिन कुंजी अनुक्रम दर्ज करें"
+        },
+        ar: {
+            storeTitle: "متجر MVX",
+            loadingStore: "جاري فحص بنية قاعدة البيانات...",
+            catAll: "جميع المواد",
+            catTrending: "الشائع الآن",
+            catPremium: "التطبيقات المميزة",
+            searchTitle: "محرك البحث الذكي",
+            searchPrompt: "اكتب أي كلمة رئيسية لجلب البيانات",
+            searchInput: "ابحث عن التطبيقات أو الملفات أو العلامات...",
+            notiTitle: "إشعارات النظام",
+            clearScreen: "مسح الشاشة",
+            claimTitle: "مطالبة برمز هدية مميز",
+            claimInput: "أدخل رمز قسيمة الرديم",
+            btnClaim: "مطالبة",
+            uploadApp: "نشر ملف الحزمة",
+            coinBalance: "رصيد عملات MVX",
+            signOut: "تسجيل خروج آمن",
+            navFiles: "الملفات",
+            navModApp: "تطبيق مود",
+            navSearch: "بحث",
+            navYou: "أنت",
+            passPrompt: "أدخل تسلسل مفتاح رمز الوصول"
         }
     };
 
-    // System Language Localization Renderer (Language is fine in localStorage for persistence)
     window.applySystemLanguageLocalization = function(lang) {
         localStorage.setItem('mvx_lang', lang);
-        const dict = languageDictionary[lang];
+        const dict = languageDictionary[lang] || languageDictionary['en'];
 
-        // UI Text Element Mapping Dictionary Loops
         const mapping = {
             'lblStoreTitle': dict.storeTitle,
             'lblLoadingStore': dict.loadingStore,
@@ -114,31 +179,57 @@ document.addEventListener('DOMContentLoaded', () => {
         if(rInput) rInput.placeholder = dict.claimInput;
 
         const langLabel = document.getElementById('currentLanguageLabel');
-        if(langLabel) langLabel.innerText = (lang === 'en') ? "English" : "বাংলা";
+        if(langLabel) {
+            const labels = { en: "English", bn: "বাংলা", es: "Español", hi: "हिन्दी", ar: "العربية" };
+            langLabel.innerText = labels[lang] || "English";
+        }
     };
 
-    window.toggleSystemLanguageConfig = function() {
-        let currentLang = localStorage.getItem('mvx_lang') || 'en';
-        let newLang = (currentLang === 'en') ? 'bn' : 'en';
-        applySystemLanguageLocalization(newLang);
+    window.changeSystemLanguage = function(lang) {
+        applySystemLanguageLocalization(lang);
+        document.getElementById('languageSelectModal').classList.remove('active');
     };
 
     let savedLang = localStorage.getItem('mvx_lang') || 'en';
     applySystemLanguageLocalization(savedLang);
+    const langSelectorEl = document.getElementById('sysLanguageSelector');
+    if(langSelectorEl) langSelectorEl.value = savedLang;
 
     /* ==========================================================================
-       ২. সিকিউর হিডেন পাসওয়ার্ড গেটওয়ে সিস্টেম (Profile Picture Click Gate)
+       ২. ৫ সেকেন্ড হোল্ড সিকিউর মাস্টার গেটওয়ে (5-Sec Hold Architecture)
        ========================================================================== */
-    const HIDDEN_MASTER_PASSKEY = "121345"; // Temporary Secret Master Access PIN Code
+    const HIDDEN_MASTER_PASSKEY = "121345";
 
-    window.triggerHiddenPasswordGate = function() {
+    window.startMasterLockTimer = function() {
+        window.isMasterTimerActive = false;
+        masterPressTimer = setTimeout(() => {
+            window.isMasterTimerActive = true;
+            triggerHiddenPasswordGate();
+        }, 5000); 
+    };
+
+    window.clearMasterLockTimer = function() {
+        if (masterPressTimer) {
+            clearTimeout(masterPressTimer);
+        }
+    };
+
+    function triggerHiddenPasswordGate() {
+        if (!userProfile) return;
+        
+        // ওনার অ্যাকাউন্ট হলে কোনো পাসওয়ার্ড ছাড়াই ডাইরেক্ট প্যানেলে নিয়ে যাবে
+        if (userProfile.role === 'owner') {
+            window.location.href = 'admin.html';
+            return;
+        }
+
         const gateModal = document.getElementById('hiddenGateModal');
         const passInput = document.getElementById('gatePasswordInput');
         if (gateModal) {
             if(passInput) passInput.value = ''; 
             gateModal.classList.add('active');
         }
-    };
+    }
 
     window.verifyHiddenGatePasswordCredentials = function() {
         const passInput = document.getElementById('gatePasswordInput');
@@ -161,7 +252,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeBtn = document.getElementById('themeToggleBtn');
     const themeLabel = document.getElementById('currentThemeLabel');
     
-    // Theme is fine in localStorage
     let savedTheme = localStorage.getItem('mvx_theme') || 'dark';
     document.documentElement.setAttribute('data-theme', savedTheme);
     updateThemeUIElements(savedTheme);
@@ -228,7 +318,7 @@ document.addEventListener('DOMContentLoaded', () => {
             searchGrid.innerHTML = `
                 <div style="text-align: center; padding: 40px; grid-column: 1/-1; color: var(--text-secondary);">
                     <i class="fas fa-search-plus" style="font-size: 40px; margin-bottom: 15px; color: var(--border-color);"></i>
-                    <h3>${languageDictionary[activeLang].searchPrompt}</h3>
+                    <h3>${(languageDictionary[activeLang] || languageDictionary['en']).searchPrompt}</h3>
                 </div>
             `;
             return;
@@ -304,7 +394,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ==========================================================================
-       ৬. মাস্টার রিডিম কোড ইঞ্জিন ক্লেইম প্রসেস (MULTIPLE APP BYPASS INCLUDED)
+       ৬. মাস্টার রিডিম কোড ইঞ্জিন ক্লেইম প্রসেস
        ========================================================================== */
     window.executeRedeemProtocol = function() {
         const codeInput = document.getElementById('redeemInputCode');
@@ -415,6 +505,20 @@ document.addEventListener('DOMContentLoaded', () => {
         if(codeInput) codeInput.value = '';
     }
 
+    /* ==========================================================================
+       ৭. [FIXED] LINK REDIRECTION INTERCEPTOR UTILITY (SLASHLISS TAP IN CHROMES)
+       ========================================================================== */
+    window.safeOpenURLInNewTab = function(url) {
+        if (!url || url.trim() === "" || url === "#") return;
+        let targetUrl = url.trim();
+        
+        // স্ল্যাশ বাগ দূর করতে প্রোটোকল অটো-ফিক্সার লজিক
+        if (!/^https?:\/\//i.test(targetUrl)) {
+            targetUrl = 'https://' + targetUrl;
+        }
+        window.open(targetUrl, '_blank');
+    };
+
     window.saveProfileChanges = function() {
         const user = auth.currentUser;
         if (!user || !userProfile) return;
@@ -439,10 +543,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // RESTORED: Secure Account Sign-out to clear Session Storage
     window.secureLogout = function() {
         if (confirm("Clear local cache and close active storage network pipeline?")) {
-            sessionStorage.clear(); // Reverted back to the secure sessionStorage
+            sessionStorage.clear(); 
             auth.signOut().then(() => window.location.replace('login.html'));
         }
     };

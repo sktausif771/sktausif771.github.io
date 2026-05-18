@@ -37,12 +37,18 @@
 
         .extra-links-box { background: var(--bg-surface); border: 1px solid var(--border-color); padding: 20px; border-radius: 16px; margin-bottom: 25px; }
         .extra-links-box h3 { font-family: var(--font-header); color: #fff; margin-bottom: 15px; font-size: 18px; }
-        .ex-link-btn { display: flex; align-items: center; justify-content: space-between; background: var(--bg-base); border: 1px solid var(--border-color); padding: 14px; border-radius: 10px; color: var(--text-primary); text-decoration: none; margin-bottom: 10px; font-weight: 600; font-size: 14px; transition: all 0.2s; }
+        .ex-link-btn { display: flex; align-items: center; justify-content: space-between; background: var(--bg-base); border: 1px solid var(--border-color); padding: 14px; border-radius: 10px; color: var(--text-primary); text-decoration: none; margin-bottom: 10px; font-weight: 600; font-size: 14px; transition: all 0.2s; cursor: pointer; }
         .ex-link-btn:hover { border-color: var(--primary); color: var(--primary); }
 
         .top-action-bar { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; margin-bottom: 15px; }
         .back-circle-btn { width: 44px; height: 44px; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; cursor: pointer; transition: 0.2s; }
         .back-circle-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+        /* Interactive Rating Stars Area */
+        .user-rating-input-zone { background: var(--bg-surface); border: 1px solid var(--border-color); padding: 15px; border-radius: 14px; margin-bottom: 25px; text-align: center; }
+        .user-rating-input-zone h4 { font-family: var(--font-header); margin-bottom: 8px; font-size: 16px; color: #fff; }
+        .rating-stars-input-container { display: flex; justify-content: center; gap: 8px; font-size: 24px; color: rgba(255,255,255,0.1); cursor: pointer; }
+        .rating-stars-input-container i.active { color: var(--warning); }
     </style>
 </head>
 <body>
@@ -70,9 +76,9 @@
         </div>
 
         <div class="stats-row">
-            <div class="stat-item">
-                <div class="stat-val" id="appDetailsRating">4.8 <i class="fas fa-star" style="color:var(--warning); font-size:13px;"></i></div>
-                <div class="stat-lbl">Rating Verified</div>
+            <div class="stat-item rating-interactive" onclick="toggleRatingPercentageBreakdownBlock()">
+                <div class="stat-val" id="appDetailsRating">0.0 <i class="fas fa-star" style="color:var(--warning); font-size:13px;"></i></div>
+                <div class="stat-lbl" style="text-decoration: underline;">Reviews Map <i class="fas fa-chevron-down" style="font-size:9px;"></i></div>
             </div>
             <div class="stat-item">
                 <div class="stat-val" id="appDetailsSize">0 MB</div>
@@ -84,8 +90,27 @@
             </div>
         </div>
 
+        <div class="rating-details-wrapper" id="ratingDistributionBreakdownPanel">
+            <div class="rating-row"><div class="rating-star-lbl">5 Star</div><div class="rating-bar-bg"><div class="rating-bar-fill" id="rbFill5"></div></div></div>
+            <div class="rating-row"><div class="rating-star-lbl">4 Star</div><div class="rating-bar-bg"><div class="rating-bar-fill" id="rbFill4"></div></div></div>
+            <div class="rating-row"><div class="rating-star-lbl">3 Star</div><div class="rating-bar-bg"><div class="rating-bar-fill" id="rbFill3"></div></div></div>
+            <div class="rating-row"><div class="rating-star-lbl">2 Star</div><div class="rating-bar-bg"><div class="rating-bar-fill" id="rbFill2"></div></div></div>
+            <div class="rating-row"><div class="rating-star-lbl">1 Star</div><div class="rating-bar-bg"><div class="rating-bar-fill" id="rbFill1"></div></div></div>
+        </div>
+
+        <div class="user-rating-input-zone">
+            <h4>Rate this application</h4>
+            <div class="rating-stars-input-container" id="interactiveStarsSubmissionTrack">
+                <i class="fas fa-star" data-star="1" onclick="submitUserStarRatingValue(1)"></i>
+                <i class="fas fa-star" data-star="2" onclick="submitUserStarRatingValue(2)"></i>
+                <i class="fas fa-star" data-star="3" onclick="submitUserStarRatingValue(3)"></i>
+                <i class="fas fa-star" data-star="4" onclick="submitUserStarRatingValue(4)"></i>
+                <i class="fas fa-star" data-star="5" onclick="submitUserStarRatingValue(5)"></i>
+            </div>
+        </div>
+
         <div style="margin-bottom: 30px;">
-            <button class="play-btn" id="masterInstallActionButton" onclick="processMasterActionRouting()">Loading Package State...</button>
+            <button class="play-btn" id="masterInstallActionButton" onclick="processMasterActionRouting()">INSTALL</button>
         </div>
 
         <div class="play-section-title" id="galleryHeadingTitle" style="display:none;">Gallery Screenshots</div>
@@ -127,15 +152,14 @@
             <div class="modal-body install-popup-body">
                 <i class="fas fa-lock install-popup-icon" style="color:var(--danger);"></i>
                 <h3>Secure Zip Password Required</h3>
-                <p>This package structure utilizes compression locks. Input the correct sequence below to authenticate and append the node asset data onto your profile dashboard.</p>
+                <p>This package structure utilizes compression locks. Input the correct sequence below to validate archive download paths.</p>
                 
                 <input type="password" id="appZipPasswordInputField" class="play-input" placeholder="Enter Installation Password" style="text-align:center; letter-spacing:3px; font-weight:bold; font-size:16px;">
                 
                 <button class="play-btn" style="margin-bottom:12px;" onclick="verifyPackageArchivePasswordCredentials()">AUTHENTICATE PASSWORD</button>
                 
-                <div style="display:flex; gap:10px; margin-top:15px;">
-                    <a href="#" id="modalGetPassBtn" target="_blank" class="ex-link-btn" style="flex:1; margin-bottom:0; padding:10px; font-size:12px; justify-content:center; background:rgba(255,255,255,0.02);"><i class="fas fa-key"></i> Get Password</a>
-                    <a href="#" id="modalPassVideoBtn" target="_blank" class="ex-link-btn" style="flex:1; margin-bottom:0; padding:10px; font-size:12px; justify-content:center; background:rgba(255,255,255,0.02);"><i class="fas fa-video"></i> Tutorial Video</a>
+                <div style="display:flex; justify-content:center; margin-top:15px;">
+                    <div id="modalGetPassBtn" class="ex-link-btn" style="width:100%; margin-bottom:0; padding:12px; font-size:13px; justify-content:center; background:rgba(255,255,255,0.02);" onclick="triggerSafeExternalRedirection(this.getAttribute('data-url'))"><i class="fas fa-key"></i> Get Password</div>
                 </div>
             </div>
         </div>
@@ -157,6 +181,11 @@
                 <button class="play-btn" onclick="submitApplicationViolationReportToServer()">DISPATCH SECURITY REPORT</button>
             </div>
         </div>
+    </div>
+
+    <div class="lightbox-overlay" id="screenshotLightboxViewer" onclick="closeScreenshotFullZoomLightbox()">
+        <i class="fas fa-times lightbox-close" onclick="closeScreenshotFullZoomLightbox()"></i>
+        <img src="" class="lightbox-img" id="lightboxTargetSourceImg" onclick="event.stopPropagation()">
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -200,8 +229,18 @@
             document.getElementById('applicationReportSystemModal').classList.add('active');
         }
 
+        /* SLASH ISSUE BYPASS INTERCEPTOR: CRITICAL FIXES FOR GOOGLE CHROMES NEW TABS */
+        function triggerSafeExternalRedirection(url) {
+            if (!url || url.trim() === "" || url === "#") return;
+            let secureUrl = url.trim();
+            if (!/^https?:\/\//i.test(secureUrl)) {
+                secureUrl = 'https://' + secureUrl;
+            }
+            window.open(secureUrl, '_blank');
+        }
+
         // ==========================================================================
-        // AUTH CONTEXT LIFECYCLE SYNC INJECTIONS TRACKER LOOP
+        // AUTH CONTEXT LIFECYCLE SYNC
         // ==========================================================================
         authorization.onAuthStateChanged((user) => {
             if (user) {
@@ -217,23 +256,15 @@
         });
 
         function fetchApplicationMetaDetailsNodeLogs() {
-            database.ref(`store_apps/${targetAppId}`).once('value').then((snapshot) => {
-                if (!snapshot.exists()) {
-                    alert("Fatal Error: The target asset node configuration has been pruned from live clusters.");
-                    window.location.replace('index.html');
-                    return;
-                }
+            database.ref(`store_apps/${targetAppId}`).on('value', (snapshot) => {
+                if (!snapshot.exists()) return;
 
                 targetApplicationObject = snapshot.val();
-                incrementApplicationViewMetricsCount();
                 renderApplicationDetailsUserInterfaceGrid();
             });
-        }
-
-        function incrementApplicationViewMetricsCount() {
-            database.ref(`store_apps/${targetAppId}/views`).transaction((currentViews) => {
-                return (currentViews || 0) + 1;
-            });
+            
+            // Views increment tracker runs strictly once via once loop
+            database.ref(`store_apps/${targetAppId}/views`).transaction((v) => (v || 0) + 1);
         }
 
         // ==========================================================================
@@ -249,12 +280,17 @@
             document.getElementById('appDetailsDownloads').innerText = app.downloads || 0;
             document.getElementById('appDetailsDescription').innerText = app.description;
 
-            let baseRating = 4.7;
-            if(app.downloads > 50) baseRating = 4.8;
-            if(app.downloads > 500) baseRating = 4.9;
-            document.getElementById('appDetailsRating').innerHTML = `${baseRating} <i class="fas fa-star" style="color:var(--warning); font-size:13px;"></i>`;
+            // RENDER REVIEWS RATING LOGS SYSTEMATICALLY WITH ORIGINAL DECIMALS
+            const roundedRating = (app.rating || 0).toFixed(1);
+            document.getElementById('appDetailsRating').innerHTML = `${roundedRating} <i class="fas fa-star" style="color:var(--warning); font-size:13px;"></i>`;
 
-            // RENDER SCREENSHOTS HORIZONTAL GALLERY
+            // PRE-FILL USER WORKSPACE IF ALREADY VOTED PREVIOUSLY
+            if(app.voted_users && app.voted_users[activeUserIdToken]) {
+                const legacyStarCount = app.voted_users[activeUserIdToken];
+                highlightInteractiveRatingStarsTrackBox(legacyStarCount);
+            }
+
+            // LIGHTBOX SCREENSHOTS COMPILER ARCHITECTURE
             const gallery = document.getElementById('appDetailsScreenshotGallery');
             const heading = document.getElementById('galleryHeadingTitle');
             gallery.innerHTML = '';
@@ -266,25 +302,25 @@
                     img.src = url;
                     img.className = 'screenshot-img';
                     img.loading = 'lazy';
+                    img.onclick = () => launchScreenshotFullZoomLightbox(url); // Trigger zoom
                     gallery.appendChild(img);
                 });
             } else {
                 heading.style.display = 'none';
             }
 
-            // RENDER EXTRA ALTERNATIVE ACTIONS LINKS
+            // RENDER EXTRA CUSTOM TITLED ALTERNATIVE ACCESS BUTTONS
             const extraContainer = document.getElementById('extraLinksInjectionsContainer');
             const extraWrapper = document.getElementById('extraLinksMainWrapper');
             extraContainer.innerHTML = '';
 
             if (app.extraLinks && app.extraLinks.length > 0) {
                 extraWrapper.style.display = 'block';
-                app.extraLinks.forEach((link, idx) => {
-                    let a = document.createElement('a');
-                    a.href = link;
-                    a.target = '_blank';
+                app.extraLinks.forEach((item) => {
+                    let a = document.createElement('div');
                     a.className = 'ex-link-btn';
-                    a.innerHTML = `<span><i class="fas fa-external-link-alt" style="color:var(--primary); margin-right:8px;"></i> Alternative Redirect Node Route ${idx + 1}</span> <i class="fas fa-chevron-right" style="font-size:12px; color:var(--text-secondary);"></i>`;
+                    a.onclick = () => triggerSafeExternalRedirection(item.url);
+                    a.innerHTML = `<span><i class="fas fa-external-link-alt" style="color:var(--primary); margin-right:8px;"></i> ${item.title || "Alternative URL"}</span> <i class="fas fa-chevron-right" style="font-size:12px; color:var(--text-secondary);"></i>`;
                     extraContainer.appendChild(a);
                 });
             } else {
@@ -294,8 +330,89 @@
             evaluateApplicationStateLicenseOwnershipMatrix();
         }
 
+        // SCREENSHOT OVERLAY ZOOM CONTROLLERS
+        function launchScreenshotFullZoomLightbox(url) {
+            document.getElementById('lightboxTargetSourceImg').src = url;
+            document.getElementById('screenshotLightboxViewer').classList.add('active');
+        }
+        function closeScreenshotFullZoomLightbox() {
+            document.getElementById('screenshotLightboxViewer').classList.remove('active');
+        }
+
         // ==========================================================================
-        // STATE RE-EVALUATION CONDITION FLOW ROUTER
+        // DYNAMIC PLAY STORE BAR CHIPS CALCULATOR CLOSURE
+        // ==========================================================================
+        function toggleRatingPercentageBreakdownBlock() {
+            const panel = document.getElementById('ratingDistributionBreakdownPanel');
+            const app = targetApplicationObject;
+            
+            if(panel.style.display === 'block') {
+                panel.style.display = 'none';
+                return;
+            }
+            panel.style.display = 'block';
+
+            const total = app.totalRatingsCount || 0;
+            const dist = app.ratingDistribution || {1:0, 2:0, 3:0, 4:0, 5:0};
+
+            for(let i=1; i<=5; i++) {
+                let percent = 0;
+                if(total > 0 && dist[i]) {
+                    percent = Math.round((dist[i] / total) * 100);
+                }
+                document.getElementById(`rbFill${i}`).style.width = percent + '%';
+            }
+        }
+
+        // INTERACTIVE RATINGS DISPATCH PROTOCOLS
+        function highlightInteractiveRatingStarsTrackBox(count) {
+            document.querySelectorAll('#interactiveStarsSubmissionTrack i').forEach(star => {
+                let val = parseInt(star.getAttribute('data-star'));
+                if(val <= count) star.classList.add('active');
+                else star.classList.remove('active');
+            });
+        }
+
+        function submitUserStarRatingValue(starCount) {
+            const app = targetApplicationObject;
+            
+            if(app.voted_users && app.voted_users[activeUserIdToken]) {
+                alert("Rating Locked: You have already submitted stars rating evaluation inside this file registry node.");
+                return;
+            }
+
+            highlightInteractiveRatingStarsTrackBox(starCount);
+
+            // Execute transactional atomic data structures transformation rules
+            databaseRef = database.ref(`store_apps/${targetAppId}`);
+            databaseRef.runTransaction((currentApp) => {
+                if (currentApp) {
+                    if (!currentApp.ratingDistribution) {
+                        currentApp.ratingDistribution = {1:0, 2:0, 3:0, 4:0, 5:0};
+                    }
+                    if (!currentApp.voted_users) {
+                        currentApp.voted_users = {};
+                    }
+
+                    currentApp.voted_users[activeUserIdToken] = starCount;
+                    currentApp.ratingDistribution[starCount] = (currentApp.ratingDistribution[starCount] || 0) + 1;
+                    currentApp.totalRatingsCount = (currentApp.totalRatingsCount || 0) + 1;
+
+                    // Compute dynamic weighted arithmetic average values
+                    let sum = 0;
+                    for(let i=1; i<=5; i++) {
+                        sum += (currentApp.ratingDistribution[i] || 0) * i;
+                    }
+                    currentApp.rating = sum / currentApp.totalRatingsCount;
+                }
+                return currentApp;
+            }).then(() => {
+                alert("Thank you! Your ratings metrics have been appended across server mappings.");
+            });
+        }
+
+        // ==========================================================================
+        // STATE RE-EVALUATION MATRIX (BUTTON ALWAYS SAYS INSTALL OR UNLOCK)
         // ==========================================================================
         function evaluateApplicationStateLicenseOwnershipMatrix() {
             const app = targetApplicationObject;
@@ -306,20 +423,15 @@
                 if (!hasUnlocked) {
                     btn.innerText = `UNLOCK PACKAGE FOR ${app.coinPrice} COINS`;
                     btn.style.background = 'var(--paid-color)';
+                    btn.style.color = '#000';
                     return;
                 }
             }
 
-            const hasPasswordBypassed = loggedInUserProfileCache.unlocked_passwords && loggedInUserProfileCache.unlocked_passwords[targetAppId];
-            if (app.zipPassword && app.zipPassword.trim() !== "" && !hasPasswordBypassed) {
-                btn.innerText = "AUTHENTICATE ZIP SECURITY ENCRYPTION LOCK";
-                btn.style.background = 'var(--danger)';
-                btn.style.color = '#fff';
-            } else {
-                btn.innerText = "INSTALL APPLICATION";
-                btn.style.background = 'var(--primary)';
-                btn.style.color = '#000';
-            }
+            // বাটন টেক্সট সবসময় INSTALL থাকবে
+            btn.innerText = "INSTALL";
+            btn.style.background = 'var(--primary)';
+            btn.style.color = '#000';
         }
 
         // ==========================================================================
@@ -337,16 +449,12 @@
                 }
             }
 
+            // বাটন ইন্সটল এ ক্লিক করার পর পাসওয়ার্ড চেক লুপ রান করবে
             const hasPasswordBypassed = loggedInUserProfileCache.unlocked_passwords && loggedInUserProfileCache.unlocked_passwords[targetAppId];
             if (app.zipPassword && app.zipPassword.trim() !== "" && !hasPasswordBypassed) {
                 const getPass = document.getElementById('modalGetPassBtn');
-                const passVid = document.getElementById('modalPassVideoBtn');
-                
-                getPass.href = app.getPasswordLink || "#";
-                passVid.href = app.passwordVideoLink || "#";
-                
+                getPass.setAttribute('data-url', app.getPasswordLink || "#");
                 getPass.style.display = app.getPasswordLink ? 'flex' : 'none';
-                passVid.style.display = app.passwordVideoLink ? 'flex' : 'none';
 
                 document.getElementById('passwordProtectionGateModal').classList.add('active');
                 return;
@@ -356,14 +464,14 @@
         };
 
         // ==========================================================================
-        // EXECUTE COIN DEBITS PREMIUM TRANSACTION PROTOCOL
+        // COIN DEDUCTIONS SYSTEM
         // ==========================================================================
         window.executeCoinDeductionUnlockProtocol = function() {
             const app = targetApplicationObject;
             const currentCoinsBalance = parseInt(loggedInUserProfileCache.coins) || 0;
 
             if (currentCoinsBalance < app.coinPrice) {
-                alert("Transaction Rejected: Saturated coin liquidity profile balance. Please claim a wallet gift voucher token.");
+                alert("Transaction Rejected: Saturated coin liquidity profile balance.");
                 closeDetailsSystemModals('coinUnlockTransactionModal');
                 return;
             }
@@ -375,14 +483,14 @@
             updates[`users/${activeUserIdToken}/unlocked_apps/${targetAppId}`] = true;
 
             database.ref().update(updates).then(() => {
-                alert("Transaction Cleared: Premium cryptographic structural access mapping token appended to your user profile registry.");
+                alert("Transaction Cleared! Premium package license allocated.");
                 closeDetailsSystemModals('coinUnlockTransactionModal');
                 evaluateApplicationStateLicenseOwnershipMatrix();
             });
         };
 
         // ==========================================================================
-        // PASSWORD GATE REDUNDANCY VALIDATION
+        // PASSWORD AUTHENTICATION SEQUENCE
         // ==========================================================================
         window.verifyPackageArchivePasswordCredentials = function() {
             const app = targetApplicationObject;
@@ -390,12 +498,13 @@
 
             if (inputVal === app.zipPassword) {
                 database.ref(`users/${activeUserIdToken}/unlocked_passwords/${targetAppId}`).set(true).then(() => {
-                    alert("Access Token Authorized: Archive compression passkey validated. Redirection processing initiated.");
+                    alert("Access Token Authorized! Password sequence validated.");
                     closeDetailsSystemModals('passwordProtectionGateModal');
                     evaluateApplicationStateLicenseOwnershipMatrix();
+                    executeSecureDownloadRegistryNodeTransaction(); // Directly redirect after pass auth
                 });
             } else {
-                alert("Security Interrupt Execution Error: Input token character mismatch code failed verification loops.");
+                alert("Security Interrupt: Key sequence mismatch failed verification.");
                 document.getElementById('appZipPasswordInputField').value = '';
             }
         };
@@ -415,11 +524,11 @@
                         database.ref(`store_apps/${targetAppId}/downloads`).transaction((currentDL) => {
                             return (currentDL || 0) + 1;
                         }).then(() => {
-                            window.open(app.downloadUrl, '_blank');
+                            triggerSafeExternalRedirection(app.downloadUrl);
                         });
                     });
                 } else {
-                    window.open(app.downloadUrl, '_blank');
+                    triggerSafeExternalRedirection(app.downloadUrl);
                 }
             });
         }
@@ -441,7 +550,7 @@
             };
 
             database.ref('reports').push(reportPayload).then(() => {
-                alert("Security Signal Dispatched: Violation details successfully mapped to administrator network storage infrastructure layers.");
+                alert("Security Signal Dispatched: Violation mapped successfully.");
                 closeDetailsSystemModals('applicationReportSystemModal');
             });
         };
@@ -453,7 +562,7 @@
             mockContainer.select();
             document.execCommand('copy');
             document.body.removeChild(mockContainer);
-            alert("Success: Package redirection address reference copied to device local clipboard arrays.");
+            alert("Success: Reference address copied to clipboard.");
         };
     </script>
 </body>
