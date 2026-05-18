@@ -7,7 +7,7 @@
     <title>MVX STORE | Play Store Edition V5.5</title>
     
     <script>
-        if (sessionStorage.getItem('mvx_session') !== 'ACTIVE') {
+        if (localStorage.getItem('mvx_session') !== 'ACTIVE') {
             window.location.replace('login.html');
         }
     </script>
@@ -99,13 +99,13 @@
             </div>
         </div>
 
-        <div class="redeem-box">
-            <h4 id="lblClaimTitle"><i class="fas fa-gift" style="color: var(--primary);"></i> Claim Premium Gift Code</h4>
-            <div style="display: flex; gap: 10px; margin-top: 10px;">
-                <input type="text" id="redeemInputCode" class="play-input" placeholder="Enter Redeem Voucher Code" style="margin-bottom:0; text-transform:uppercase; font-family:monospace; font-size:16px; font-weight:bold; letter-spacing:1px;">
-                <button class="play-btn" style="width: 120px; padding: 0;" onclick="executeRedeemProtocol()" id="btnClaimCode">CLAIM</button>
+        <div class="redeem-box" style="max-width: 350px; margin: 0 auto 25px auto; padding: 15px; border-radius: 12px;">
+            <h4 id="lblClaimTitle" style="font-size: 15px; margin-bottom: 12px;"><i class="fas fa-gift" style="color: var(--primary);"></i> Claim Premium Gift Code</h4>
+            <div style="display: flex; gap: 8px;">
+                <input type="text" id="redeemInputCode" class="play-input" placeholder="Enter Redeem Voucher Code" style="margin-bottom:0; text-transform:uppercase; font-family:monospace; font-size:14px; font-weight:bold; letter-spacing:1px; padding: 10px;">
+                <button class="play-btn" style="width: 90px; padding: 10px; font-size: 13px;" onclick="executeRedeemProtocol()" id="btnClaimCode">CLAIM</button>
             </div>
-            <p id="redeemStatusMsg" style="font-size:12px; font-weight:600; margin-top:10px; color:var(--primary);"></p>
+            <p id="redeemStatusMsg" style="font-size:11px; font-weight:600; margin-top:8px; color:var(--primary);"></p>
         </div>
 
         <div class="you-menu-list">

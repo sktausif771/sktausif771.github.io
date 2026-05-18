@@ -8,7 +8,7 @@
     
     <script>
         // Only accounts marked as 'owner' can maintain persistence on this dashboard layer
-        const activeRole = sessionStorage.getItem('mvx_role');
+        const activeRole = localStorage.getItem('mvx_role');
         if (activeRole !== 'owner') {
             window.location.replace('index.html');
         }
@@ -66,24 +66,25 @@
         /* Navigation Tabs Control Matrix */
         .admin-tabs { 
             display: flex; 
-            gap: 12px; 
+            gap: 10px; 
             margin-bottom: 30px; 
             flex-wrap: wrap;
         }
         
         .tab-btn { 
             flex: 1; 
-            min-width: 140px;
-            padding: 16px; 
+            min-width: 120px;
+            padding: 14px; 
             background: var(--bg-surface); 
             border: 1px solid var(--border-color); 
             color: var(--text-secondary); 
             border-radius: 12px; 
             font-family: var(--font-body); 
             font-weight: 700; 
-            font-size: 14px;
+            font-size: 13px;
             cursor: pointer; 
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            text-align: center;
         }
         
         .tab-btn.active { 
@@ -93,16 +94,10 @@
             box-shadow: var(--primary-shadow);
         }
 
-        .data-panel { 
-            display: none; 
-        }
-        
-        .data-panel.active { 
-            display: block; 
-            animation: fadeIn 0.4s ease-out; 
-        }
+        .data-panel { display: none; }
+        .data-panel.active { display: block; animation: fadeIn 0.4s ease-out; }
 
-        /* Fully Responsive Cards Matrix (Guarantees Text Wrap and Scaling) */
+        /* Fully Responsive Cards Matrix */
         .list-card { 
             background: var(--bg-surface); 
             border: 1px solid var(--border-color); 
@@ -126,86 +121,29 @@
             flex-shrink: 0;
         }
         
-        .list-info { 
-            flex: 1; 
-            min-width: 200px; 
-            overflow: hidden; 
-        }
+        .list-info { flex: 1; min-width: 200px; overflow: hidden; }
+        .list-info h3 { font-size: 18px; color: #fff; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 800; }
+        .list-info p { font-size: 13px; color: var(--text-secondary); font-weight: 500; line-height: 1.5; }
         
-        .list-info h3 { 
-            font-size: 18px; 
-            color: #fff; 
-            margin-bottom: 5px; 
-            white-space: nowrap; 
-            overflow: hidden; 
-            text-overflow: ellipsis; 
-            font-weight: 800;
-        }
-        
-        .list-info p { 
-            font-size: 13px; 
-            color: var(--text-secondary); 
-            font-weight: 500;
-            line-height: 1.4;
-        }
-        
-        .action-btns { 
-            display: flex; 
-            gap: 12px; 
-            align-items: center;
-            flex-wrap: nowrap;
-        }
-        
-        .act-btn { 
-            width: 46px; 
-            height: 46px; 
-            border-radius: 12px; 
-            border: none; 
-            cursor: pointer; 
-            font-size: 16px; 
-            transition: all 0.2s ease; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-        }
+        .action-btns { display: flex; gap: 12px; align-items: center; flex-wrap: nowrap; }
+        .act-btn { width: 46px; height: 46px; border-radius: 12px; border: none; cursor: pointer; font-size: 16px; transition: all 0.2s ease; display: flex; justify-content: center; align-items: center; }
         
         .act-approve { background: rgba(0, 230, 118, 0.1); color: var(--free-color); border: 1px solid rgba(0, 230, 118, 0.3); }
         .act-reject, .act-delete { background: rgba(255, 82, 82, 0.1); color: var(--danger); border: 1px solid rgba(255, 82, 82, 0.3); }
-        
         .act-approve:hover { background: var(--free-color); color: #000; transform: scale(1.05); }
         .act-reject:hover, .act-delete:hover { background: var(--danger); color: #fff; transform: scale(1.05); }
 
-        .empty-msg { 
-            text-align: center; 
-            padding: 60px 20px; 
-            color: var(--text-secondary); 
-            font-size: 15px;
-            font-weight: 500;
-            line-height: 1.6;
-        }
+        .empty-msg { text-align: center; padding: 60px 20px; color: var(--text-secondary); font-size: 15px; font-weight: 500; line-height: 1.6; }
 
         /* Voucher Generation Section Box Layout */
-        .generator-box {
-            background: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            padding: 25px;
-            border-radius: 16px;
-            margin-bottom: 35px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        }
+        .generator-box { background: var(--bg-surface); border: 1px solid var(--border-color); padding: 25px; border-radius: 16px; margin-bottom: 35px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+        .generator-box h2 { font-size: 18px; margin-bottom: 20px; color: #fff; font-family: var(--font-tech); border-bottom: 1px dashed var(--border-color); padding-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
 
-        .generator-box h2 {
-            font-size: 18px;
-            margin-bottom: 20px;
-            color: #fff;
-            font-family: var(--font-tech);
-            border-bottom: 1px dashed var(--border-color);
-            padding-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+        /* Report Cards Custom Look */
+        .report-card { border-left: 4px solid var(--danger); }
+        .report-reason { display: inline-block; padding: 4px 10px; background: rgba(255,82,82,0.15); color: var(--danger); font-size: 11px; border-radius: 6px; font-weight: 800; margin-top: 6px; text-transform: uppercase; border: 1px solid rgba(255,82,82,0.3); }
 
-        /* Responsive Mobile Layout Adaptations (Zero Overlap Mechanics) */
+        /* Responsive Mobile Layout Adaptations */
         @media (max-width: 600px) {
             body { padding: 12px; }
             .admin-header-box { flex-direction: column; align-items: flex-start; gap: 10px; }
@@ -225,9 +163,10 @@
     </div>
 
     <div class="admin-tabs">
-        <button class="tab-btn active" id="tabPendingBtn" onclick="switchAdminPanelSection('pending', this)">Pending System</button>
-        <button class="tab-btn" onclick="switchAdminPanelSection('live', this)">Live Warehouse</button>
-        <button class="tab-btn" onclick="switchAdminPanelSection('voucher', this)">Voucher Engine</button>
+        <button class="tab-btn active" id="tabPendingBtn" onclick="switchAdminPanelSection('pending', this)"><i class="fas fa-clock"></i> Pending Nodes</button>
+        <button class="tab-btn" onclick="switchAdminPanelSection('live', this)"><i class="fas fa-server"></i> Live Catalog</button>
+        <button class="tab-btn" onclick="switchAdminPanelSection('voucher', this)"><i class="fas fa-ticket-alt"></i> Voucher Engine</button>
+        <button class="tab-btn" onclick="switchAdminPanelSection('reports', this)"><i class="fas fa-flag"></i> User Reports</button>
     </div>
 
     <div id="pendingPanel" class="data-panel active">
@@ -243,7 +182,6 @@
     </div>
 
     <div id="voucherPanel" class="data-panel">
-        
         <div class="generator-box">
             <h2><i class="fas fa-plus-circle" style="color:var(--primary);"></i> Mint New Gift Voucher</h2>
             
@@ -266,6 +204,7 @@
 
             <label class="modal-label" id="rewardValueLabel">Coins Quantity to Deposit</label>
             <input type="text" id="vValue" class="play-input" placeholder="e.g. 500">
+            <p id="vValueHint" style="display:none; font-size:11px; color:var(--warning); margin-top:-12px; margin-bottom:15px;">Hint: Type <strong>ALL_APPS</strong> to unlock everything, or use comma to multi-unlock (e.g. id1, id2).</p>
 
             <button class="play-btn" onclick="executeVoucherMintingProtocolToServer()">MINT VOUCHER CODE NOW</button>
         </div>
@@ -273,6 +212,12 @@
         <div class="play-section-title">Active Database Vouchers</div>
         <div id="liveVouchersTrackingContainer">
             <div class="empty-msg">No active vouchers generated inside server networks.</div>
+        </div>
+    </div>
+
+    <div id="reportsPanel" class="data-panel">
+        <div id="userReportsTrackingContainer">
+            <div class="empty-msg"><i class="fas fa-circle-notch fa-spin" style="font-size:26px; color:var(--primary);"></i><br><br>Scanning security violation logs...</div>
         </div>
     </div>
 
@@ -296,12 +241,16 @@
         function adjustVoucherRewardPlaceholderText(value) {
             const label = document.getElementById('rewardValueLabel');
             const input = document.getElementById('vValue');
+            const hint = document.getElementById('vValueHint');
+            
             if(value === 'coins') {
                 label.innerText = "Coins Quantity to Deposit";
                 input.placeholder = "e.g. 500";
+                hint.style.display = 'none';
             } else {
                 label.innerText = "Target Premium Application Database ID";
-                input.placeholder = "Paste application unique firebase key string";
+                input.placeholder = "Paste ID, ALL_APPS, or Comma separated IDs";
+                hint.style.display = 'block';
             }
             input.value = '';
         }
@@ -349,7 +298,6 @@
 
                     databaseRef.ref(`store_apps/${key}`).set(appData).then(() => {
                         databaseRef.ref(`pending_apps/${key}`).remove();
-                        alert("Package deployed to live catalog successfully!");
                     });
                 });
             }
@@ -357,9 +305,7 @@
 
         window.deletePendingPackageNode = function(key) {
             if(confirm("Reject and permanently wipe this pending application stack?")) {
-                databaseRef.ref(`pending_apps/${key}`).remove().then(() => {
-                    alert("Pending package removed from pipeline.");
-                });
+                databaseRef.ref(`pending_apps/${key}`).remove();
             }
         };
 
@@ -374,17 +320,21 @@
             }
 
             let html = '';
-            snapshot.forEach((child) => {
-                const app = child.val();
+            let appsArray = [];
+            snapshot.forEach((child) => { appsArray.push({id: child.key, ...child.val()}); });
+            appsArray.reverse();
+
+            appsArray.forEach((app) => {
                 html += `
                     <div class="list-card">
                         <img src="${app.logoUrl}" onerror="this.src='https://via.placeholder.com/60/121212/00e6b8?text=LIVE'">
                         <div class="list-info">
                             <h3>${app.appName}</h3>
-                            <p>Database Key Node: ${child.key}<br>Size: ${app.size} • Total Downloads: ${app.downloads || 0}</p>
+                            <p style="color:var(--primary); font-size:11px; margin-bottom:5px;">ID: ${app.id}</p>
+                            <p>Size: ${app.size} • Total Downloads: ${app.downloads || 0}</p>
                         </div>
                         <div class="action-btns">
-                            <button class="act-btn act-delete" onclick="executeLiveAppWipeProtocol('${child.key}', '${app.appName}')" title="Wipe Asset Node From Main Storage"><i class="fas fa-trash-alt"></i></button>
+                            <button class="act-btn act-delete" onclick="executeLiveAppWipeProtocol('${app.id}', '${app.appName}')" title="Wipe Asset Node From Main Storage"><i class="fas fa-trash-alt"></i></button>
                         </div>
                     </div>
                 `;
@@ -394,9 +344,7 @@
 
         window.executeLiveAppWipeProtocol = function(key, name) {
             if(confirm(`CRITICAL SYSTEM WARNING: Are you absolutely sure you want to drop "${name}" permanently from live production servers?`)) {
-                databaseRef.ref(`store_apps/${key}`).remove().then(() => {
-                    alert("Target asset structure dropped from active database clusters.");
-                });
+                databaseRef.ref(`store_apps/${key}`).remove();
             }
         };
 
@@ -430,7 +378,6 @@
             });
         };
 
-        // Realtime sync rendering monitor for active gift tokens inside network bank
         databaseRef.ref('redeem_codes').on('value', (snapshot) => {
             const logs = document.getElementById('liveVouchersTrackingContainer');
             if(!snapshot.exists()) {
@@ -458,9 +405,50 @@
 
         window.dropActiveVoucherFromNetwork = function(key) {
             if(confirm("Revoke authorization rights and terminate this gift voucher node instantly?")) {
-                databaseRef.ref(`redeem_codes/${key}`).remove().then(() => {
-                    alert("Token voucher record pruned from system registries.");
-                });
+                databaseRef.ref(`redeem_codes/${key}`).remove();
+            }
+        };
+
+        // ==========================================================================
+        // 5. USER REPORTS ENGINE (ANTI-SCAM TRACKER METRICS)
+        // ==========================================================================
+        databaseRef.ref('reports').on('value', (snapshot) => {
+            const reportsBox = document.getElementById('userReportsTrackingContainer');
+            if (!snapshot.exists()) {
+                reportsBox.innerHTML = `
+                    <div class="empty-msg">
+                        <i class="fas fa-shield-check" style="font-size:36px; color:var(--success); margin-bottom:15px;"></i>
+                        <h3>All network segments secure. No violation reports logged.</h3>
+                    </div>`;
+                return;
+            }
+
+            let html = '';
+            let reportsArr = [];
+            snapshot.forEach(child => reportsArr.push({id: child.key, ...child.val()}));
+            reportsArr.reverse(); // Newest first
+
+            reportsArr.forEach(rpt => {
+                html += `
+                    <div class="list-card report-card">
+                        <div class="list-info">
+                            <h3 style="color:var(--danger);"><i class="fas fa-exclamation-triangle"></i> TARGET APP: ${rpt.appName}</h3>
+                            <p style="color:var(--text-primary); margin-top:5px; margin-bottom:5px;"><strong>Reporter:</strong> ${rpt.reportedByName} (${rpt.reportedByEmail})</p>
+                            <p style="font-size:11px; color:var(--primary); font-family:monospace;">Target ID: ${rpt.appId}</p>
+                            <span class="report-reason">${rpt.violationReason}</span>
+                        </div>
+                        <div class="action-btns">
+                            <button class="act-btn act-delete" onclick="dropReportNodeFromRegistry('${rpt.id}')" title="Clear/Delete Report Log"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+            reportsBox.innerHTML = html;
+        });
+
+        window.dropReportNodeFromRegistry = function(reportKey) {
+            if(confirm("Acknowledge and clear this security violation report from the database logs?")) {
+                databaseRef.ref(`reports/${reportKey}`).remove();
             }
         };
     </script>

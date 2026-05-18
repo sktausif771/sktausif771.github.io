@@ -19,7 +19,7 @@ const auth = firebase.auth();
 const db = firebase.database();
 
 /* ==========================================================================
-   1. GLOBAL LOGIN CHECKER & REDIRECT
+   1. GLOBAL LOGIN CHECKER & REDIRECT (PERMANENT SESSION UPDATE)
    ========================================================================== */
 auth.onAuthStateChanged((user) => {
     const currentPage = window.location.pathname.split("/").pop();
@@ -47,7 +47,7 @@ const MASTER_OWNERS = [
 
 function determineUserRole(email) {
     if (MASTER_OWNERS.includes(email)) return 'owner';
-    return 'user'; // সাধারণ ইউজার
+    return 'user'; 
 }
 
 /* ==========================================================================
@@ -100,7 +100,7 @@ function processUserEntry(user) {
                 following: 0,
                 uploadCount: 0,
                 status: 'active',
-                language: 'en', // Default language setting
+                language: 'en',
                 joinedAt: firebase.database.ServerValue.TIMESTAMP
             }).then(() => redirectBasedOnRole(role));
         } else {
@@ -129,10 +129,11 @@ function processUserEntry(user) {
 }
 
 /* ==========================================================================
-   5. SECURE ROUTING
+   5. SECURE ROUTING (PERMANENT LOCAL STORAGE ENGINE)
    ========================================================================== */
 function redirectBasedOnRole(role) {
-    sessionStorage.setItem('mvx_session', 'ACTIVE');
-    sessionStorage.setItem('mvx_role', role);
+    // sessionStorage পরিবর্তন করে localStorage দেওয়া হয়েছে স্থায়ী লগইনের জন্য
+    localStorage.setItem('mvx_session', 'ACTIVE');
+    localStorage.setItem('mvx_role', role);
     window.location.replace('index.html'); 
 }

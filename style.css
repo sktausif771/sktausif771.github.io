@@ -1,76 +1,40 @@
 /* ==========================================================================
-   MVX STORE V5.5 - MASTER PLAY STORE UI 
-   (FULL DETAILED VERSION WITH LIGHT/DARK THEME & NOTIFICATIONS)
+   MVX STORE V5.5 - MASTER STYLESHEET (NO DESIGN OVERRIDES, ONLY ADDITIONS)
    ========================================================================== */
 
-/* ==========================================================================
-   1. GLOBAL THEME VARIABLES & COLOR PALETTES
-   ========================================================================== */
 :root {
-    /* ----- DARK THEME (DEFAULT) ----- */
+    /* DARK THEME (DEFAULT PLAY STORE EDITION) */
     --bg-base: #121212;
     --bg-surface: #1e1e1e;
-    --bg-surface-elevated: #2c2c2c;
-    --bg-overlay: rgba(0, 0, 0, 0.85);
-    
     --primary: #00e6b8;
-    --primary-hover: #00ffcc;
     --primary-dim: rgba(0, 230, 184, 0.15);
     --primary-shadow: 0 4px 15px rgba(0, 230, 184, 0.3);
-    
-    --text-primary: #e3e3e3;
+    --text-primary: #ffffff;
     --text-secondary: #a0a0a0;
-    --text-inverse: #121212;
-    
-    --border-color: #333333;
-    --border-focus: #00e6b8;
-    
+    --border-color: #2a2a2a;
     --danger: #ff5252;
-    --danger-hover: #ff1744;
-    --danger-dim: rgba(255, 82, 82, 0.15);
-    
     --warning: #ffd700;
     --success: #00e676;
+    --free-color: #00c853;
+    --paid-color: #ff9100;
     
-    /* Tag & Category Colors */
-    --paid-color: #ff9800;
-    --paid-bg: rgba(255, 152, 0, 0.15);
-    --free-color: #00e676;
-    --free-bg: rgba(0, 230, 118, 0.15);
-    
-    /* Layout Dimensions */
-    --top-nav-height: 64px;
-    --bottom-nav-height: 65px;
-    --sidebar-width: 280px;
-    
-    /* Typography */
+    /* PREMIUM FONTS */
     --font-tech: 'Orbitron', sans-serif;
-    --font-head: 'Rajdhani', sans-serif;
+    --font-header: 'Rajdhani', sans-serif;
     --font-body: 'Space Grotesk', sans-serif;
 }
 
-/* ----- LIGHT THEME OVERRIDES ----- */
+/* LIGHT THEME PROTOCOL */
 [data-theme="light"] {
-    --bg-base: #f5f5f5;
+    --bg-base: #f5f6fa;
     --bg-surface: #ffffff;
-    --bg-surface-elevated: #e0e0e0;
-    --bg-overlay: rgba(0, 0, 0, 0.6);
-    
-    --text-primary: #121212;
-    --text-secondary: #555555;
-    --text-inverse: #ffffff;
-    
-    --border-color: #d1d1d1;
-    --border-focus: #00c49a;
-    
     --primary: #00c49a;
-    --primary-hover: #00e6b8;
     --primary-dim: rgba(0, 196, 154, 0.15);
+    --text-primary: #1a1a1a;
+    --text-secondary: #666666;
+    --border-color: #e0e0e0;
 }
 
-/* ==========================================================================
-   2. CSS RESET & BASE STYLES
-   ========================================================================== */
 * {
     margin: 0;
     padding: 0;
@@ -78,95 +42,34 @@
     -webkit-tap-highlight-color: transparent;
 }
 
-html {
-    scroll-behavior: smooth;
-}
-
 body {
     background-color: var(--bg-base);
     color: var(--text-primary);
     font-family: var(--font-body);
-    font-size: 14px;
-    line-height: 1.6;
+    padding-top: 70px;
+    padding-bottom: 90px;
     overflow-x: hidden;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    transition: background-color 0.4s ease, color 0.4s ease;
-}
-
-a {
-    text-decoration: none;
-    color: inherit;
-    transition: color 0.2s ease;
-}
-
-button {
-    font-family: var(--font-body);
-    outline: none;
-    border: none;
-    cursor: pointer;
-}
-
-input, textarea, select {
-    font-family: var(--font-body);
-    outline: none;
-}
-
-/* ----- CUSTOM SCROLLBAR ----- */
-::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-}
-
-::-webkit-scrollbar-track {
-    background: var(--bg-base);
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--border-color);
-    border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* ==========================================================================
-   3. ANIMATIONS
-   ========================================================================== */
-@keyframes fadeIn {
-    0% { opacity: 0; transform: translateY(15px); }
-    100% { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes pulseGlow {
-    0% { box-shadow: 0 0 5px var(--primary); }
-    50% { box-shadow: 0 0 20px var(--primary); }
-    100% { box-shadow: 0 0 5px var(--primary); }
-}
-
-@keyframes slideInRight {
-    0% { transform: translateX(100%); opacity: 0; }
-    100% { transform: translateX(0); opacity: 1; }
-}
-
-/* ==========================================================================
-   4. TOP NAVIGATION HEADER
+   TOP NAVIGATION HEADER
    ========================================================================== */
 .play-top-nav {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: var(--top-nav-height);
-    background-color: var(--bg-base);
+    height: 70px;
+    background: var(--bg-surface);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 16px;
-    z-index: 1000;
+    padding: 0 20px;
     border-bottom: 1px solid var(--border-color);
-    transition: background-color 0.4s ease, border-color 0.4s ease;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .top-brand {
@@ -177,23 +80,18 @@ input, textarea, select {
 }
 
 .nav-logo {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
     object-fit: cover;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    transition: transform 0.3s ease;
-}
-
-.nav-logo:hover {
-    transform: scale(1.05);
+    border: 2px solid var(--primary);
+    box-shadow: var(--primary-shadow);
 }
 
 .brand-text {
     font-family: var(--font-tech);
-    font-size: 18px;
-    font-weight: 800;
+    font-size: 22px;
+    font-weight: 900;
     color: var(--text-primary);
     letter-spacing: 1px;
 }
@@ -201,146 +99,71 @@ input, textarea, select {
 .top-actions {
     display: flex;
     align-items: center;
-    gap: 18px;
+    gap: 20px;
 }
 
-/* ----- NOTIFICATION ICON ----- */
 .noti-icon-box {
     position: relative;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .noti-icon {
     font-size: 22px;
     color: var(--text-secondary);
-    transition: color 0.3s ease, transform 0.3s ease;
+    transition: color 0.3s;
 }
 
 .noti-icon-box:hover .noti-icon {
     color: var(--primary);
-    transform: rotate(15deg);
 }
 
 .noti-badge {
     position: absolute;
-    top: -2px;
-    right: -2px;
-    width: 12px;
-    height: 12px;
+    top: -4px;
+    right: -4px;
     background: var(--danger);
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
-    display: none; /* Toggled by JS */
-    border: 2px solid var(--bg-base);
-    box-shadow: 0 0 8px var(--danger);
+    border: 2px solid var(--bg-surface);
+    display: none;
 }
 
-/* ----- ADMIN MENU TOGGLE ----- */
-.admin-menu-btn {
-    font-size: 22px;
-    color: var(--text-secondary);
-    cursor: pointer;
-    transition: color 0.3s ease;
-}
-
-.admin-menu-btn:hover {
-    color: var(--primary);
-}
-
-/* ----- PROFILE PICTURE ----- */
 .top-profile-pic {
-    width: 34px;
-    height: 34px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
+    object-fit: cover;
     border: 2px solid var(--border-color);
     cursor: pointer;
-    transition: all 0.3s ease;
-    object-fit: cover;
+    transition: border-color 0.3s;
 }
 
 .top-profile-pic:hover {
     border-color: var(--primary);
-    box-shadow: 0 0 10px var(--primary-dim);
 }
 
 /* ==========================================================================
-   5. BOTTOM NAVIGATION (Play Store Style)
-   ========================================================================== */
-.play-bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: var(--bottom-nav-height);
-    background-color: var(--bg-surface);
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    z-index: 1000;
-    border-top: 1px solid var(--border-color);
-    padding-bottom: env(safe-area-inset-bottom);
-    transition: background-color 0.4s ease, border-color 0.4s ease;
-}
-
-.nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    color: var(--text-secondary);
-    cursor: pointer;
-    width: 100%;
-    height: 100%;
-    transition: all 0.2s ease-in-out;
-}
-
-.nav-item i {
-    font-size: 20px;
-    transition: transform 0.2s ease, color 0.2s ease;
-}
-
-.nav-item span {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-}
-
-.nav-item:hover {
-    color: var(--text-primary);
-}
-
-.nav-item.active {
-    color: var(--primary);
-}
-
-.nav-item.active i {
-    transform: translateY(-3px);
-}
-
-/* ==========================================================================
-   6. MAIN STORE FEED & CATEGORIES
+   MAIN CONTENT & CATEGORIES
    ========================================================================== */
 .play-main-content {
-    padding-top: calc(var(--top-nav-height) + 20px);
-    padding-bottom: calc(var(--bottom-nav-height) + 30px);
-    padding-left: 16px;
-    padding-right: 16px;
-    max-width: 900px;
+    padding: 20px;
+    max-width: 1200px;
     margin: 0 auto;
-    min-height: 100vh;
+    animation: fadeIn 0.4s ease-out;
 }
 
-/* ----- CATEGORY CHIPS ----- */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 .play-categories {
     display: flex;
     gap: 12px;
     overflow-x: auto;
     padding-bottom: 15px;
     margin-bottom: 25px;
-    scroll-behavior: smooth;
 }
 
 .play-categories::-webkit-scrollbar {
@@ -348,80 +171,69 @@ input, textarea, select {
 }
 
 .cat-chip {
-    background-color: var(--bg-surface);
-    color: var(--text-secondary);
+    background: var(--bg-surface);
     border: 1px solid var(--border-color);
+    color: var(--text-secondary);
     padding: 10px 20px;
-    border-radius: 25px;
-    font-size: 13px;
+    border-radius: 20px;
+    font-family: var(--font-header);
     font-weight: 700;
-    white-space: nowrap;
+    font-size: 15px;
     cursor: pointer;
+    white-space: nowrap;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.cat-chip:hover {
-    background-color: var(--bg-surface-elevated);
-    color: var(--text-primary);
 }
 
 .cat-chip.active {
-    background-color: var(--primary-dim);
+    background: var(--primary-dim);
     color: var(--primary);
     border-color: var(--primary);
-    box-shadow: 0 4px 10px var(--primary-dim);
 }
 
 .play-section-title {
-    font-family: var(--font-head);
+    font-family: var(--font-header);
     font-size: 20px;
-    font-weight: 800;
+    font-weight: 700;
+    color: var(--text-primary);
     margin-bottom: 20px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    color: var(--text-primary);
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    gap: 10px;
 }
 
 /* ==========================================================================
-   7. APP CARDS & GRID
+   APP CARDS GRID SYSTEM
    ========================================================================== */
 .play-app-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 18px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
 }
 
 .app-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 18px;
     display: flex;
     align-items: center;
-    gap: 16px;
-    background-color: var(--bg-surface);
-    padding: 15px;
-    border-radius: 14px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: 1px solid var(--border-color);
+    gap: 18px;
     position: relative;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    animation: fadeIn 0.5s ease-out;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .app-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
     border-color: var(--primary);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
 
 .app-icon-large {
     width: 75px;
     height: 75px;
-    border-radius: 16px;
+    border-radius: 18px;
     object-fit: cover;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     border: 1px solid var(--border-color);
 }
 
@@ -431,357 +243,115 @@ input, textarea, select {
 }
 
 .app-title-list {
-    font-family: var(--font-body);
-    font-size: 17px;
-    font-weight: 800;
+    font-family: var(--font-header);
+    font-size: 18px;
+    font-weight: 700;
     color: var(--text-primary);
+    margin-bottom: 6px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-bottom: 4px;
 }
 
 .app-dev-list {
     font-size: 13px;
     color: var(--text-secondary);
-    margin-bottom: 6px;
-    font-weight: 500;
+    margin-bottom: 8px;
 }
 
 .app-meta-list {
+    display: flex;
+    gap: 15px;
     font-size: 12px;
     color: var(--text-secondary);
-    display: flex;
-    align-items: center;
-    gap: 12px;
+    font-weight: 600;
 }
 
-/* ----- FREE / PAID BADGES ----- */
 .badge {
     position: absolute;
     top: 15px;
     right: 15px;
-    font-size: 10px;
-    font-weight: 900;
     padding: 4px 10px;
     border-radius: 8px;
-    font-family: var(--font-tech);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-}
-
-.badge-free {
-    background: var(--free-bg);
-    color: var(--free-color);
-    border: 1px solid var(--free-color);
-}
-
-.badge-paid {
-    background: var(--paid-bg);
-    color: var(--paid-color);
-    border: 1px solid var(--paid-color);
-}
-
-/* ==========================================================================
-   8. 'YOU' TAB (Profile, Settings & Follow System)
-   ========================================================================== */
-.you-header {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    margin-bottom: 35px;
-    padding-top: 15px;
-}
-
-.you-header img {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    border: 3px solid var(--primary);
-    object-fit: cover;
-    box-shadow: 0 4px 15px var(--primary-dim);
-}
-
-.you-info h2 {
-    font-size: 24px;
-    font-family: var(--font-tech);
-    font-weight: 900;
-    color: var(--text-primary);
-    margin-bottom: 5px;
-}
-
-.you-info p {
-    font-size: 14px;
-    color: var(--text-secondary);
-    font-weight: 500;
-}
-
-/* ----- FOLLOW STATS ----- */
-.follow-stats {
-    display: flex;
-    gap: 15px;
-    margin-top: 10px;
-}
-
-.follow-stats span {
-    font-size: 13px;
-    color: var(--primary);
-    font-weight: 700;
-    background: var(--primary-dim);
-    padding: 4px 12px;
-    border-radius: 6px;
-    border: 1px solid rgba(0, 230, 184, 0.3);
-}
-
-/* ----- PROFILE MENU LIST ----- */
-.you-menu-list {
-    background-color: var(--bg-surface);
-    border-radius: 16px;
-    overflow: hidden;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-}
-
-.you-menu-item {
-    display: flex;
-    align-items: center;
-    padding: 20px 22px;
-    gap: 18px;
-    border-bottom: 1px solid var(--border-color);
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.you-menu-item:last-child {
-    border-bottom: none;
-}
-
-.you-menu-item:hover {
-    background-color: var(--bg-surface-elevated);
-}
-
-.you-menu-item i:first-child {
-    font-size: 22px;
-    width: 30px;
-    text-align: center;
-}
-
-.you-menu-item span {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--text-primary);
-}
-
-.you-menu-item .arrow {
-    margin-left: auto;
-    color: var(--text-secondary);
-    font-size: 16px;
-}
-
-/* ==========================================================================
-   9. NOTIFICATION CENTER
-   ========================================================================== */
-.noti-container {
-    padding-top: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.noti-card {
-    background: var(--bg-surface);
-    border-left: 5px solid var(--primary);
-    padding: 18px;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    animation: slideInRight 0.4s ease-out;
-}
-
-.noti-card.system-alert {
-    border-left-color: var(--danger);
-}
-
-.noti-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.noti-title {
+    font-size: 11px;
     font-weight: 800;
-    font-size: 16px;
-    color: var(--text-primary);
-}
-
-.noti-time {
-    font-size: 12px;
-    color: var(--text-secondary);
-    font-family: monospace;
-    background: var(--bg-base);
-    padding: 2px 8px;
-    border-radius: 4px;
-}
-
-.noti-msg {
-    font-size: 14px;
-    color: var(--text-secondary);
-    line-height: 1.5;
-    white-space: pre-wrap;
-}
-
-/* ==========================================================================
-   10. MODALS, UPLOADS & SMART TAGS
-   ========================================================================== */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: var(--bg-overlay);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 3000;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-}
-
-.modal-overlay.active {
-    display: flex;
-    opacity: 1;
-}
-
-.play-modal {
-    background-color: var(--bg-surface);
-    width: 95%;
-    max-width: 550px;
-    border-radius: 20px;
-    border: 1px solid var(--border-color);
-    transform: translateY(30px) scale(0.95);
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    overflow: hidden;
-    max-height: 90vh;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-}
-
-.modal-overlay.active .play-modal {
-    transform: translateY(0) scale(1);
-}
-
-.modal-header {
-    padding: 20px 25px;
-    border-bottom: 1px solid var(--border-color);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: var(--bg-surface-elevated);
-}
-
-.modal-header h3 {
-    font-family: var(--font-head);
-    font-size: 20px;
-    font-weight: 800;
-    color: var(--text-primary);
-}
-
-.close-modal {
-    font-size: 22px;
-    color: var(--danger);
-    cursor: pointer;
-    transition: transform 0.2s ease;
-}
-
-.close-modal:hover {
-    transform: rotate(90deg);
-}
-
-.modal-body {
-    padding: 25px;
-    overflow-y: auto;
-    flex: 1;
-}
-
-.modal-label {
-    display: block;
-    font-size: 12px;
-    color: var(--text-secondary);
-    margin-bottom: 8px;
-    font-weight: 800;
-    text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
+.badge-free { background: rgba(0, 200, 83, 0.15); color: var(--free-color); border: 1px solid var(--free-color); }
+.badge-paid { background: rgba(255, 145, 0, 0.15); color: var(--paid-color); border: 1px solid var(--paid-color); }
+
+/* ==========================================================================
+   INPUTS & BUTTONS
+   ========================================================================== */
 .play-input {
     width: 100%;
-    background-color: var(--bg-base);
+    padding: 16px;
+    background: var(--bg-base);
     border: 1px solid var(--border-color);
-    color: var(--text-primary);
-    padding: 16px 18px;
     border-radius: 12px;
-    margin-bottom: 20px;
+    color: var(--text-primary);
     font-family: var(--font-body);
     font-size: 15px;
-    outline: none;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 20px;
+    transition: all 0.3s;
 }
 
 .play-input:focus {
-    border-color: var(--border-focus);
-    box-shadow: 0 0 0 2px var(--primary-dim);
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-dim);
 }
 
-/* ----- SMART TAGS CONTAINER ----- */
-.tags-container {
-    background-color: var(--bg-base);
-    border: 1px solid var(--border-color);
+.play-btn {
+    width: 100%;
+    padding: 16px;
+    background: var(--primary);
+    color: #000;
+    border: none;
     border-radius: 12px;
-    padding: 10px;
+    font-family: var(--font-header);
+    font-weight: 800;
+    font-size: 16px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+    box-shadow: var(--primary-shadow);
+}
+
+.play-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 230, 184, 0.5);
+}
+
+/* ==========================================================================
+   TAGS INPUT SYSTEM
+   ========================================================================== */
+.tags-container {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+    padding: 12px;
+    background: var(--bg-base);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
     margin-bottom: 20px;
-    min-height: 60px;
-    align-items: center;
-    transition: border-color 0.3s ease;
-}
-
-.tags-container:focus-within {
-    border-color: var(--border-focus);
-    box-shadow: 0 0 0 2px var(--primary-dim);
 }
 
 .tag-chip {
     background: var(--primary-dim);
     color: var(--primary);
-    padding: 6px 14px;
+    padding: 6px 12px;
     border-radius: 20px;
     font-size: 13px;
-    font-weight: 700;
     display: flex;
     align-items: center;
     gap: 8px;
-    border: 1px solid rgba(0, 230, 184, 0.3);
+    border: 1px solid var(--primary);
 }
 
-.tag-chip i {
-    cursor: pointer;
-    color: var(--danger);
-    font-size: 14px;
-    transition: color 0.2s ease;
-}
-
-.tag-chip i:hover {
-    color: var(--danger-hover);
-}
-
+.tag-chip i { cursor: pointer; }
 .tag-input-field {
     border: none;
     background: transparent;
@@ -789,169 +359,332 @@ input, textarea, select {
     outline: none;
     flex: 1;
     min-width: 120px;
-    padding: 5px;
     font-family: var(--font-body);
-    font-size: 14px;
 }
 
-.play-btn {
-    width: 100%;
-    background-color: var(--primary);
-    color: var(--text-inverse);
-    border: none;
-    padding: 18px;
-    border-radius: 12px;
-    font-family: var(--font-tech);
-    font-size: 16px;
-    font-weight: 900;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
+/* ==========================================================================
+   YOU TAB (PROFILE) & NOTIFICATIONS
+   ========================================================================== */
+.you-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 35px;
 }
 
-.play-btn:hover {
-    background-color: var(--primary-hover);
+.you-header img {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--primary);
     box-shadow: var(--primary-shadow);
-    transform: translateY(-2px);
 }
 
-/* ==========================================================================
-   11. REDEEM CODE UI
-   ========================================================================== */
-.redeem-box {
-    background: var(--primary-dim);
-    border: 2px dashed var(--primary);
-    padding: 25px;
-    border-radius: 14px;
-    margin-bottom: 25px;
-    text-align: center;
-    transition: background-color 0.3s ease;
+.you-info h2 { font-family: var(--font-header); font-size: 26px; font-weight: 800; margin-bottom: 5px; }
+.you-info p { color: var(--text-secondary); font-size: 14px; margin-bottom: 10px; }
+
+.follow-stats {
+    display: flex;
+    gap: 15px;
+    font-size: 13px;
+    color: var(--text-secondary);
 }
 
-.redeem-box:hover {
-    background: rgba(0, 230, 184, 0.2);
+.follow-stats strong { color: var(--primary); font-size: 16px; }
+
+.you-menu-list {
+    background: var(--bg-surface);
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
 }
 
-.redeem-box h4 {
+.you-menu-item {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: background 0.2s;
+    font-family: var(--font-header);
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.you-menu-item:last-child { border-bottom: none; }
+.you-menu-item:hover { background: rgba(255,255,255,0.02); }
+.you-menu-item i:first-child { width: 35px; font-size: 20px; }
+.you-menu-item .arrow { margin-left: auto; color: var(--text-secondary); }
+
+.noti-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 18px;
     margin-bottom: 15px;
-    color: var(--text-primary);
-    font-family: var(--font-head);
-    font-size: 20px;
-    font-weight: 800;
+    border-left: 4px solid var(--primary);
 }
+.noti-card.system-alert { border-left-color: var(--danger); }
+.noti-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
+.noti-title { font-weight: 700; color: #fff; font-family: var(--font-header); }
+.noti-time { font-size: 12px; color: var(--text-secondary); }
+.noti-msg { font-size: 14px; color: var(--text-secondary); line-height: 1.5; }
 
 /* ==========================================================================
-   12. ADMIN HIDDEN SIDEBAR (Fixed Mobile Layout)
+   MODALS (PLAY STORE STYLE)
    ========================================================================== */
-.admin-sidebar-overlay {
+.modal-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: var(--bg-overlay);
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
     z-index: 2000;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.4s ease;
+    transition: all 0.3s ease;
 }
 
-.admin-sidebar-overlay.active {
+.modal-overlay.active {
     opacity: 1;
     visibility: visible;
 }
 
-.admin-sidebar {
-    position: fixed;
-    top: 0;
-    left: calc(var(--sidebar-width) * -1.2);
-    width: var(--sidebar-width);
-    height: 100%;
-    background-color: var(--bg-surface);
-    z-index: 2001;
-    transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    border-right: 1px solid var(--border-color);
-    box-shadow: 10px 0 30px rgba(0,0,0,0.6);
-    display: flex;
-    flex-direction: column;
+.play-modal {
+    background: var(--bg-surface);
+    width: 90%;
+    max-width: 500px;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.admin-sidebar.active {
-    left: 0;
-}
+.modal-overlay.active .play-modal { transform: scale(1); }
 
-.admin-header {
-    padding: 25px 20px;
+.modal-header {
+    padding: 20px;
     border-bottom: 1px solid var(--border-color);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: var(--bg-surface-elevated);
+    position: sticky;
+    top: 0;
+    background: var(--bg-surface);
+    z-index: 10;
 }
 
-.admin-header h3 {
-    font-family: var(--font-tech);
-    color: var(--text-primary);
-    font-size: 18px;
-    font-weight: 900;
+.modal-header h3 { font-family: var(--font-header); font-size: 20px; color: #fff; }
+.close-modal { font-size: 22px; color: var(--text-secondary); cursor: pointer; transition: color 0.2s; }
+.close-modal:hover { color: var(--danger); }
+
+.modal-body { padding: 25px 20px; }
+.modal-label { display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; font-weight: 600; }
+
+/* ==========================================================================
+   BOTTOM NAVIGATION BAR
+   ========================================================================== */
+.play-bottom-nav {
+    position: fixed;
+    bottom: 0; left: 0; width: 100%; height: 75px;
+    background: var(--bg-surface);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-top: 1px solid var(--border-color);
+    z-index: 1000;
+    padding-bottom: 5px;
 }
 
-.admin-links {
+.nav-item {
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
-    flex: 1;
-    padding: 15px 0;
-}
-
-.admin-links a {
-    display: flex;
     align-items: center;
-    padding: 16px 25px;
-    gap: 18px;
-    color: var(--text-primary);
-    font-weight: 600;
-    font-size: 15px;
-    transition: all 0.2s ease;
-    border-left: 4px solid transparent;
-    margin: 4px 0;
+    gap: 6px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.3s;
+    width: 25%;
 }
 
-.admin-links a:hover {
-    background-color: var(--bg-surface-elevated);
-    border-left-color: var(--primary);
-    color: var(--primary);
-    padding-left: 30px; /* Slight indent on hover */
+.nav-item i { font-size: 22px; transition: transform 0.2s; }
+.nav-item span { font-size: 11px; font-family: var(--font-header); font-weight: 700; }
+
+.nav-item.active { color: var(--primary); }
+.nav-item.active i { transform: translateY(-3px); }
+
+/* ==========================================================================
+   [NEW V5.5 FIXES] - IMAGE PREVIEW & SCREENSHOT GALLERY
+   ========================================================================== */
+.preview-thumbnail {
+    width: 70px;
+    height: 70px;
+    border-radius: 12px;
+    object-fit: cover;
+    border: 2px dashed var(--primary);
+    display: none; /* Shows when image is selected */
+    margin-top: 10px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.screenshot-preview-container {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.sc-preview-thumb {
+    width: 60px;
+    height: 100px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid var(--primary);
+}
+
+/* App Details Page - Horizontal Screenshot Gallery */
+.screenshot-gallery {
+    display: flex;
+    overflow-x: auto;
+    gap: 15px;
+    padding: 10px 0;
+    margin-top: 20px;
+    margin-bottom: 25px;
+    scroll-behavior: smooth;
+}
+
+.screenshot-gallery::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for clean look */
+}
+
+.screenshot-img {
+    width: auto;
+    height: 280px;
+    border-radius: 12px;
+    object-fit: cover;
+    border: 1px solid var(--border-color);
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 /* ==========================================================================
-   13. RESPONSIVE MEDIA QUERIES (Mobile Fixes)
+   [NEW V5.5 FIXES] - 3-DOT MENU & DROPDOWN (DETAILS PAGE)
    ========================================================================== */
-@media (max-width: 480px) {
-    .play-app-grid {
-        grid-template-columns: 1fr; /* 1 column on small phones */
-    }
-    
-    .you-header {
-        flex-direction: column;
-        text-align: center;
-    }
-    
-    .you-info h2 {
-        font-size: 20px;
-    }
-    
-    .play-modal {
-        width: 100%;
-        height: 100%;
-        border-radius: 0;
-        max-height: 100vh;
-    }
-    
-    .modal-header {
-        border-radius: 0;
-    }
+.three-dot-container {
+    position: relative;
+    display: inline-block;
 }
+
+.three-dot-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 22px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background 0.2s, color 0.2s;
+}
+
+.three-dot-btn:hover {
+    background: rgba(255,255,255,0.05);
+    color: var(--text-primary);
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 40px;
+    background-color: var(--bg-surface);
+    min-width: 170px;
+    box-shadow: 0px 8px 25px rgba(0,0,0,0.5);
+    z-index: 100;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.dropdown-menu.show {
+    display: block;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+.dropdown-item {
+    padding: 14px 18px;
+    text-decoration: none;
+    display: block;
+    color: var(--text-primary);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: var(--font-header);
+    transition: background 0.2s, color 0.2s;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.dropdown-item i {
+    width: 20px;
+    margin-right: 8px;
+    color: var(--text-secondary);
+}
+
+.dropdown-item:hover {
+    background-color: var(--primary-dim);
+    color: var(--primary);
+}
+
+.dropdown-item:hover i {
+    color: var(--primary);
+}
+
+/* Special Report Item Style */
+.dropdown-item.report-btn:hover {
+    background-color: rgba(255, 82, 82, 0.1);
+    color: var(--danger);
+}
+.dropdown-item.report-btn:hover i {
+    color: var(--danger);
+}
+
+/* ==========================================================================
+   [NEW V5.5 FIXES] - SECURE PASSWORD / INSTALL POPUP
+   ========================================================================== */
+.install-popup-body {
+    text-align: center;
+    padding: 20px 10px;
+}
+
+.install-popup-body h3 {
+    font-family: var(--font-header);
+    color: var(--primary);
+    font-size: 22px;
+    margin-bottom: 12px;
+}
+
+.install-popup-body p {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+.install-popup-icon {
+    font-size: 45px;
+    color: var(--warning);
+    margin-bottom: 15px;
+    display: inline-block;
+}
+

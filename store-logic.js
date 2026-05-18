@@ -15,8 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Global Engine Scope Variables
     let currentUser = null;
     let userProfile = null;
-    let activeContentType = 'files'; // Defaults window route
-    let activeFilterType = 'all';    // Defaults catalog grid
+    let activeContentType = 'files'; 
+    let activeFilterType = 'all';    
 
     // Your Explicit ImgBB API Cloud Authentication Token Key
     const IMGBB_API_KEY = "820eb9aa6a57f863045a52c1929efc9c"; 
@@ -58,7 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function executeSystemInterfacePipelineUpdates() {
         if (!userProfile) return;
 
-        // Populate elements inside user dashboard tab
         const tabName = document.getElementById('youTabName');
         const tabEmail = document.getElementById('youTabEmail');
         const tabAvatar = document.getElementById('youTabAvatar');
@@ -76,13 +75,11 @@ document.addEventListener('DOMContentLoaded', () => {
             tabAvatar.src = userProfile.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile.name}`;
         }
 
-        // Role-Based Hidden System Element Control (Strict Master Owner Override)
         const ownerLogoSection = document.getElementById('ownerLogoEditSection');
         if (userProfile.role === 'owner') {
             if (ownerLogoSection) ownerLogoSection.style.display = 'block';
         }
 
-        // Initialize primary live stream rendering feed fetch data
         loadStoreFeed(activeFilterType, activeContentType);
     }
 
@@ -108,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         db.ref('store_apps').orderByChild('status').equalTo('approved').once('value').then((snapshot) => {
             if (!snapshot.exists()) {
-                grid.innerHTML = `<div style="text-align:center; padding:50px; grid-column:1/-1; color:var(--text-secondary);">No applications live in database database.</div>`;
+                grid.innerHTML = `<div style="text-align:center; padding:50px; grid-column:1/-1; color:var(--text-secondary);">No applications live in database catalog.</div>`;
                 return;
             }
 
@@ -119,7 +116,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 appsList.push({ id: child.key, ...child.val() });
             });
             
-            // Sort database nodes by timestamp descending order
             appsList.reverse();
 
             appsList.forEach((app) => {
@@ -128,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (activeFilterType === 'all') matchFilter = true;
                 if (activeFilterType === 'premium' && app.category === 'paid') matchFilter = true;
-                if (activeFilterType === 'trending' && (app.views || 0) >= 100) matchFilter = true;
+                if (activeFilterType === 'trending' && app.isTrending === true) matchFilter = true;
 
                 if (matchType && matchFilter) {
                     const priceLabel = app.category === 'paid' ? `${app.coinPrice || 0} Coins` : 'FREE';
@@ -155,7 +151,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // Category Chip OnClick Event Iterations
     document.querySelectorAll('.cat-chip').forEach(chip => {
         chip.addEventListener('click', (e) => {
             document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
@@ -174,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const container = document.getElementById('tagsInputContainer');
         if(!input || !container) return;
 
-        uploadedTagsList = []; // Clean instance array allocations
+        uploadedTagsList = []; 
 
         input.addEventListener('keydown', (e) => {
             if (e.key === ',' || e.key === 'Enter') {
@@ -209,6 +204,9 @@ document.addEventListener('DOMContentLoaded', () => {
         renderTagsChipsInsideInputBox();
     };
 
+    // Global arrays to store uploaded screenshot URLs
+    let uploadedScreenshotsList = [];
+
     // ==========================================================================
     // 6. MASTER PLAY STORE APPLICATION PUBLISH MODAL FORM LAYOUT
     // ==========================================================================
@@ -216,7 +214,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!userProfile) return;
 
         const isMasterOwner = (userProfile.role === 'owner');
-        const paidOptionHTML = isMasterOwner ? `<option value="paid">PREMIUM COIN ACCESS (Owner Verified)</option>` : `<option value="free" disabled>PREMIUM ACCESS (Master Owner Clearance Required)</option>`;
+        uploadedScreenshotsList = []; // Reset screenshot array instance
+
+        // Dynamic view logic based on User Roles (Strict Admin Override)
+        let categoryOptionsHTML = `<option value="free">FREE ACCESS MODEL</option>`;
+        if (isMasterOwner) {
+            categoryOptionsHTML += `<option value="paid">PREMIUM COIN ACCESS (Owner Verified)</option>`;
+        }
+
+        let encodingMethodsHTML = `<option value="imgbb">ImgBB Cloud API Method (Standard High Speed)</option>`;
+        if (isMasterOwner) {
+            encodingMethodsHTML += `<option value="base64">Base64 Direct Raw Byte Hex String Method</option>`;
+        }
 
         let uploadModal = document.createElement('div');
         uploadModal.id = 'dynamicUploadModal';
@@ -229,20 +238,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div class="modal-body">
                     <p style="font-size:12px; color:var(--text-secondary); margin-bottom:15px; background:rgba(255,255,255,0.02); padding:10px; border-radius:6px; border:1px solid var(--border-color);">
-                        <i class="fas fa-history"></i> NOTICE: Submissions default to queue logic. Unchecked payloads auto-deploy to store maps after exactly 1 hour.
+                        <i class="fas fa-clock"></i> NOTICE: Submissions will auto-deploy to store maps after exactly 1 minute. Please wait for the initialization window.
                     </p>
 
-                    <label class="modal-label">Application Title / File Name</label>
-                    <input type="text" id="pName" class="play-input" placeholder="e.g. Free Fire Hack Menu">
+                    <label class="modal-label">Title</label>
+                    <input type="text" id="pName" class="play-input" placeholder="Enter package or app title">
 
                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
                         <div>
-                            <label class="modal-label">Version</label>
-                            <input type="text" id="pVer" class="play-input" placeholder="e.g. v1.99.X">
+                            <label class="modal-label">Size</label>
+                            <input type="text" id="pSize" class="play-input" placeholder="e.g. 45 MB">
                         </div>
                         <div>
-                            <label class="modal-label">File Size</label>
-                            <input type="text" id="pSize" class="play-input" placeholder="e.g. 85 MB">
+                            <label class="modal-label">Version</label>
+                            <input type="text" id="pVer" class="play-input" placeholder="e.g. v1.0.2">
                         </div>
                     </div>
 
@@ -257,8 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div>
                             <label class="modal-label">Access Model</label>
                             <select id="pCat" class="play-input" onchange="toggleCoinPriceInputBoxField(this.value)">
-                                <option value="free">FREE ACCESS MODEL</option>
-                                ${paidOptionHTML}
+                                ${categoryOptionsHTML}
                             </select>
                         </div>
                     </div>
@@ -268,71 +276,95 @@ document.addEventListener('DOMContentLoaded', () => {
                         <input type="number" id="pCoinPrice" class="play-input" placeholder="e.g. 150" value="0">
                     </div>
 
+                    <div style="margin-bottom: 20px;">
+                        <label class="modal-label" style="font-weight: bold; color: var(--primary);">Trending Badge Activation</label>
+                        <div style="display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; border: 1px solid var(--border-color);">
+                            <input type="checkbox" id="pTrendingCheck" style="width: 18px; height: 18px; cursor: pointer;">
+                            <span style="font-size: 14px; color: var(--text-primary);">Mark this package as 'Trending Now' on catalog headers</span>
+                        </div>
+                    </div>
+
                     <hr style="border:0; border-top:1px solid var(--border-color); margin:15px 0;">
 
-                    <label class="modal-label" style="color:var(--primary);">Logo Image Encoding Method</label>
+                    <label class="modal-label" style="color:var(--primary);">Logo</label>
                     <select id="logoMethod" class="play-input" onchange="toggleUploadMethodInputsStructure('logo', this.value)">
-                        <option value="imgbb">ImgBB Cloud API Method (Standard High Speed)</option>
-                        <option value="base64">Base64 Direct Raw Byte Hex String Method</option>
+                        ${encodingMethodsHTML}
                     </select>
 
                     <div id="logoFileBox">
                         <input type="file" id="logoFile" class="play-input" accept="image/*" style="padding:10px;">
                     </div>
-                    <input type="text" id="logoUrlOutput" class="play-input" placeholder="Cloud Storage Token Asset Path Address" readonly>
-                    <p id="logoProcessStatus" style="font-size:11px; color:var(--warning); margin-top:-15px; margin-bottom:15px;"></p>
+                    <img id="logoPreviewImg" class="preview-thumbnail" alt="Logo Preview">
+                    <input type="hidden" id="logoUrlOutput">
+                    <p id="logoProcessStatus" style="font-size:11px; color:var(--warning); margin-top:-10px; margin-bottom:15px;"></p>
 
-                    <label class="modal-label" style="color:var(--primary);">Banner Display Image Encoding Method</label>
-                    <select id="bannerMethod" class="play-input" onchange="toggleUploadMethodInputsStructure('banner', this.value)">
-                        <option value="imgbb">ImgBB Cloud API Method (Standard High Speed)</option>
-                        <option value="base64">Base64 Direct Raw Byte Hex String Method</option>
-                    </select>
-
-                    <div id="bannerFileBox">
-                        <input type="file" id="bannerFile" class="play-input" accept="image/*" style="padding:10px;">
+                    <label class="modal-label" style="color:var(--primary);">Play Store Gallery Screenshots (Add up to 5 images)</label>
+                    <div style="background: rgba(255,255,255,0.02); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 20px;">
+                        <input type="file" id="screenshotFileBtn" class="play-input" accept="image/*" style="padding:10px; margin-bottom: 10px;">
+                        <div class="screenshot-preview-container" id="screenshotPreviewWrapper"></div>
+                        <p id="screenshotProcessStatus" style="font-size:11px; color:var(--warning);"></p>
                     </div>
-                    <input type="text" id="bannerUrlOutput" class="play-input" placeholder="Cloud Storage Token Asset Path Address" readonly>
-                    <p id="bannerProcessStatus" style="font-size:11px; color:var(--warning); margin-top:-15px; margin-bottom:15px;"></p>
 
                     <hr style="border:0; border-top:1px solid var(--border-color); margin:15px 0;">
 
-                    <label class="modal-label">Main Secure Download Endpoint URL Link</label>
-                    <input type="text" id="pMainLink" class="play-input" placeholder="https://mediafire.com/file/download_hash">
+                    <label class="modal-label">Download Link</label>
+                    <input type="text" id="pMainLink" class="play-input" placeholder="Paste main operational download link path URL">
 
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
-                        <div>
-                            <label class="modal-label">Custom Action Label Name</label>
-                            <input type="text" id="pAltName" class="play-input" placeholder="e.g. Get Verification Key">
-                        </div>
-                        <div>
-                            <label class="modal-label">Action Redirection URL Link</label>
-                            <input type="text" id="pAltUrl" class="play-input" placeholder="https://linkvertise.com/bypass_route">
+                    <div style="background: rgba(255,82,82,0.02); padding: 15px; border-radius: 12px; border: 1px dashed rgba(255,82,82,0.2); margin-bottom: 20px;">
+                        <label class="modal-label" style="color: var(--danger); font-weight: bold;">Secure Archive Password Protection (Hidden From Public)</label>
+                        <input type="password" id="pPassword" class="play-input" placeholder="Set installation unlock password sequence" style="margin-bottom: 12px;">
+                        
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                            <div>
+                                <label class="modal-label">Get Password Link</label>
+                                <input type="text" id="pGetPassLink" class="play-input" placeholder="URL destination to fetch password" style="margin-bottom: 0;">
+                            </div>
+                            <div>
+                                <label class="modal-label">Password Video Link</label>
+                                <input type="text" id="pPassVideoLink" class="play-input" placeholder="Tutorial video link path" style="margin-bottom: 0;">
+                            </div>
                         </div>
                     </div>
 
-                    <label class="modal-label">Archive Unzip Cryptographic Password</label>
-                    <input type="text" id="pPassword" class="play-input" placeholder="Leave parameter blank if package has no unzip password">
+                    <label class="modal-label" style="color: var(--warning);">Extra Redirection Alternatives (Add up to 5 optional links)</label>
+                    <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px;" id="extraLinksInputContainer">
+                        <input type="text" class="play-input extra-link-item" placeholder="Extra Redirection Link 1" style="margin-bottom:0;">
+                        <input type="text" class="play-input extra-link-item" placeholder="Extra Redirection Link 2" style="margin-bottom:0;">
+                        <input type="text" class="play-input extra-link-item" placeholder="Extra Redirection Link 3" style="margin-bottom:0;">
+                        <input type="text" class="play-input extra-link-item" placeholder="Extra Redirection Link 4" style="margin-bottom:0;">
+                        <input type="text" class="play-input extra-link-item" placeholder="Extra Redirection Link 5" style="margin-bottom:0;">
+                    </div>
 
                     <label class="modal-label">Fuzzy Search Target Keywords (Type Comma ',' to link item tag)</label>
                     <div class="tags-container" id="tagsInputContainer">
                         <input type="text" id="tagInputField" class="tag-input-field" placeholder="Add keywords...">
                     </div>
 
-                    <label class="modal-label">Application Description Documentation & Changeglog</label>
-                    <textarea id="pDescription" class="play-input" placeholder="Document feature releases, setup steps, or injector anti-ban safety parameters..." style="min-height:100px; resize:vertical;"></textarea>
+                    <label class="modal-label">Description & Changelog Documentation</label>
+                    <textarea id="pDescription" class="play-input" placeholder="Document feature releases or setup parameters..." style="min-height:100px; resize:vertical;"></textarea>
 
-                    <button class="play-btn" id="executePublishBtn" onclick="commitPackageToPendingDatabaseNode()">SUBMIT FOR PROCESSING AND DEPLOYMENT</button>
+                    <button class="play-btn" id="executePublishBtn" onclick="commitPackageToPendingDatabaseNode()">SUBMIT FOR DEPLOYMENT</button>
                 </div>
             </div>
         `;
         document.body.appendChild(uploadModal);
 
-        // Bind core tags script interface listeners
         initializeTagsInputEngine();
 
-        // Establish operational change streams listeners
-        document.getElementById('logoFile').addEventListener('change', (e) => executeBinaryAssetProcessingStream(e.target.files[0], 'logoMethod', 'logoUrlOutput', 'logoProcessStatus'));
-        document.getElementById('bannerFile').addEventListener('change', (e) => executeBinaryAssetProcessingStream(e.target.files[0], 'bannerMethod', 'bannerUrlOutput', 'bannerProcessStatus'));
+        // Logo upload listeners
+        document.getElementById('logoFile').addEventListener('change', (e) => {
+            executeBinaryAssetProcessingStream(e.target.files[0], 'logoMethod', 'logoUrlOutput', 'logoProcessStatus', 'logoPreviewImg');
+        });
+
+        // Gallery screenshot multiple uploads tracker handler
+        document.getElementById('screenshotFileBtn').addEventListener('change', (e) => {
+            if (uploadedScreenshotsList.length >= 5) {
+                alert("Upload Limit Reached: Maximum of 5 gallery screenshots allocated per file node.");
+                e.target.value = '';
+                return;
+            }
+            executeGalleryScreenshotUploadProcessingStream(e.target.files[0]);
+        });
     };
 
     window.toggleCoinPriceInputBoxField = function(value) {
@@ -341,39 +373,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.toggleUploadMethodInputsStructure = function(type, method) {
         const output = document.getElementById(`${type}UrlOutput`);
+        const fileBox = document.getElementById(`${type}FileBox`);
+        const preview = document.getElementById(`${type}PreviewImg`);
+
         if (method === 'base64') {
-            output.removeAttribute('readonly');
+            if(fileBox) fileBox.style.display = 'none';
+            if(preview) preview.style.display = 'none';
+            output.type = 'text';
+            output.className = 'play-input';
             output.placeholder = "Inject direct Base64 stream data text sequence raw character block here...";
         } else {
-            output.setAttribute('readonly', 'true');
-            output.placeholder = "Link will generate automatically via ImgBB...";
+            if(fileBox) fileBox.style.display = 'block';
+            output.type = 'hidden';
+            output.placeholder = "";
         }
         output.value = '';
     };
 
     // ==========================================================================
-    // 7. CORE BINARY CONVERTER & CLOUD API ENGINE (DUAL METHOD INTEGRITY)
+    // 7. CORE BINARY CONVERTER & CLOUD API ENGINE (IMAGE PREVIEW ATTACHED)
     // ==========================================================================
-    function executeBinaryAssetProcessingStream(file, methodSelectId, outputInputId, statusParaId) {
+    function executeBinaryAssetProcessingStream(file, methodSelectId, outputInputId, statusParaId, previewImgId) {
         if (!file) return;
 
         const method = document.getElementById(methodSelectId).value;
         const output = document.getElementById(outputInputId);
         const status = document.getElementById(statusParaId);
+        const preview = document.getElementById(previewImgId);
 
-        status.innerText = "Processing system binary streams. Awaiting buffer data allocation...";
+        status.innerText = "Processing system binary streams. Awaiting allocation...";
         status.style.color = "var(--warning)";
 
         if (method === 'base64') {
             const reader = new FileReader();
             reader.onload = function(e) {
                 output.value = e.target.result;
-                status.innerText = "Base64 Byte String Character Hex Stream Processing Success!";
+                status.innerText = "Base64 Hex Character Stream Processing Success!";
                 status.style.color = "var(--success)";
-            };
-            reader.onerror = () => { 
-                status.innerText = "Fatal stream reader fault. Encoding failed."; 
-                status.style.color = "var(--danger)"; 
+                if(preview) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
             };
             reader.readAsDataURL(file);
         } else {
@@ -388,36 +428,91 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(json => {
                 if (json.success) {
                     output.value = json.data.url;
-                    status.innerText = "Cloud Platform Asset Sync Complete: URL Created.";
+                    status.innerText = "Cloud Sync Complete: Asset loaded.";
                     status.style.color = "var(--success)";
+                    if(preview) {
+                        preview.src = json.data.url;
+                        preview.style.display = 'block';
+                    }
                 } else {
-                    status.innerText = "Cloud upload request rejected. Server drop error token.";
+                    status.innerText = "Cloud upload request rejected by API.";
                     status.style.color = "var(--danger)";
                 }
             })
             .catch(() => {
-                status.innerText = "Network transmission interrupt pipeline dropped. Upload halted.";
+                status.innerText = "Network transmission interrupt pipeline dropped.";
                 status.style.color = "var(--danger)";
             });
         }
     }
 
+    // Processing logic for multiple ImgBB screenshots uploads loop
+    function executeGalleryScreenshotUploadProcessingStream(file) {
+        if(!file) return;
+        const status = document.getElementById('screenshotProcessStatus');
+        const wrapper = document.getElementById('screenshotPreviewWrapper');
+
+        status.innerText = "Uploading screenshot to cloud vaults...";
+        status.style.color = "var(--warning)";
+
+        const formData = new FormData();
+        formData.append("image", file);
+
+        fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+            method: "POST",
+            body: formData
+        })
+        .then(res => res.json())
+        .then(json => {
+            if (json.success) {
+                const imgUrl = json.data.url;
+                uploadedScreenshotsList.push(imgUrl);
+
+                // Dynamically render screenshot thumbnail block inside container
+                let thumb = document.createElement('img');
+                thumb.src = imgUrl;
+                thumb.className = 'sc-preview-thumb';
+                wrapper.appendChild(thumb);
+
+                status.innerText = `Screenshot ${uploadedScreenshotsList.length}/5 Synced Successfully!`;
+                status.style.color = "var(--success)";
+            } else {
+                status.innerText = "Gallery index upload authentication fault context.";
+                status.style.color = "var(--danger)";
+            }
+            document.getElementById('screenshotFileBtn').value = ''; // Flush input file path values
+        })
+        .catch(() => {
+            status.innerText = "Network transmission framework timeout failure exception.";
+            status.style.color = "var(--danger)";
+        });
+    }
+
     // ==========================================================================
-    // 8. DATABASE COMMIT PACKAGES CONTROLLER
+    // 8. DATABASE COMMIT PACKAGES CONTROLLER (1-MINUTE HOLD PROTOCOLS)
     // ==========================================================================
     window.commitPackageToPendingDatabaseNode = function() {
         const name = document.getElementById('pName').value.trim();
         const mainLink = document.getElementById('pMainLink').value.trim();
         const logoData = document.getElementById('logoUrlOutput').value.trim();
-        const bannerData = document.getElementById('bannerUrlOutput').value.trim();
+        const isTrendingChecked = document.getElementById('pTrendingCheck').checked;
 
         if (!name || !mainLink) {
-            alert("Upload Terminated: Packagename and main endpoint link path strings are non-negotiable parameters.");
+            alert("Upload Terminated: Title and Main Download Link strings are non-negotiable mandatory fields.");
             return;
         }
 
+        // Collect extra links inputs data stack arrays loops
+        let collectedExtraLinks = [];
+        document.querySelectorAll('.extra-link-item').forEach(input => {
+            let val = input.value.trim();
+            if(val !== "") {
+                collectedExtraLinks.push(val);
+            }
+        });
+
         const btn = document.getElementById('executePublishBtn');
-        btn.innerText = "WRITING TRANSACTION TO NETWORKS...";
+        btn.innerText = "COMMITTING STACK DATA TO CLOUD...";
         btn.disabled = true;
 
         const transactionalPackagePayload = {
@@ -427,28 +522,30 @@ document.addEventListener('DOMContentLoaded', () => {
             appType: document.getElementById('pType').value,
             category: document.getElementById('pCat').value,
             coinPrice: parseInt(document.getElementById('pCoinPrice').value) || 0,
+            isTrending: isTrendingChecked,
             logoUrl: logoData || "https://via.placeholder.com/150/121212/00e6b8?text=APP",
-            bannerUrl: bannerData || "https://via.placeholder.com/500x250/121212/00e6b8?text=BANNER",
+            screenshots: uploadedScreenshotsList, // Linked array list index nodes map
             downloadUrl: mainLink,
-            altLinkName: document.getElementById('pAltName').value.trim(),
-            altLinkUrl: document.getElementById('pAltUrl').value.trim(),
-            zipPassword: document.getElementById('pPassword').value.trim(),
+            zipPassword: document.getElementById('pPassword').value.trim() || "",
+            getPasswordLink: document.getElementById('pGetPassLink').value.trim() || "",
+            passwordVideoLink: document.getElementById('pPassVideoLink').value.trim() || "",
+            extraLinks: collectedExtraLinks,
             tags: uploadedTagsList, 
             description: document.getElementById('pDescription').value.trim() || "System Description Data Block Uninitialized.",
             uploaderUid: currentUser.uid,
             uploaderName: userProfile.name,
             timestamp: firebase.database.ServerValue.TIMESTAMP,
-            autoApproveTime: Date.now() + 3600000, // Exactly 1 hour safety offset window block 
+            autoApproveTime: Date.now() + 60000, // Exactly 1 minute safety buffer timeline delay allocation
             status: 'pending',
             downloads: 0,
             views: 0
         };
 
         db.ref('pending_apps').push(transactionalPackagePayload).then(() => {
-            alert("Package transaction committed to holding staging queues successfully. If no validation actions occur from administrators, the system will auto-deploy the payload in exactly 1 hour.");
+            alert("Package transaction committed to holding staging loops successfully. Please wait 1 minute for automatic background validation deployment processing routines.");
             document.getElementById('dynamicUploadModal').remove();
         }).catch((err) => {
-            alert("Database interface fault exception: " + err.message);
+            alert("Database deployment pipeline error exception: " + err.message);
             btn.innerText = "SUBMIT FOR PROCESSING AND DEPLOYMENT";
             btn.disabled = false;
         });
@@ -523,7 +620,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // ==========================================================================
-    // 11. CRON TIMEOUT CRITICAL SIMULATOR ENGINE (1-HOUR RESOLUTION LOOKUP)
+    // 11. CRON TIMEOUT CRITICAL SIMULATOR ENGINE (1-MINUTE RESOLUTION LOOKUP)
     // ==========================================================================
     function runSystemAutoApproveEngine() {
         setInterval(() => {
@@ -533,20 +630,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     snapshot.forEach((child) => {
                         let appRecord = child.val();
                         
+                        // Validates if the exact 1 minute queue constraint window has been saturated
                         if (currentTimeStamp >= appRecord.autoApproveTime) {
                             appRecord.status = 'approved';
-                            appRecord.approvedBy = 'System-Auto';
+                            appRecord.approvedBy = 'System-Auto-1Min';
                             appRecord.approvedAt = firebase.database.ServerValue.TIMESTAMP;
 
                             db.ref(`store_apps/${child.key}`).set(appRecord).then(() => {
                                 db.ref(`pending_apps/${child.key}`).remove();
-                                console.log(`[STAGING CONTROL LOG]: Target threshold saturated. Automated layout deployment successful for node: ${appRecord.appName}`);
+                                console.log(`[STAGING QUEUE SYNC]: 1-Minute expiration reached. Auto-deploy finished for item: ${appRecord.appName}`);
                             });
                         }
                     });
                 }
             });
-        }, 180000); // Evaluates structural state map loops every 3 minutes
+        }, 15000); // Scans the map registries layout indexes every 15 seconds for blazing speed updates
     }
 
     window.processOwnerStoreLogoChange = function(logoUrl) {

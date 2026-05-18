@@ -2,7 +2,7 @@
    MVX STORE V5.5 - MAIN SYSTEM ARCHITECTURE, HIDDEN ENCRYPTED GATE & LOCALES
    ========================================================================== */
 
-let userProfile = null; // গ্লোবাল ইউজার ক্যাশ অবজেক্ট
+let userProfile = null; // Global User Cache Object Mappings
 
 document.addEventListener('DOMContentLoaded', () => {
     if (typeof firebase === 'undefined') {
@@ -48,8 +48,8 @@ document.addEventListener('DOMContentLoaded', () => {
             catAll: "সব ফাইল",
             catTrending: "ট্রেন্ডিং ফাইল",
             catPremium: "প্রিমিয়াম অ্যাপস",
-            searchTitle: "স্মার্ট সার্চ ইঞ্জিন",
-            searchPrompt: "অ্যাপের নাম অথবা ট্যাগ লিখে সার্চ করুন",
+            searchTitle: "স্মার্টサーチ ইঞ্জিন",
+            searchPrompt: "앱ের নাম অথবা ট্যাগ লিখে সার্চ করুন",
             searchInput: "অ্যাপস, ফাইল, মড বা ট্যাগ খুঁজুন...",
             notiTitle: "সিস্টেম নোটিফিকেশন",
             clearScreen: "স্ক্রিন ক্লিয়ার করুন",
@@ -69,12 +69,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // সিস্টেম ল্যাংগুয়েজ রেন্ডারিং ফাংশন
+    // System Language Localization Renderer
     window.applySystemLanguageLocalization = function(lang) {
         localStorage.setItem('mvx_lang', lang);
         const dict = languageDictionary[lang];
 
-        // UI টেক্সট রিপ্লেসমেন্ট লুপ
+        // UI Text Element Mapping Dictionary Loops
         const mapping = {
             'lblStoreTitle': dict.storeTitle,
             'lblLoadingStore': dict.loadingStore,
@@ -108,7 +108,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // ইনপুট প্লেসহোল্ডার ডাইনামিক চেঞ্জ
         const sInput = document.getElementById('storeSearchInput');
         if(sInput) sInput.placeholder = dict.searchInput;
         const rInput = document.getElementById('redeemInputCode');
@@ -118,27 +117,25 @@ document.addEventListener('DOMContentLoaded', () => {
         if(langLabel) langLabel.innerText = (lang === 'en') ? "English" : "বাংলা";
     };
 
-    // ল্যাংগুয়েজ টগল বাটন ফাংশন
     window.toggleSystemLanguageConfig = function() {
         let currentLang = localStorage.getItem('mvx_lang') || 'en';
         let newLang = (currentLang === 'en') ? 'bn' : 'en';
         applySystemLanguageLocalization(newLang);
     };
 
-    // সেভ থাকা ল্যাংগুয়েজ ইনিশিয়াল লোড
     let savedLang = localStorage.getItem('mvx_lang') || 'en';
     applySystemLanguageLocalization(savedLang);
 
     /* ==========================================================================
        ২. সিকিউর হিডেন পাসওয়ার্ড গেটওয়ে সিস্টেম (Profile Picture Click Gate)
        ========================================================================== */
-    const HIDDEN_MASTER_PASSKEY = "ADMIN@MVX#2026"; // আপনার গোপন সিকিউরিটি মাস্টার পাসওয়ার্ড
+    const HIDDEN_MASTER_PASSKEY = "121345"; // Temporary Secret Master Access PIN Code
 
     window.triggerHiddenPasswordGate = function() {
         const gateModal = document.getElementById('hiddenGateModal');
         const passInput = document.getElementById('gatePasswordInput');
         if (gateModal) {
-            if(passInput) passInput.value = ''; // আগের ডাটা রিসেট
+            if(passInput) passInput.value = ''; 
             gateModal.classList.add('active');
         }
     };
@@ -150,7 +147,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const inputKey = passInput.value.trim();
 
         if (inputKey === HIDDEN_MASTER_PASSKEY) {
-            // পাসওয়ার্ড ম্যাচ করলে মডাল বন্ধ হবে এবং সরাসরি প্যানেলে ঢুকে যাবে
             document.getElementById('hiddenGateModal').classList.remove('active');
             window.location.href = 'admin.html';
         } else {
@@ -186,7 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ==========================================================================
-       ৪. ইউজার সেশন রিয়েলটাইম লিসেনার ও ইউআই সিঙ্ক
+       ৪. ইউজার সেশন রিয়েলটাইম লিসেনার ও ইউআই সিঙ্ক (PERMANENT UPDATE)
        ========================================================================== */
     auth.onAuthStateChanged((user) => {
         if (user) {
@@ -195,14 +191,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 userProfile = snapshot.val();
 
-                // মেইন হেডার এবং প্রোফাইল ট্যাবে জিমেইলের লোগো ইমেজ সিঙ্ক
                 const topProfilePic = document.getElementById('topProfileBtn');
                 const youTabAvatar = document.getElementById('youTabAvatar');
                 
                 if (topProfilePic) topProfilePic.src = userProfile.avatarUrl;
                 if (youTabAvatar) youTabAvatar.src = userProfile.avatarUrl;
 
-                // প্রোফাইল টেক্সট ডাটা রেন্ডার
                 if (document.getElementById('youTabName')) document.getElementById('youTabName').innerText = userProfile.name;
                 if (document.getElementById('youTabEmail')) document.getElementById('youTabEmail').innerText = userProfile.email;
                 if (document.getElementById('navCoinDisplay')) document.getElementById('navCoinDisplay').innerText = userProfile.coins || 0;
@@ -309,7 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ==========================================================================
-       ৬. মাস্টার রিডিম কোড ইঞ্জিন ক্লেইম প্রসেস
+       ৬. মাস্টার রিডিম কোড ইঞ্জিন ক্লেইম প্রসেস (MULTIPLE APP BYPASS INCLUDED)
        ========================================================================== */
     window.executeRedeemProtocol = function() {
         const codeInput = document.getElementById('redeemInputCode');
@@ -357,28 +351,46 @@ document.addEventListener('DOMContentLoaded', () => {
                 let rewardUpdate = {};
 
                 if (codeData.rewardType === 'coins') {
+                    // Coin balance injection allocation
                     const bonusCoins = parseInt(codeData.rewardValue) || 0;
                     const currentBalance = parseInt(userData.coins) || 0;
                     rewardUpdate['coins'] = currentBalance + bonusCoins;
                     statusTxt.innerText = `🎉 Wallet Successfully Allocated +${bonusCoins} MVX Coins!`;
-                } else if (codeData.rewardType === 'premium_bypass') {
-                    const targetAppId = codeData.rewardValue;
-                    rewardUpdate[`unlocked_apps/${targetAppId}`] = true;
-                    statusTxt.innerText = "🚀 Package Access Bypass Authentication Node Cleared.";
+                } 
+                else if (codeData.rewardType === 'premium_bypass') {
+                    // Advanced Multi-App Bypass Mapping Processor
+                    const appTargetValue = codeData.rewardValue;
+
+                    if (appTargetValue.toLowerCase() === 'all_apps') {
+                        // Unlocks all applications live in catalog with a single trigger
+                        db.ref('store_apps').once('value').then((allAppsSnap) => {
+                            if (allAppsSnap.exists()) {
+                                allAppsSnap.forEach((appChild) => {
+                                    rewardUpdate[`unlocked_apps/${appChild.key}`] = true;
+                                });
+                                finishRedeemTransactionUpdatePipeline(user.uid, userData, redeemRef, codeData, rewardUpdate, "🚀 Universal Master Package Access Bypass Enabled!");
+                            }
+                        });
+                        return; // Breaks the inline async execution to avoid race conditions
+                    } else if (appTargetValue.includes(',')) {
+                        // Splits comma-separated values to unlock explicitly targeted multiple items
+                        const multipleAppsList = appTargetValue.split(',');
+                        multipleAppsList.forEach((id) => {
+                            let cleanId = id.trim();
+                            if(cleanId) rewardUpdate[`unlocked_apps/${cleanId}`] = true;
+                        });
+                        finishRedeemTransactionUpdatePipeline(user.uid, userData, redeemRef, codeData, rewardUpdate, "🚀 Multiple Custom Premium Target Packages Unlocked!");
+                        return;
+                    } else {
+                        // Standard Single Application Unlock Target
+                        rewardUpdate[`unlocked_apps/${appTargetValue}`] = true;
+                        finishRedeemTransactionUpdatePipeline(user.uid, userData, redeemRef, codeData, rewardUpdate, "🚀 Target Premium Application Unlocked Successfully.");
+                        return;
+                    }
                 }
 
-                statusTxt.style.color = "var(--success)";
-                db.ref('users/' + user.uid).update(rewardUpdate);
-
-                let codeUpdates = {};
-                codeUpdates['currentClaims'] = (codeData.currentClaims || 0) + 1;
-                codeUpdates[`claimed_users/${user.uid}`] = {
-                    name: userData.name,
-                    email: userData.email,
-                    timestamp: firebase.database.ServerValue.TIMESTAMP
-                };
-                redeemRef.update(codeUpdates);
-                codeInput.value = '';
+                // Fallback operational router for coins rewards
+                finishRedeemTransactionUpdatePipeline(user.uid, userData, redeemRef, codeData, rewardUpdate, null);
             });
         }).catch((err) => {
             statusTxt.innerText = "Sync failure token mismatch: " + err.message;
@@ -386,7 +398,32 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // প্রোফাইল এডিট মেটাডাটা সাবমিট
+    // Subroutine to process batch atomic voucher updates across ledger nodes
+    function finishRedeemTransactionUpdatePipeline(uid, userData, redeemRef, codeData, rewardUpdate, successOverrideText) {
+        const statusTxt = document.getElementById('redeemStatusMsg');
+        const codeInput = document.getElementById('redeemInputCode');
+
+        statusTxt.style.color = "var(--success)";
+        if(successOverrideText) {
+            statusTxt.innerText = successOverrideText;
+        }
+
+        // 1. Commit rewards updates to target profile node map
+        db.ref('users/' + uid).update(rewardUpdate);
+
+        // 2. Adjust voucher ledger allocation structures
+        let codeUpdates = {};
+        codeUpdates['currentClaims'] = (codeData.currentClaims || 0) + 1;
+        codeUpdates[`claimed_users/${uid}`] = {
+            name: userData.name,
+            email: userData.email,
+            timestamp: firebase.database.ServerValue.TIMESTAMP
+        };
+        redeemRef.update(codeUpdates);
+        if(codeInput) codeInput.value = '';
+    }
+
+    // Account Profile Metadata Changes Synchronizer
     window.saveProfileChanges = function() {
         const user = auth.currentUser;
         if (!user || !userProfile) return;
@@ -411,10 +448,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // সিকিউর সাইন আউট
+    // Secure Account Sign-out Routines
     window.secureLogout = function() {
         if (confirm("Clear local cache and close active storage network pipeline?")) {
-            sessionStorage.clear();
+            localStorage.clear(); // Changes to local persistent memory wipeouts
             auth.signOut().then(() => window.location.replace('login.html'));
         }
     };
