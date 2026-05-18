@@ -1,5 +1,5 @@
 /* ==========================================================================
-   MVX SYSTEM V5.5 - CORE FIREBASE & AUTHENTICATION ENGINE
+   MVX SYSTEM V5.5 - CORE FIREBASE & AUTHENTICATION ENGINE (REDIRECT FIX)
    ========================================================================== */
 
 const firebaseConfig = {
@@ -36,7 +36,7 @@ auth.onAuthStateChanged((user) => {
 });
 
 /* ==========================================================================
-   2. MASTER OWNER ROLE DEFINITION (NO NORMAL ADMINS)
+   2. MASTER OWNER ROLE DEFINITION
    ========================================================================== */
 const MASTER_OWNERS = [
     "sktausif771@gmail.com",
@@ -51,7 +51,7 @@ function determineUserRole(email) {
 }
 
 /* ==========================================================================
-   3. GOOGLE LOGIN PROTOCOL (POPUP METHOD)
+   3. GOOGLE LOGIN PROTOCOL (100% MOBILE FIX: REDIRECT METHOD)
    ========================================================================== */
 window.startGoogleLogin = function() {
     const provider = new firebase.auth.GoogleAuthProvider();
@@ -60,18 +60,16 @@ window.startGoogleLogin = function() {
     const loader = document.getElementById('systemLoader');
     if(loader) loader.style.display = 'flex';
 
-    auth.signInWithPopup(provider).then((result) => {
-        processUserEntry(result.user);
-    }).catch((error) => {
-        if(loader) loader.style.display = 'none';
-        const statusMsg = document.getElementById('status-message');
-        if(statusMsg) {
-            statusMsg.innerText = "Login Cancelled or Error: " + error.message;
-            statusMsg.className = "";
-        }
-        console.error("Login Error Details: ", error);
-    });
+    // Popup এর বদলে Redirect ব্যবহার করা হলো যাতে সাদা স্ক্রিন হয়ে ব্যাক না করে
+    auth.signInWithRedirect(provider);
 };
+
+// Redirect থেকে ফিরে আসার পর যদি কোনো এরর হয় সেটা ধরার জন্য
+auth.getRedirectResult().catch((error) => {
+    const loader = document.getElementById('systemLoader');
+    if(loader) loader.style.display = 'none';
+    alert("লগইন সমস্যা হয়েছে: " + error.message);
+});
 
 /* ==========================================================================
    4. USER DATABASE ENTRY & GMAIL AVATAR SYNC
@@ -80,7 +78,6 @@ function processUserEntry(user) {
     const userRef = db.ref('users/' + user.uid);
     const role = determineUserRole(user.email);
     
-    // Fetch high-res Google profile image (s96-c to s400-c)
     let googlePhoto = user.photoURL;
     if (googlePhoto && googlePhoto.includes('=s96-c')) {
         googlePhoto = googlePhoto.replace('=s96-c', '=s400-c');
@@ -88,7 +85,6 @@ function processUserEntry(user) {
 
     userRef.once('value').then((snapshot) => {
         if (!snapshot.exists()) {
-            // New User Registration
             userRef.set({
                 uid: user.uid,
                 name: user.displayName,
@@ -102,15 +98,14 @@ function processUserEntry(user) {
                 status: 'active',
                 language: 'en',
                 joinedAt: firebase.database.ServerValue.TIMESTAMP
-            }).then(() => redirectBasedOnRole(role));
+            }).then(() => redirectBasedOnRole(role))
+              .catch((err) => alert("Database Error: " + err.message)); // Data fail error handler
         } else {
-            // Existing User Update
             let updates = { 
                 role: role, 
                 lastLogin: firebase.database.ServerValue.TIMESTAMP 
             };
             
-            // Sync image if not present
             if (!snapshot.val().avatarUrl && googlePhoto) {
                 updates.avatarUrl = googlePhoto;
             }
@@ -123,17 +118,17 @@ function processUserEntry(user) {
                 } else {
                     redirectBasedOnRole(role);
                 }
-            });
+            }).catch((err) => alert("Database Update Error: " + err.message));
         }
     });
 }
 
 /* ==========================================================================
-   5. SECURE ROUTING (RESTORED TO ORIGINAL SESSION STORAGE ENGINE)
+   5. SECURE ROUTING (LOCAL STORAGE REQUIRED FOR REDIRECT)
    ========================================================================== */
 function redirectBasedOnRole(role) {
-    // localStorage রিমুভ করে আগের সবচেয়ে সিকিউর sessionStorage মেথড বসানো হলো
-    sessionStorage.setItem('mvx_session', 'ACTIVE');
-    sessionStorage.setItem('mvx_role', role);
+    // Redirect মেথডের জন্য localStorage বাধ্যতামূলক, কারণ পেজ চেঞ্জ হলে sessionStorage মুছে যায়
+    localStorage.setItem('mvx_session', 'ACTIVE');
+    localStorage.setItem('mvx_role', role);
     window.location.replace('index.html'); 
 }
