@@ -1,5 +1,5 @@
 /* ==========================================================================
-   MVX SYSTEM V5.5 - CORE FIREBASE & AUTHENTICATION ENGINE (REDIRECT FIX)
+   MVX SYSTEM V5.5 - CORE FIREBASE & AUTHENTICATION ENGINE (ORIGINAL POPUP METHOD)
    ========================================================================== */
 
 const firebaseConfig = {
@@ -51,7 +51,7 @@ function determineUserRole(email) {
 }
 
 /* ==========================================================================
-   3. GOOGLE LOGIN PROTOCOL (100% MOBILE FIX: REDIRECT METHOD)
+   3. GOOGLE LOGIN PROTOCOL (ORIGINAL POPUP METHOD - 100% WORKING)
    ========================================================================== */
 window.startGoogleLogin = function() {
     const provider = new firebase.auth.GoogleAuthProvider();
@@ -60,16 +60,19 @@ window.startGoogleLogin = function() {
     const loader = document.getElementById('systemLoader');
     if(loader) loader.style.display = 'flex';
 
-    // Popup এর বদলে Redirect ব্যবহার করা হলো যাতে সাদা স্ক্রিন হয়ে ব্যাক না করে
-    auth.signInWithRedirect(provider);
+    // আগের সেই অরিজিনাল পপ-আপ মেথড (কোনো সাদা স্ক্রিন বা লুপ হবে না)
+    auth.signInWithPopup(provider).then((result) => {
+        processUserEntry(result.user);
+    }).catch((error) => {
+        if(loader) loader.style.display = 'none';
+        const statusMsg = document.getElementById('status-message');
+        if(statusMsg) {
+            statusMsg.innerText = "Login Cancelled or Error: " + error.message;
+            statusMsg.className = "";
+        }
+        console.error("Login Error Details: ", error);
+    });
 };
-
-// Redirect থেকে ফিরে আসার পর যদি কোনো এরর হয় সেটা ধরার জন্য
-auth.getRedirectResult().catch((error) => {
-    const loader = document.getElementById('systemLoader');
-    if(loader) loader.style.display = 'none';
-    alert("লগইন সমস্যা হয়েছে: " + error.message);
-});
 
 /* ==========================================================================
    4. USER DATABASE ENTRY & GMAIL AVATAR SYNC
@@ -98,8 +101,7 @@ function processUserEntry(user) {
                 status: 'active',
                 language: 'en',
                 joinedAt: firebase.database.ServerValue.TIMESTAMP
-            }).then(() => redirectBasedOnRole(role))
-              .catch((err) => alert("Database Error: " + err.message)); // Data fail error handler
+            }).then(() => redirectBasedOnRole(role));
         } else {
             let updates = { 
                 role: role, 
@@ -118,17 +120,17 @@ function processUserEntry(user) {
                 } else {
                     redirectBasedOnRole(role);
                 }
-            }).catch((err) => alert("Database Update Error: " + err.message));
+            });
         }
     });
 }
 
 /* ==========================================================================
-   5. SECURE ROUTING (LOCAL STORAGE REQUIRED FOR REDIRECT)
+   5. SECURE ROUTING (ORIGINAL SESSION STORAGE)
    ========================================================================== */
 function redirectBasedOnRole(role) {
-    // Redirect মেথডের জন্য localStorage বাধ্যতামূলক, কারণ পেজ চেঞ্জ হলে sessionStorage মুছে যায়
-    localStorage.setItem('mvx_session', 'ACTIVE');
-    localStorage.setItem('mvx_role', role);
+    // একদম আগের অরিজিনাল sessionStorage, কোনো ঝামেলা হবে না
+    sessionStorage.setItem('mvx_session', 'ACTIVE');
+    sessionStorage.setItem('mvx_role', role);
     window.location.replace('index.html'); 
 }

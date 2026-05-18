@@ -7,7 +7,7 @@
     <title>MVX STORE | Play Store Edition V5.5</title>
     
     <script>
-        if (localStorage.getItem('mvx_session') !== 'ACTIVE') {
+        if (sessionStorage.getItem('mvx_session') !== 'ACTIVE') {
             window.location.replace('login.html');
         }
     </script>
