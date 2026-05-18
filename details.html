@@ -7,7 +7,7 @@
     <title>Application Details | MVX STORE</title>
     
     <script>
-        if (localStorage.getItem('mvx_session') !== 'ACTIVE') {
+        if (sessionStorage.getItem('mvx_session') !== 'ACTIVE') {
             window.location.replace('login.html');
         }
     </script>
@@ -23,7 +23,7 @@
         .details-header { display: flex; gap: 20px; align-items: center; margin-bottom: 25px; }
         .details-logo { width: 90px; height: 90px; border-radius: 20px; object-fit: cover; border: 1px solid var(--border-color); }
         .details-meta-box { flex: 1; overflow: hidden; }
-        .details-title { font-family: var(--font-header); font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 5px; }
+        .details-title { font-family: var(--font-header); font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .details-dev { font-size: 14px; color: var(--primary); font-weight: 600; }
         
         .stats-row { display: flex; justify-content: space-between; background: var(--bg-surface); border: 1px solid var(--border-color); padding: 15px; border-radius: 14px; margin-bottom: 25px; text-align: center; }
@@ -65,13 +65,13 @@
             <img src="" id="appDetailsLogo" class="details-logo" alt="App Logo">
             <div class="details-meta-box">
                 <h2 id="appDetailsTitle" class="details-title">Loading Package Title...</h2>
-                <div id="appDetailsDev" class="details-dev">Developer Core</div>
+                <div id="appDetailsDev" class="details-dev">Authorized Developer</div>
             </div>
         </div>
 
         <div class="stats-row">
             <div class="stat-item">
-                <div class="stat-val" id="appDetailsRating">4.9 <i class="fas fa-star" style="color:var(--warning); font-size:13px;"></i></div>
+                <div class="stat-val" id="appDetailsRating">4.8 <i class="fas fa-star" style="color:var(--warning); font-size:13px;"></i></div>
                 <div class="stat-lbl">Rating Verified</div>
             </div>
             <div class="stat-item">
@@ -168,7 +168,6 @@
         const database = firebase.database();
         const authorization = firebase.auth();
 
-        // Parse query string map schemas allocations to locate key app nodes IDs
         const urlParams = new URLSearchParams(window.location.search);
         const targetAppId = urlParams.get('id');
 
@@ -180,12 +179,10 @@
             window.location.replace('index.html');
         }
 
-        // Dropdown toggle visibility handlers
         function toggleDetailsThreeDotDropdown() {
             document.getElementById('threeDotMenuDropdown').classList.toggle('show');
         }
 
-        // Close dropdown when clicking anywhere outside bounds
         window.addEventListener('click', function(e) {
             if (!e.target.matches('.three-dot-btn') && !e.target.matches('.fa-ellipsis-v')) {
                 const dropdown = document.getElementById('threeDotMenuDropdown');
@@ -210,7 +207,6 @@
             if (user) {
                 activeUserIdToken = user.uid;
                 
-                // Realtime profile cache mappings
                 database.ref(`users/${user.uid}`).on('value', (snap) => {
                     if (snap.exists()) {
                         loggedInUserProfileCache = snap.val();
@@ -220,9 +216,6 @@
             }
         });
 
-        // ==========================================================================
-        // PULL PACKAGE SCHEMAS FROM CORE SERVER NODES MAPS
-        // ==========================================================================
         function fetchApplicationMetaDetailsNodeLogs() {
             database.ref(`store_apps/${targetAppId}`).once('value').then((snapshot) => {
                 if (!snapshot.exists()) {
@@ -238,7 +231,6 @@
         }
 
         function incrementApplicationViewMetricsCount() {
-            // Self running isolation scope to track passive views safely
             database.ref(`store_apps/${targetAppId}/views`).transaction((currentViews) => {
                 return (currentViews || 0) + 1;
             });
@@ -257,13 +249,12 @@
             document.getElementById('appDetailsDownloads').innerText = app.downloads || 0;
             document.getElementById('appDetailsDescription').innerText = app.description;
 
-            // Generate premium ratings allocations systematically to mock native Play Store layers
             let baseRating = 4.7;
             if(app.downloads > 50) baseRating = 4.8;
             if(app.downloads > 500) baseRating = 4.9;
             document.getElementById('appDetailsRating').innerHTML = `${baseRating} <i class="fas fa-star" style="color:var(--warning); font-size:13px;"></i>`;
 
-            // RENDER SCREENSHOTS HORIZONTAL TRACK SYSTEM GALLERY
+            // RENDER SCREENSHOTS HORIZONTAL GALLERY
             const gallery = document.getElementById('appDetailsScreenshotGallery');
             const heading = document.getElementById('galleryHeadingTitle');
             gallery.innerHTML = '';
@@ -281,7 +272,7 @@
                 heading.style.display = 'none';
             }
 
-            // RENDER 4-5 EXTRA ALTERNATIVE ACTIONS REDIRECTION LINKS
+            // RENDER EXTRA ALTERNATIVE ACTIONS LINKS
             const extraContainer = document.getElementById('extraLinksInjectionsContainer');
             const extraWrapper = document.getElementById('extraLinksMainWrapper');
             extraContainer.innerHTML = '';
@@ -311,7 +302,6 @@
             const btn = document.getElementById('masterInstallActionButton');
 
             if (app.category === 'paid') {
-                // Check authorization bounds inside unlocked tables nodes map arrays
                 const hasUnlocked = loggedInUserProfileCache.unlocked_apps && loggedInUserProfileCache.unlocked_apps[targetAppId];
                 if (!hasUnlocked) {
                     btn.innerText = `UNLOCK PACKAGE FOR ${app.coinPrice} COINS`;
@@ -320,7 +310,6 @@
                 }
             }
 
-            // If free or transaction license is successfully allocated, bind password checks
             const hasPasswordBypassed = loggedInUserProfileCache.unlocked_passwords && loggedInUserProfileCache.unlocked_passwords[targetAppId];
             if (app.zipPassword && app.zipPassword.trim() !== "" && !hasPasswordBypassed) {
                 btn.innerText = "AUTHENTICATE ZIP SECURITY ENCRYPTION LOCK";
@@ -350,7 +339,6 @@
 
             const hasPasswordBypassed = loggedInUserProfileCache.unlocked_passwords && loggedInUserProfileCache.unlocked_passwords[targetAppId];
             if (app.zipPassword && app.zipPassword.trim() !== "" && !hasPasswordBypassed) {
-                // Bind properties to toolkits buttons elements inside dialog structure arrays
                 const getPass = document.getElementById('modalGetPassBtn');
                 const passVid = document.getElementById('modalPassVideoBtn');
                 
@@ -368,7 +356,7 @@
         };
 
         // ==========================================================================
-        // EXECUTE COIN DEBITS PREMIUM TRANSACTION INFRASTRUCTURES
+        // EXECUTE COIN DEBITS PREMIUM TRANSACTION PROTOCOL
         // ==========================================================================
         window.executeCoinDeductionUnlockProtocol = function() {
             const app = targetApplicationObject;
@@ -382,7 +370,6 @@
 
             const updatingUserBalanceDelta = currentCoinsBalance - app.coinPrice;
             
-            // Execute batch transactional atomic tree write optimizations
             let updates = {};
             updates[`users/${activeUserIdToken}/coins`] = updatingUserBalanceDelta;
             updates[`users/${activeUserIdToken}/unlocked_apps/${targetAppId}`] = true;
@@ -395,14 +382,13 @@
         };
 
         // ==========================================================================
-        // PASSWORD GATE REDUNDANCY VALIDATIONS CRON STRINGS
+        // PASSWORD GATE REDUNDANCY VALIDATION
         // ==========================================================================
         window.verifyPackageArchivePasswordCredentials = function() {
             const app = targetApplicationObject;
             const inputVal = document.getElementById('appZipPasswordInputField').value.trim();
 
             if (inputVal === app.zipPassword) {
-                // Persistent permanent decryption verification bypass logging block mapping registries arrays
                 database.ref(`users/${activeUserIdToken}/unlocked_passwords/${targetAppId}`).set(true).then(() => {
                     alert("Access Token Authorized: Archive compression passkey validated. Redirection processing initiated.");
                     closeDetailsSystemModals('passwordProtectionGateModal');
@@ -415,15 +401,13 @@
         };
 
         // ==========================================================================
-        // UNIQUE DOWNLOAD COUNT LOGIC AND REDIRECTION ENGINE (1 ACCOUNT = 1 DL)
+        // UNIQUE DOWNLOAD COUNT LOGIC (1 ACCOUNT = 1 DOWNLOAD)
         // ==========================================================================
         function executeSecureDownloadRegistryNodeTransaction() {
             const app = targetApplicationObject;
 
-            // Strict Unique Account Tracker verification check loops
             database.ref(`downloads_tracker/${targetAppId}/${activeUserIdToken}`).once('value').then((snapshot) => {
                 if (!snapshot.exists()) {
-                    // Node record mismatch means this unique UID has NEVER triggered installation metrics pipelines before
                     let multiBatchWrite = {};
                     multiBatchWrite[`downloads_tracker/${targetAppId}/${activeUserIdToken}`] = true;
                     
@@ -435,14 +419,13 @@
                         });
                     });
                 } else {
-                    // Account already recorded previously: Bypass increments completely to drop fraud bot traffic metrics
                     window.open(app.downloadUrl, '_blank');
                 }
             });
         }
 
         // ==========================================================================
-        // USER REPORT VIOLATION TRANSACTION PROTOCOLS
+        // USER REPORT VIOLATION SUBMISSION
         // ==========================================================================
         window.submitApplicationViolationReportToServer = function() {
             const issueSelected = document.getElementById('reportIssueCategorySelector').value;
@@ -458,12 +441,11 @@
             };
 
             database.ref('reports').push(reportPayload).then(() => {
-                alert("Security Signal Dispatched: Violation details successfully mapped to administrator main network storage infrastructure layers.");
+                alert("Security Signal Dispatched: Violation details successfully mapped to administrator network storage infrastructure layers.");
                 closeDetailsSystemModals('applicationReportSystemModal');
             });
         };
 
-        // Clipboard URL Copy toolkits helper methods
         window.executeAppUrlCopyProtocol = function() {
             const mockContainer = document.createElement('textarea');
             mockContainer.value = window.location.href;

@@ -19,7 +19,7 @@ const auth = firebase.auth();
 const db = firebase.database();
 
 /* ==========================================================================
-   1. GLOBAL LOGIN CHECKER & REDIRECT (PERMANENT SESSION UPDATE)
+   1. GLOBAL LOGIN CHECKER & REDIRECT
    ========================================================================== */
 auth.onAuthStateChanged((user) => {
     const currentPage = window.location.pathname.split("/").pop();
@@ -129,11 +129,11 @@ function processUserEntry(user) {
 }
 
 /* ==========================================================================
-   5. SECURE ROUTING (PERMANENT LOCAL STORAGE ENGINE)
+   5. SECURE ROUTING (RESTORED TO ORIGINAL SESSION STORAGE ENGINE)
    ========================================================================== */
 function redirectBasedOnRole(role) {
-    // sessionStorage পরিবর্তন করে localStorage দেওয়া হয়েছে স্থায়ী লগইনের জন্য
-    localStorage.setItem('mvx_session', 'ACTIVE');
-    localStorage.setItem('mvx_role', role);
+    // localStorage রিমুভ করে আগের সবচেয়ে সিকিউর sessionStorage মেথড বসানো হলো
+    sessionStorage.setItem('mvx_session', 'ACTIVE');
+    sessionStorage.setItem('mvx_role', role);
     window.location.replace('index.html'); 
 }

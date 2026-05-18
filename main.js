@@ -48,8 +48,8 @@ document.addEventListener('DOMContentLoaded', () => {
             catAll: "সব ফাইল",
             catTrending: "ট্রেন্ডিং ফাইল",
             catPremium: "প্রিমিয়াম অ্যাপস",
-            searchTitle: "স্মার্টサーチ ইঞ্জিন",
-            searchPrompt: "앱ের নাম অথবা ট্যাগ লিখে সার্চ করুন",
+            searchTitle: "স্মার্ট সার্চ ইঞ্জিন",
+            searchPrompt: "অ্যাপের নাম অথবা ট্যাগ লিখে সার্চ করুন",
             searchInput: "অ্যাপস, ফাইল, মড বা ট্যাগ খুঁজুন...",
             notiTitle: "সিস্টেম নোটিফিকেশন",
             clearScreen: "স্ক্রিন ক্লিয়ার করুন",
@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // System Language Localization Renderer
+    // System Language Localization Renderer (Language is fine in localStorage for persistence)
     window.applySystemLanguageLocalization = function(lang) {
         localStorage.setItem('mvx_lang', lang);
         const dict = languageDictionary[lang];
@@ -161,6 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeBtn = document.getElementById('themeToggleBtn');
     const themeLabel = document.getElementById('currentThemeLabel');
     
+    // Theme is fine in localStorage
     let savedTheme = localStorage.getItem('mvx_theme') || 'dark';
     document.documentElement.setAttribute('data-theme', savedTheme);
     updateThemeUIElements(savedTheme);
@@ -182,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ==========================================================================
-       ৪. ইউজার সেশন রিয়েলটাইম লিসেনার ও ইউআই সিঙ্ক (PERMANENT UPDATE)
+       ৪. ইউজার সেশন রিয়েলটাইম লিসেনার ও ইউআই সিঙ্ক
        ========================================================================== */
     auth.onAuthStateChanged((user) => {
         if (user) {
@@ -351,18 +352,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 let rewardUpdate = {};
 
                 if (codeData.rewardType === 'coins') {
-                    // Coin balance injection allocation
                     const bonusCoins = parseInt(codeData.rewardValue) || 0;
                     const currentBalance = parseInt(userData.coins) || 0;
                     rewardUpdate['coins'] = currentBalance + bonusCoins;
                     statusTxt.innerText = `🎉 Wallet Successfully Allocated +${bonusCoins} MVX Coins!`;
                 } 
                 else if (codeData.rewardType === 'premium_bypass') {
-                    // Advanced Multi-App Bypass Mapping Processor
                     const appTargetValue = codeData.rewardValue;
 
                     if (appTargetValue.toLowerCase() === 'all_apps') {
-                        // Unlocks all applications live in catalog with a single trigger
                         db.ref('store_apps').once('value').then((allAppsSnap) => {
                             if (allAppsSnap.exists()) {
                                 allAppsSnap.forEach((appChild) => {
@@ -371,9 +369,8 @@ document.addEventListener('DOMContentLoaded', () => {
                                 finishRedeemTransactionUpdatePipeline(user.uid, userData, redeemRef, codeData, rewardUpdate, "🚀 Universal Master Package Access Bypass Enabled!");
                             }
                         });
-                        return; // Breaks the inline async execution to avoid race conditions
+                        return; 
                     } else if (appTargetValue.includes(',')) {
-                        // Splits comma-separated values to unlock explicitly targeted multiple items
                         const multipleAppsList = appTargetValue.split(',');
                         multipleAppsList.forEach((id) => {
                             let cleanId = id.trim();
@@ -382,14 +379,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         finishRedeemTransactionUpdatePipeline(user.uid, userData, redeemRef, codeData, rewardUpdate, "🚀 Multiple Custom Premium Target Packages Unlocked!");
                         return;
                     } else {
-                        // Standard Single Application Unlock Target
                         rewardUpdate[`unlocked_apps/${appTargetValue}`] = true;
                         finishRedeemTransactionUpdatePipeline(user.uid, userData, redeemRef, codeData, rewardUpdate, "🚀 Target Premium Application Unlocked Successfully.");
                         return;
                     }
                 }
 
-                // Fallback operational router for coins rewards
                 finishRedeemTransactionUpdatePipeline(user.uid, userData, redeemRef, codeData, rewardUpdate, null);
             });
         }).catch((err) => {
@@ -398,7 +393,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // Subroutine to process batch atomic voucher updates across ledger nodes
     function finishRedeemTransactionUpdatePipeline(uid, userData, redeemRef, codeData, rewardUpdate, successOverrideText) {
         const statusTxt = document.getElementById('redeemStatusMsg');
         const codeInput = document.getElementById('redeemInputCode');
@@ -408,10 +402,8 @@ document.addEventListener('DOMContentLoaded', () => {
             statusTxt.innerText = successOverrideText;
         }
 
-        // 1. Commit rewards updates to target profile node map
         db.ref('users/' + uid).update(rewardUpdate);
 
-        // 2. Adjust voucher ledger allocation structures
         let codeUpdates = {};
         codeUpdates['currentClaims'] = (codeData.currentClaims || 0) + 1;
         codeUpdates[`claimed_users/${uid}`] = {
@@ -423,7 +415,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if(codeInput) codeInput.value = '';
     }
 
-    // Account Profile Metadata Changes Synchronizer
     window.saveProfileChanges = function() {
         const user = auth.currentUser;
         if (!user || !userProfile) return;
@@ -448,10 +439,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // Secure Account Sign-out Routines
+    // RESTORED: Secure Account Sign-out to clear Session Storage
     window.secureLogout = function() {
         if (confirm("Clear local cache and close active storage network pipeline?")) {
-            localStorage.clear(); // Changes to local persistent memory wipeouts
+            sessionStorage.clear(); // Reverted back to the secure sessionStorage
             auth.signOut().then(() => window.location.replace('login.html'));
         }
     };

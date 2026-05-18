@@ -8,7 +8,7 @@
     
     <script>
         // Only accounts marked as 'owner' can maintain persistence on this dashboard layer
-        const activeRole = localStorage.getItem('mvx_role');
+        const activeRole = sessionStorage.getItem('mvx_role');
         if (activeRole !== 'owner') {
             window.location.replace('index.html');
         }
@@ -228,7 +228,6 @@
     <script>
         const databaseRef = firebase.database();
 
-        // 1. Control Panel Navigation Manager
         function switchAdminPanelSection(panelId, btnElement) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.data-panel').forEach(panel => panel.classList.remove('active'));
@@ -237,7 +236,6 @@
             document.getElementById(panelId + 'Panel').classList.add('active');
         }
 
-        // Handle dynamic placeholder labelling switches inside reward settings
         function adjustVoucherRewardPlaceholderText(value) {
             const label = document.getElementById('rewardValueLabel');
             const input = document.getElementById('vValue');
@@ -425,8 +423,8 @@
 
             let html = '';
             let reportsArr = [];
-            snapshot.forEach(child => reportsArr.push({id: child.key, ...child.val()}));
-            reportsArr.reverse(); // Newest first
+            snapshot.forEach(child => rreportsArr.push({id: child.key, ...child.val()}));
+            reportsArr.reverse();
 
             reportsArr.forEach(rpt => {
                 html += `
