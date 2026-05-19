@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let currentUser = null;
     let userProfile = null;
-    let activeContentType = 'mod_app'; 
+    let activeContentType = 'mod_app'; // UPDATE: Default tab set to 'mod_app' as requested
     let activeFilterType = 'all';    
 
     const IMGBB_API_KEY = "820eb9aa6a57f863045a52c1929efc9c"; 
@@ -42,8 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             runSystemAutoApproveEngine();
             listenForLiveSystemNotifications();
-            loadUserUploadedApps(); // Load user's uploaded apps
-            loadCoinHistory(); // Load coin history
         }
     });
 
@@ -130,9 +128,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="app-card" onclick="window.location.href='details.html?id=${app.id}'">
                             <span class="badge ${badgeClass}">${priceLabel}</span>
                             <img src="${app.logoUrl}" class="app-icon-large" loading="lazy" onerror="this.src='https://via.placeholder.com/75/121212/00e6b8?text=FILE'">
-                            <div class="app-info-list">
-                                <h3 class="app-title-list" style="white-space: normal; word-break: break-word;">${app.appName}</h3>
-                                <div class="app-dev-list">${app.uploaderName || "Developer"} • ${app.size || "0 MB"}</div>
+                            <div class="app-info-list" style="width: 100%; word-wrap: break-word; white-space: normal;">
+                                <h3 class="app-title-list" style="white-space: normal; overflow: visible; text-overflow: unset; line-height: 1.3; font-size: 17px;">${app.appName}</h3>
+                                <div class="app-dev-list">${app.developerName || app.uploaderName || "Developer"} • ${app.size || "0 MB"}</div>
                                 <div class="app-meta-list">
                                     <span style="color:var(--primary); font-weight:700;"><i class="fas fa-arrow-alt-circle-down"></i> ${app.downloads || 0}</span>
                                     <span>v${app.version || "1.0"}</span>
@@ -203,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let uploadedScreenshotsList = [];
 
     // ==========================================================================
-    // 6. MASTER PLAY STORE APPLICATION PUBLISH MODAL FORM LAYOUT
+    // 6. MASTER PLAY STORE APPLICATION PUBLISH MODAL FORM LAYOUT (CLEAN UI)
     // ==========================================================================
     window.openUploadModal = function() {
         if (!userProfile) return;
@@ -235,6 +233,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     <label class="modal-label">App Name</label>
                     <input type="text" id="pName" class="play-input" placeholder="Enter app name">
 
+                    <label class="modal-label">Developer Name</label>
+                    <input type="text" id="pDevName" class="play-input" placeholder="e.g. Tausif Modz V3">
+
                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
                         <div>
                             <label class="modal-label">Version</label>
@@ -250,8 +251,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div>
                             <label class="modal-label">Select Tab</label>
                             <select id="pType" class="play-input">
+                                <option value="mod_app">Mod App Tab</option>
                                 <option value="files">Files Tab</option>
-                                <option value="mod_app" selected>Mod App Tab</option>
                             </select>
                         </div>
                         <div>
@@ -487,6 +488,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================================================
     window.commitPackageToPendingDatabaseNode = function() {
         const name = document.getElementById('pName').value.trim();
+        const devName = document.getElementById('pDevName').value.trim(); // UPDATE: Grab Developer Name
         const mainLink = document.getElementById('pMainLink').value.trim();
         const logoData = document.getElementById('logoUrlOutput').value.trim();
         const isTrendingChecked = document.getElementById('pTrendingCheck').checked;
@@ -518,6 +520,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const transactionalPackagePayload = {
             appName: name,
+            developerName: devName || userProfile.name || "Unknown Developer", // UPDATE: Store Developer Name explicitly
             version: document.getElementById('pVer').value.trim() || "1.0",
             size: document.getElementById('pSize').value.trim() || "0 MB",
             appType: document.getElementById('pType').value,
@@ -558,7 +561,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // ==========================================================================
-    // 9. LIVE BROADCAST INBOX CHANNEL SYNCHRONIZER
+    // 9. LIVE BROADCAST INBOX CHANNEL SYNCHRONIZER (WITH LINK CLICK LOGIC)
     // ==========================================================================
     window.clearLocalNotifications = function() {
         document.getElementById('notificationInboxDisplay').innerHTML = `<div class="empty-msg" style="text-align:center; color:var(--text-secondary); padding:40px;"><i class="fas fa-trash-alt" style="font-size:30px; margin-bottom:10px;"></i><br>Inbox cleared locally.</div>`;
@@ -615,7 +618,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================================================
-    // 10. AUTOMATED APP DEPLOYMENT & AUTO-NOTIFICATION BOT
+    // 10. AUTOMATED APP DEPLOYMENT & AUTO-NOTIFICATION BOT (CRON SIMULATOR)
     // ==========================================================================
     function runSystemAutoApproveEngine() {
         setInterval(() => {
@@ -642,7 +645,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                         type: "normal",
                                         timeString: timeStr,
                                         sender: "System Bot",
-                                        link: `details.html?id=${child.key}`,
+                                        link: `details.html?id=${child.key}`, 
                                         timestamp: firebase.database.ServerValue.TIMESTAMP
                                     });
                                 }
@@ -658,121 +661,116 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================================================
-    // 11. MY UPLOADS - VIEW, EDIT, DELETE USER'S OWN APPS
+    // NEW: USER PROFILE DASHBOARD EXTENSIONS (IMGBB AVATAR & MY UPLOADS TRACKER)
     // ==========================================================================
-    window.loadUserUploadedApps = function() {
-        const container = document.getElementById('myUploadsListContainer');
-        if (!container) return;
-        
-        if (!currentUser) {
-            container.innerHTML = `<div style="text-align:center; padding:30px;"><p>Please login to view your apps.</p></div>`;
-            return;
+    
+    // ImgBB User Avatar Selector Stream Listener
+    document.body.addEventListener('change', (e) => {
+        if (e.target && e.target.id === 'userAvatarFile') {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const status = document.getElementById('userAvatarStatus');
+            const preview = document.getElementById('editPreviewAvatar');
+            const urlInput = document.getElementById('editAvatarInput');
+
+            if (status) { status.innerText = "Uploading to ImgBB Server..."; status.style.color = "var(--warning)"; }
+
+            const formData = new FormData();
+            formData.append("image", file);
+
+            fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                method: "POST",
+                body: formData
+            })
+            .then(res => res.json())
+            .then(json => {
+                if (json.success) {
+                    urlInput.value = json.data.url;
+                    if (preview) preview.src = json.data.url;
+                    if (status) { status.innerText = "Avatar Synced!"; status.style.color = "var(--success)"; }
+                } else {
+                    if (status) { status.innerText = "Upload failed."; status.style.color = "var(--danger)"; }
+                }
+            })
+            .catch(() => {
+                if (status) { status.innerText = "Network Error."; status.style.color = "var(--danger)"; }
+            });
         }
+    });
 
-        container.innerHTML = `<div style="text-align:center; padding:30px;"><i class="fas fa-spinner fa-spin" style="font-size:24px;"></i><p>Loading your apps...</p></div>`;
-
-        // Query both pending and approved apps uploaded by this user
-        const userUid = currentUser.uid;
-        let allUserApps = [];
-
-        // Get pending apps
-        db.ref('pending_apps').orderByChild('uploaderUid').equalTo(userUid).once('value').then((snapshot) => {
-            if (snapshot.exists()) {
-                snapshot.forEach((child) => {
-                    allUserApps.push({ id: child.key, ...child.val(), status: 'pending' });
-                });
-            }
-            
-            // Get approved apps
-            db.ref('store_apps').orderByChild('uploaderUid').equalTo(userUid).once('value').then((snapshot2) => {
-                if (snapshot2.exists()) {
-                    snapshot2.forEach((child) => {
-                        allUserApps.push({ id: child.key, ...child.val(), status: 'approved' });
+    // Profile Settings View Initializer Bypass Override
+    window.openProfileQuickSettings = function() {
+        if (typeof window.isMasterTimerActive !== 'undefined' && window.isMasterTimerActive) return;
+        const modal = document.getElementById('profileEditModal');
+        if (modal) {
+            modal.classList.add('active');
+            if (userProfile) {
+                if (document.getElementById('editNameInput')) document.getElementById('editNameInput').value = userProfile.name || "";
+                if (document.getElementById('editAvatarInput')) document.getElementById('editAvatarInput').value = userProfile.avatarUrl || "";
+                if (document.getElementById('editPreviewAvatar')) document.getElementById('editPreviewAvatar').src = userProfile.avatarUrl || "";
+                if (userProfile.role === 'owner' && document.getElementById('ownerLogoInput')) {
+                    db.ref('settings/storeLogo').once('value').then(snap => {
+                        if (snap.exists()) document.getElementById('ownerLogoInput').value = snap.val();
                     });
                 }
-                
-                if (allUserApps.length === 0) {
-                    container.innerHTML = `<div style="text-align:center; padding:30px;"><i class="fas fa-cloud-upload-alt" style="font-size:40px; opacity:0.5;"></i><p>You haven't uploaded any apps yet.</p></div>`;
-                    return;
-                }
-                
-                let html = '';
-                allUserApps.reverse().forEach((app) => {
-                    const statusBadge = app.status === 'pending' ? '<span style="background:rgba(255,165,0,0.2); color:var(--warning); padding:2px 8px; border-radius:4px; font-size:10px;">Pending</span>' : '<span style="background:rgba(0,230,184,0.2); color:var(--success); padding:2px 8px; border-radius:4px; font-size:10px;">Live</span>';
-                    
-                    html += `
-                        <div class="myapp-card">
-                            <img src="${app.logoUrl}" class="myapp-icon" onerror="this.src='https://via.placeholder.com/50/121212/00e6b8?text=APP'">
-                            <div class="myapp-info">
-                                <div class="myapp-title">${app.appName}</div>
-                                <div class="myapp-meta">Version ${app.version} • ${app.size} • ${statusBadge}</div>
-                            </div>
-                            <div class="myapp-actions">
-                                <button class="myapp-btn myapp-edit" onclick="editUserApp('${app.id}', '${app.status}')"><i class="fas fa-edit"></i> Edit</button>
-                                <button class="myapp-btn myapp-delete" onclick="deleteUserApp('${app.id}', '${app.status}', '${app.appName.replace(/'/g, "\\'")}')"><i class="fas fa-trash"></i> Delete</button>
-                            </div>
-                        </div>
-                    `;
+            }
+            if (typeof switchUserDashboardTab === 'function') switchUserDashboardTab('settings');
+        }
+    };
+
+    // My Uploads Fetch and Generator Engine
+    window.fetchMyUploadedApps = function() {
+        const container = document.getElementById('myUploadsContainer');
+        if (!container || !currentUser) return;
+
+        container.innerHTML = `<div style="text-align:center; padding:30px;"><i class="fas fa-circle-notch fa-spin" style="color:var(--primary); font-size:24px;"></i><p style="margin-top:10px;">Scanning your ecosystem packages...</p></div>`;
+
+        let html = '';
+        Promise.all([
+            db.ref('store_apps').once('value'),
+            db.ref('pending_apps').once('value')
+        ]).then(([storeSnap, pendingSnap]) => {
+            let userApps = [];
+
+            if (storeSnap.exists()) {
+                storeSnap.forEach(child => {
+                    let app = child.val();
+                    if (app.uploaderUid === currentUser.uid) {
+                        userApps.push({ id: child.key, node: 'store_apps', ...app });
+                    }
                 });
-                container.innerHTML = html;
-            });
-        });
-    };
+            }
 
-    window.editUserApp = function(appId, status) {
-        // Open edit modal - can be implemented similarly to upload modal but with pre-filled data
-        alert(`Edit feature for ${appId} will open edit modal. This can be implemented similarly to upload modal.`);
-    };
+            if (pendingSnap.exists()) {
+                pendingSnap.forEach(child => {
+                    let app = child.val();
+                    if (app.uploaderUid === currentUser.uid) {
+                        userApps.push({ id: child.key, node: 'pending_apps', ...app });
+                    }
+                });
+            }
 
-    window.deleteUserApp = function(appId, status, appName) {
-        if (confirm(`Are you sure you want to delete "${appName}"? This action cannot be undone.`)) {
-            const path = status === 'pending' ? `pending_apps/${appId}` : `store_apps/${appId}`;
-            db.ref(path).remove().then(() => {
-                alert(`"${appName}" has been deleted successfully.`);
-                loadUserUploadedApps(); // Refresh the list
-            }).catch((err) => {
-                alert("Error deleting app: " + err.message);
-            });
-        }
-    };
-
-    // ==========================================================================
-    // 12. COIN HISTORY - TRACK COIN TRANSACTIONS
-    // ==========================================================================
-    window.loadCoinHistory = function() {
-        const container = document.getElementById('coinHistoryListContainer');
-        if (!container) return;
-        
-        if (!currentUser) {
-            container.innerHTML = `<div style="text-align:center; padding:30px;"><p>Please login to view coin history.</p></div>`;
-            return;
-        }
-
-        container.innerHTML = `<div style="text-align:center; padding:30px;"><i class="fas fa-spinner fa-spin" style="font-size:24px;"></i><p>Loading history...</p></div>`;
-
-        db.ref(`coin_history/${currentUser.uid}`).orderByChild('timestamp').once('value').then((snapshot) => {
-            if (!snapshot.exists()) {
-                container.innerHTML = `<div style="text-align:center; padding:30px;"><i class="fas fa-coins" style="font-size:40px; opacity:0.5;"></i><p>No coin transactions yet.</p></div>`;
+            if (userApps.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-dim);"><i class="fas fa-box-open" style="font-size:35px; margin-bottom:10px; opacity:0.5;"></i><p>You have not published any package blocks yet.</p></div>`;
                 return;
             }
 
-            let history = [];
-            snapshot.forEach((child) => {
-                history.push({ id: child.key, ...child.val() });
-            });
-            history.reverse();
-
-            let html = '';
-            history.forEach((item) => {
-                const amountClass = item.amount > 0 ? 'style="color:var(--success);"' : 'style="color:var(--danger);"';
-                const amountSign = item.amount > 0 ? `+${item.amount}` : `${item.amount}`;
-                const date = item.timestamp ? new Date(item.timestamp).toLocaleString() : 'Unknown date';
+            userApps.reverse().forEach(app => {
+                const isLive = app.node === 'store_apps';
+                const statusBadge = isLive ? `<span style="color:var(--success); font-size:10px; font-weight:bold; background:rgba(46,213,115,0.1); padding:2px 6px; border-radius:4px; border:1px solid rgba(46,213,115,0.2);">Live Store</span>` : `<span style="color:var(--warning); font-size:10px; font-weight:bold; background:rgba(255,165,0,0.1); padding:2px 6px; border-radius:4px; border:1px solid rgba(255,165,0,0.2);">Pending Review</span>`;
                 
                 html += `
-                    <div class="history-card">
-                        <div class="history-amount" ${amountClass}>${amountSign} Coins</div>
-                        <div class="history-reason">${item.reason || 'Transaction'}</div>
-                        <div class="history-date">${date}</div>
+                    <div style="display:flex; align-items:center; gap:12px; background:rgba(0,0,0,0.2); margin-bottom:12px; padding:12px; border-radius:12px; border:1px solid var(--border-glass);">
+                        <img src="${app.logoUrl}" style="width:48px; height:48px; border-radius:10px; object-fit:cover; border:1px solid var(--border-glass);">
+                        <div style="flex:1; overflow:hidden;">
+                            <h4 style="font-size:14px; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:4px;">${app.appName}</h4>
+                            <p style="font-size:12px; color:var(--text-dim); display:flex; align-items:center; gap:8px;">v${app.version} • ${statusBadge}</p>
+                        </div>
+                        <div style="display:flex; gap:8px;">
+                            <button style="background:rgba(0,168,255,0.1); color:var(--info); border:none; width:35px; height:35px; border-radius:8px; cursor:pointer;" onclick="window.openUserAppEdit('${app.id}', '${app.node}')"><i class="fas fa-edit"></i></button>
+                            <button style="background:rgba(255,71,87,0.1); color:var(--danger); border:none; width:35px; height:35px; border-radius:8px; cursor:pointer;" onclick="window.deleteUserApp('${app.id}', '${app.node}')"><i class="fas fa-trash-alt"></i></button>
+                        </div>
                     </div>
                 `;
             });
@@ -780,13 +778,61 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // Function to add coin history entry
-    window.addCoinHistory = function(uid, amount, reason) {
-        db.ref(`coin_history/${uid}`).push({
-            amount: amount,
-            reason: reason,
-            timestamp: firebase.database.ServerValue.TIMESTAMP
+    window.openUserAppEdit = function(appId, node) {
+        db.ref(`${node}/${appId}`).once('value').then(snap => {
+            if (!snap.exists()) return;
+            const app = snap.val();
+            
+            document.getElementById('euAppId').value = appId;
+            document.getElementById('euAppStatus').value = node;
+            document.getElementById('euName').value = app.appName || "";
+            document.getElementById('euVer').value = app.version || "";
+            document.getElementById('euSize').value = app.size || "";
+            document.getElementById('euMainLink').value = app.downloadUrl || "";
+            document.getElementById('euDescription').value = app.description || "";
+            
+            document.getElementById('userAppEditModal').classList.add('active');
         });
+    };
+
+    window.submitUserAppUpdate = function() {
+        const appId = document.getElementById('euAppId').value;
+        const node = document.getElementById('euAppStatus').value;
+        const name = document.getElementById('euName').value.trim();
+        const ver = document.getElementById('euVer').value.trim();
+        const size = document.getElementById('euSize').value.trim();
+        const link = document.getElementById('euMainLink').value.trim();
+        const desc = document.getElementById('euDescription').value.trim();
+
+        if (!name || !link) {
+            alert("App Name and Download Link are required parameters.");
+            return;
+        }
+
+        let updates = {
+            appName: name,
+            version: ver || "1.0",
+            size: size || "0 MB",
+            downloadUrl: link,
+            description: desc || "No description provided."
+        };
+
+        db.ref(`${node}/${appId}`).update(updates).then(() => {
+            alert("Application Package Synchronized Successfully!");
+            document.getElementById('userAppEditModal').classList.remove('active');
+            window.fetchMyUploadedApps();
+            if (typeof window.loadStoreFeed === 'function') window.loadStoreFeed();
+        });
+    };
+
+    window.deleteUserApp = function(appId, node) {
+        if (confirm("DANGER: Are you sure you want to permanently wipe this application block registry from the master server?")) {
+            db.ref(`${node}/${appId}`).remove().then(() => {
+                alert("Wipe lifecycle transaction completed.");
+                window.fetchMyUploadedApps();
+                if (typeof window.loadStoreFeed === 'function') window.loadStoreFeed();
+            });
+        }
     };
 
 });

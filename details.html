@@ -19,10 +19,12 @@
     <link rel="stylesheet" href="style.css">
 
     <style>
+        /* Details Page Specific Premium Extensions */
         .details-header { display: flex; gap: 20px; align-items: center; margin-bottom: 25px; }
-        .details-logo { width: 90px; height: 90px; border-radius: 20px; object-fit: cover; border: 1px solid var(--border-color); }
+        .details-logo { width: 90px; height: 90px; border-radius: 20px; object-fit: cover; border: 1px solid var(--border-color); flex-shrink: 0; }
         .details-meta-box { flex: 1; overflow: hidden; }
-        .details-title { font-family: var(--font-header); font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 5px; white-space: normal; word-break: break-word; line-height: 1.3; }
+        /* UPDATE: Title Wrap */
+        .details-title { font-family: var(--font-header); font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 5px; white-space: normal; overflow: visible; text-overflow: unset; line-height: 1.2; }
         .details-dev { font-size: 14px; color: var(--primary); font-weight: 600; }
         
         .stats-row { display: flex; justify-content: space-between; background: var(--bg-surface); border: 1px solid var(--border-color); padding: 15px; border-radius: 14px; margin-bottom: 25px; text-align: center; }
@@ -43,15 +45,12 @@
         .back-circle-btn { width: 44px; height: 44px; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; cursor: pointer; transition: 0.2s; }
         .back-circle-btn:hover { border-color: var(--primary); color: var(--primary); }
 
+        /* Interactive Rating Stars Area */
         .user-rating-input-zone { background: var(--bg-surface); border: 1px solid var(--border-color); padding: 15px; border-radius: 14px; margin-bottom: 25px; text-align: center; }
         .user-rating-input-zone h4 { font-family: var(--font-header); margin-bottom: 8px; font-size: 16px; color: #fff; }
         .rating-stars-input-container { display: flex; justify-content: center; gap: 8px; font-size: 24px; color: rgba(255,255,255,0.1); cursor: pointer; }
         .rating-stars-input-container i.active { color: var(--warning); }
-        
-        .coin-wallet-box { background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,215,0,0.05)); border: 1px solid rgba(255,215,0,0.3); border-radius: 16px; padding: 15px 20px; margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between; }
-        .coin-wallet-box span { font-size: 14px; color: var(--text-secondary); }
-        .coin-wallet-box strong { font-size: 24px; color: var(--warning); font-family: var(--font-tech); }
-        .coin-wallet-box i { font-size: 28px; color: var(--warning); }
+        .rating-confirm-btn { background: var(--primary); color: #000; border: none; padding: 8px 20px; border-radius: 8px; font-family: var(--font-header); font-weight: 800; margin-top: 15px; cursor: pointer; display: none; }
     </style>
 </head>
 <body>
@@ -78,12 +77,6 @@
             </div>
         </div>
 
-        <!-- Coin Wallet Box -->
-        <div class="coin-wallet-box">
-            <div><i class="fas fa-coins"></i> <span>Your Balance</span></div>
-            <div><strong id="walletCoinDisplay">0</strong> <span style="font-size:12px;">MVX Coins</span></div>
-        </div>
-
         <div class="stats-row">
             <div class="stat-item rating-interactive" onclick="toggleRatingPercentageBreakdownBlock()">
                 <div class="stat-val" id="appDetailsRating">0.0 <i class="fas fa-star" style="color:var(--warning); font-size:13px;"></i></div>
@@ -107,21 +100,6 @@
             <div class="rating-row"><div class="rating-star-lbl">1 Star</div><div class="rating-bar-bg"><div class="rating-bar-fill" id="rbFill1"></div></div></div>
         </div>
 
-        <div class="user-rating-input-zone">
-            <h4>Rate this application</h4>
-            <div class="rating-stars-input-container" id="interactiveStarsSubmissionTrack">
-                <i class="fas fa-star" data-star="1" onclick="submitUserStarRatingValue(1)"></i>
-                <i class="fas fa-star" data-star="2" onclick="submitUserStarRatingValue(2)"></i>
-                <i class="fas fa-star" data-star="3" onclick="submitUserStarRatingValue(3)"></i>
-                <i class="fas fa-star" data-star="4" onclick="submitUserStarRatingValue(4)"></i>
-                <i class="fas fa-star" data-star="5" onclick="submitUserStarRatingValue(5)"></i>
-            </div>
-        </div>
-
-        <div style="margin-bottom: 30px;">
-            <button class="play-btn" id="masterInstallActionButton" onclick="processMasterActionRouting()">INSTALL</button>
-        </div>
-
         <div class="play-section-title" id="galleryHeadingTitle" style="display:none;">Gallery Screenshots</div>
         <div class="screenshot-gallery" id="appDetailsScreenshotGallery"></div>
 
@@ -133,6 +111,22 @@
         <div class="extra-links-box" id="extraLinksMainWrapper" style="display: none;">
             <h3>Alternative Action Framework Links</h3>
             <div id="extraLinksInjectionsContainer"></div>
+        </div>
+
+        <div class="user-rating-input-zone">
+            <h4>Rate this application</h4>
+            <div class="rating-stars-input-container" id="interactiveStarsSubmissionTrack">
+                <i class="fas fa-star" data-star="1" onclick="selectUserStarRatingValue(1)"></i>
+                <i class="fas fa-star" data-star="2" onclick="selectUserStarRatingValue(2)"></i>
+                <i class="fas fa-star" data-star="3" onclick="selectUserStarRatingValue(3)"></i>
+                <i class="fas fa-star" data-star="4" onclick="selectUserStarRatingValue(4)"></i>
+                <i class="fas fa-star" data-star="5" onclick="selectUserStarRatingValue(5)"></i>
+            </div>
+            <button id="btnConfirmRating" class="rating-confirm-btn" onclick="confirmAndSubmitUserRating()">SUBMIT RATING</button>
+        </div>
+
+        <div style="margin-bottom: 30px; margin-top: 15px;">
+            <button class="play-btn" id="masterInstallActionButton" onclick="processMasterActionRouting()">INSTALL</button>
         </div>
 
     </div>
@@ -212,6 +206,7 @@
         let targetApplicationObject = null;
         let loggedInUserProfileCache = null;
         let activeUserIdToken = null;
+        let currentSelectedStarRating = 0; // UPDATE: Track selected rating before submitting
 
         if (!targetAppId) {
             window.location.replace('index.html');
@@ -247,6 +242,9 @@
             window.open(secureUrl, '_blank');
         }
 
+        // ==========================================================================
+        // AUTH CONTEXT LIFECYCLE SYNC
+        // ==========================================================================
         authorization.onAuthStateChanged((user) => {
             if (user) {
                 activeUserIdToken = user.uid;
@@ -254,7 +252,6 @@
                 database.ref(`users/${user.uid}`).on('value', (snap) => {
                     if (snap.exists()) {
                         loggedInUserProfileCache = snap.val();
-                        document.getElementById('walletCoinDisplay').innerText = loggedInUserProfileCache.coins || 0;
                         fetchApplicationMetaDetailsNodeLogs();
                     }
                 });
@@ -272,12 +269,16 @@
             database.ref(`store_apps/${targetAppId}/views`).transaction((v) => (v || 0) + 1);
         }
 
+        // ==========================================================================
+        // RUN DYNAMIC INTERFACE COMPONENT LAYOUT RENDERING ENGINE
+        // ==========================================================================
         function renderApplicationDetailsUserInterfaceGrid() {
             const app = targetApplicationObject;
 
             document.getElementById('appDetailsLogo').src = app.logoUrl;
             document.getElementById('appDetailsTitle').innerText = app.appName;
-            document.getElementById('appDetailsDev').innerHTML = `<i class="fas fa-code-branch"></i> ${app.uploaderName || "Authorized Developer"}`;
+            // UPDATE: Include explicitly added developer name
+            document.getElementById('appDetailsDev').innerText = app.developerName || app.uploaderName || "Authorized Developer";
             document.getElementById('appDetailsSize').innerText = app.size || "0 MB";
             document.getElementById('appDetailsDownloads').innerText = app.downloads || 0;
             document.getElementById('appDetailsDescription').innerText = app.description;
@@ -288,6 +289,7 @@
             if(app.voted_users && app.voted_users[activeUserIdToken]) {
                 const legacyStarCount = app.voted_users[activeUserIdToken];
                 highlightInteractiveRatingStarsTrackBox(legacyStarCount);
+                document.getElementById('btnConfirmRating').style.display = 'none'; // Hide submit button if already voted
             }
 
             const gallery = document.getElementById('appDetailsScreenshotGallery');
@@ -301,7 +303,7 @@
                     img.src = url;
                     img.className = 'screenshot-img';
                     img.loading = 'lazy';
-                    img.onclick = () => launchScreenshotFullZoomLightbox(url);
+                    img.onclick = () => launchScreenshotFullZoomLightbox(url); 
                     gallery.appendChild(img);
                 });
             } else {
@@ -358,6 +360,20 @@
             }
         }
 
+        // ==========================================================================
+        // UPDATE: NEW INTERACTIVE RATINGS DISPATCH PROTOCOLS WITH BUTTON CONFIRMATION
+        // ==========================================================================
+        window.selectUserStarRatingValue = function(count) {
+            const app = targetApplicationObject;
+            if(app.voted_users && app.voted_users[activeUserIdToken]) {
+                alert("Rating Locked: You have already submitted stars rating evaluation inside this file registry node.");
+                return;
+            }
+            currentSelectedStarRating = count;
+            highlightInteractiveRatingStarsTrackBox(count);
+            document.getElementById('btnConfirmRating').style.display = 'inline-block';
+        }
+
         function highlightInteractiveRatingStarsTrackBox(count) {
             document.querySelectorAll('#interactiveStarsSubmissionTrack i').forEach(star => {
                 let val = parseInt(star.getAttribute('data-star'));
@@ -366,18 +382,24 @@
             });
         }
 
-        function submitUserStarRatingValue(starCount) {
-            const app = targetApplicationObject;
-            
-            if(app.voted_users && app.voted_users[activeUserIdToken]) {
-                alert("Rating Locked: You have already submitted stars rating evaluation inside this file registry node.");
+        window.confirmAndSubmitUserRating = function() {
+            if(currentSelectedStarRating === 0) {
+                alert("Please select a star rating first.");
                 return;
             }
 
-            highlightInteractiveRatingStarsTrackBox(starCount);
+            const app = targetApplicationObject;
+            if(app.voted_users && app.voted_users[activeUserIdToken]) {
+                alert("Rating Locked: You have already submitted stars rating evaluation inside this file registry node.");
+                document.getElementById('btnConfirmRating').style.display = 'none';
+                return;
+            }
 
-            const appRef = database.ref(`store_apps/${targetAppId}`);
-            appRef.runTransaction((currentApp) => {
+            document.getElementById('btnConfirmRating').innerText = "SUBMITTING...";
+            document.getElementById('btnConfirmRating').disabled = true;
+
+            const targetRef = database.ref(`store_apps/${targetAppId}`);
+            targetRef.runTransaction((currentApp) => {
                 if (currentApp) {
                     if (!currentApp.ratingDistribution) {
                         currentApp.ratingDistribution = {1:0, 2:0, 3:0, 4:0, 5:0};
@@ -386,8 +408,8 @@
                         currentApp.voted_users = {};
                     }
 
-                    currentApp.voted_users[activeUserIdToken] = starCount;
-                    currentApp.ratingDistribution[starCount] = (currentApp.ratingDistribution[starCount] || 0) + 1;
+                    currentApp.voted_users[activeUserIdToken] = currentSelectedStarRating;
+                    currentApp.ratingDistribution[currentSelectedStarRating] = (currentApp.ratingDistribution[currentSelectedStarRating] || 0) + 1;
                     currentApp.totalRatingsCount = (currentApp.totalRatingsCount || 0) + 1;
 
                     let sum = 0;
@@ -399,9 +421,19 @@
                 return currentApp;
             }).then(() => {
                 alert("Thank you! Your ratings metrics have been appended across server mappings.");
+                document.getElementById('btnConfirmRating').style.display = 'none';
+                document.getElementById('btnConfirmRating').innerText = "SUBMIT RATING";
+                document.getElementById('btnConfirmRating').disabled = false;
+            }).catch(err => {
+                alert("Error submitting rating: " + err.message);
+                document.getElementById('btnConfirmRating').innerText = "SUBMIT RATING";
+                document.getElementById('btnConfirmRating').disabled = false;
             });
         }
 
+        // ==========================================================================
+        // STATE RE-EVALUATION MATRIX (BUTTON ALWAYS SAYS INSTALL OR UNLOCK)
+        // ==========================================================================
         function evaluateApplicationStateLicenseOwnershipMatrix() {
             const app = targetApplicationObject;
             const btn = document.getElementById('masterInstallActionButton');
@@ -463,14 +495,9 @@
             updates[`users/${activeUserIdToken}/unlocked_apps/${targetAppId}`] = true;
 
             database.ref().update(updates).then(() => {
-                // Add coin history
-                if (typeof window.addCoinHistory === 'function') {
-                    window.addCoinHistory(activeUserIdToken, -app.coinPrice, `Unlocked premium app: ${app.appName}`);
-                }
                 alert("Transaction Cleared! Premium package license allocated.");
                 closeDetailsSystemModals('coinUnlockTransactionModal');
                 evaluateApplicationStateLicenseOwnershipMatrix();
-                document.getElementById('walletCoinDisplay').innerText = updatingUserBalanceDelta;
             });
         };
 
@@ -483,7 +510,7 @@
                     alert("Access Token Authorized! Password sequence validated.");
                     closeDetailsSystemModals('passwordProtectionGateModal');
                     evaluateApplicationStateLicenseOwnershipMatrix();
-                    executeSecureDownloadRegistryNodeTransaction();
+                    executeSecureDownloadRegistryNodeTransaction(); 
                 });
             } else {
                 alert("Security Interrupt: Key sequence mismatch failed verification.");

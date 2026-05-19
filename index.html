@@ -18,6 +18,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
     <link rel="stylesheet" href="style.css">
+    <style>
+        .dashboard-tab {
+            transition: all 0.3s ease;
+        }
+        .dashboard-tab:hover {
+            background: rgba(0, 230, 184, 0.05) !important;
+        }
+    </style>
 </head>
 <body>
 
@@ -38,32 +46,7 @@
                  onmouseleave="clearMasterLockTimer()" 
                  ontouchstart="startMasterLockTimer()" 
                  ontouchend="clearMasterLockTimer()" 
-                 onclick="toggleProfileMenu()">
-        </div>
-        
-        <!-- Profile Dropdown Menu -->
-        <div class="profile-dropdown" id="profileDropdownMenu">
-            <div class="dropdown-header" id="dropdownUserInfo">
-                <img src="" id="dropdownAvatar" class="dropdown-avatar">
-                <div class="dropdown-user-text">
-                    <h4 id="dropdownName">Loading...</h4>
-                    <p id="dropdownEmail">user@example.com</p>
-                </div>
-            </div>
-            <div class="dropdown-divider"></div>
-            <div class="dropdown-item" onclick="openProfileSettingsModal()">
-                <i class="fas fa-user-edit"></i> <span id="lblEditProfile">Edit Profile</span>
-            </div>
-            <div class="dropdown-item" onclick="openMyUploadsModal()">
-                <i class="fas fa-cloud-upload-alt"></i> <span id="lblMyUploads">My Uploads</span>
-            </div>
-            <div class="dropdown-divider"></div>
-            <div class="dropdown-item" onclick="openCoinHistoryModal()">
-                <i class="fas fa-history"></i> <span id="lblCoinHistory">Coin History</span>
-            </div>
-            <div class="dropdown-item" onclick="secureLogout()" style="color: var(--danger);">
-                <i class="fas fa-sign-out-alt"></i> <span id="lblLogout">Logout</span>
-            </div>
+                 onclick="openProfileQuickSettings()">
         </div>
     </header>
 
@@ -75,7 +58,7 @@
             <button class="cat-chip" id="btnCatPremium" data-filter="premium">Premium Apps</button>
         </div>
 
-        <h2 class="play-section-title" id="feedSectionTitle">Recommended Mod Apps <i class="fas fa-arrow-right" style="font-size:12px; color:var(--text-secondary);"></i></h2>
+        <h2 class="play-section-title" id="feedSectionTitle">Recommended Files <i class="fas fa-arrow-right" style="font-size:12px; color:var(--text-secondary);"></i></h2>
         
         <div class="play-app-grid" id="storeAppGrid">
             <div style="text-align:center; padding: 50px; grid-column: 1/-1;">
@@ -172,13 +155,13 @@
     </main>
 
     <nav class="play-bottom-nav">
-        <div class="nav-item active" id="defaultTabBtn" onclick="switchTab('mod_app', this)">
-            <i class="fas fa-robot"></i>
-            <span id="navModApp">Mod App</span>
-        </div>
         <div class="nav-item" onclick="switchTab('files', this)">
             <i class="fas fa-folder-open"></i>
             <span id="navFiles">Files</span>
+        </div>
+        <div class="nav-item active" id="defaultTabBtn" onclick="switchTab('mod_app', this)">
+            <i class="fas fa-robot"></i>
+            <span id="navModApp">Mod App</span>
         </div>
         <div class="nav-item" onclick="switchTab('search', this)">
             <i class="fas fa-search"></i>
@@ -224,61 +207,85 @@
     </div>
 
     <div class="modal-overlay" id="profileEditModal">
-        <div class="play-modal">
+        <div class="play-modal" style="max-width: 600px; width: 95%;">
             <div class="modal-header">
-                <h3><i class="fas fa-user-edit" style="color:var(--primary);"></i> Account Settings</h3>
+                <h3><i class="fas fa-user-cog" style="color:var(--primary);"></i> User Dashboard</h3>
                 <i class="fas fa-times close-modal" onclick="closeProfileEditModal()"></i>
             </div>
+            <div class="modal-body" style="padding: 0;">
+                
+                <div style="display:flex; border-bottom: 1px solid var(--border-color);">
+                    <button class="dashboard-tab" onclick="switchUserDashboardTab('settings')" id="tabBtnSettings" style="flex:1; padding:15px; background:transparent; border:none; color:var(--primary); font-family:var(--font-header); font-size:16px; font-weight:700; cursor:pointer; border-bottom: 2px solid var(--primary);">Profile Settings</button>
+                    <button class="dashboard-tab" onclick="switchUserDashboardTab('uploads')" id="tabBtnUploads" style="flex:1; padding:15px; background:transparent; border:none; color:var(--text-secondary); font-family:var(--font-header); font-size:16px; font-weight:700; cursor:pointer; border-bottom: 2px solid transparent;">My Uploads</button>
+                </div>
+
+                <div id="dashboardSettingsView" style="padding: 25px;">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <img src="" id="editPreviewAvatar" style="width:90px; height:90px; border-radius:50%; object-fit:cover; border:3px solid var(--primary); box-shadow:var(--primary-shadow);">
+                    </div>
+                    
+                    <label class="modal-label">User Profile Name</label>
+                    <input type="text" id="editNameInput" class="play-input" placeholder="Change profile name">
+                    
+                    <label class="modal-label">Profile Picture (ImgBB Upload or URL)</label>
+                    <div style="background:rgba(0,0,0,0.2); padding:10px; border-radius:10px; border:1px solid var(--border-color); margin-bottom: 20px;">
+                        <input type="file" id="userAvatarFile" class="play-input" accept="image/*" style="padding:10px; margin-bottom:10px;">
+                        <input type="text" id="editAvatarInput" class="play-input" placeholder="Or Paste Image URL directly" style="margin-bottom:0;">
+                        <p id="userAvatarStatus" style="font-size:11px; color:var(--warning); margin-top:8px;"></p>
+                    </div>
+                    
+                    <div id="ownerLogoEditSection" style="display: none; border-top: 1px dashed var(--border-color); padding-top: 15px; margin-top: 15px;">
+                        <label class="modal-label" style="color: var(--warning);">Global Store Logo Link (Owner Only)</label>
+                        <input type="text" id="ownerLogoInput" class="play-input" placeholder="Paste new main logo URL link">
+                    </div>
+                    
+                    <button class="play-btn" style="margin-top: 10px;" onclick="saveProfileChanges()">SAVE PROFILE</button>
+                </div>
+
+                <div id="dashboardUploadsView" style="display:none; padding: 20px; max-height: 60vh; overflow-y: auto;">
+                    <div id="myUploadsContainer">
+                        <div style="text-align:center; padding: 30px; color:var(--text-secondary);">
+                            <i class="fas fa-spinner fa-spin" style="font-size:24px; color:var(--primary);"></i>
+                            <p style="margin-top:10px;">Fetching your uploads...</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="userAppEditModal">
+        <div class="play-modal" style="max-width: 550px;">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit" style="color:var(--warning);"></i> Update Application</h3>
+                <i class="fas fa-times close-modal" onclick="closeUserAppEditModal()"></i>
+            </div>
             <div class="modal-body">
-                <div style="text-align: center; margin-bottom: 20px;">
-                    <img src="" id="editPreviewAvatar" style="width:90px; height:90px; border-radius:50%; object-fit:cover; border:3px solid var(--primary); box-shadow:var(--primary-shadow);">
+                <input type="hidden" id="euAppId">
+                <input type="hidden" id="euAppStatus">
+                
+                <label class="modal-label">App Name</label>
+                <input type="text" id="euName" class="play-input">
+                
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                    <div>
+                        <label class="modal-label">Version</label>
+                        <input type="text" id="euVer" class="play-input">
+                    </div>
+                    <div>
+                        <label class="modal-label">Size</label>
+                        <input type="text" id="euSize" class="play-input">
+                    </div>
                 </div>
-                
-                <label class="modal-label">User Profile Name</label>
-                <input type="text" id="editNameInput" class="play-input" placeholder="Change profile name">
-                
-                <label class="modal-label">Custom Profile Picture (Upload to ImgBB)</label>
-                <input type="file" id="editAvatarFile" class="play-input" accept="image/*" style="padding:10px;">
-                <p id="avatarUploadStatus" style="font-size:11px; color:var(--warning); margin-top:5px;"></p>
-                
-                <div id="ownerLogoEditSection" style="display: none; border-top: 1px dashed var(--border-color); padding-top: 15px; margin-top: 15px;">
-                    <label class="modal-label" style="color: var(--warning);">Global Store Logo Link (Owner Only)</label>
-                    <input type="text" id="ownerLogoInput" class="play-input" placeholder="Paste new main logo URL link">
-                </div>
-                
-                <button class="play-btn" style="margin-top: 10px;" onclick="saveProfileChangesWithImage()">COMMIT METADATA CHANGES</button>
-            </div>
-        </div>
-    </div>
 
-    <!-- My Uploads Modal -->
-    <div class="modal-overlay" id="myUploadsModal">
-        <div class="play-modal" style="max-width: 600px;">
-            <div class="modal-header">
-                <h3><i class="fas fa-cloud-upload-alt" style="color:var(--primary);"></i> My Uploaded Apps</h3>
-                <i class="fas fa-times close-modal" onclick="closeMyUploadsModal()"></i>
-            </div>
-            <div class="modal-body" id="myUploadsListContainer">
-                <div style="text-align:center; padding:30px;">
-                    <i class="fas fa-spinner fa-spin" style="font-size:24px; color:var(--primary);"></i>
-                    <p>Loading your apps...</p>
-                </div>
-            </div>
-        </div>
-    </div>
+                <label class="modal-label">Main Download Link</label>
+                <input type="text" id="euMainLink" class="play-input">
 
-    <!-- Coin History Modal -->
-    <div class="modal-overlay" id="coinHistoryModal">
-        <div class="play-modal" style="max-width: 500px;">
-            <div class="modal-header">
-                <h3><i class="fas fa-history" style="color:var(--warning);"></i> Coin Transaction History</h3>
-                <i class="fas fa-times close-modal" onclick="closeCoinHistoryModal()"></i>
-            </div>
-            <div class="modal-body" id="coinHistoryListContainer">
-                <div style="text-align:center; padding:30px;">
-                    <i class="fas fa-spinner fa-spin" style="font-size:24px; color:var(--primary);"></i>
-                    <p>Loading history...</p>
-                </div>
+                <label class="modal-label">Description</label>
+                <textarea id="euDescription" class="play-input" style="min-height:80px; resize:vertical;"></textarea>
+                
+                <button class="play-btn" style="background:var(--warning); color:#000;" onclick="submitUserAppUpdate()">SAVE UPDATES</button>
             </div>
         </div>
     </div>
@@ -291,212 +298,78 @@
     <script src="main.js"></script>
     <script src="store-logic.js"></script>
 
-    <style>
-        /* Profile Dropdown Styles */
-        .profile-dropdown {
-            position: absolute;
-            top: 70px;
-            right: 20px;
-            width: 280px;
-            background: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            z-index: 1001;
-            display: none;
-            overflow: hidden;
-            animation: fadeIn 0.2s ease;
-        }
-        .profile-dropdown.show {
-            display: block;
-        }
-        .dropdown-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 15px;
-            background: rgba(0,0,0,0.2);
-        }
-        .dropdown-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--primary);
-        }
-        .dropdown-user-text h4 {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-        }
-        .dropdown-user-text p {
-            font-size: 11px;
-            color: var(--text-secondary);
-        }
-        .dropdown-divider {
-            height: 1px;
-            background: var(--border-color);
-            margin: 5px 0;
-        }
-        .dropdown-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 15px;
-            cursor: pointer;
-            transition: background 0.2s;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-primary);
-        }
-        .dropdown-item:hover {
-            background: var(--primary-dim);
-        }
-        .dropdown-item i {
-            width: 20px;
-            font-size: 16px;
-        }
-        
-        /* My Uploads App Card */
-        .myapp-card {
-            background: rgba(0,0,0,0.2);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .myapp-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 10px;
-            object-fit: cover;
-        }
-        .myapp-info {
-            flex: 1;
-        }
-        .myapp-title {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-        }
-        .myapp-meta {
-            font-size: 11px;
-            color: var(--text-secondary);
-        }
-        .myapp-actions {
-            display: flex;
-            gap: 8px;
-        }
-        .myapp-btn {
-            padding: 8px 12px;
-            border-radius: 8px;
-            border: none;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .myapp-edit {
-            background: rgba(0, 230, 184, 0.15);
-            color: var(--primary);
-        }
-        .myapp-delete {
-            background: rgba(255, 71, 87, 0.15);
-            color: var(--danger);
-        }
-        
-        /* Coin History Card */
-        .history-card {
-            background: rgba(0,0,0,0.2);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 12px;
-            margin-bottom: 10px;
-        }
-        .history-amount {
-            font-size: 16px;
-            font-weight: 800;
-            color: var(--warning);
-        }
-        .history-reason {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-top: 4px;
-        }
-        .history-date {
-            font-size: 10px;
-            color: var(--text-dim);
-            margin-top: 6px;
-        }
-    </style>
-
     <script>
-        // Toggle Profile Dropdown
-        function toggleProfileMenu() {
-            const dropdown = document.getElementById('profileDropdownMenu');
-            dropdown.classList.toggle('show');
-        }
-        
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(e) {
-            const dropdown = document.getElementById('profileDropdownMenu');
-            const profileBtn = document.getElementById('topProfileBtn');
-            if (dropdown && profileBtn) {
-                if (!dropdown.contains(e.target) && !profileBtn.contains(e.target)) {
-                    dropdown.classList.remove('show');
-                }
-            }
-        });
-        
-        // Open Profile Settings Modal
-        function openProfileSettingsModal() {
-            document.getElementById('profileDropdownMenu').classList.remove('show');
-            document.getElementById('profileEditModal').classList.add('active');
-            if (window.userProfile) {
-                document.getElementById('editNameInput').value = window.userProfile.name || '';
-                document.getElementById('editPreviewAvatar').src = window.userProfile.avatarUrl || '';
-            }
-        }
-        
-        // Open My Uploads Modal
-        function openMyUploadsModal() {
-            document.getElementById('profileDropdownMenu').classList.remove('show');
-            document.getElementById('myUploadsModal').classList.add('active');
-            if (typeof window.loadUserUploadedApps === 'function') {
-                window.loadUserUploadedApps();
+        function switchTab(tabName, element) {
+            document.querySelectorAll('.play-bottom-nav .nav-item').forEach(el => el.classList.remove('active'));
+            if(element) element.classList.add('active');
+
+            const feedSection = document.getElementById('mainStoreFeed');
+            const searchSection = document.getElementById('searchTabContent');
+            const notificationSection = document.getElementById('notificationTabContent');
+            const youSection = document.getElementById('youTabContent');
+
+            feedSection.style.display = 'none';
+            searchSection.style.display = 'none';
+            notificationSection.style.display = 'none';
+            youSection.style.display = 'none';
+
+            if(tabName === 'files') {
+                feedSection.style.display = 'block';
+                if(typeof window.loadStoreFeed === 'function') window.loadStoreFeed('all', 'files');
+            } else if (tabName === 'mod_app') {
+                feedSection.style.display = 'block';
+                if(typeof window.loadStoreFeed === 'function') window.loadStoreFeed('all', 'mod_app');
+            } else if (tabName === 'search') {
+                searchSection.style.display = 'block';
+            } else if (tabName === 'you') {
+                youSection.style.display = 'block';
             }
         }
-        
-        function closeMyUploadsModal() {
-            document.getElementById('myUploadsModal').classList.remove('active');
+
+        function openNotificationCenter() {
+            switchTab('none', null);
+            document.querySelectorAll('.play-bottom-nav .nav-item').forEach(el => el.classList.remove('active'));
+            document.getElementById('notificationTabContent').style.display = 'block';
+            const badge = document.getElementById('notiAlert');
+            if(badge) badge.style.display = 'none';
         }
-        
-        function openCoinHistoryModal() {
-            document.getElementById('profileDropdownMenu').classList.remove('show');
-            document.getElementById('coinHistoryModal').classList.add('active');
-            if (typeof window.loadCoinHistory === 'function') {
-                window.loadCoinHistory();
-            }
-        }
-        
-        function closeCoinHistoryModal() {
-            document.getElementById('coinHistoryModal').classList.remove('active');
-        }
-        
+
         function closeProfileEditModal() {
             document.getElementById('profileEditModal').classList.remove('active');
         }
-        
+
+        function closeUserAppEditModal() {
+            document.getElementById('userAppEditModal').classList.remove('active');
+        }
+
+        function switchUserDashboardTab(tab) {
+            document.getElementById('tabBtnSettings').style.color = 'var(--text-secondary)';
+            document.getElementById('tabBtnSettings').style.borderBottomColor = 'transparent';
+            document.getElementById('tabBtnUploads').style.color = 'var(--text-secondary)';
+            document.getElementById('tabBtnUploads').style.borderBottomColor = 'transparent';
+            
+            document.getElementById('dashboardSettingsView').style.display = 'none';
+            document.getElementById('dashboardUploadsView').style.display = 'none';
+
+            if(tab === 'settings') {
+                document.getElementById('tabBtnSettings').style.color = 'var(--primary)';
+                document.getElementById('tabBtnSettings').style.borderBottomColor = 'var(--primary)';
+                document.getElementById('dashboardSettingsView').style.display = 'block';
+            } else {
+                document.getElementById('tabBtnUploads').style.color = 'var(--primary)';
+                document.getElementById('tabBtnUploads').style.borderBottomColor = 'var(--primary)';
+                document.getElementById('dashboardUploadsView').style.display = 'block';
+                // Trigger fetch from store-logic.js
+                if(typeof window.fetchMyUploadedApps === 'function') window.fetchMyUploadedApps();
+            }
+        }
+
         function openProfileQuickSettings() {
             if (typeof window.isMasterTimerActive !== 'undefined' && window.isMasterTimerActive) {
                 return;
             }
-            openProfileSettingsModal();
+            document.getElementById('profileEditModal').classList.add('active');
+            switchUserDashboardTab('settings');
         }
     </script>
 </body>

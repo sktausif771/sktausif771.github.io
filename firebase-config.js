@@ -14,6 +14,7 @@ var firebaseConfig = {
 
 window.firebaseConfig = firebaseConfig; 
 
+// Initialize Firebase Pipeline Safely
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
@@ -21,15 +22,25 @@ if (!firebase.apps.length) {
 window.database = firebase.database();
 window.auth = firebase.auth();
 
+/* ==========================================================================
+   [FIXED] GOOGLE LOGIN FUNCTION FOR LOGIN.HTML
+   ========================================================================== */
 window.startGoogleLogin = function() {
     var provider = new firebase.auth.GoogleAuthProvider();
+    
+    // Show loading text if loader exists
     var loader = document.getElementById('systemLoader');
     if(loader) loader.style.display = 'flex';
+    
     window.auth.signInWithPopup(provider).catch(function(error) {
         if(loader) loader.style.display = 'none';
         alert("⚠️ Login Failed: " + error.message);
     });
 };
+
+/* ==========================================================================
+   DYNAMIC SIGNUP BONUS & MAINTENANCE LOCK ACCESS CONTROL SYSTEM
+   ========================================================================== */
 
 function getSafeEmailKey(email) {
     return email ? email.toLowerCase().replace(/\./g, ',') : "";
@@ -43,6 +54,7 @@ window.auth.onAuthStateChanged((user) => {
             const settings = snapshot.val() || {};
             const isMaintenanceActive = settings.maintenanceMode || false;
             const masterAdminsList = settings.masterAdmins || {};
+            
             const isWhitelistedAdmin = masterAdminsList[safeEmailKey] ? true : false;
 
             window.database.ref(`users/${user.uid}`).once('value').then((userSnap) => {
@@ -73,7 +85,7 @@ window.auth.onAuthStateChanged((user) => {
                         updates['role'] = 'owner';
                         userData.role = 'owner';
                     } 
-                    else if (!isWhitelistedAdmin && userData.role === 'owner' && user.email !== "sktausif771@gmail.com") {
+                    else if (!isWhitelistedAdmin && userData.role === 'owner' && user.email !== "sktausifhhh@gmail.com") {
                         updates['role'] = 'user';
                         userData.role = 'user';
                     }

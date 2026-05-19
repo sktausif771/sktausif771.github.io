@@ -6,7 +6,12 @@
     <meta name="theme-color" content="#0f1115">
     <title>Master Admin Terminal | MVX</title>
     
-    <!-- Owner check removed for password access -->
+    <script>
+        // Security check
+        if (sessionStorage.getItem('mvx_role') !== 'owner') {
+            window.location.replace('index.html');
+        }
+    </script>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,6 +38,7 @@
 
         body { background-color: var(--bg-dark); color: var(--text-main); padding-bottom: 50px; }
 
+        /* ==================== 1. SLEEK HEADER ==================== */
         .master-header {
             background: rgba(15, 17, 21, 0.9);
             backdrop-filter: blur(10px);
@@ -65,6 +71,7 @@
         }
         .btn-exit:hover { background: var(--danger); color: #fff; }
 
+        /* ==================== 2. QUICK STATS DASHBOARD ==================== */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -83,6 +90,7 @@
         .stat-val { font-size: 18px; font-weight: 700; font-family: 'Orbitron', sans-serif; margin-bottom: 2px; }
         .stat-lbl { font-size: 9px; color: var(--text-dim); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
 
+        /* ==================== 3. HORIZONTAL TAB MENU ==================== */
         .tab-menu-wrapper {
             padding: 0 20px;
             margin-bottom: 20px;
@@ -115,6 +123,7 @@
             box-shadow: var(--primary-glow);
         }
 
+        /* ==================== 4. DATA PANELS & CARDS ==================== */
         .data-panel { display: none; padding: 0 20px; animation: fadeUp 0.4s ease-out; }
         .data-panel.active { display: block; }
 
@@ -138,7 +147,6 @@
         .item-card:hover { border-color: rgba(255,255,255,0.1); }
         
         .item-img { width: 55px; height: 55px; border-radius: 12px; object-fit: cover; border: 1px solid var(--border-glass); flex-shrink: 0; }
-        
         .zoomable-img { cursor: zoom-in; transition: transform 0.2s; }
         .zoomable-img:hover { transform: scale(1.05); border-color: var(--primary); }
 
@@ -156,15 +164,19 @@
         .icon-trash { background: rgba(255, 71, 87, 0.1); color: var(--danger); }
         .icon-view { background: rgba(0, 168, 255, 0.1); color: var(--info); }
         .icon-gift { background: rgba(255, 159, 243, 0.1); color: var(--gift); }
+        .icon-edit { background: rgba(255, 165, 0, 0.1); color: var(--warning); }
+        
         .icon-check:hover { background: var(--success); color: #000; }
         .icon-trash:hover { background: var(--danger); color: #fff; }
         .icon-view:hover { background: var(--info); color: #fff; }
         .icon-gift:hover { background: var(--gift); color: #fff; transform: scale(1.1); }
+        .icon-edit:hover { background: var(--warning); color: #000; }
 
         .empty-state { text-align: center; padding: 50px 20px; color: var(--text-dim); }
         .empty-state i { font-size: 40px; margin-bottom: 15px; opacity: 0.5; }
         .empty-state p { font-size: 14px; font-weight: 500; }
 
+        /* ==================== 5. MODALS & FORMS ==================== */
         .glass-input {
             width: 100%; padding: 14px 15px; background: rgba(0,0,0,0.2);
             border: 1px solid var(--border-glass); border-radius: 10px;
@@ -198,12 +210,14 @@
             box-shadow: 0 10px 40px rgba(0,0,0,0.5); transform: scale(0.9);
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
+            max-height: 90vh; overflow-y: auto;
         }
         .modal-overlay.active .play-modal { transform: scale(1); }
         .modal-header {
             padding: 20px; border-bottom: 1px solid var(--border-glass);
             display: flex; justify-content: space-between; align-items: center;
             background: rgba(255,255,255,0.02);
+            position: sticky; top: 0; z-index: 10;
         }
         .modal-header h3 { font-family: 'Orbitron', sans-serif; font-size: 18px; color: #fff; display:flex; align-items:center; gap:8px;}
         .close-modal { font-size: 22px; color: var(--text-dim); cursor: pointer; }
@@ -252,58 +266,6 @@
 
         @media (max-width: 600px) {
             .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 15px 20px; }
-        }
-
-        /* User Posts Section */
-        .user-posts-section {
-            margin-top: 30px;
-            border-top: 1px solid var(--border-glass);
-            padding-top: 20px;
-        }
-        .user-posts-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 16px;
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-        .post-card {
-            background: rgba(0,0,0,0.3);
-            border: 1px solid var(--border-glass);
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .post-icon {
-            width: 45px;
-            height: 45px;
-            border-radius: 10px;
-            object-fit: cover;
-        }
-        .post-info {
-            flex: 1;
-        }
-        .post-name {
-            font-size: 14px;
-            font-weight: 700;
-            color: #fff;
-        }
-        .post-meta {
-            font-size: 11px;
-            color: var(--text-dim);
-        }
-        .post-status {
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 4px;
-            background: rgba(255,165,0,0.2);
-            color: var(--warning);
-        }
-        .post-status.approved {
-            background: rgba(0,230,184,0.2);
-            color: var(--success);
         }
     </style>
 </head>
@@ -502,6 +464,7 @@
         </div>
     </div>
 
+
     <div class="modal-overlay" id="userGiftModal">
         <div class="play-modal">
             <div class="modal-header">
@@ -538,10 +501,48 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="masterAppEditModal">
+        <div class="play-modal" style="max-width: 550px;">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit" style="color:var(--warning);"></i> Master App Editor</h3>
+                <i class="fas fa-times close-modal" onclick="document.getElementById('masterAppEditModal').classList.remove('active')"></i>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="meAppId">
+                
+                <label class="modal-label">App Name</label>
+                <input type="text" id="meName" class="glass-input">
+                
+                <label class="modal-label" style="color:var(--info);">Developer Name</label>
+                <input type="text" id="meDev" class="glass-input">
+                
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                    <div>
+                        <label class="modal-label">Version</label>
+                        <input type="text" id="meVer" class="glass-input">
+                    </div>
+                    <div>
+                        <label class="modal-label">Size</label>
+                        <input type="text" id="meSize" class="glass-input">
+                    </div>
+                </div>
+
+                <label class="modal-label">Main Download Link</label>
+                <input type="text" id="meMainLink" class="glass-input">
+
+                <label class="modal-label">Description</label>
+                <textarea id="meDescription" class="glass-input" style="min-height:80px; resize:vertical;"></textarea>
+                
+                <button class="btn-primary" style="background:var(--warning); color:#000;" onclick="submitMasterAppUpdate()">SAVE MASTER UPDATES</button>
+            </div>
+        </div>
+    </div>
+
     <div class="lightbox-overlay" id="adminLightbox" onclick="closeAdminLightbox()">
         <i class="fas fa-times lightbox-close" onclick="closeAdminLightbox()"></i>
         <img src="" class="lightbox-img" id="adminLightboxImg" onclick="event.stopPropagation()">
     </div>
+
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -726,105 +727,12 @@
                         </div>
                         <div class="item-actions">
                             <button class="action-icon icon-gift" onclick="openUserGiftModal('${user.uid}', '${user.name.replace(/'/g, "\\'")}', '${user.email}', '${user.avatarUrl}')" title="Send Direct Gift"><i class="fas fa-gift"></i></button>
-                            <button class="action-icon icon-view" onclick="viewUserPosts('${user.uid}', '${user.name.replace(/'/g, "\\'")}')" title="View User Posts"><i class="fas fa-eye"></i></button>
                         </div>
                     </div>
                 `;
             });
             container.innerHTML = html;
         });
-
-        window.viewUserPosts = function(uid, name) {
-            // Fetch and show user's uploaded apps
-            let postsHtml = `<div style="margin-bottom:15px;"><h3 style="color:var(--primary);">Posts by: ${name}</h3><button class="btn-primary" style="padding:8px; margin-top:5px;" onclick="closeUserPostsModal()">Close</button></div>`;
-            
-            databaseRef.ref('store_apps').orderByChild('uploaderUid').equalTo(uid).once('value').then((snap) => {
-                if(snap.exists()) {
-                    snap.forEach((child) => {
-                        const app = child.val();
-                        postsHtml += `
-                            <div class="post-card">
-                                <img src="${app.logoUrl}" class="post-icon" onerror="this.src='https://via.placeholder.com/45/121212/00ffcc?text=APP'">
-                                <div class="post-info">
-                                    <div class="post-name">${app.appName}</div>
-                                    <div class="post-meta">${app.appType} • ${app.category} • v${app.version}</div>
-                                </div>
-                                <div class="post-status approved">Live</div>
-                                <button class="action-icon icon-trash" onclick="deleteUserPost('${child.key}', 'store_apps', '${app.appName.replace(/'/g, "\\'")}')" style="width:32px; height:32px;"><i class="fas fa-trash"></i></button>
-                            </div>
-                        `;
-                    });
-                }
-                
-                databaseRef.ref('pending_apps').orderByChild('uploaderUid').equalTo(uid).once('value').then((snap2) => {
-                    if(snap2.exists()) {
-                        snap2.forEach((child) => {
-                            const app = child.val();
-                            postsHtml += `
-                                <div class="post-card">
-                                    <img src="${app.logoUrl}" class="post-icon" onerror="this.src='https://via.placeholder.com/45/121212/00ffcc?text=APP'">
-                                    <div class="post-info">
-                                        <div class="post-name">${app.appName}</div>
-                                        <div class="post-meta">${app.appType} • ${app.category} • v${app.version}</div>
-                                    </div>
-                                    <div class="post-status">Pending</div>
-                                    <button class="action-icon icon-check" onclick="approvePendingFromModal('${child.key}')" style="width:32px; height:32px;"><i class="fas fa-check"></i></button>
-                                    <button class="action-icon icon-trash" onclick="deleteUserPost('${child.key}', 'pending_apps', '${app.appName.replace(/'/g, "\\'")}')" style="width:32px; height:32px;"><i class="fas fa-trash"></i></button>
-                                </div>
-                            `;
-                        });
-                    }
-                    
-                    if(postsHtml.indexOf('post-card') === -1) {
-                        postsHtml += `<div style="text-align:center; padding:30px;">No posts found from this user.</div>`;
-                    }
-                    
-                    showUserPostsModal(postsHtml);
-                });
-            });
-        };
-        
-        function showUserPostsModal(html) {
-            let modal = document.getElementById('userPostsModal');
-            if(!modal) {
-                modal = document.createElement('div');
-                modal.id = 'userPostsModal';
-                modal.className = 'modal-overlay';
-                modal.innerHTML = `<div class="play-modal" style="max-width:500px;"><div class="modal-header"><h3>User Posts</h3><i class="fas fa-times close-modal" onclick="closeUserPostsModal()"></i></div><div class="modal-body" id="userPostsModalBody"></div></div>`;
-                document.body.appendChild(modal);
-            }
-            document.getElementById('userPostsModalBody').innerHTML = html;
-            modal.classList.add('active');
-        }
-        
-        window.closeUserPostsModal = function() {
-            const modal = document.getElementById('userPostsModal');
-            if(modal) modal.classList.remove('active');
-        };
-        
-        window.approvePendingFromModal = function(key) {
-            if(confirm("Approve this app?")) {
-                databaseRef.ref(`pending_apps/${key}`).once('value').then(snap => {
-                    let appData = snap.val();
-                    appData.status = 'approved';
-                    appData.approvedAt = firebase.database.ServerValue.TIMESTAMP;
-                    databaseRef.ref(`store_apps/${key}`).set(appData).then(() => {
-                        databaseRef.ref(`pending_apps/${key}`).remove();
-                        alert("App approved successfully!");
-                        closeUserPostsModal();
-                    });
-                });
-            }
-        };
-        
-        window.deleteUserPost = function(key, path, name) {
-            if(confirm(`Delete "${name}"? This action cannot be undone.`)) {
-                databaseRef.ref(`${path}/${key}`).remove().then(() => {
-                    alert(`"${name}" deleted successfully.`);
-                    closeUserPostsModal();
-                });
-            }
-        };
 
         window.openUserGiftModal = function(uid, name, email, avatar) {
             currentGiftTargetUid = uid;
@@ -866,10 +774,6 @@
                     
                     pushNotiMessage = `🎁 Congrats ${currentGiftTargetName}! Admin has gifted you ${coinsAmt} MVX Coins.`;
                     executeGiftDatabaseUpdate(updates, pushNotiMessage);
-                    
-                    if(typeof window.addCoinHistory === 'function') {
-                        window.addCoinHistory(currentGiftTargetUid, coinsAmt, `Admin gift: +${coinsAmt} coins`);
-                    }
                 });
                 return; 
             } 
@@ -990,6 +894,7 @@
             if(confirm("Permanently delete this pending submission?")) databaseRef.ref(`pending_apps/${key}`).remove();
         };
 
+        // UPDATE: LIVE CATALOG WITH ADMIN EDIT BUTTON
         databaseRef.ref('store_apps').on('value', (snapshot) => {
             const warehouse = document.getElementById('liveWarehouseContainer');
             if (!snapshot.exists()) {
@@ -1004,10 +909,11 @@
                         <img src="${app.logoUrl}" class="item-img zoomable-img" onclick="openAdminLightbox('${app.logoUrl}')" onerror="this.src='https://via.placeholder.com/60/121212/00ffcc?text=LIVE'">
                         <div class="item-info">
                             <h3>${app.appName}</h3>
-                            <p style="color:var(--primary); font-size:10px; font-family:monospace; margin-bottom:2px;">ID: ${app.id}</p>
-                            <p>Uploader: ${app.uploaderName} • Downs: ${app.downloads || 0} • ${app.size}</p>
+                            <p style="color:var(--primary); font-size:10px; font-family:monospace; margin-bottom:2px;">By: ${app.developerName || app.uploaderName || "Unknown"}</p>
+                            <p>Downs: ${app.downloads || 0} • ${app.size}</p>
                         </div>
                         <div class="item-actions">
+                            <button class="action-icon icon-edit" onclick="openMasterAppEdit('${app.id}')" title="Edit App"><i class="fas fa-edit"></i></button>
                             <button class="action-icon icon-view" onclick="window.open('details.html?id=${app.id}', '_blank')"><i class="fas fa-eye"></i></button>
                             <button class="action-icon icon-trash" onclick="executeLiveAppWipeProtocol('${app.id}', '${app.appName}')"><i class="fas fa-trash-alt"></i></button>
                         </div>
@@ -1016,6 +922,46 @@
             });
             warehouse.innerHTML = html;
         });
+
+        // UPDATE: MASTER APP EDITOR LOGIC
+        window.openMasterAppEdit = function(appId) {
+            databaseRef.ref(`store_apps/${appId}`).once('value').then(snap => {
+                if(!snap.exists()) return;
+                let app = snap.val();
+                
+                document.getElementById('meAppId').value = appId;
+                document.getElementById('meName').value = app.appName || "";
+                document.getElementById('meDev').value = app.developerName || app.uploaderName || "";
+                document.getElementById('meVer').value = app.version || "";
+                document.getElementById('meSize').value = app.size || "";
+                document.getElementById('meMainLink').value = app.downloadUrl || "";
+                document.getElementById('meDescription').value = app.description || "";
+                
+                document.getElementById('masterAppEditModal').classList.add('active');
+            });
+        };
+
+        window.submitMasterAppUpdate = function() {
+            let appId = document.getElementById('meAppId').value;
+            let name = document.getElementById('meName').value.trim();
+            let link = document.getElementById('meMainLink').value.trim();
+            
+            if(!name || !link) { alert("App Name and Download Link are required."); return; }
+            
+            let updates = {
+                appName: name,
+                developerName: document.getElementById('meDev').value.trim(),
+                version: document.getElementById('meVer').value.trim(),
+                size: document.getElementById('meSize').value.trim(),
+                downloadUrl: link,
+                description: document.getElementById('meDescription').value.trim()
+            };
+            
+            databaseRef.ref(`store_apps/${appId}`).update(updates).then(() => {
+                alert("Master App Registry Updated Successfully!");
+                document.getElementById('masterAppEditModal').classList.remove('active');
+            });
+        };
 
         window.executeLiveAppWipeProtocol = function(key, name) {
             if(confirm(`WARNING: Are you sure you want to permanently delete "${name}" from the live store?`)) {
