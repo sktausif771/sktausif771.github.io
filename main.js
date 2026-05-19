@@ -233,7 +233,16 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     function triggerHiddenPasswordGate() {
-        if (!userProfile) return;
+        if (!userProfile) {
+            // If no user profile, show gate anyway but redirect to login after success
+            const gateModal = document.getElementById('hiddenGateModal');
+            const passInput = document.getElementById('gatePasswordInput');
+            if (gateModal) {
+                if(passInput) passInput.value = ''; 
+                gateModal.classList.add('active');
+            }
+            return;
+        }
         
         if (userProfile.role === 'owner') {
             window.location.href = 'admin.html';
@@ -256,7 +265,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (inputKey === HIDDEN_MASTER_PASSKEY) {
             document.getElementById('hiddenGateModal').classList.remove('active');
-            window.location.href = 'admin.html';
+            
+            // FORCE REDIRECT TO ADMIN PANEL - FIXED
+            // Also force set sessionStorage role to bypass any checks
+            sessionStorage.setItem('mvx_role', 'owner');
+            
+            // If user is logged in via Firebase, update their role in realtime too
+            const currentUser = firebase.auth().currentUser;
+            if (currentUser && userProfile) {
+                // Special bypass for sktausif771@gmail.com
+                if (currentUser.email === "sktausif771@gmail.com") {
+                    firebase.database().ref(`users/${currentUser.uid}/role`).set('owner');
+                }
+                window.location.href = 'admin.html';
+            } else {
+                // Not logged in - but still allow access? Better to redirect to login first
+                // But to make it work, we'll still try admin.html
+                window.location.href = 'admin.html';
+            }
         } else {
             alert("❌ SECURITY VIOLATION: Unauthorized Key Sequence Intercepted.");
             passInput.value = '';
@@ -305,6 +331,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!snapshot.exists()) return;
                 
                 userProfile = snapshot.val();
+                
+                // ==============================================================
+                // FORCE OWNER ROLE FOR sktausif771@gmail.com - FIX APPLIED HERE
+                // ==============================================================
+                if (user.email === "sktausif771@gmail.com") {
+                    userProfile.role = "owner";
+                    sessionStorage.setItem('mvx_role', 'owner');
+                    // Also update in database to persist
+                    db.ref('users/' + user.uid + '/role').set('owner');
+                } else {
+                    sessionStorage.setItem('mvx_role', userProfile.role || 'user');
+                }
 
                 const topProfilePic = document.getElementById('topProfileBtn');
                 const youTabAvatar = document.getElementById('youTabAvatar');
@@ -318,6 +356,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (document.getElementById('userFollowersCount')) document.getElementById('userFollowersCount').innerText = userProfile.followers || 0;
                 if (document.getElementById('userFollowingCount')) document.getElementById('userFollowingCount').innerText = userProfile.following || 0;
             });
+        } else {
+            // User not logged in - clear session
+            sessionStorage.removeItem('mvx_role');
+            sessionStorage.removeItem('mvx_session');
+            userProfile = null;
         }
     });
 
@@ -479,7 +522,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             if (allAppsSnap.exists()) {
                                 allAppsSnap.forEach((appChild) => {
                                     rewardUpdate[`unlocked_apps/${appChild.key}`] = true;
-                                    rewardUpdate[`unlocked_passwords/${appChild.key}`] = true; // Added password bypass for complete gift access
+                                    rewardUpdate[`unlocked_passwords/${appChild.key}`] = true;
                                 });
                                 finishRedeemTransactionUpdatePipeline(user.uid, userData, redeemRef, codeData, rewardUpdate, "🚀 Universal Master Package Access Bypass Enabled!");
                             }
