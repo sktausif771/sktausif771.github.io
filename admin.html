@@ -146,6 +146,11 @@
         .item-card:hover { border-color: rgba(255,255,255,0.1); }
         
         .item-img { width: 55px; height: 55px; border-radius: 12px; object-fit: cover; border: 1px solid var(--border-glass); flex-shrink: 0; }
+        
+        /* New Hover Effect for Images that can be zoomed */
+        .zoomable-img { cursor: zoom-in; transition: transform 0.2s; }
+        .zoomable-img:hover { transform: scale(1.05); border-color: var(--primary); }
+
         .item-info { flex: 1; overflow: hidden; }
         .item-info h3 { font-size: 16px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .item-info p { font-size: 12px; color: var(--text-dim); }
@@ -231,6 +236,26 @@
         .app-check-item:last-child { border-bottom: none; }
         .app-check-item input { width: 16px; height: 16px; accent-color: var(--primary); }
         .app-check-item label { font-size: 13px; color: #fff; cursor: pointer; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* LIGHTBOX FOR IMAGE ZOOM */
+        .lightbox-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.95); z-index: 9999;
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; visibility: hidden; transition: all 0.3s ease; backdrop-filter: blur(8px);
+        }
+        .lightbox-overlay.active { opacity: 1; visibility: visible; }
+        .lightbox-img {
+            max-width: 90%; max-height: 90%; border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6); transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .lightbox-overlay.active .lightbox-img { transform: scale(1); }
+        .lightbox-close {
+            position: absolute; top: 20px; right: 20px; font-size: 35px;
+            color: #fff; cursor: pointer; z-index: 10000; transition: color 0.2s;
+        }
+        .lightbox-close:hover { color: var(--danger); }
 
         @media (max-width: 600px) {
             .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 15px 20px; }
@@ -354,7 +379,6 @@
     </div>
 
     <div id="noticesPanel" class="data-panel">
-        
         <div style="background: var(--card-bg); border: 1px solid var(--border-glass); padding: 20px; border-radius: 16px; margin-bottom: 25px;">
             <div class="section-title"><i class="fas fa-paper-plane"></i> Dispatch Manual Notice</div>
             
@@ -389,7 +413,6 @@
         </div>
     </div>
 
-
     <div class="modal-overlay" id="userGiftModal">
         <div class="play-modal">
             <div class="modal-header">
@@ -418,12 +441,17 @@
                     <label class="input-label" style="color:var(--primary);">Select App to Gift (Shows Title)</label>
                     <select id="giftAppSelect" class="glass-input">
                         <option value="">-- Select Premium App --</option>
-                        </select>
+                    </select>
                 </div>
 
                 <button class="btn-primary" style="background: linear-gradient(45deg, #ff9ff3, #feca57);" onclick="dispatchDirectGiftToUser()">SEND GIFT NOW <i class="fas fa-paper-plane" style="margin-left:5px;"></i></button>
             </div>
         </div>
+    </div>
+
+    <div class="lightbox-overlay" id="adminLightbox" onclick="closeAdminLightbox()">
+        <i class="fas fa-times lightbox-close" onclick="closeAdminLightbox()"></i>
+        <img src="" class="lightbox-img" id="adminLightboxImg" onclick="event.stopPropagation()">
     </div>
 
 
@@ -433,7 +461,7 @@
 
     <script>
         const databaseRef = firebase.database();
-        let storeAppsCacheForSelects = []; // Caches apps for dropdowns/checkboxes
+        let storeAppsCacheForSelects = []; 
         let currentGiftTargetUid = null;
         let currentGiftTargetName = null;
 
@@ -446,6 +474,15 @@
                 btnElement.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
             }
             document.getElementById(panelId + 'Panel').classList.add('active');
+        }
+
+        // Image Zoom Overlay Controllers
+        window.openAdminLightbox = function(url) {
+            document.getElementById('adminLightboxImg').src = url;
+            document.getElementById('adminLightbox').classList.add('active');
+        }
+        window.closeAdminLightbox = function() {
+            document.getElementById('adminLightbox').classList.remove('active');
         }
 
         // Relative Time Converter (1 sec ago, 5 mins ago, etc)
@@ -466,13 +503,13 @@
         }
 
         // ==========================================================================
-        // TAB 0: LIVE USERS ENGINE (NEW FEATURE)
+        // TAB 0: LIVE USERS ENGINE (FIXED & FILTERED)
         // ==========================================================================
         databaseRef.ref('users').on('value', (snapshot) => {
             const container = document.getElementById('liveUsersTrackingContainer');
-            document.getElementById('statUsers').innerText = snapshot.numChildren() || 0;
 
             if (!snapshot.exists()) {
+                document.getElementById('statUsers').innerText = 0;
                 container.innerHTML = `<div class="empty-state"><p>No users registered yet.</p></div>`;
                 return;
             }
@@ -480,11 +517,22 @@
             let usersArr = [];
             snapshot.forEach(child => {
                 let u = child.val();
+                
+                // FILTER: Ignore dummy accounts or old tests without Name or Email
+                if(!u.name || !u.email || u.name.trim() === "") return; 
+
                 u.uid = child.key;
-                // Use lastLogin if exists, otherwise joinedAt, otherwise 0 to avoid errors
                 u.sortTime = u.lastLogin || u.joinedAt || 0; 
                 usersArr.push(u);
             });
+
+            // Update stats specifically with valid users count
+            document.getElementById('statUsers').innerText = usersArr.length || 0;
+
+            if(usersArr.length === 0) {
+                container.innerHTML = `<div class="empty-state"><p>No active real users found.</p></div>`;
+                return;
+            }
 
             // Sort exactly as requested: Smallest time ago (most recent) at the top
             usersArr.sort((a, b) => b.sortTime - a.sortTime);
@@ -496,7 +544,7 @@
 
                 html += `
                     <div class="item-card">
-                        <img src="${user.avatarUrl}" class="item-img" onerror="this.src='https://via.placeholder.com/60/121212/00ffcc?text=USR'">
+                        <img src="${user.avatarUrl}" class="item-img zoomable-img" onclick="openAdminLightbox('${user.avatarUrl}')" onerror="this.src='https://via.placeholder.com/60/121212/00ffcc?text=USR'" title="Click to View Picture">
                         <div class="item-info">
                             <h3>${user.name} ${roleBadge}</h3>
                             <p style="margin-bottom:4px;">${user.email}</p>
@@ -541,7 +589,6 @@
             if(!currentGiftTargetUid) return;
             
             const giftType = document.getElementById('giftTypeSelector').value;
-            let successMessage = "";
             let pushNotiMessage = "";
             let updates = {};
 
@@ -549,7 +596,6 @@
                 const coinsAmt = parseInt(document.getElementById('giftCoinsAmount').value);
                 if(!coinsAmt || coinsAmt <= 0) { alert("Enter a valid coin amount."); return; }
                 
-                // Need to fetch their current coins first
                 databaseRef.ref(`users/${currentGiftTargetUid}/coins`).once('value').then(snap => {
                     const currentBal = parseInt(snap.val()) || 0;
                     updates[`users/${currentGiftTargetUid}/coins`] = currentBal + coinsAmt;
@@ -557,17 +603,15 @@
                     pushNotiMessage = `🎁 Congrats ${currentGiftTargetName}! Admin has gifted you ${coinsAmt} MVX Coins.`;
                     executeGiftDatabaseUpdate(updates, pushNotiMessage);
                 });
-                return; // exit to wait for promise
+                return; 
             } 
             else if(giftType === 'premium_app') {
                 const appId = document.getElementById('giftAppSelect').value;
                 if(!appId) { alert("Select an application from the dropdown to gift."); return; }
                 
-                // Find App Title for Notification
                 let targetAppObj = storeAppsCacheForSelects.find(a => a.id === appId);
                 let appTitle = targetAppObj ? targetAppObj.appName : "a Premium App";
 
-                // Unlock App AND Unlock Password Bypass directly
                 updates[`users/${currentGiftTargetUid}/unlocked_apps/${appId}`] = true;
                 updates[`users/${currentGiftTargetUid}/unlocked_passwords/${appId}`] = true;
                 
@@ -578,7 +622,6 @@
 
         function executeGiftDatabaseUpdate(updatePayload, globalPushMsg) {
             databaseRef.ref().update(updatePayload).then(() => {
-                // Send Notification to System Broadcasts to hype the user
                 const date = new Date();
                 const timeStr = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) + " | " + date.toLocaleDateString();
                 
@@ -634,7 +677,7 @@
 
             if(vContainer) vContainer.innerHTML = vHtml;
             if(nSelect) nSelect.innerHTML = nHtml;
-            if(giftSelect) giftSelect.innerHTML = giftHtml; // App Titles dynamically loaded in Gift Modal
+            if(giftSelect) giftSelect.innerHTML = giftHtml; 
         });
 
         databaseRef.ref('pending_apps').on('value', (snap) => { document.getElementById('statPendingApps').innerText = snap.numChildren() || 0; });
@@ -655,7 +698,7 @@
                 const app = child.val();
                 html += `
                     <div class="item-card">
-                        <img src="${app.logoUrl}" class="item-img" onerror="this.src='https://via.placeholder.com/60/121212/00ffcc?text=APP'">
+                        <img src="${app.logoUrl}" class="item-img zoomable-img" onclick="openAdminLightbox('${app.logoUrl}')" onerror="this.src='https://via.placeholder.com/60/121212/00ffcc?text=APP'">
                         <div class="item-info">
                             <h3>${app.appName}</h3>
                             <p>${app.uploaderName} • ${app.category.toUpperCase()}</p>
@@ -699,7 +742,7 @@
             appsArray.reverse().forEach((app) => {
                 html += `
                     <div class="item-card">
-                        <img src="${app.logoUrl}" class="item-img" onerror="this.src='https://via.placeholder.com/60/121212/00ffcc?text=LIVE'">
+                        <img src="${app.logoUrl}" class="item-img zoomable-img" onclick="openAdminLightbox('${app.logoUrl}')" onerror="this.src='https://via.placeholder.com/60/121212/00ffcc?text=LIVE'">
                         <div class="item-info">
                             <h3>${app.appName}</h3>
                             <p style="color:var(--primary); font-size:10px; font-family:monospace; margin-bottom:2px;">ID: ${app.id}</p>
@@ -828,7 +871,7 @@
         window.dropReportNodeFromRegistry = function(key) { if(confirm("Mark report as resolved and delete?")) databaseRef.ref(`reports/${key}`).remove(); };
 
         // ==========================================================================
-        // 5. SYSTEM NOTICES (MANUAL DISPATCHER)
+        // 5. SYSTEM NOTICES
         // ==========================================================================
         window.dispatchManualSystemNotice = function() {
             const title = document.getElementById('nTitle').value.trim();
