@@ -1,5 +1,5 @@
 /* ==========================================================================
-   MVX STORE V5.6 - CORE DATA ENGINE & ADVANCED UPLOAD PROTOCOL (CLEAN UI)
+   MVX STORE V5.6 - CORE DATA ENGINE & ADVANCED UPLOAD PROTOCOL (FINAL LINK SYNC)
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -556,8 +556,13 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // ==========================================================================
-    // 9. LIVE BROADCAST INBOX CHANNEL SYNCHRONIZER
+    // 9. LIVE BROADCAST INBOX CHANNEL SYNCHRONIZER (WITH LINK CLICK LOGIC)
     // ==========================================================================
+    window.clearLocalNotifications = function() {
+        document.getElementById('notificationInboxDisplay').innerHTML = `<div class="empty-msg" style="text-align:center; color:var(--text-secondary); padding:40px;"><i class="fas fa-trash-alt" style="font-size:30px; margin-bottom:10px;"></i><br>Inbox cleared locally.</div>`;
+        document.getElementById('notiAlert').style.display = 'none';
+    };
+
     function listenForLiveSystemNotifications() {
         const inbox = document.getElementById('notificationInboxDisplay');
         const badge = document.getElementById('notiAlert');
@@ -565,7 +570,7 @@ document.addEventListener('DOMContentLoaded', () => {
         db.ref('system_broadcasts').on('value', (snapshot) => {
             if(!inbox) return;
             if(!snapshot.exists()) {
-                inbox.innerHTML = `<div class="empty-msg">No notices live inside system nodes.</div>`;
+                inbox.innerHTML = `<div class="empty-msg" style="text-align:center; color:var(--text-secondary); padding:40px;"><i class="fas fa-check-circle" style="font-size:30px; margin-bottom:10px; color:var(--success);"></i><br>No new notifications.</div>`;
                 return;
             }
 
@@ -578,10 +583,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
             notices.forEach(note => {
                 const alertClass = note.type === 'alert' ? 'system-alert' : '';
+                
+                // NEW: If notification has a link, make the card clickable
+                let clickAction = "";
+                let cursorStyle = "";
+                let linkIndicator = "";
+                
+                if (note.link && note.link.trim() !== "") {
+                    // Fix slash issue on notification links
+                    let safeUrl = note.link;
+                    if (!/^https?:\/\//i.test(safeUrl) && !safeUrl.startsWith('details.html')) {
+                        safeUrl = 'https://' + safeUrl;
+                    }
+                    clickAction = `onclick="window.open('${safeUrl}', '_blank')"`;
+                    cursorStyle = `cursor: pointer; transition: transform 0.2s; border-color: var(--primary);`;
+                    linkIndicator = `<i class="fas fa-external-link-alt" style="color:var(--primary); font-size:12px; float:right;"></i>`;
+                }
+
                 html += `
-                    <div class="noti-card ${alertClass}">
+                    <div class="noti-card ${alertClass}" ${clickAction} style="${cursorStyle}">
                         <div class="noti-header">
-                            <span class="noti-title"><i class="fas fa-bullhorn"></i> ${note.title}</span>
+                            <span class="noti-title"><i class="fas fa-bullhorn"></i> ${note.title} ${linkIndicator}</span>
                             <span class="noti-time">${note.timeString || "Recent"}</span>
                         </div>
                         <p class="noti-msg">${note.message}</p>
@@ -620,6 +642,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                         type: "normal",
                                         timeString: timeStr,
                                         sender: "System Bot",
+                                        link: `details.html?id=${child.key}`, // Added automatic link to details page
                                         timestamp: firebase.database.ServerValue.TIMESTAMP
                                     });
                                 }

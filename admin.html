@@ -29,6 +29,7 @@
             --danger: #ff4757;
             --success: #2ed573;
             --warning: #ffa502;
+            --info: #00a8ff;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Space Grotesk', sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -50,8 +51,9 @@
         }
 
         .header-brand { display: flex; align-items: center; gap: 10px; }
-        .header-brand i { font-size: 24px; color: var(--primary); text-shadow: var(--primary-glow); }
-        .header-brand h1 { font-family: 'Orbitron', sans-serif; font-size: 18px; font-weight: 900; letter-spacing: 1px; }
+        .header-brand i.fa-shield-alt { font-size: 24px; color: var(--primary); text-shadow: var(--primary-glow); }
+        .header-brand h1 { font-family: 'Orbitron', sans-serif; font-size: 18px; font-weight: 900; letter-spacing: 1px; display: flex; align-items: center; gap: 5px; }
+        .verified-badge { color: #00E676; font-size: 14px; text-shadow: 0 0 10px rgba(0, 230, 118, 0.5); }
         
         .btn-exit {
             background: rgba(255, 71, 87, 0.1);
@@ -155,8 +157,10 @@
         }
         .icon-check { background: rgba(46, 213, 115, 0.1); color: var(--success); }
         .icon-trash { background: rgba(255, 71, 87, 0.1); color: var(--danger); }
+        .icon-view { background: rgba(0, 168, 255, 0.1); color: var(--info); }
         .icon-check:hover { background: var(--success); color: #000; }
         .icon-trash:hover { background: var(--danger); color: #fff; }
+        .icon-view:hover { background: var(--info); color: #fff; }
 
         .empty-state { text-align: center; padding: 50px 20px; color: var(--text-dim); }
         .empty-state i { font-size: 40px; margin-bottom: 15px; opacity: 0.5; }
@@ -183,9 +187,23 @@
 
         .section-title { font-family: 'Orbitron', sans-serif; font-size: 14px; color: var(--primary); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px dashed var(--border-glass); padding-bottom: 10px; }
 
-        /* Report Specific */
+        /* Report & Notice Specific */
         .report-card { border-left: 3px solid var(--danger); }
         .badge-danger { display: inline-block; background: rgba(255, 71, 87, 0.15); color: var(--danger); padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; margin-top: 5px; border: 1px solid rgba(255, 71, 87, 0.3); }
+
+        /* Checkbox List Box */
+        .app-select-box {
+            background: rgba(0,0,0,0.2); border: 1px solid var(--border-glass);
+            border-radius: 10px; max-height: 200px; overflow-y: auto;
+            padding: 10px; margin-bottom: 15px;
+        }
+        .app-check-item {
+            display: flex; align-items: center; gap: 10px; padding: 8px;
+            border-bottom: 1px dashed var(--border-glass);
+        }
+        .app-check-item:last-child { border-bottom: none; }
+        .app-check-item input { width: 16px; height: 16px; accent-color: var(--primary); }
+        .app-check-item label { font-size: 13px; color: #fff; cursor: pointer; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         @media (max-width: 600px) {
             .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 15px 20px; }
@@ -199,7 +217,7 @@
     <header class="master-header">
         <div class="header-brand">
             <i class="fas fa-shield-alt"></i>
-            <h1>MASTER PANEL</h1>
+            <h1>MASTER PANEL <i class="fas fa-check-circle verified-badge" title="Verified Owner"></i></h1>
         </div>
         <a href="index.html" class="btn-exit"><i class="fas fa-sign-out-alt"></i> Exit</a>
     </header>
@@ -254,9 +272,9 @@
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                 <div>
                     <label class="input-label">Reward Type</label>
-                    <select id="vType" class="glass-input" onchange="adjustVoucherRewardPlaceholderText(this.value)">
+                    <select id="vType" class="glass-input" onchange="toggleVoucherRewardInterface(this.value)">
                         <option value="coins">Coins Deposit</option>
-                        <option value="premium_bypass">Premium Unlock</option>
+                        <option value="premium_bypass">Premium Unlock (Apps)</option>
                     </select>
                 </div>
                 <div>
@@ -265,8 +283,23 @@
                 </div>
             </div>
 
-            <label class="input-label" id="rewardValueLabel">Coins Quantity</label>
-            <input type="text" id="vValue" class="glass-input" placeholder="e.g. 500">
+            <div id="voucherCoinUI">
+                <label class="input-label">Coins Quantity</label>
+                <input type="number" id="vValueCoins" class="glass-input" placeholder="e.g. 500">
+            </div>
+
+            <div id="voucherAppUI" style="display:none;">
+                <label class="input-label" style="color:var(--warning);">Select Premium Apps to Unlock</label>
+                <div class="app-select-box">
+                    <div class="app-check-item" style="border-bottom: 1px solid var(--primary); margin-bottom: 5px;">
+                        <input type="checkbox" id="vCheckAllApps" onchange="toggleAllVoucherApps(this.checked)">
+                        <label for="vCheckAllApps" style="color:var(--primary); font-weight:bold;">GRANT ACCESS TO ALL APPS</label>
+                    </div>
+                    <div id="voucherAppCheckboxContainer">
+                        <div style="text-align:center; font-size:12px; color:var(--text-dim); padding:10px;">Loading apps...</div>
+                    </div>
+                </div>
+            </div>
 
             <button class="btn-primary" onclick="executeVoucherMintingProtocolToServer()">GENERATE VOUCHER</button>
         </div>
@@ -284,6 +317,28 @@
     </div>
 
     <div id="noticesPanel" class="data-panel">
+        
+        <div style="background: var(--card-bg); border: 1px solid var(--border-glass); padding: 20px; border-radius: 16px; margin-bottom: 25px;">
+            <div class="section-title"><i class="fas fa-paper-plane"></i> Dispatch Manual Notice</div>
+            
+            <label class="input-label">Alert Title</label>
+            <input type="text" id="nTitle" class="glass-input" placeholder="e.g. Server Maintenance">
+            
+            <label class="input-label">Detailed Message</label>
+            <textarea id="nMessage" class="glass-input" placeholder="Write notification message here..." style="min-height: 80px; resize:vertical;"></textarea>
+            
+            <label class="input-label" style="color:var(--info);">Mention Target App (Optional)</label>
+            <select id="nAppSelect" class="glass-input">
+                <option value="">-- Do Not Mention Any App --</option>
+            </select>
+
+            <label class="input-label">Or Custom Link (Optional)</label>
+            <input type="text" id="nLink" class="glass-input" placeholder="e.g. https://google.com">
+
+            <button class="btn-primary" onclick="dispatchManualSystemNotice()">BROADCAST NOTICE</button>
+        </div>
+
+        <div class="section-title">Live Broadcast History</div>
         <div id="globalNoticesTrackingContainer">
             <div class="empty-state"><i class="fas fa-circle-notch fa-spin" style="color:var(--primary);"></i><p>Fetching broadcasts...</p></div>
         </div>
@@ -311,6 +366,7 @@
 
     <script>
         const databaseRef = firebase.database();
+        let storeAppsCacheForSelects = []; // Caches apps for dropdowns/checkboxes
 
         function switchAdminPanelSection(panelId, btnElement) {
             document.querySelectorAll('.tab-chip').forEach(btn => btn.classList.remove('active'));
@@ -323,23 +379,46 @@
             document.getElementById(panelId + 'Panel').classList.add('active');
         }
 
-        function adjustVoucherRewardPlaceholderText(value) {
-            const label = document.getElementById('rewardValueLabel');
-            const input = document.getElementById('vValue');
-            if(value === 'coins') {
-                label.innerText = "Coins Quantity";
-                input.placeholder = "e.g. 500";
-            } else {
-                label.innerText = "Target App ID / ALL_APPS";
-                input.placeholder = "Paste ID or ALL_APPS";
-            }
-            input.value = '';
-        }
-
         // ==========================================================================
         // REALTIME DASHBOARD STATS CALCULATOR
         // ==========================================================================
-        databaseRef.ref('store_apps').on('value', (snap) => { document.getElementById('statLiveApps').innerText = snap.numChildren() || 0; });
+        databaseRef.ref('store_apps').on('value', (snap) => { 
+            document.getElementById('statLiveApps').innerText = snap.numChildren() || 0; 
+            
+            // Populating cache for Dropdowns & Checkboxes
+            storeAppsCacheForSelects = [];
+            const vContainer = document.getElementById('voucherAppCheckboxContainer');
+            const nSelect = document.getElementById('nAppSelect');
+            
+            if(!snap.exists()) {
+                if(vContainer) vContainer.innerHTML = '<div style="text-align:center; font-size:12px; color:var(--danger);">No apps available.</div>';
+                return;
+            }
+
+            let vHtml = '';
+            let nHtml = '<option value="">-- Do Not Mention Any App --</option>';
+
+            snap.forEach(child => {
+                let app = child.val();
+                app.id = child.key;
+                storeAppsCacheForSelects.push(app);
+
+                // Populate Checkboxes (Only for Premium apps to keep it logical, or all apps if you want)
+                vHtml += `
+                    <div class="app-check-item">
+                        <input type="checkbox" class="v-app-checkbox" value="${app.id}" id="chk_${app.id}">
+                        <label for="chk_${app.id}">${app.appName} ${app.category === 'paid' ? '(Premium)' : '(Free)'}</label>
+                    </div>
+                `;
+
+                // Populate Notice Select Dropdown
+                nHtml += `<option value="${app.id}">${app.appName}</option>`;
+            });
+
+            if(vContainer) vContainer.innerHTML = vHtml;
+            if(nSelect) nSelect.innerHTML = nHtml;
+        });
+
         databaseRef.ref('pending_apps').on('value', (snap) => { document.getElementById('statPendingApps').innerText = snap.numChildren() || 0; });
         databaseRef.ref('reports').on('value', (snap) => { document.getElementById('statReports').innerText = snap.numChildren() || 0; });
 
@@ -409,6 +488,7 @@
                             <p>Downs: ${app.downloads || 0} • ${app.size}</p>
                         </div>
                         <div class="item-actions">
+                            <button class="action-icon icon-view" onclick="window.open('details.html?id=${app.id}', '_blank')"><i class="fas fa-eye"></i></button>
                             <button class="action-icon icon-trash" onclick="executeLiveAppWipeProtocol('${app.id}', '${app.appName}')"><i class="fas fa-trash-alt"></i></button>
                         </div>
                     </div>
@@ -424,20 +504,53 @@
         };
 
         // ==========================================================================
-        // 3. VOUCHER ENGINE
+        // 3. ADVANCED VOUCHER ENGINE
         // ==========================================================================
+        window.toggleVoucherRewardInterface = function(val) {
+            document.getElementById('voucherCoinUI').style.display = (val === 'coins') ? 'block' : 'none';
+            document.getElementById('voucherAppUI').style.display = (val === 'premium_bypass') ? 'block' : 'none';
+        }
+
+        window.toggleAllVoucherApps = function(isChecked) {
+            document.querySelectorAll('.v-app-checkbox').forEach(cb => cb.checked = isChecked);
+        }
+
         window.executeVoucherMintingProtocolToServer = function() {
             const code = document.getElementById('vCode').value.trim().toUpperCase();
             const type = document.getElementById('vType').value;
-            const max = parseInt(document.getElementById('vMaxClaims').value);
-            const val = document.getElementById('vValue').value.trim();
+            const max = parseInt(document.getElementById('vMaxClaims').value) || 1;
+            
+            let finalRewardValue = "";
 
-            if(!code || !val) { alert("Error: Code and Quantity/ID fields are required."); return; }
+            if (!code) { alert("Error: Voucher Code String is required."); return; }
+
+            if (type === 'coins') {
+                finalRewardValue = document.getElementById('vValueCoins').value.trim();
+                if(!finalRewardValue) { alert("Error: Coin quantity required."); return; }
+            } else {
+                if (document.getElementById('vCheckAllApps').checked) {
+                    finalRewardValue = "ALL_APPS";
+                } else {
+                    let checkedList = [];
+                    document.querySelectorAll('.v-app-checkbox:checked').forEach(cb => checkedList.push(cb.value));
+                    if (checkedList.length === 0) { alert("Error: Please select at least one app to unlock."); return; }
+                    finalRewardValue = checkedList.join(',');
+                }
+            }
+
             databaseRef.ref('redeem_codes/' + code).set({
-                codeString: code, rewardType: type, maxClaims: max, currentClaims: 0, rewardValue: val, mintedAt: firebase.database.ServerValue.TIMESTAMP
+                codeString: code, 
+                rewardType: type, 
+                maxClaims: max, 
+                currentClaims: 0, 
+                rewardValue: finalRewardValue, 
+                mintedAt: firebase.database.ServerValue.TIMESTAMP
             }).then(() => {
                 alert(`Voucher [${code}] generated successfully.`);
-                document.getElementById('vCode').value = ''; document.getElementById('vValue').value = '';
+                document.getElementById('vCode').value = ''; 
+                document.getElementById('vValueCoins').value = '';
+                document.getElementById('vCheckAllApps').checked = false;
+                toggleAllVoucherApps(false);
             });
         };
 
@@ -447,11 +560,14 @@
             let html = '';
             snapshot.forEach(child => {
                 const voucher = child.val();
+                let shortVal = voucher.rewardValue;
+                if(shortVal.length > 20) shortVal = shortVal.substring(0, 20) + '...'; // Truncate long IDs
+
                 html += `
                     <div class="item-card" style="border-left: 2px solid var(--warning);">
                         <div class="item-info">
                             <h3 style="font-family:monospace; color:var(--warning);">${voucher.codeString}</h3>
-                            <p>${voucher.rewardType} (${voucher.rewardValue}) • Used: ${voucher.currentClaims}/${voucher.maxClaims}</p>
+                            <p>${voucher.rewardType} (${shortVal}) • Used: ${voucher.currentClaims}/${voucher.maxClaims}</p>
                         </div>
                         <div class="item-actions">
                             <button class="action-icon icon-trash" onclick="dropActiveVoucherFromNetwork('${child.key}')"><i class="fas fa-minus-circle"></i></button>
@@ -464,7 +580,7 @@
         window.dropActiveVoucherFromNetwork = function(key) { if(confirm("Delete this voucher?")) databaseRef.ref(`redeem_codes/${key}`).remove(); };
 
         // ==========================================================================
-        // 4. USER REPORTS
+        // 4. USER REPORTS (WITH VIEW BUTTON)
         // ==========================================================================
         databaseRef.ref('reports').on('value', (snapshot) => {
             const reportsBox = document.getElementById('userReportsTrackingContainer');
@@ -483,7 +599,8 @@
                             <span class="badge-danger">${rpt.violationReason}</span>
                         </div>
                         <div class="item-actions">
-                            <button class="action-icon icon-trash" onclick="dropReportNodeFromRegistry('${rpt.id}')"><i class="fas fa-check"></i></button>
+                            <button class="action-icon icon-view" onclick="window.open('details.html?id=${rpt.appId}', '_blank')" title="View Reported App"><i class="fas fa-eye"></i></button>
+                            <button class="action-icon icon-trash" onclick="dropReportNodeFromRegistry('${rpt.id}')" title="Dismiss Report"><i class="fas fa-check"></i></button>
                         </div>
                     </div>
                 `;
@@ -493,8 +610,41 @@
         window.dropReportNodeFromRegistry = function(key) { if(confirm("Mark report as resolved and delete?")) databaseRef.ref(`reports/${key}`).remove(); };
 
         // ==========================================================================
-        // 5. SYSTEM NOTICES
+        // 5. SYSTEM NOTICES (MANUAL DISPATCHER & LIST)
         // ==========================================================================
+        window.dispatchManualSystemNotice = function() {
+            const title = document.getElementById('nTitle').value.trim();
+            const msg = document.getElementById('nMessage').value.trim();
+            const appId = document.getElementById('nAppSelect').value;
+            const customLink = document.getElementById('nLink').value.trim();
+
+            if(!title || !msg) { alert("Error: Notice Title and Message are required."); return; }
+
+            let finalLink = customLink;
+            if(appId !== "") {
+                finalLink = `details.html?id=${appId}`; // Auto generates link to app if selected
+            }
+
+            const date = new Date();
+            const timeStr = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) + " | " + date.toLocaleDateString();
+
+            databaseRef.ref('system_broadcasts').push({
+                title: title,
+                message: msg,
+                type: "normal",
+                timeString: timeStr,
+                sender: "Master Admin",
+                link: finalLink || "", // Storing the link for future use if needed
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            }).then(() => {
+                alert("Broadcast Notice sent to all users successfully!");
+                document.getElementById('nTitle').value = '';
+                document.getElementById('nMessage').value = '';
+                document.getElementById('nAppSelect').value = '';
+                document.getElementById('nLink').value = '';
+            });
+        };
+
         databaseRef.ref('system_broadcasts').on('value', (snapshot) => {
             const noticesBox = document.getElementById('globalNoticesTrackingContainer');
             if (!snapshot.exists()) {
@@ -504,11 +654,12 @@
             let html = ''; let noticesArr = [];
             snapshot.forEach(child => noticesArr.push({id: child.key, ...child.val()}));
             noticesArr.reverse().forEach(note => {
+                let linkHtml = note.link ? `<br><a href="${note.link}" target="_blank" style="color:var(--info); font-size:11px;">[Attached Link]</a>` : '';
                 html += `
                     <div class="item-card" style="border-left: 2px solid var(--primary);">
                         <div class="item-info">
                             <h3 style="color:#fff; font-size:14px;">${note.title}</h3>
-                            <p style="font-size:11px; margin-top:2px;">${note.message}</p>
+                            <p style="font-size:11px; margin-top:2px;">${note.message} ${linkHtml}</p>
                             <p style="font-size:10px; color:var(--text-dim); margin-top:4px;">${note.timeString}</p>
                         </div>
                         <div class="item-actions">
