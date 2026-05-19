@@ -2,7 +2,6 @@
    MVX STORE V5.6 - FIREBASE CORE CONFIG & ADVANCED AUTONOMOUS AUTH INTERCEPTOR
    ========================================================================== */
 
-// ফিক্স: var এবং window. ব্যবহার করা হয়েছে যাতে login.html ফাইল একে সহজেই খুঁজে পায়
 var firebaseConfig = {
     apiKey: "AIzaSyAS3UXXrio_-c9uPbHwpDuTVrP-p8d903w",
     authDomain: "white-2k-17-v4.firebaseapp.com",
@@ -22,6 +21,22 @@ if (!firebase.apps.length) {
 
 window.database = firebase.database();
 window.auth = firebase.auth();
+
+/* ==========================================================================
+   [FIXED] GOOGLE LOGIN FUNCTION FOR LOGIN.HTML
+   ========================================================================== */
+window.startGoogleLogin = function() {
+    var provider = new firebase.auth.GoogleAuthProvider();
+    
+    // Show loading text if loader exists
+    var loader = document.getElementById('systemLoader');
+    if(loader) loader.style.display = 'flex';
+    
+    window.auth.signInWithPopup(provider).catch(function(error) {
+        if(loader) loader.style.display = 'none';
+        alert("⚠️ Login Failed: " + error.message);
+    });
+};
 
 /* ==========================================================================
    DYNAMIC SIGNUP BONUS & MAINTENANCE LOCK ACCESS CONTROL SYSTEM
