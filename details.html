@@ -19,11 +19,10 @@
     <link rel="stylesheet" href="style.css">
 
     <style>
-        /* Details Page Specific Premium Extensions */
         .details-header { display: flex; gap: 20px; align-items: center; margin-bottom: 25px; }
         .details-logo { width: 90px; height: 90px; border-radius: 20px; object-fit: cover; border: 1px solid var(--border-color); }
         .details-meta-box { flex: 1; overflow: hidden; }
-        .details-title { font-family: var(--font-header); font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .details-title { font-family: var(--font-header); font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 5px; white-space: normal; word-break: break-word; line-height: 1.3; }
         .details-dev { font-size: 14px; color: var(--primary); font-weight: 600; }
         
         .stats-row { display: flex; justify-content: space-between; background: var(--bg-surface); border: 1px solid var(--border-color); padding: 15px; border-radius: 14px; margin-bottom: 25px; text-align: center; }
@@ -44,11 +43,15 @@
         .back-circle-btn { width: 44px; height: 44px; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; cursor: pointer; transition: 0.2s; }
         .back-circle-btn:hover { border-color: var(--primary); color: var(--primary); }
 
-        /* Interactive Rating Stars Area */
         .user-rating-input-zone { background: var(--bg-surface); border: 1px solid var(--border-color); padding: 15px; border-radius: 14px; margin-bottom: 25px; text-align: center; }
         .user-rating-input-zone h4 { font-family: var(--font-header); margin-bottom: 8px; font-size: 16px; color: #fff; }
         .rating-stars-input-container { display: flex; justify-content: center; gap: 8px; font-size: 24px; color: rgba(255,255,255,0.1); cursor: pointer; }
         .rating-stars-input-container i.active { color: var(--warning); }
+        
+        .coin-wallet-box { background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,215,0,0.05)); border: 1px solid rgba(255,215,0,0.3); border-radius: 16px; padding: 15px 20px; margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between; }
+        .coin-wallet-box span { font-size: 14px; color: var(--text-secondary); }
+        .coin-wallet-box strong { font-size: 24px; color: var(--warning); font-family: var(--font-tech); }
+        .coin-wallet-box i { font-size: 28px; color: var(--warning); }
     </style>
 </head>
 <body>
@@ -73,6 +76,12 @@
                 <h2 id="appDetailsTitle" class="details-title">Loading Package Title...</h2>
                 <div id="appDetailsDev" class="details-dev">Authorized Developer</div>
             </div>
+        </div>
+
+        <!-- Coin Wallet Box -->
+        <div class="coin-wallet-box">
+            <div><i class="fas fa-coins"></i> <span>Your Balance</span></div>
+            <div><strong id="walletCoinDisplay">0</strong> <span style="font-size:12px;">MVX Coins</span></div>
         </div>
 
         <div class="stats-row">
@@ -229,7 +238,6 @@
             document.getElementById('applicationReportSystemModal').classList.add('active');
         }
 
-        /* SLASH ISSUE BYPASS INTERCEPTOR: CRITICAL FIXES FOR GOOGLE CHROMES NEW TABS */
         function triggerSafeExternalRedirection(url) {
             if (!url || url.trim() === "" || url === "#") return;
             let secureUrl = url.trim();
@@ -239,9 +247,6 @@
             window.open(secureUrl, '_blank');
         }
 
-        // ==========================================================================
-        // AUTH CONTEXT LIFECYCLE SYNC
-        // ==========================================================================
         authorization.onAuthStateChanged((user) => {
             if (user) {
                 activeUserIdToken = user.uid;
@@ -249,6 +254,7 @@
                 database.ref(`users/${user.uid}`).on('value', (snap) => {
                     if (snap.exists()) {
                         loggedInUserProfileCache = snap.val();
+                        document.getElementById('walletCoinDisplay').innerText = loggedInUserProfileCache.coins || 0;
                         fetchApplicationMetaDetailsNodeLogs();
                     }
                 });
@@ -263,34 +269,27 @@
                 renderApplicationDetailsUserInterfaceGrid();
             });
             
-            // Views increment tracker runs strictly once via once loop
             database.ref(`store_apps/${targetAppId}/views`).transaction((v) => (v || 0) + 1);
         }
 
-        // ==========================================================================
-        // RUN DYNAMIC INTERFACE COMPONENT LAYOUT RENDERING ENGINE
-        // ==========================================================================
         function renderApplicationDetailsUserInterfaceGrid() {
             const app = targetApplicationObject;
 
             document.getElementById('appDetailsLogo').src = app.logoUrl;
             document.getElementById('appDetailsTitle').innerText = app.appName;
-            document.getElementById('appDetailsDev').innerText = app.uploaderName || "Authorized Developer";
+            document.getElementById('appDetailsDev').innerHTML = `<i class="fas fa-code-branch"></i> ${app.uploaderName || "Authorized Developer"}`;
             document.getElementById('appDetailsSize').innerText = app.size || "0 MB";
             document.getElementById('appDetailsDownloads').innerText = app.downloads || 0;
             document.getElementById('appDetailsDescription').innerText = app.description;
 
-            // RENDER REVIEWS RATING LOGS SYSTEMATICALLY WITH ORIGINAL DECIMALS
             const roundedRating = (app.rating || 0).toFixed(1);
             document.getElementById('appDetailsRating').innerHTML = `${roundedRating} <i class="fas fa-star" style="color:var(--warning); font-size:13px;"></i>`;
 
-            // PRE-FILL USER WORKSPACE IF ALREADY VOTED PREVIOUSLY
             if(app.voted_users && app.voted_users[activeUserIdToken]) {
                 const legacyStarCount = app.voted_users[activeUserIdToken];
                 highlightInteractiveRatingStarsTrackBox(legacyStarCount);
             }
 
-            // LIGHTBOX SCREENSHOTS COMPILER ARCHITECTURE
             const gallery = document.getElementById('appDetailsScreenshotGallery');
             const heading = document.getElementById('galleryHeadingTitle');
             gallery.innerHTML = '';
@@ -302,14 +301,13 @@
                     img.src = url;
                     img.className = 'screenshot-img';
                     img.loading = 'lazy';
-                    img.onclick = () => launchScreenshotFullZoomLightbox(url); // Trigger zoom
+                    img.onclick = () => launchScreenshotFullZoomLightbox(url);
                     gallery.appendChild(img);
                 });
             } else {
                 heading.style.display = 'none';
             }
 
-            // RENDER EXTRA CUSTOM TITLED ALTERNATIVE ACCESS BUTTONS
             const extraContainer = document.getElementById('extraLinksInjectionsContainer');
             const extraWrapper = document.getElementById('extraLinksMainWrapper');
             extraContainer.innerHTML = '';
@@ -330,7 +328,6 @@
             evaluateApplicationStateLicenseOwnershipMatrix();
         }
 
-        // SCREENSHOT OVERLAY ZOOM CONTROLLERS
         function launchScreenshotFullZoomLightbox(url) {
             document.getElementById('lightboxTargetSourceImg').src = url;
             document.getElementById('screenshotLightboxViewer').classList.add('active');
@@ -339,9 +336,6 @@
             document.getElementById('screenshotLightboxViewer').classList.remove('active');
         }
 
-        // ==========================================================================
-        // DYNAMIC PLAY STORE BAR CHIPS CALCULATOR CLOSURE
-        // ==========================================================================
         function toggleRatingPercentageBreakdownBlock() {
             const panel = document.getElementById('ratingDistributionBreakdownPanel');
             const app = targetApplicationObject;
@@ -364,7 +358,6 @@
             }
         }
 
-        // INTERACTIVE RATINGS DISPATCH PROTOCOLS
         function highlightInteractiveRatingStarsTrackBox(count) {
             document.querySelectorAll('#interactiveStarsSubmissionTrack i').forEach(star => {
                 let val = parseInt(star.getAttribute('data-star'));
@@ -383,9 +376,8 @@
 
             highlightInteractiveRatingStarsTrackBox(starCount);
 
-            // Execute transactional atomic data structures transformation rules
-            databaseRef = database.ref(`store_apps/${targetAppId}`);
-            databaseRef.runTransaction((currentApp) => {
+            const appRef = database.ref(`store_apps/${targetAppId}`);
+            appRef.runTransaction((currentApp) => {
                 if (currentApp) {
                     if (!currentApp.ratingDistribution) {
                         currentApp.ratingDistribution = {1:0, 2:0, 3:0, 4:0, 5:0};
@@ -398,7 +390,6 @@
                     currentApp.ratingDistribution[starCount] = (currentApp.ratingDistribution[starCount] || 0) + 1;
                     currentApp.totalRatingsCount = (currentApp.totalRatingsCount || 0) + 1;
 
-                    // Compute dynamic weighted arithmetic average values
                     let sum = 0;
                     for(let i=1; i<=5; i++) {
                         sum += (currentApp.ratingDistribution[i] || 0) * i;
@@ -411,9 +402,6 @@
             });
         }
 
-        // ==========================================================================
-        // STATE RE-EVALUATION MATRIX (BUTTON ALWAYS SAYS INSTALL OR UNLOCK)
-        // ==========================================================================
         function evaluateApplicationStateLicenseOwnershipMatrix() {
             const app = targetApplicationObject;
             const btn = document.getElementById('masterInstallActionButton');
@@ -428,15 +416,11 @@
                 }
             }
 
-            // বাটন টেক্সট সবসময় INSTALL থাকবে
             btn.innerText = "INSTALL";
             btn.style.background = 'var(--primary)';
             btn.style.color = '#000';
         }
 
-        // ==========================================================================
-        // MASTER ROUTER ROUTING ACTION HOOKS
-        // ==========================================================================
         window.processMasterActionRouting = function() {
             const app = targetApplicationObject;
 
@@ -449,7 +433,6 @@
                 }
             }
 
-            // বাটন ইন্সটল এ ক্লিক করার পর পাসওয়ার্ড চেক লুপ রান করবে
             const hasPasswordBypassed = loggedInUserProfileCache.unlocked_passwords && loggedInUserProfileCache.unlocked_passwords[targetAppId];
             if (app.zipPassword && app.zipPassword.trim() !== "" && !hasPasswordBypassed) {
                 const getPass = document.getElementById('modalGetPassBtn');
@@ -463,9 +446,6 @@
             executeSecureDownloadRegistryNodeTransaction();
         };
 
-        // ==========================================================================
-        // COIN DEDUCTIONS SYSTEM
-        // ==========================================================================
         window.executeCoinDeductionUnlockProtocol = function() {
             const app = targetApplicationObject;
             const currentCoinsBalance = parseInt(loggedInUserProfileCache.coins) || 0;
@@ -483,15 +463,17 @@
             updates[`users/${activeUserIdToken}/unlocked_apps/${targetAppId}`] = true;
 
             database.ref().update(updates).then(() => {
+                // Add coin history
+                if (typeof window.addCoinHistory === 'function') {
+                    window.addCoinHistory(activeUserIdToken, -app.coinPrice, `Unlocked premium app: ${app.appName}`);
+                }
                 alert("Transaction Cleared! Premium package license allocated.");
                 closeDetailsSystemModals('coinUnlockTransactionModal');
                 evaluateApplicationStateLicenseOwnershipMatrix();
+                document.getElementById('walletCoinDisplay').innerText = updatingUserBalanceDelta;
             });
         };
 
-        // ==========================================================================
-        // PASSWORD AUTHENTICATION SEQUENCE
-        // ==========================================================================
         window.verifyPackageArchivePasswordCredentials = function() {
             const app = targetApplicationObject;
             const inputVal = document.getElementById('appZipPasswordInputField').value.trim();
@@ -501,7 +483,7 @@
                     alert("Access Token Authorized! Password sequence validated.");
                     closeDetailsSystemModals('passwordProtectionGateModal');
                     evaluateApplicationStateLicenseOwnershipMatrix();
-                    executeSecureDownloadRegistryNodeTransaction(); // Directly redirect after pass auth
+                    executeSecureDownloadRegistryNodeTransaction();
                 });
             } else {
                 alert("Security Interrupt: Key sequence mismatch failed verification.");
@@ -509,9 +491,6 @@
             }
         };
 
-        // ==========================================================================
-        // UNIQUE DOWNLOAD COUNT LOGIC (1 ACCOUNT = 1 DOWNLOAD)
-        // ==========================================================================
         function executeSecureDownloadRegistryNodeTransaction() {
             const app = targetApplicationObject;
 
@@ -533,9 +512,6 @@
             });
         }
 
-        // ==========================================================================
-        // USER REPORT VIOLATION SUBMISSION
-        // ==========================================================================
         window.submitApplicationViolationReportToServer = function() {
             const issueSelected = document.getElementById('reportIssueCategorySelector').value;
 

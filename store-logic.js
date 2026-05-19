@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let currentUser = null;
     let userProfile = null;
-    let activeContentType = 'files'; 
+    let activeContentType = 'mod_app'; 
     let activeFilterType = 'all';    
 
     const IMGBB_API_KEY = "820eb9aa6a57f863045a52c1929efc9c"; 
@@ -42,6 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             runSystemAutoApproveEngine();
             listenForLiveSystemNotifications();
+            loadUserUploadedApps(); // Load user's uploaded apps
+            loadCoinHistory(); // Load coin history
         }
     });
 
@@ -129,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <span class="badge ${badgeClass}">${priceLabel}</span>
                             <img src="${app.logoUrl}" class="app-icon-large" loading="lazy" onerror="this.src='https://via.placeholder.com/75/121212/00e6b8?text=FILE'">
                             <div class="app-info-list">
-                                <h3 class="app-title-list">${app.appName}</h3>
+                                <h3 class="app-title-list" style="white-space: normal; word-break: break-word;">${app.appName}</h3>
                                 <div class="app-dev-list">${app.uploaderName || "Developer"} • ${app.size || "0 MB"}</div>
                                 <div class="app-meta-list">
                                     <span style="color:var(--primary); font-weight:700;"><i class="fas fa-arrow-alt-circle-down"></i> ${app.downloads || 0}</span>
@@ -201,7 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let uploadedScreenshotsList = [];
 
     // ==========================================================================
-    // 6. MASTER PLAY STORE APPLICATION PUBLISH MODAL FORM LAYOUT (CLEAN UI)
+    // 6. MASTER PLAY STORE APPLICATION PUBLISH MODAL FORM LAYOUT
     // ==========================================================================
     window.openUploadModal = function() {
         if (!userProfile) return;
@@ -249,7 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <label class="modal-label">Select Tab</label>
                             <select id="pType" class="play-input">
                                 <option value="files">Files Tab</option>
-                                <option value="mod_app">Mod App Tab</option>
+                                <option value="mod_app" selected>Mod App Tab</option>
                             </select>
                         </div>
                         <div>
@@ -556,7 +558,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // ==========================================================================
-    // 9. LIVE BROADCAST INBOX CHANNEL SYNCHRONIZER (WITH LINK CLICK LOGIC)
+    // 9. LIVE BROADCAST INBOX CHANNEL SYNCHRONIZER
     // ==========================================================================
     window.clearLocalNotifications = function() {
         document.getElementById('notificationInboxDisplay').innerHTML = `<div class="empty-msg" style="text-align:center; color:var(--text-secondary); padding:40px;"><i class="fas fa-trash-alt" style="font-size:30px; margin-bottom:10px;"></i><br>Inbox cleared locally.</div>`;
@@ -584,13 +586,11 @@ document.addEventListener('DOMContentLoaded', () => {
             notices.forEach(note => {
                 const alertClass = note.type === 'alert' ? 'system-alert' : '';
                 
-                // NEW: If notification has a link, make the card clickable
                 let clickAction = "";
                 let cursorStyle = "";
                 let linkIndicator = "";
                 
                 if (note.link && note.link.trim() !== "") {
-                    // Fix slash issue on notification links
                     let safeUrl = note.link;
                     if (!/^https?:\/\//i.test(safeUrl) && !safeUrl.startsWith('details.html')) {
                         safeUrl = 'https://' + safeUrl;
@@ -615,7 +615,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================================================
-    // 10. AUTOMATED APP DEPLOYMENT & AUTO-NOTIFICATION BOT (CRON SIMULATOR)
+    // 10. AUTOMATED APP DEPLOYMENT & AUTO-NOTIFICATION BOT
     // ==========================================================================
     function runSystemAutoApproveEngine() {
         setInterval(() => {
@@ -642,7 +642,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                         type: "normal",
                                         timeString: timeStr,
                                         sender: "System Bot",
-                                        link: `details.html?id=${child.key}`, // Added automatic link to details page
+                                        link: `details.html?id=${child.key}`,
                                         timestamp: firebase.database.ServerValue.TIMESTAMP
                                     });
                                 }
@@ -656,4 +656,137 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }, 15000); 
     }
+
+    // ==========================================================================
+    // 11. MY UPLOADS - VIEW, EDIT, DELETE USER'S OWN APPS
+    // ==========================================================================
+    window.loadUserUploadedApps = function() {
+        const container = document.getElementById('myUploadsListContainer');
+        if (!container) return;
+        
+        if (!currentUser) {
+            container.innerHTML = `<div style="text-align:center; padding:30px;"><p>Please login to view your apps.</p></div>`;
+            return;
+        }
+
+        container.innerHTML = `<div style="text-align:center; padding:30px;"><i class="fas fa-spinner fa-spin" style="font-size:24px;"></i><p>Loading your apps...</p></div>`;
+
+        // Query both pending and approved apps uploaded by this user
+        const userUid = currentUser.uid;
+        let allUserApps = [];
+
+        // Get pending apps
+        db.ref('pending_apps').orderByChild('uploaderUid').equalTo(userUid).once('value').then((snapshot) => {
+            if (snapshot.exists()) {
+                snapshot.forEach((child) => {
+                    allUserApps.push({ id: child.key, ...child.val(), status: 'pending' });
+                });
+            }
+            
+            // Get approved apps
+            db.ref('store_apps').orderByChild('uploaderUid').equalTo(userUid).once('value').then((snapshot2) => {
+                if (snapshot2.exists()) {
+                    snapshot2.forEach((child) => {
+                        allUserApps.push({ id: child.key, ...child.val(), status: 'approved' });
+                    });
+                }
+                
+                if (allUserApps.length === 0) {
+                    container.innerHTML = `<div style="text-align:center; padding:30px;"><i class="fas fa-cloud-upload-alt" style="font-size:40px; opacity:0.5;"></i><p>You haven't uploaded any apps yet.</p></div>`;
+                    return;
+                }
+                
+                let html = '';
+                allUserApps.reverse().forEach((app) => {
+                    const statusBadge = app.status === 'pending' ? '<span style="background:rgba(255,165,0,0.2); color:var(--warning); padding:2px 8px; border-radius:4px; font-size:10px;">Pending</span>' : '<span style="background:rgba(0,230,184,0.2); color:var(--success); padding:2px 8px; border-radius:4px; font-size:10px;">Live</span>';
+                    
+                    html += `
+                        <div class="myapp-card">
+                            <img src="${app.logoUrl}" class="myapp-icon" onerror="this.src='https://via.placeholder.com/50/121212/00e6b8?text=APP'">
+                            <div class="myapp-info">
+                                <div class="myapp-title">${app.appName}</div>
+                                <div class="myapp-meta">Version ${app.version} • ${app.size} • ${statusBadge}</div>
+                            </div>
+                            <div class="myapp-actions">
+                                <button class="myapp-btn myapp-edit" onclick="editUserApp('${app.id}', '${app.status}')"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="myapp-btn myapp-delete" onclick="deleteUserApp('${app.id}', '${app.status}', '${app.appName.replace(/'/g, "\\'")}')"><i class="fas fa-trash"></i> Delete</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            });
+        });
+    };
+
+    window.editUserApp = function(appId, status) {
+        // Open edit modal - can be implemented similarly to upload modal but with pre-filled data
+        alert(`Edit feature for ${appId} will open edit modal. This can be implemented similarly to upload modal.`);
+    };
+
+    window.deleteUserApp = function(appId, status, appName) {
+        if (confirm(`Are you sure you want to delete "${appName}"? This action cannot be undone.`)) {
+            const path = status === 'pending' ? `pending_apps/${appId}` : `store_apps/${appId}`;
+            db.ref(path).remove().then(() => {
+                alert(`"${appName}" has been deleted successfully.`);
+                loadUserUploadedApps(); // Refresh the list
+            }).catch((err) => {
+                alert("Error deleting app: " + err.message);
+            });
+        }
+    };
+
+    // ==========================================================================
+    // 12. COIN HISTORY - TRACK COIN TRANSACTIONS
+    // ==========================================================================
+    window.loadCoinHistory = function() {
+        const container = document.getElementById('coinHistoryListContainer');
+        if (!container) return;
+        
+        if (!currentUser) {
+            container.innerHTML = `<div style="text-align:center; padding:30px;"><p>Please login to view coin history.</p></div>`;
+            return;
+        }
+
+        container.innerHTML = `<div style="text-align:center; padding:30px;"><i class="fas fa-spinner fa-spin" style="font-size:24px;"></i><p>Loading history...</p></div>`;
+
+        db.ref(`coin_history/${currentUser.uid}`).orderByChild('timestamp').once('value').then((snapshot) => {
+            if (!snapshot.exists()) {
+                container.innerHTML = `<div style="text-align:center; padding:30px;"><i class="fas fa-coins" style="font-size:40px; opacity:0.5;"></i><p>No coin transactions yet.</p></div>`;
+                return;
+            }
+
+            let history = [];
+            snapshot.forEach((child) => {
+                history.push({ id: child.key, ...child.val() });
+            });
+            history.reverse();
+
+            let html = '';
+            history.forEach((item) => {
+                const amountClass = item.amount > 0 ? 'style="color:var(--success);"' : 'style="color:var(--danger);"';
+                const amountSign = item.amount > 0 ? `+${item.amount}` : `${item.amount}`;
+                const date = item.timestamp ? new Date(item.timestamp).toLocaleString() : 'Unknown date';
+                
+                html += `
+                    <div class="history-card">
+                        <div class="history-amount" ${amountClass}>${amountSign} Coins</div>
+                        <div class="history-reason">${item.reason || 'Transaction'}</div>
+                        <div class="history-date">${date}</div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        });
+    };
+
+    // Function to add coin history entry
+    window.addCoinHistory = function(uid, amount, reason) {
+        db.ref(`coin_history/${uid}`).push({
+            amount: amount,
+            reason: reason,
+            timestamp: firebase.database.ServerValue.TIMESTAMP
+        });
+    };
+
 });

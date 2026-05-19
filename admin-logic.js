@@ -8,7 +8,6 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Safety check for Firebase
     if (typeof firebase === 'undefined') {
         console.error("Firebase SDK missing. Admin Engine halted.");
         return;
@@ -18,16 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const auth = firebase.auth();
     let currentAdmin = null;
 
-    // Verify Admin Identity
     auth.onAuthStateChanged((user) => {
         if (user) {
             currentAdmin = user;
         }
     });
 
-    // ==========================================================================
-    // 1. INITIALIZE ADMIN ENGINE (Called from admin.html)
-    // ==========================================================================
     window.initAdminEngine = function() {
         console.log("Admin Logic Engine Started...");
         loadDashboardStats();
@@ -35,9 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
         loadUserReports();
     };
 
-    // ==========================================================================
-    // 2. ACTION LOGGER (Records admin actions for Owner to see)
-    // ==========================================================================
     function logAdminAction(actionType, targetId, details) {
         if(!currentAdmin) return;
         const logData = {
@@ -50,7 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         db.ref('admin_logs').push(logData);
         
-        // Update Action Count in Dashboard
         const actionStat = document.getElementById('statActionTaken');
         if(actionStat) {
             let currentVal = parseInt(actionStat.innerText) || 0;
@@ -58,11 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // ==========================================================================
-    // 3. DASHBOARD STATS LISTENER
-    // ==========================================================================
     function loadDashboardStats() {
-        // Live count of pending apps
         db.ref('pending_apps').on('value', (snap) => {
             const count = snap.numChildren();
             document.getElementById('statPendingApps').innerText = count;
@@ -74,7 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Live count of unresolved reports
         db.ref('reports').orderByChild('status').equalTo('unresolved').on('value', (snap) => {
             const count = snap.numChildren();
             document.getElementById('statReports').innerText = count;
@@ -86,10 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ==========================================================================
-    // 4. PENDING APPS REVIEW SYSTEM
-    // ==========================================================================
-    let pendingAppsData = {}; // Cache for modal
+    let pendingAppsData = {};
 
     function loadPendingApps() {
         const tableBody = document.getElementById('pendingTableBody');
@@ -107,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             let html = '';
-            pendingAppsData = {}; // Clear cache
+            pendingAppsData = {};
 
             snapshot.forEach((child) => {
                 const app = child.val();
@@ -144,15 +127,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Modal Details Populate
     window.openAppReview = function(appId) {
         const app = pendingAppsData[appId];
         if(!app) return;
 
-        // Set global modal function if exists
         if(typeof window.openReviewModal === 'function') window.openReviewModal();
 
-        // Populate Modal Fields (Targeting elements in admin.html)
         const modal = document.getElementById('appReviewModal');
         if(!modal) return;
 
@@ -167,7 +147,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const descBox = modal.querySelectorAll('.detail-box .detail-value')[4];
         if(descBox) descBox.innerText = app.description;
 
-        // Update Modal Buttons
         const footerBtns = modal.querySelectorAll('.modal-footer button');
         if(footerBtns.length >= 3) {
             footerBtns[1].onclick = () => { rejectApp(appId); closeModal('appReviewModal'); };
@@ -175,7 +154,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // APPROVE LOGIC
     window.approveApp = function(appId) {
         showConfirmModal("Publish this application to the main store?", () => {
             if(typeof toggleGlobalLoader === 'function') toggleGlobalLoader(true, "PUBLISHING APP...");
@@ -188,15 +166,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     appData.approvedAt = firebase.database.ServerValue.TIMESTAMP;
                     appData.approvedBy = currentAdmin.email;
 
-                    // Move to store_apps
                     db.ref(`store_apps/${appId}`).set(appData).then(() => {
-                        // Delete from pending
                         appRef.remove().then(() => {
                             logAdminAction('APPROVED_APP', appId, `Approved ${appData.appName}`);
                             if(typeof toggleGlobalLoader === 'function') toggleGlobalLoader(false);
                             if(typeof showGlobalToast === 'function') showGlobalToast('App Published Successfully!', 'success');
-                            
-                            // NOtification logic can be added here
                         });
                     });
                 }
@@ -204,7 +178,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // REJECT LOGIC
     window.rejectApp = function(appId) {
         showConfirmModal("Reject and delete this application request?", () => {
             if(typeof toggleGlobalLoader === 'function') toggleGlobalLoader(true, "REJECTING APP...");
@@ -222,9 +195,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // ==========================================================================
-    // 5. USER REPORTS VERIFICATION SYSTEM
-    // ==========================================================================
     function loadUserReports() {
         const tableBody = document.getElementById('reportsTableBody');
         
@@ -272,7 +242,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Forward to Owner Action
     window.forwardReport = function(reportId) {
         showConfirmModal("Forward this report to the Master Owner for strict action?", () => {
             db.ref(`reports/${reportId}/status`).set('forwarded').then(() => {
@@ -282,7 +251,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // Dismiss False Report Action
     window.dismissReport = function(reportId) {
         showConfirmModal("Dismiss this report as false alarm?", () => {
             db.ref(`reports/${reportId}`).remove().then(() => {
