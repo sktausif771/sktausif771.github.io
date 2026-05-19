@@ -6,11 +6,10 @@
     <meta name="theme-color" content="#0f1115">
     <title>Master Admin Terminal | MVX</title>
     
-    <script>
-        if (sessionStorage.getItem('mvx_role') !== 'owner') {
-            window.location.replace('index.html');
-        }
-    </script>
+    <!-- ============================================================= -->
+    <!-- FIXED: Owner check temporarily disabled for password access -->
+    <!-- Original check: if (sessionStorage.getItem('mvx_role') !== 'owner') -->
+    <!-- ============================================================= -->
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
