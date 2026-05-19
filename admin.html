@@ -147,7 +147,6 @@
         
         .item-img { width: 55px; height: 55px; border-radius: 12px; object-fit: cover; border: 1px solid var(--border-glass); flex-shrink: 0; }
         
-        /* Hover Effect for Images that can be zoomed */
         .zoomable-img { cursor: zoom-in; transition: transform 0.2s; }
         .zoomable-img:hover { transform: scale(1.05); border-color: var(--primary); }
 
@@ -434,20 +433,22 @@
                 <button class="btn-primary" style="width:120px;" onclick="updateSystemConfigData('signupBonus', parseInt(document.getElementById('configBonusCoins').value))">SAVE</button>
             </div>
 
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:20px;">
-                <div>
-                    <label class="input-label">Default Theme Mode</label>
-                    <select id="configDefaultTheme" class="glass-input" onchange="updateSystemConfigData('defaultTheme', this.value)">
-                        <option value="dark">Dark Mode</option>
-                        <option value="light">Light Mode</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="input-label">Global Store Logo URL</label>
-                    <div style="display:flex; gap:10px;">
-                        <input type="text" id="configStoreLogo" class="glass-input" style="margin-bottom:0;" placeholder="Image URL">
-                        <button class="btn-primary" style="width:80px; padding:0;" onclick="updateSystemConfigData('storeLogo', document.getElementById('configStoreLogo').value)"><i class="fas fa-save"></i></button>
-                    </div>
+            <div style="margin-bottom:20px;">
+                <label class="input-label">Default Theme Mode</label>
+                <select id="configDefaultTheme" class="glass-input" onchange="updateSystemConfigData('defaultTheme', this.value)">
+                    <option value="dark">Dark Mode</option>
+                    <option value="light">Light Mode</option>
+                </select>
+            </div>
+            
+            <div style="margin-bottom:25px;">
+                <label class="input-label" style="color:var(--primary);">Global Store Logo (ImgBB Upload)</label>
+                <div style="background:rgba(0,0,0,0.2); padding:15px; border-radius:10px; border:1px solid var(--border-glass);">
+                    <input type="file" id="configLogoFile" class="glass-input" accept="image/*" style="padding:10px; margin-bottom:10px;">
+                    <img id="configLogoPreview" style="width:70px; height:70px; border-radius:12px; object-fit:cover; display:none; margin-bottom:10px; border:1px solid var(--primary);">
+                    <input type="hidden" id="configLogoUrl">
+                    <p id="configLogoStatus" style="font-size:11px; color:var(--warning); margin-bottom:12px;"></p>
+                    <button class="btn-primary" style="padding:12px;" onclick="updateSystemConfigData('storeLogo', document.getElementById('configLogoUrl').value)"><i class="fas fa-save"></i> SAVE NEW LOGO</button>
                 </div>
             </div>
 
@@ -527,7 +528,6 @@
             document.getElementById(panelId + 'Panel').classList.add('active');
         }
 
-        // Image Zoom Overlay Controllers
         window.openAdminLightbox = function(url) {
             document.getElementById('adminLightboxImg').src = url;
             document.getElementById('adminLightbox').classList.add('active');
@@ -536,7 +536,6 @@
             document.getElementById('adminLightbox').classList.remove('active');
         }
 
-        // Relative Time Converter (1 sec ago, 5 mins ago, etc)
         function timeSince(dateTimestamp) {
             if(!dateTimestamp) return "Unknown";
             const seconds = Math.floor((new Date() - dateTimestamp) / 1000);
@@ -554,19 +553,62 @@
         }
 
         // ==========================================================================
-        // TAB 6: NEW CORE CONFIG PANEL ENGINE
+        // TAB 6: NEW CORE CONFIG PANEL ENGINE (WITH IMGBB UPLOAD LOGIC & ADMIN FIX)
         // ==========================================================================
+        
+        // ImgBB Upload Handler for Config Logo
+        document.getElementById('configLogoFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+            
+            const status = document.getElementById('configLogoStatus');
+            const preview = document.getElementById('configLogoPreview');
+            const urlOutput = document.getElementById('configLogoUrl');
+            
+            status.innerText = "Uploading image to ImgBB Servers...";
+            status.style.color = "var(--warning)";
+            
+            const formData = new FormData();
+            formData.append("image", file);
+            
+            fetch(`https://api.imgbb.com/1/upload?key=820eb9aa6a57f863045a52c1929efc9c`, {
+                method: "POST",
+                body: formData
+            }).then(res => res.json()).then(json => {
+                if(json.success) {
+                    urlOutput.value = json.data.url;
+                    preview.src = json.data.url;
+                    preview.style.display = 'block';
+                    status.innerText = "Image Upload Complete! Click 'SAVE NEW LOGO' to apply.";
+                    status.style.color = "var(--success)";
+                } else {
+                    status.innerText = "Upload Failed. Server rejected file.";
+                    status.style.color = "var(--danger)";
+                }
+            }).catch(() => {
+                status.innerText = "Network Transmission Error.";
+                status.style.color = "var(--danger)";
+            });
+        });
+
+        // Load Global Config from Database
         databaseRef.ref('settings').on('value', (snapshot) => {
             if(snapshot.exists()) {
                 const conf = snapshot.val();
                 if(document.getElementById('configMaintenanceMode')) document.getElementById('configMaintenanceMode').checked = conf.maintenanceMode || false;
                 if(document.getElementById('configBonusCoins')) document.getElementById('configBonusCoins').value = conf.signupBonus || 0;
                 if(document.getElementById('configDefaultTheme')) document.getElementById('configDefaultTheme').value = conf.defaultTheme || 'dark';
-                if(document.getElementById('configStoreLogo')) document.getElementById('configStoreLogo').value = conf.storeLogo || '';
                 
-                // Render Master Admins List
+                // Show current logo in preview if exists
+                if(conf.storeLogo && conf.storeLogo.trim() !== "") {
+                    document.getElementById('configLogoUrl').value = conf.storeLogo;
+                    document.getElementById('configLogoPreview').src = conf.storeLogo;
+                    document.getElementById('configLogoPreview').style.display = 'block';
+                }
+                
+                // Render Master Admins List (With "No Admins" fallback fix)
                 const adminListDiv = document.getElementById('configAdminListContainer');
-                if(conf.masterAdmins && adminListDiv) {
+                if(conf.masterAdmins && Object.keys(conf.masterAdmins).length > 0 && adminListDiv) {
                     let adminHtml = '';
                     Object.keys(conf.masterAdmins).forEach(key => {
                         let email = conf.masterAdmins[key];
@@ -577,15 +619,23 @@
                             </div>
                         `;
                     });
-                    adminListDiv.innerHTML = adminHtml || '<div style="text-align:center; font-size:12px; color:var(--text-dim);">No admins explicitly added via panel yet.</div>';
+                    adminListDiv.innerHTML = adminHtml;
+                } else if(adminListDiv) {
+                    adminListDiv.innerHTML = '<div style="text-align:center; font-size:12px; color:var(--text-dim); padding:10px;">No admins currently assigned via panel.</div>';
                 }
+            } else {
+                // If settings node is completely empty
+                const adminListDiv = document.getElementById('configAdminListContainer');
+                if(adminListDiv) adminListDiv.innerHTML = '<div style="text-align:center; font-size:12px; color:var(--text-dim); padding:10px;">No admins currently assigned via panel.</div>';
             }
         });
 
         window.updateSystemConfigData = function(key, value) {
             databaseRef.ref(`settings/${key}`).set(value).then(() => {
+                if(key === 'storeLogo') {
+                    alert("Global Store Logo Updated Successfully!");
+                }
                 console.log(`Config [${key}] updated to:`, value);
-                // alert optional here to avoid annoyance on toggle switch
             });
         };
 
@@ -594,7 +644,6 @@
             const email = emailInput.value.trim().toLowerCase();
             if(!email || !email.includes('@')) { alert('Please enter a valid email.'); return; }
             
-            // Firebase keys can't have '.', so replace them with ','
             const safeKey = email.replace(/\./g, ','); 
             databaseRef.ref(`settings/masterAdmins/${safeKey}`).set(email).then(() => {
                 emailInput.value = '';

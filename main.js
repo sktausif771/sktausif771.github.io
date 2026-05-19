@@ -16,6 +16,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const auth = firebase.auth();
 
     // ==========================================================================
+    // NEW: REAL-TIME MAINTENANCE MODE TRACKER (INSTANT LOCKOUT)
+    // ==========================================================================
+    db.ref('settings/maintenanceMode').on('value', (snapshot) => {
+        const isMaintenanceActive = snapshot.val();
+        if (isMaintenanceActive === true) {
+            const currentRole = sessionStorage.getItem('mvx_role');
+            // If maintenance is ON and the user is NOT an owner, kick them instantly
+            if (currentRole !== 'owner') {
+                alert("🛠 System Update: Server is undergoing maintenance. You are being securely logged out.");
+                sessionStorage.clear();
+                auth.signOut().then(() => {
+                    window.location.replace('login.html?error=maintenance');
+                });
+            }
+        }
+    });
+
+    // ==========================================================================
     // ১. ডাইনামিক ৫টি ভাষার রিয়েলটাইম ডিকশনারি (Multi-Language Engine)
     // ==========================================================================
     const languageDictionary = {
@@ -217,7 +235,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function triggerHiddenPasswordGate() {
         if (!userProfile) return;
         
-        // ওনার অ্যাকাউন্ট হলে কোনো পাসওয়ার্ড ছাড়াই ডাইরেক্ট প্যানেলে নিয়ে যাবে
         if (userProfile.role === 'owner') {
             window.location.href = 'admin.html';
             return;
@@ -253,8 +270,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeLabel = document.getElementById('currentThemeLabel');
     
     let savedTheme = localStorage.getItem('mvx_theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    updateThemeUIElements(savedTheme);
+    
+    // Also respect Global Settings default theme if user hasn't set one manually yet
+    db.ref('settings/defaultTheme').once('value').then(snap => {
+        if(snap.exists() && !localStorage.getItem('mvx_theme')) {
+            savedTheme = snap.val();
+        }
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeUIElements(savedTheme);
+    });
 
     if (themeBtn) {
         themeBtn.addEventListener('click', () => {
@@ -394,7 +418,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ==========================================================================
-       ৬. মাস্টার রিডিম কোড ইঞ্জিন ক্লেইম প্রসেস
+       ৬. মাস্টার রিডিম কোড ইঞ্জিন ক্লেইম প্রসেস (With Multi-App Array Support)
        ========================================================================== */
     window.executeRedeemProtocol = function() {
         const codeInput = document.getElementById('redeemInputCode');
@@ -455,6 +479,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             if (allAppsSnap.exists()) {
                                 allAppsSnap.forEach((appChild) => {
                                     rewardUpdate[`unlocked_apps/${appChild.key}`] = true;
+                                    rewardUpdate[`unlocked_passwords/${appChild.key}`] = true; // Added password bypass for complete gift access
                                 });
                                 finishRedeemTransactionUpdatePipeline(user.uid, userData, redeemRef, codeData, rewardUpdate, "🚀 Universal Master Package Access Bypass Enabled!");
                             }
@@ -464,12 +489,16 @@ document.addEventListener('DOMContentLoaded', () => {
                         const multipleAppsList = appTargetValue.split(',');
                         multipleAppsList.forEach((id) => {
                             let cleanId = id.trim();
-                            if(cleanId) rewardUpdate[`unlocked_apps/${cleanId}`] = true;
+                            if(cleanId) {
+                                rewardUpdate[`unlocked_apps/${cleanId}`] = true;
+                                rewardUpdate[`unlocked_passwords/${cleanId}`] = true;
+                            }
                         });
                         finishRedeemTransactionUpdatePipeline(user.uid, userData, redeemRef, codeData, rewardUpdate, "🚀 Multiple Custom Premium Target Packages Unlocked!");
                         return;
                     } else {
                         rewardUpdate[`unlocked_apps/${appTargetValue}`] = true;
+                        rewardUpdate[`unlocked_passwords/${appTargetValue}`] = true;
                         finishRedeemTransactionUpdatePipeline(user.uid, userData, redeemRef, codeData, rewardUpdate, "🚀 Target Premium Application Unlocked Successfully.");
                         return;
                     }
