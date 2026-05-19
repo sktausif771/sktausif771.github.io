@@ -30,6 +30,7 @@
             --success: #2ed573;
             --warning: #ffa502;
             --info: #00a8ff;
+            --gift: #ff9ff3;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Space Grotesk', sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -72,21 +73,21 @@
         /* ==================== 2. QUICK STATS DASHBOARD ==================== */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
             padding: 20px;
         }
         .stat-card {
             background: var(--card-bg);
             border: 1px solid var(--border-glass);
             border-radius: 12px;
-            padding: 15px;
+            padding: 15px 10px;
             text-align: center;
             backdrop-filter: blur(5px);
         }
-        .stat-card i { font-size: 20px; margin-bottom: 8px; }
-        .stat-val { font-size: 22px; font-weight: 700; font-family: 'Orbitron', sans-serif; margin-bottom: 2px; }
-        .stat-lbl { font-size: 10px; color: var(--text-dim); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
+        .stat-card i { font-size: 18px; margin-bottom: 8px; }
+        .stat-val { font-size: 18px; font-weight: 700; font-family: 'Orbitron', sans-serif; margin-bottom: 2px; }
+        .stat-lbl { font-size: 9px; color: var(--text-dim); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
 
         /* ==================== 3. HORIZONTAL TAB MENU ==================== */
         .tab-menu-wrapper {
@@ -158,15 +159,17 @@
         .icon-check { background: rgba(46, 213, 115, 0.1); color: var(--success); }
         .icon-trash { background: rgba(255, 71, 87, 0.1); color: var(--danger); }
         .icon-view { background: rgba(0, 168, 255, 0.1); color: var(--info); }
+        .icon-gift { background: rgba(255, 159, 243, 0.1); color: var(--gift); }
         .icon-check:hover { background: var(--success); color: #000; }
         .icon-trash:hover { background: var(--danger); color: #fff; }
         .icon-view:hover { background: var(--info); color: #fff; }
+        .icon-gift:hover { background: var(--gift); color: #fff; transform: scale(1.1); }
 
         .empty-state { text-align: center; padding: 50px 20px; color: var(--text-dim); }
         .empty-state i { font-size: 40px; margin-bottom: 15px; opacity: 0.5; }
         .empty-state p { font-size: 14px; font-weight: 500; }
 
-        /* ==================== 5. INPUTS & FORMS ==================== */
+        /* ==================== 5. MODALS & FORMS ==================== */
         .glass-input {
             width: 100%; padding: 14px 15px; background: rgba(0,0,0,0.2);
             border: 1px solid var(--border-glass); border-radius: 10px;
@@ -187,9 +190,36 @@
 
         .section-title { font-family: 'Orbitron', sans-serif; font-size: 14px; color: var(--primary); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px dashed var(--border-glass); padding-bottom: 10px; }
 
-        /* Report & Notice Specific */
+        /* MODAL CSS */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 2000; opacity: 0; visibility: hidden; transition: all 0.3s ease;
+        }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .play-modal {
+            background: var(--bg-dark); width: 90%; max-width: 450px;
+            border-radius: 20px; border: 1px solid var(--border-glass);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5); transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+        .modal-overlay.active .play-modal { transform: scale(1); }
+        .modal-header {
+            padding: 20px; border-bottom: 1px solid var(--border-glass);
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,0.02);
+        }
+        .modal-header h3 { font-family: 'Orbitron', sans-serif; font-size: 18px; color: #fff; display:flex; align-items:center; gap:8px;}
+        .close-modal { font-size: 22px; color: var(--text-dim); cursor: pointer; }
+        .close-modal:hover { color: var(--danger); }
+        .modal-body { padding: 25px 20px; }
+
+        /* Badges */
         .report-card { border-left: 3px solid var(--danger); }
         .badge-danger { display: inline-block; background: rgba(255, 71, 87, 0.15); color: var(--danger); padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; margin-top: 5px; border: 1px solid rgba(255, 71, 87, 0.3); }
+        .time-badge { color: var(--primary); font-size: 11px; font-family: monospace; font-weight: bold; background: rgba(0, 255, 204, 0.1); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(0,255,204,0.2);}
 
         /* Checkbox List Box */
         .app-select-box {
@@ -197,18 +227,13 @@
             border-radius: 10px; max-height: 200px; overflow-y: auto;
             padding: 10px; margin-bottom: 15px;
         }
-        .app-check-item {
-            display: flex; align-items: center; gap: 10px; padding: 8px;
-            border-bottom: 1px dashed var(--border-glass);
-        }
+        .app-check-item { display: flex; align-items: center; gap: 10px; padding: 8px; border-bottom: 1px dashed var(--border-glass); }
         .app-check-item:last-child { border-bottom: none; }
         .app-check-item input { width: 16px; height: 16px; accent-color: var(--primary); }
         .app-check-item label { font-size: 13px; color: #fff; cursor: pointer; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         @media (max-width: 600px) {
-            .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 15px 20px; }
-            .stat-val { font-size: 18px; }
-            .stat-card { padding: 10px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 15px 20px; }
         }
     </style>
 </head>
@@ -234,6 +259,11 @@
             <div class="stat-lbl">Pending</div>
         </div>
         <div class="stat-card">
+            <i class="fas fa-users" style="color: var(--info);"></i>
+            <div class="stat-val" id="statUsers">0</div>
+            <div class="stat-lbl">Live Users</div>
+        </div>
+        <div class="stat-card">
             <i class="fas fa-flag" style="color: var(--danger);"></i>
             <div class="stat-val" id="statReports">0</div>
             <div class="stat-lbl">Reports</div>
@@ -241,16 +271,23 @@
     </div>
 
     <div class="tab-menu-wrapper">
-        <div class="tab-chip active" onclick="switchAdminPanelSection('pending', this)"><i class="fas fa-hourglass-half"></i> Pending</div>
+        <div class="tab-chip active" onclick="switchAdminPanelSection('users', this)"><i class="fas fa-users"></i> Live Users</div>
+        <div class="tab-chip" onclick="switchAdminPanelSection('pending', this)"><i class="fas fa-hourglass-half"></i> Pending</div>
         <div class="tab-chip" onclick="switchAdminPanelSection('live', this)"><i class="fas fa-server"></i> Live Catalog</div>
         <div class="tab-chip" onclick="switchAdminPanelSection('voucher', this)"><i class="fas fa-ticket-alt"></i> Vouchers</div>
         <div class="tab-chip" onclick="switchAdminPanelSection('reports', this)"><i class="fas fa-exclamation-triangle"></i> Reports</div>
         <div class="tab-chip" onclick="switchAdminPanelSection('notices', this)"><i class="fas fa-bell"></i> Notices</div>
-        <div class="tab-chip" onclick="switchAdminPanelSection('users_future', this)"><i class="fas fa-users"></i> Users (Plan)</div>
-        <div class="tab-chip" onclick="switchAdminPanelSection('settings_future', this)"><i class="fas fa-cogs"></i> Config (Plan)</div>
+        <div class="tab-chip" onclick="switchAdminPanelSection('settings_future', this)"><i class="fas fa-cogs"></i> Config</div>
     </div>
 
-    <div id="pendingPanel" class="data-panel active">
+    <div id="usersPanel" class="data-panel active">
+        <div class="section-title">Global User Database (Sorted by Active Time)</div>
+        <div id="liveUsersTrackingContainer">
+            <div class="empty-state"><i class="fas fa-circle-notch fa-spin" style="color:var(--info);"></i><p>Fetching active users...</p></div>
+        </div>
+    </div>
+
+    <div id="pendingPanel" class="data-panel">
         <div id="pendingContainerQueue">
             <div class="empty-state"><i class="fas fa-circle-notch fa-spin" style="color:var(--primary);"></i><p>Syncing Pending Nodes...</p></div>
         </div>
@@ -344,14 +381,6 @@
         </div>
     </div>
 
-    <div id="users_futurePanel" class="data-panel">
-        <div class="empty-state">
-            <i class="fas fa-users-cog" style="color:var(--text-dim); font-size:40px; margin-bottom:15px;"></i>
-            <h3 style="color:#fff; margin-bottom:5px;">User Management Module</h3>
-            <p>Database structure integration pending for next update cycle.</p>
-        </div>
-    </div>
-
     <div id="settings_futurePanel" class="data-panel">
         <div class="empty-state">
             <i class="fas fa-sliders-h" style="color:var(--text-dim); font-size:40px; margin-bottom:15px;"></i>
@@ -360,6 +389,44 @@
         </div>
     </div>
 
+
+    <div class="modal-overlay" id="userGiftModal">
+        <div class="play-modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-gift" style="color:var(--gift);"></i> Direct User Gift</h3>
+                <i class="fas fa-times close-modal" onclick="closeGiftModal()"></i>
+            </div>
+            <div class="modal-body">
+                <div style="text-align:center; margin-bottom:20px;">
+                    <img src="" id="giftUserAvatar" style="width:70px; height:70px; border-radius:50%; border:2px solid var(--gift); object-fit:cover; margin-bottom:10px;">
+                    <h3 id="giftUserName" style="color:#fff; font-size:18px;">User Name</h3>
+                    <p id="giftUserEmail" style="color:var(--text-dim); font-size:12px;"></p>
+                </div>
+
+                <label class="input-label">Select Gift Type</label>
+                <select id="giftTypeSelector" class="glass-input" onchange="toggleDirectGiftUI(this.value)">
+                    <option value="coins">Send MVX Coins</option>
+                    <option value="premium_app">Gift Premium App (+ Password Bypass)</option>
+                </select>
+
+                <div id="giftCoinsUI">
+                    <label class="input-label" style="color:var(--warning);">Amount of Coins to Send</label>
+                    <input type="number" id="giftCoinsAmount" class="glass-input" placeholder="e.g. 1000">
+                </div>
+
+                <div id="giftAppUI" style="display:none;">
+                    <label class="input-label" style="color:var(--primary);">Select App to Gift (Shows Title)</label>
+                    <select id="giftAppSelect" class="glass-input">
+                        <option value="">-- Select Premium App --</option>
+                        </select>
+                </div>
+
+                <button class="btn-primary" style="background: linear-gradient(45deg, #ff9ff3, #feca57);" onclick="dispatchDirectGiftToUser()">SEND GIFT NOW <i class="fas fa-paper-plane" style="margin-left:5px;"></i></button>
+            </div>
+        </div>
+    </div>
+
+
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script src="firebase-config.js"></script>
@@ -367,6 +434,8 @@
     <script>
         const databaseRef = firebase.database();
         let storeAppsCacheForSelects = []; // Caches apps for dropdowns/checkboxes
+        let currentGiftTargetUid = null;
+        let currentGiftTargetName = null;
 
         function switchAdminPanelSection(panelId, btnElement) {
             document.querySelectorAll('.tab-chip').forEach(btn => btn.classList.remove('active'));
@@ -379,16 +448,165 @@
             document.getElementById(panelId + 'Panel').classList.add('active');
         }
 
+        // Relative Time Converter (1 sec ago, 5 mins ago, etc)
+        function timeSince(dateTimestamp) {
+            if(!dateTimestamp) return "Unknown";
+            const seconds = Math.floor((new Date() - dateTimestamp) / 1000);
+            let interval = seconds / 31536000;
+            if (interval > 1) return Math.floor(interval) + " years ago";
+            interval = seconds / 2592000;
+            if (interval > 1) return Math.floor(interval) + " months ago";
+            interval = seconds / 86400;
+            if (interval > 1) return Math.floor(interval) + " days ago";
+            interval = seconds / 3600;
+            if (interval > 1) return Math.floor(interval) + " hours ago";
+            interval = seconds / 60;
+            if (interval > 1) return Math.floor(interval) + " mins ago";
+            return Math.floor(seconds) + " seconds ago";
+        }
+
         // ==========================================================================
-        // REALTIME DASHBOARD STATS CALCULATOR
+        // TAB 0: LIVE USERS ENGINE (NEW FEATURE)
+        // ==========================================================================
+        databaseRef.ref('users').on('value', (snapshot) => {
+            const container = document.getElementById('liveUsersTrackingContainer');
+            document.getElementById('statUsers').innerText = snapshot.numChildren() || 0;
+
+            if (!snapshot.exists()) {
+                container.innerHTML = `<div class="empty-state"><p>No users registered yet.</p></div>`;
+                return;
+            }
+
+            let usersArr = [];
+            snapshot.forEach(child => {
+                let u = child.val();
+                u.uid = child.key;
+                // Use lastLogin if exists, otherwise joinedAt, otherwise 0 to avoid errors
+                u.sortTime = u.lastLogin || u.joinedAt || 0; 
+                usersArr.push(u);
+            });
+
+            // Sort exactly as requested: Smallest time ago (most recent) at the top
+            usersArr.sort((a, b) => b.sortTime - a.sortTime);
+
+            let html = '';
+            usersArr.forEach(user => {
+                let timeString = timeSince(user.sortTime);
+                let roleBadge = user.role === 'owner' ? `<i class="fas fa-crown" style="color:var(--warning); font-size:10px;" title="Owner"></i>` : '';
+
+                html += `
+                    <div class="item-card">
+                        <img src="${user.avatarUrl}" class="item-img" onerror="this.src='https://via.placeholder.com/60/121212/00ffcc?text=USR'">
+                        <div class="item-info">
+                            <h3>${user.name} ${roleBadge}</h3>
+                            <p style="margin-bottom:4px;">${user.email}</p>
+                            <span class="time-badge"><i class="fas fa-clock"></i> Active: ${timeString}</span>
+                        </div>
+                        <div class="item-actions">
+                            <button class="action-icon icon-gift" onclick="openUserGiftModal('${user.uid}', '${user.name.replace(/'/g, "\\'")}', '${user.email}', '${user.avatarUrl}')" title="Send Direct Gift"><i class="fas fa-gift"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        });
+
+        // ==========================================================================
+        // DIRECT GIFTING MODAL LOGIC
+        // ==========================================================================
+        window.openUserGiftModal = function(uid, name, email, avatar) {
+            currentGiftTargetUid = uid;
+            currentGiftTargetName = name;
+            
+            document.getElementById('giftUserName').innerText = name;
+            document.getElementById('giftUserEmail').innerText = email;
+            document.getElementById('giftUserAvatar').src = avatar;
+            
+            document.getElementById('giftCoinsAmount').value = '';
+            document.getElementById('giftAppSelect').value = '';
+            
+            document.getElementById('userGiftModal').classList.add('active');
+        }
+
+        window.closeGiftModal = function() {
+            document.getElementById('userGiftModal').classList.remove('active');
+        }
+
+        window.toggleDirectGiftUI = function(val) {
+            document.getElementById('giftCoinsUI').style.display = (val === 'coins') ? 'block' : 'none';
+            document.getElementById('giftAppUI').style.display = (val === 'premium_app') ? 'block' : 'none';
+        }
+
+        window.dispatchDirectGiftToUser = function() {
+            if(!currentGiftTargetUid) return;
+            
+            const giftType = document.getElementById('giftTypeSelector').value;
+            let successMessage = "";
+            let pushNotiMessage = "";
+            let updates = {};
+
+            if(giftType === 'coins') {
+                const coinsAmt = parseInt(document.getElementById('giftCoinsAmount').value);
+                if(!coinsAmt || coinsAmt <= 0) { alert("Enter a valid coin amount."); return; }
+                
+                // Need to fetch their current coins first
+                databaseRef.ref(`users/${currentGiftTargetUid}/coins`).once('value').then(snap => {
+                    const currentBal = parseInt(snap.val()) || 0;
+                    updates[`users/${currentGiftTargetUid}/coins`] = currentBal + coinsAmt;
+                    
+                    pushNotiMessage = `🎁 Congrats ${currentGiftTargetName}! Admin has gifted you ${coinsAmt} MVX Coins.`;
+                    executeGiftDatabaseUpdate(updates, pushNotiMessage);
+                });
+                return; // exit to wait for promise
+            } 
+            else if(giftType === 'premium_app') {
+                const appId = document.getElementById('giftAppSelect').value;
+                if(!appId) { alert("Select an application from the dropdown to gift."); return; }
+                
+                // Find App Title for Notification
+                let targetAppObj = storeAppsCacheForSelects.find(a => a.id === appId);
+                let appTitle = targetAppObj ? targetAppObj.appName : "a Premium App";
+
+                // Unlock App AND Unlock Password Bypass directly
+                updates[`users/${currentGiftTargetUid}/unlocked_apps/${appId}`] = true;
+                updates[`users/${currentGiftTargetUid}/unlocked_passwords/${appId}`] = true;
+                
+                pushNotiMessage = `🎁 Special Gift! Admin unlocked '${appTitle}' for you, including password bypass!`;
+                executeGiftDatabaseUpdate(updates, pushNotiMessage);
+            }
+        }
+
+        function executeGiftDatabaseUpdate(updatePayload, globalPushMsg) {
+            databaseRef.ref().update(updatePayload).then(() => {
+                // Send Notification to System Broadcasts to hype the user
+                const date = new Date();
+                const timeStr = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) + " | " + date.toLocaleDateString();
+                
+                databaseRef.ref('system_broadcasts').push({
+                    title: "Exclusive Reward Sent!",
+                    message: globalPushMsg,
+                    type: "normal",
+                    timeString: timeStr,
+                    sender: "Master Admin",
+                    link: "", 
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                });
+
+                alert("Gift dispatched successfully to user database!");
+                closeGiftModal();
+            }).catch(err => alert("Error: " + err.message));
+        }
+
+        // ==========================================================================
+        // LIVE DASHBOARD STATS & GLOBAL SELECT POPULATION
         // ==========================================================================
         databaseRef.ref('store_apps').on('value', (snap) => { 
             document.getElementById('statLiveApps').innerText = snap.numChildren() || 0; 
             
-            // Populating cache for Dropdowns & Checkboxes
             storeAppsCacheForSelects = [];
             const vContainer = document.getElementById('voucherAppCheckboxContainer');
             const nSelect = document.getElementById('nAppSelect');
+            const giftSelect = document.getElementById('giftAppSelect');
             
             if(!snap.exists()) {
                 if(vContainer) vContainer.innerHTML = '<div style="text-align:center; font-size:12px; color:var(--danger);">No apps available.</div>';
@@ -397,26 +615,26 @@
 
             let vHtml = '';
             let nHtml = '<option value="">-- Do Not Mention Any App --</option>';
+            let giftHtml = '<option value="">-- Select Premium App --</option>';
 
             snap.forEach(child => {
                 let app = child.val();
                 app.id = child.key;
                 storeAppsCacheForSelects.push(app);
 
-                // Populate Checkboxes (Only for Premium apps to keep it logical, or all apps if you want)
                 vHtml += `
                     <div class="app-check-item">
                         <input type="checkbox" class="v-app-checkbox" value="${app.id}" id="chk_${app.id}">
                         <label for="chk_${app.id}">${app.appName} ${app.category === 'paid' ? '(Premium)' : '(Free)'}</label>
                     </div>
                 `;
-
-                // Populate Notice Select Dropdown
                 nHtml += `<option value="${app.id}">${app.appName}</option>`;
+                giftHtml += `<option value="${app.id}">${app.appName}</option>`;
             });
 
             if(vContainer) vContainer.innerHTML = vHtml;
             if(nSelect) nSelect.innerHTML = nHtml;
+            if(giftSelect) giftSelect.innerHTML = giftHtml; // App Titles dynamically loaded in Gift Modal
         });
 
         databaseRef.ref('pending_apps').on('value', (snap) => { document.getElementById('statPendingApps').innerText = snap.numChildren() || 0; });
@@ -561,7 +779,7 @@
             snapshot.forEach(child => {
                 const voucher = child.val();
                 let shortVal = voucher.rewardValue;
-                if(shortVal.length > 20) shortVal = shortVal.substring(0, 20) + '...'; // Truncate long IDs
+                if(shortVal.length > 20) shortVal = shortVal.substring(0, 20) + '...'; 
 
                 html += `
                     <div class="item-card" style="border-left: 2px solid var(--warning);">
@@ -580,7 +798,7 @@
         window.dropActiveVoucherFromNetwork = function(key) { if(confirm("Delete this voucher?")) databaseRef.ref(`redeem_codes/${key}`).remove(); };
 
         // ==========================================================================
-        // 4. USER REPORTS (WITH VIEW BUTTON)
+        // 4. USER REPORTS
         // ==========================================================================
         databaseRef.ref('reports').on('value', (snapshot) => {
             const reportsBox = document.getElementById('userReportsTrackingContainer');
@@ -610,7 +828,7 @@
         window.dropReportNodeFromRegistry = function(key) { if(confirm("Mark report as resolved and delete?")) databaseRef.ref(`reports/${key}`).remove(); };
 
         // ==========================================================================
-        // 5. SYSTEM NOTICES (MANUAL DISPATCHER & LIST)
+        // 5. SYSTEM NOTICES (MANUAL DISPATCHER)
         // ==========================================================================
         window.dispatchManualSystemNotice = function() {
             const title = document.getElementById('nTitle').value.trim();
@@ -622,7 +840,7 @@
 
             let finalLink = customLink;
             if(appId !== "") {
-                finalLink = `details.html?id=${appId}`; // Auto generates link to app if selected
+                finalLink = `details.html?id=${appId}`; 
             }
 
             const date = new Date();
@@ -634,7 +852,7 @@
                 type: "normal",
                 timeString: timeStr,
                 sender: "Master Admin",
-                link: finalLink || "", // Storing the link for future use if needed
+                link: finalLink || "", 
                 timestamp: firebase.database.ServerValue.TIMESTAMP
             }).then(() => {
                 alert("Broadcast Notice sent to all users successfully!");
