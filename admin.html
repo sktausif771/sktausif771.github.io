@@ -147,7 +147,7 @@
         
         .item-img { width: 55px; height: 55px; border-radius: 12px; object-fit: cover; border: 1px solid var(--border-glass); flex-shrink: 0; }
         
-        /* New Hover Effect for Images that can be zoomed */
+        /* Hover Effect for Images that can be zoomed */
         .zoomable-img { cursor: zoom-in; transition: transform 0.2s; }
         .zoomable-img:hover { transform: scale(1.05); border-color: var(--primary); }
 
@@ -226,6 +226,14 @@
         .badge-danger { display: inline-block; background: rgba(255, 71, 87, 0.15); color: var(--danger); padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; margin-top: 5px; border: 1px solid rgba(255, 71, 87, 0.3); }
         .time-badge { color: var(--primary); font-size: 11px; font-family: monospace; font-weight: bold; background: rgba(0, 255, 204, 0.1); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(0,255,204,0.2);}
 
+        /* Toggle Switch CSS for Config */
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.1); transition: .4s; border-radius: 34px; border: 1px solid var(--border-glass); }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: var(--text-dim); transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: rgba(255, 71, 87, 0.2); border-color: var(--danger); }
+        input:checked + .slider:before { transform: translateX(20px); background-color: var(--danger); box-shadow: 0 0 10px var(--danger); }
+
         /* Checkbox List Box */
         .app-select-box {
             background: rgba(0,0,0,0.2); border: 1px solid var(--border-glass);
@@ -302,7 +310,7 @@
         <div class="tab-chip" onclick="switchAdminPanelSection('voucher', this)"><i class="fas fa-ticket-alt"></i> Vouchers</div>
         <div class="tab-chip" onclick="switchAdminPanelSection('reports', this)"><i class="fas fa-exclamation-triangle"></i> Reports</div>
         <div class="tab-chip" onclick="switchAdminPanelSection('notices', this)"><i class="fas fa-bell"></i> Notices</div>
-        <div class="tab-chip" onclick="switchAdminPanelSection('settings_future', this)"><i class="fas fa-cogs"></i> Config</div>
+        <div class="tab-chip" onclick="switchAdminPanelSection('config', this)"><i class="fas fa-cogs"></i> Config</div>
     </div>
 
     <div id="usersPanel" class="data-panel active">
@@ -405,13 +413,56 @@
         </div>
     </div>
 
-    <div id="settings_futurePanel" class="data-panel">
-        <div class="empty-state">
-            <i class="fas fa-sliders-h" style="color:var(--text-dim); font-size:40px; margin-bottom:15px;"></i>
-            <h3 style="color:#fff; margin-bottom:5px;">Core System Config</h3>
-            <p>Global variable configuration backend integration pending.</p>
+    <div id="configPanel" class="data-panel">
+        <div style="background: var(--card-bg); border: 1px solid var(--border-glass); padding: 20px; border-radius: 16px; margin-bottom: 25px;">
+            <div class="section-title"><i class="fas fa-tools"></i> Global Store Configuration</div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255, 71, 87, 0.05); border:1px solid rgba(255, 71, 87, 0.2); padding:15px; border-radius:10px; margin-bottom:20px;">
+                <div>
+                    <h4 style="color:var(--danger); font-size:15px; margin-bottom:5px;"><i class="fas fa-lock"></i> Maintenance Mode</h4>
+                    <p style="font-size:11px; color:var(--text-dim);">Lock down the store for updates. Users will see a maintenance screen.</p>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="configMaintenanceMode" onchange="updateSystemConfigData('maintenanceMode', this.checked)">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+
+            <label class="input-label" style="color:var(--warning);">New User Signup Bonus (Coins)</label>
+            <div style="display:flex; gap:10px; margin-bottom:20px;">
+                <input type="number" id="configBonusCoins" class="glass-input" style="margin-bottom:0;" placeholder="e.g. 100">
+                <button class="btn-primary" style="width:120px;" onclick="updateSystemConfigData('signupBonus', parseInt(document.getElementById('configBonusCoins').value))">SAVE</button>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:20px;">
+                <div>
+                    <label class="input-label">Default Theme Mode</label>
+                    <select id="configDefaultTheme" class="glass-input" onchange="updateSystemConfigData('defaultTheme', this.value)">
+                        <option value="dark">Dark Mode</option>
+                        <option value="light">Light Mode</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="input-label">Global Store Logo URL</label>
+                    <div style="display:flex; gap:10px;">
+                        <input type="text" id="configStoreLogo" class="glass-input" style="margin-bottom:0;" placeholder="Image URL">
+                        <button class="btn-primary" style="width:80px; padding:0;" onclick="updateSystemConfigData('storeLogo', document.getElementById('configStoreLogo').value)"><i class="fas fa-save"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <label class="input-label" style="color:var(--success);">Master Admin Access (Emails)</label>
+            <div style="display:flex; gap:10px; margin-bottom:15px;">
+                <input type="email" id="configNewAdminEmail" class="glass-input" style="margin-bottom:0;" placeholder="e.g. admin@mvx.com">
+                <button class="btn-primary" style="width:120px; background:var(--success);" onclick="addNewMasterAdminEmail()">ADD ADMIN</button>
+            </div>
+            <div class="app-select-box" id="configAdminListContainer">
+                <div style="text-align:center; font-size:12px; color:var(--text-dim);">Loading admins...</div>
+            </div>
+
         </div>
     </div>
+
 
     <div class="modal-overlay" id="userGiftModal">
         <div class="play-modal">
@@ -503,7 +554,62 @@
         }
 
         // ==========================================================================
-        // TAB 0: LIVE USERS ENGINE (FIXED & FILTERED)
+        // TAB 6: NEW CORE CONFIG PANEL ENGINE
+        // ==========================================================================
+        databaseRef.ref('settings').on('value', (snapshot) => {
+            if(snapshot.exists()) {
+                const conf = snapshot.val();
+                if(document.getElementById('configMaintenanceMode')) document.getElementById('configMaintenanceMode').checked = conf.maintenanceMode || false;
+                if(document.getElementById('configBonusCoins')) document.getElementById('configBonusCoins').value = conf.signupBonus || 0;
+                if(document.getElementById('configDefaultTheme')) document.getElementById('configDefaultTheme').value = conf.defaultTheme || 'dark';
+                if(document.getElementById('configStoreLogo')) document.getElementById('configStoreLogo').value = conf.storeLogo || '';
+                
+                // Render Master Admins List
+                const adminListDiv = document.getElementById('configAdminListContainer');
+                if(conf.masterAdmins && adminListDiv) {
+                    let adminHtml = '';
+                    Object.keys(conf.masterAdmins).forEach(key => {
+                        let email = conf.masterAdmins[key];
+                        adminHtml += `
+                            <div class="app-check-item" style="justify-content:space-between;">
+                                <label style="cursor:default;"><i class="fas fa-crown" style="color:var(--warning); margin-right:5px;"></i> ${email}</label>
+                                <button class="action-icon icon-trash" style="width:30px; height:30px; font-size:12px;" onclick="removeMasterAdminEmail('${key}')"><i class="fas fa-times"></i></button>
+                            </div>
+                        `;
+                    });
+                    adminListDiv.innerHTML = adminHtml || '<div style="text-align:center; font-size:12px; color:var(--text-dim);">No admins explicitly added via panel yet.</div>';
+                }
+            }
+        });
+
+        window.updateSystemConfigData = function(key, value) {
+            databaseRef.ref(`settings/${key}`).set(value).then(() => {
+                console.log(`Config [${key}] updated to:`, value);
+                // alert optional here to avoid annoyance on toggle switch
+            });
+        };
+
+        window.addNewMasterAdminEmail = function() {
+            const emailInput = document.getElementById('configNewAdminEmail');
+            const email = emailInput.value.trim().toLowerCase();
+            if(!email || !email.includes('@')) { alert('Please enter a valid email.'); return; }
+            
+            // Firebase keys can't have '.', so replace them with ','
+            const safeKey = email.replace(/\./g, ','); 
+            databaseRef.ref(`settings/masterAdmins/${safeKey}`).set(email).then(() => {
+                emailInput.value = '';
+            });
+        };
+
+        window.removeMasterAdminEmail = function(safeKey) {
+            if(confirm("Remove this email from Master Admin access?")) {
+                databaseRef.ref(`settings/masterAdmins/${safeKey}`).remove();
+            }
+        };
+
+
+        // ==========================================================================
+        // TAB 0: LIVE USERS ENGINE
         // ==========================================================================
         databaseRef.ref('users').on('value', (snapshot) => {
             const container = document.getElementById('liveUsersTrackingContainer');
@@ -517,8 +623,6 @@
             let usersArr = [];
             snapshot.forEach(child => {
                 let u = child.val();
-                
-                // FILTER: Ignore dummy accounts or old tests without Name or Email
                 if(!u.name || !u.email || u.name.trim() === "") return; 
 
                 u.uid = child.key;
@@ -526,7 +630,6 @@
                 usersArr.push(u);
             });
 
-            // Update stats specifically with valid users count
             document.getElementById('statUsers').innerText = usersArr.length || 0;
 
             if(usersArr.length === 0) {
@@ -534,7 +637,6 @@
                 return;
             }
 
-            // Sort exactly as requested: Smallest time ago (most recent) at the top
             usersArr.sort((a, b) => b.sortTime - a.sortTime);
 
             let html = '';
