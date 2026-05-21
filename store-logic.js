@@ -488,7 +488,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================================================
     window.commitPackageToPendingDatabaseNode = function() {
         const name = document.getElementById('pName').value.trim();
-        const devName = document.getElementById('pDevName').value.trim(); // UPDATE: Grab Developer Name
+        const devName = document.getElementById('pDevName').value.trim(); 
         const mainLink = document.getElementById('pMainLink').value.trim();
         const logoData = document.getElementById('logoUrlOutput').value.trim();
         const isTrendingChecked = document.getElementById('pTrendingCheck').checked;
@@ -520,7 +520,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const transactionalPackagePayload = {
             appName: name,
-            developerName: devName || userProfile.name || "Unknown Developer", // UPDATE: Store Developer Name explicitly
+            developerName: devName || userProfile.name || "Unknown Developer", 
             version: document.getElementById('pVer').value.trim() || "1.0",
             size: document.getElementById('pSize').value.trim() || "0 MB",
             appType: document.getElementById('pType').value,
@@ -561,7 +561,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // ==========================================================================
-    // 9. LIVE BROADCAST INBOX CHANNEL SYNCHRONIZER (WITH LINK CLICK LOGIC)
+    // 9. LIVE BROADCAST INBOX & 100% NATIVE PHONE PUSH NOTIFICATION ENGINE
     // ==========================================================================
     window.clearLocalNotifications = function() {
         document.getElementById('notificationInboxDisplay').innerHTML = `<div class="empty-msg" style="text-align:center; color:var(--text-secondary); padding:40px;"><i class="fas fa-trash-alt" style="font-size:30px; margin-bottom:10px;"></i><br>Inbox cleared locally.</div>`;
@@ -571,6 +571,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function listenForLiveSystemNotifications() {
         const inbox = document.getElementById('notificationInboxDisplay');
         const badge = document.getElementById('notiAlert');
+        let isInitialLoad = true; // পেজ রিলোড দেওয়ার সময় আগের নোটিশগুলো যাতে আবার না বাজে
         
         db.ref('system_broadcasts').on('value', (snapshot) => {
             if(!inbox) return;
@@ -583,12 +584,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let html = '';
             let notices = [];
-            snapshot.forEach(child => notices.push({id: child.key, ...child.val()}));
+            let latestNoteForPush = null; // নতুন নোটিশ ট্র্যাক করার জন্য
+
+            snapshot.forEach(child => {
+                let note = {id: child.key, ...child.val()};
+                notices.push(note);
+                latestNoteForPush = note; // লুপের শেষেরটাই সবচেয়ে নতুন নোটিশ
+            });
+            
             notices.reverse();
 
+            // ওয়েবসাইটের ভেতরের ইনবক্স আপডেট করা
             notices.forEach(note => {
                 const alertClass = note.type === 'alert' ? 'system-alert' : '';
-                
                 let clickAction = "";
                 let cursorStyle = "";
                 let linkIndicator = "";
@@ -614,6 +622,35 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
             });
             inbox.innerHTML = html;
+
+            // ====================================================================
+            // 🚀 MASTER TRICK: 100% NATIVE MOBILE STATUS BAR PUSH NOTIFICATION
+            // ====================================================================
+            if (isInitialLoad) {
+                isInitialLoad = false;
+                return; // প্রথমবার পেজ লোড হলে নোটিফিকেশন বাজবে না
+            }
+
+            // নতুন নোটিশ আসলে ডাইরেক্ট ইউজারের ফোনে পুশ করা
+            if (latestNoteForPush && Notification.permission === 'granted') {
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.ready.then(function(registration) {
+                        registration.showNotification(latestNoteForPush.title, {
+                            body: latestNoteForPush.message,
+                            icon: 'https://via.placeholder.com/192/020617/00e6b8?text=MVX',
+                            vibrate: [200, 100, 200, 100, 200], // ফোন কাঁপবে
+                            data: { url: latestNoteForPush.link || '/index.html' },
+                            requireInteraction: true
+                        });
+                    });
+                } else {
+                    // সার্ভিস ওয়ার্কার না থাকলে ফলব্যাক মেথড
+                    new Notification(latestNoteForPush.title, {
+                        body: latestNoteForPush.message,
+                        icon: 'https://via.placeholder.com/192/020617/00e6b8?text=MVX'
+                    });
+                }
+            }
         });
     }
 
@@ -645,7 +682,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                         type: "normal",
                                         timeString: timeStr,
                                         sender: "System Bot",
-                                        link: `details.html?id=${child.key}`, 
+                                        link: `details.html?id=${child.key}`, // Added automatic link to details page
                                         timestamp: firebase.database.ServerValue.TIMESTAMP
                                     });
                                 }

@@ -1,8 +1,19 @@
 /* ==========================================================================
-   MVX STORE V5.6 - MAIN SYSTEM ARCHITECTURE, FIVE-SEC HOLD GATE & MULTI-LANG
+   MVX STORE V5.6 - MAIN SYSTEM ARCHITECTURE & SERVICE WORKER
    ========================================================================== */
 
-let userProfile = null; // Global User Cache Object Mappings
+// NEW: SERVICE WORKER REGISTRATION FOR NATIVE PUSH NOTIFICATIONS
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        navigator.serviceWorker.register('sw.js').then(function(registration) {
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+        }, function(err) {
+            console.log('ServiceWorker registration failed: ', err);
+        });
+    });
+}
+
+let userProfile = null; 
 let masterPressTimer = null;
 window.isMasterTimerActive = false;
 
@@ -15,14 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const db = firebase.database();
     const auth = firebase.auth();
 
-    // ==========================================================================
-    // NEW: REAL-TIME MAINTENANCE MODE TRACKER (INSTANT LOCKOUT)
-    // ==========================================================================
     db.ref('settings/maintenanceMode').on('value', (snapshot) => {
         const isMaintenanceActive = snapshot.val();
         if (isMaintenanceActive === true) {
             const currentRole = sessionStorage.getItem('mvx_role');
-            // If maintenance is ON and the user is NOT an owner, kick them instantly
             if (currentRole !== 'owner') {
                 alert("🛠 System Update: Server is undergoing maintenance. You are being securely logged out.");
                 sessionStorage.clear();
@@ -33,9 +40,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // ==========================================================================
-    // ১. ডাইনামিক ৫টি ভাষার রিয়েলটাইম ডিকশনারি (Multi-Language Engine)
-    // ==========================================================================
     const languageDictionary = {
         en: {
             storeTitle: "MVX STORE",
@@ -213,9 +217,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const langSelectorEl = document.getElementById('sysLanguageSelector');
     if(langSelectorEl) langSelectorEl.value = savedLang;
 
-    /* ==========================================================================
-       ২. ৫ সেকেন্ড হোল্ড সিকিউর মাস্টার গেটওয়ে (5-Sec Hold Architecture)
-       ========================================================================== */
     const HIDDEN_MASTER_PASSKEY = "121345";
 
     window.startMasterLockTimer = function() {
@@ -234,7 +235,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function triggerHiddenPasswordGate() {
         if (!userProfile) {
-            // If no user profile, show gate anyway but redirect to login after success
             const gateModal = document.getElementById('hiddenGateModal');
             const passInput = document.getElementById('gatePasswordInput');
             if (gateModal) {
@@ -266,21 +266,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (inputKey === HIDDEN_MASTER_PASSKEY) {
             document.getElementById('hiddenGateModal').classList.remove('active');
             
-            // FORCE REDIRECT TO ADMIN PANEL - FIXED
-            // Also force set sessionStorage role to bypass any checks
             sessionStorage.setItem('mvx_role', 'owner');
             
-            // If user is logged in via Firebase, update their role in realtime too
             const currentUser = firebase.auth().currentUser;
             if (currentUser && userProfile) {
-                // Special bypass for sktausif771@gmail.com
                 if (currentUser.email === "sktausif771@gmail.com") {
                     firebase.database().ref(`users/${currentUser.uid}/role`).set('owner');
                 }
                 window.location.href = 'admin.html';
             } else {
-                // Not logged in - but still allow access? Better to redirect to login first
-                // But to make it work, we'll still try admin.html
                 window.location.href = 'admin.html';
             }
         } else {
@@ -289,15 +283,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    /* ==========================================================================
-       ৩. ডার্ক / লাইট থিম মোড সুইচ মডিউল
-       ========================================================================== */
     const themeBtn = document.getElementById('themeToggleBtn');
     const themeLabel = document.getElementById('currentThemeLabel');
     
     let savedTheme = localStorage.getItem('mvx_theme') || 'dark';
     
-    // Also respect Global Settings default theme if user hasn't set one manually yet
     db.ref('settings/defaultTheme').once('value').then(snap => {
         if(snap.exists() && !localStorage.getItem('mvx_theme')) {
             savedTheme = snap.val();
@@ -322,9 +312,6 @@ document.addEventListener('DOMContentLoaded', () => {
         themeLabel.innerText = (theme === 'dark') ? "Dark Mode" : "Light Mode";
     }
 
-    /* ==========================================================================
-       ৪. ইউজার সেশন রিয়েলটাইম লিসেনার ও ইউআই সিঙ্ক
-       ========================================================================== */
     auth.onAuthStateChanged((user) => {
         if (user) {
             db.ref('users/' + user.uid).on('value', (snapshot) => {
@@ -332,13 +319,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 userProfile = snapshot.val();
                 
-                // ==============================================================
-                // FORCE OWNER ROLE FOR sktausif771@gmail.com - FIX APPLIED HERE
-                // ==============================================================
                 if (user.email === "sktausif771@gmail.com") {
                     userProfile.role = "owner";
                     sessionStorage.setItem('mvx_role', 'owner');
-                    // Also update in database to persist
                     db.ref('users/' + user.uid + '/role').set('owner');
                 } else {
                     sessionStorage.setItem('mvx_role', userProfile.role || 'user');
@@ -357,16 +340,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (document.getElementById('userFollowingCount')) document.getElementById('userFollowingCount').innerText = userProfile.following || 0;
             });
         } else {
-            // User not logged in - clear session
             sessionStorage.removeItem('mvx_role');
             sessionStorage.removeItem('mvx_session');
             userProfile = null;
         }
     });
 
-    /* ==========================================================================
-       ৫. রিয়েলটাইম স্মার্ট সার্চ কোড লজিক
-       ========================================================================== */
     const searchInput = document.getElementById('storeSearchInput');
     const searchGrid = document.getElementById('searchResultGrid');
 
@@ -460,9 +439,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    /* ==========================================================================
-       ৬. মাস্টার রিডিম কোড ইঞ্জিন ক্লেইম প্রসেস (With Multi-App Array Support)
-       ========================================================================== */
     window.executeRedeemProtocol = function() {
         const codeInput = document.getElementById('redeemInputCode');
         const statusTxt = document.getElementById('redeemStatusMsg');
@@ -577,14 +553,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if(codeInput) codeInput.value = '';
     }
 
-    /* ==========================================================================
-       ৭. [FIXED] LINK REDIRECTION INTERCEPTOR UTILITY (SLASHLISS TAP IN CHROMES)
-       ========================================================================== */
     window.safeOpenURLInNewTab = function(url) {
         if (!url || url.trim() === "" || url === "#") return;
         let targetUrl = url.trim();
         
-        // স্ল্যাশ বাগ দূর করতে প্রোটোকল অটো-ফিক্সার লজিক
         if (!/^https?:\/\//i.test(targetUrl)) {
             targetUrl = 'https://' + targetUrl;
         }
