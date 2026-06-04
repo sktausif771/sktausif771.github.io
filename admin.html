@@ -182,7 +182,7 @@
         .item-info h3 { font-size: 16px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; font-weight: 600; display:flex; align-items:center; gap:8px;}
         .item-info p { font-size: 12px; color: var(--text-dim); margin-bottom: 2px; }
         
-        /* 3-DOT DROPDOWN MENU UI */
+        /* 3-LINE (HAMBURGER) DROPDOWN MENU UI */
         .item-actions { display: flex; align-items: center; position: relative; }
         
         .dropdown { position: relative; display: inline-block; }
@@ -295,6 +295,7 @@
         <a href="index.html" class="btn-exit"><i class="fas fa-sign-out-alt"></i> Exit</a>
     </header>
 
+    <!-- Technical UI Compact Stats Grid -->
     <div class="stats-grid">
         <div class="stat-card">
             <i class="fas fa-server" style="color: var(--primary);"></i>
@@ -492,6 +493,7 @@
     </div>
 
 
+    <!-- MODALS -->
     <div class="modal-overlay" id="userGiftModal">
         <div class="play-modal">
             <div class="modal-header">
@@ -528,6 +530,7 @@
         </div>
     </div>
 
+    <!-- UPDATE: FULL APP EDITOR MODAL WITH ALL FEATURES -->
     <div class="modal-overlay" id="masterAppEditModal">
         <div class="play-modal" style="max-width: 650px;">
             <div class="modal-header">
@@ -616,6 +619,7 @@
     </div>
 
 
+    <!-- SCRIPTS -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script src="firebase-config.js"></script>
@@ -801,7 +805,7 @@
                         </div>
                         <div class="item-actions">
                             <div class="dropdown">
-                                <button class="dropdown-btn"><i class="fas fa-ellipsis-v"></i></button>
+                                <button class="dropdown-btn"><i class="fas fa-bars"></i></button>
                                 <div class="dropdown-content">
                                     <button class="dropdown-item" onclick="openUserGiftModal('${user.uid}', '${user.name.replace(/'/g, "\\'")}', '${user.email}', '${user.avatarUrl}')"><i class="fas fa-bolt" style="color:var(--gift);"></i> Inject Data</button>
                                 </div>
@@ -954,7 +958,7 @@
                         </div>
                         <div class="item-actions">
                             <div class="dropdown">
-                                <button class="dropdown-btn"><i class="fas fa-ellipsis-v"></i></button>
+                                <button class="dropdown-btn"><i class="fas fa-bars"></i></button>
                                 <div class="dropdown-content">
                                     <button class="dropdown-item" onclick="approvePendingPackageNode('${child.key}')"><i class="fas fa-terminal" style="color:var(--success);"></i> Compile & Run</button>
                                     <button class="dropdown-item" onclick="deletePendingPackageNode('${child.key}')"><i class="fas fa-times" style="color:var(--danger);"></i> Drop Table</button>
@@ -1006,7 +1010,7 @@
                         </div>
                         <div class="item-actions">
                             <div class="dropdown">
-                                <button class="dropdown-btn"><i class="fas fa-ellipsis-v"></i></button>
+                                <button class="dropdown-btn"><i class="fas fa-bars"></i></button>
                                 <div class="dropdown-content">
                                     <button class="dropdown-item" onclick="openMasterAppEdit('${app.id}')"><i class="fas fa-code" style="color:var(--warning);"></i> Configure Config</button>
                                     <button class="dropdown-item" onclick="window.open('details.html?id=${app.id}', '_blank')"><i class="fas fa-wifi" style="color:var(--info);"></i> Ping Live View</button>
@@ -1205,7 +1209,7 @@
                         </div>
                         <div class="item-actions">
                             <div class="dropdown">
-                                <button class="dropdown-btn"><i class="fas fa-ellipsis-v"></i></button>
+                                <button class="dropdown-btn"><i class="fas fa-bars"></i></button>
                                 <div class="dropdown-content">
                                     <button class="dropdown-item" onclick="dropActiveVoucherFromNetwork('${child.key}')"><i class="fas fa-ban" style="color:var(--danger);"></i> Wipe Routine</button>
                                 </div>
@@ -1236,7 +1240,7 @@
                         </div>
                         <div class="item-actions">
                             <div class="dropdown">
-                                <button class="dropdown-btn"><i class="fas fa-ellipsis-v"></i></button>
+                                <button class="dropdown-btn"><i class="fas fa-bars"></i></button>
                                 <div class="dropdown-content">
                                     <button class="dropdown-item" onclick="window.open('details.html?id=${rpt.appId}', '_blank')"><i class="fas fa-crosshairs" style="color:var(--info);"></i> Trace Node</button>
                                     <button class="dropdown-item" onclick="dropReportNodeFromRegistry('${rpt.id}')"><i class="fas fa-power-off" style="color:var(--success);"></i> Clear Warning</button>
@@ -1303,7 +1307,7 @@
                         </div>
                         <div class="item-actions">
                             <div class="dropdown">
-                                <button class="dropdown-btn"><i class="fas fa-ellipsis-v"></i></button>
+                                <button class="dropdown-btn"><i class="fas fa-bars"></i></button>
                                 <div class="dropdown-content">
                                     <button class="dropdown-item" onclick="dropBroadcastNoticeFromLiveDatabase('${note.id}')"><i class="fas fa-eraser" style="color:var(--danger);"></i> Purge Record</button>
                                 </div>
