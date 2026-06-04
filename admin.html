@@ -46,7 +46,7 @@
             background: rgba(18, 27, 42, 0.85);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            padding: 20px 30px;
+            padding: 15px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -58,18 +58,18 @@
         }
 
         .header-brand { display: flex; align-items: center; gap: 12px; }
-        .header-brand i.fa-shield-alt { font-size: 26px; color: var(--primary); text-shadow: var(--primary-glow); }
-        .header-brand h1 { font-family: 'Orbitron', sans-serif; font-size: 20px; font-weight: 800; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
-        .verified-badge { color: var(--primary); font-size: 16px; text-shadow: var(--primary-glow); }
+        .header-brand i.fa-shield-alt { font-size: 22px; color: var(--primary); text-shadow: var(--primary-glow); }
+        .header-brand h1 { font-family: 'Orbitron', sans-serif; font-size: 18px; font-weight: 800; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
+        .verified-badge { color: var(--primary); font-size: 14px; text-shadow: var(--primary-glow); }
         
         .btn-exit {
             background: rgba(255, 61, 0, 0.1);
             color: var(--danger);
             border: 1px solid rgba(255, 61, 0, 0.2);
-            padding: 10px 20px;
-            border-radius: 10px;
+            padding: 8px 16px;
+            border-radius: 8px;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 12px;
             cursor: pointer;
             transition: var(--transition);
             text-decoration: none;
@@ -79,46 +79,47 @@
         }
         .btn-exit:hover { background: var(--danger); color: #fff; box-shadow: 0 0 15px rgba(255, 61, 0, 0.3); transform: translateY(-2px); }
 
-        /* ==================== 2. QUICK STATS DASHBOARD ==================== */
+        /* ==================== 2. TECHNICAL QUICK STATS (COMPACT) ==================== */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            padding: 30px;
+            gap: 15px;
+            padding: 20px 30px;
             max-width: 1400px;
             margin: 0 auto;
         }
         .stat-card {
-            background: linear-gradient(145deg, var(--card-bg), #0F1724);
+            background: linear-gradient(90deg, rgba(18, 27, 42, 0.9), rgba(9, 14, 23, 0.9));
             border: 1px solid var(--border-glass);
-            border-radius: 16px;
-            padding: 25px 20px;
-            text-align: center;
-            box-shadow: var(--shadow-soft);
+            border-left: 3px solid transparent;
+            border-radius: 8px;
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
             transition: var(--transition);
-            position: relative;
-            overflow: hidden;
         }
-        .stat-card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px;
-        }
-        .stat-card:nth-child(1)::before { background: var(--primary); }
-        .stat-card:nth-child(2)::before { background: var(--warning); }
-        .stat-card:nth-child(3)::before { background: var(--info); }
-        .stat-card:nth-child(4)::before { background: var(--danger); }
-        .stat-card:hover { transform: translateY(-5px); border-color: rgba(255,255,255,0.2); }
-        .stat-card i { font-size: 28px; margin-bottom: 12px; display: inline-block; }
-        .stat-val { font-size: 28px; font-weight: 800; font-family: 'Orbitron', sans-serif; margin-bottom: 5px; color: #fff; }
-        .stat-lbl { font-size: 12px; color: var(--text-dim); text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
+        .stat-card:nth-child(1) { border-left-color: var(--primary); }
+        .stat-card:nth-child(2) { border-left-color: var(--warning); }
+        .stat-card:nth-child(3) { border-left-color: var(--info); }
+        .stat-card:nth-child(4) { border-left-color: var(--danger); }
+        
+        .stat-card:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.2); border-left-width: 4px; }
+        
+        .stat-card i { font-size: 20px; opacity: 0.8; }
+        .stat-info { text-align: right; }
+        .stat-val { font-size: 20px; font-weight: 800; font-family: 'Orbitron', sans-serif; margin-bottom: 2px; color: #fff; letter-spacing: 1px; }
+        .stat-lbl { font-size: 10px; color: var(--text-dim); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; font-family: monospace; }
 
         /* ==================== 3. HORIZONTAL TAB MENU ==================== */
         .tab-menu-wrapper {
             padding: 0 30px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             overflow-x: auto;
             white-space: nowrap;
             display: flex;
-            gap: 15px;
+            gap: 10px;
             max-width: 1400px;
             margin-left: auto; margin-right: auto;
         }
@@ -128,17 +129,17 @@
             background: var(--card-bg);
             border: 1px solid var(--border-glass);
             color: var(--text-dim);
-            padding: 14px 24px;
-            border-radius: 12px;
-            font-size: 14px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             transition: var(--transition);
         }
-        .tab-chip i { font-size: 16px; }
+        .tab-chip i { font-size: 14px; }
         .tab-chip:hover { border-color: rgba(255,255,255,0.2); color: #fff; }
         .tab-chip.active {
             background: rgba(0, 230, 118, 0.1);
@@ -148,43 +149,43 @@
         }
 
         /* ==================== 4. DATA PANELS & CARDS ==================== */
-        .data-panel { display: none; padding: 0 30px; max-width: 1400px; margin: 0 auto; animation: fadeUp 0.4s ease-out; }
+        .data-panel { display: none; padding: 0 30px; max-width: 1400px; margin: 0 auto; animation: fadeUp 0.3s ease-out; }
         .data-panel.active { display: block; }
 
         @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(15px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .section-title { font-family: 'Orbitron', sans-serif; font-size: 16px; color: var(--primary); margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border-glass); padding-bottom: 15px; }
+        .section-title { font-family: 'Orbitron', sans-serif; font-size: 15px; color: var(--primary); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; border-bottom: 1px dashed var(--border-glass); padding-bottom: 10px; }
 
         .item-card {
             background: var(--card-bg);
             border: 1px solid var(--border-glass);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
             transition: var(--transition);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        .item-card:hover { border-color: rgba(255,255,255,0.15); transform: scale(1.01); }
+        .item-card:hover { border-color: rgba(255,255,255,0.15); transform: translateX(2px); }
         
-        .item-img { width: 70px; height: 70px; border-radius: 14px; object-fit: cover; border: 1px solid var(--border-glass); flex-shrink: 0; }
+        .item-img { width: 60px; height: 60px; border-radius: 10px; object-fit: cover; border: 1px solid var(--border-glass); flex-shrink: 0; }
         .zoomable-img { cursor: zoom-in; transition: var(--transition); }
         .zoomable-img:hover { transform: scale(1.1); border-color: var(--primary); box-shadow: var(--primary-glow); }
 
         .item-info { flex: 1; overflow: hidden; }
-        .item-info h3 { font-size: 18px; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; font-weight: 600; display:flex; align-items:center; gap:8px;}
-        .item-info p { font-size: 13px; color: var(--text-dim); margin-bottom: 4px; }
+        .item-info h3 { font-size: 16px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; font-weight: 600; display:flex; align-items:center; gap:8px;}
+        .item-info p { font-size: 12px; color: var(--text-dim); margin-bottom: 2px; }
         
-        .item-actions { display: flex; gap: 10px; }
+        .item-actions { display: flex; gap: 8px; }
         .action-icon {
-            width: 45px; height: 45px; border-radius: 12px; border: 1px solid transparent;
+            width: 38px; height: 38px; border-radius: 8px; border: 1px solid transparent;
             display: flex; justify-content: center; align-items: center;
-            font-size: 18px; cursor: pointer; transition: var(--transition); outline: none;
+            font-size: 15px; cursor: pointer; transition: var(--transition); outline: none;
         }
         .icon-check { background: rgba(0, 230, 118, 0.1); color: var(--success); border-color: rgba(0, 230, 118, 0.2); }
         .icon-trash { background: rgba(255, 61, 0, 0.1); color: var(--danger); border-color: rgba(255, 61, 0, 0.2); }
@@ -192,96 +193,93 @@
         .icon-gift { background: rgba(224, 64, 251, 0.1); color: var(--gift); border-color: rgba(224, 64, 251, 0.2); }
         .icon-edit { background: rgba(255, 193, 7, 0.1); color: var(--warning); border-color: rgba(255, 193, 7, 0.2); }
         
-        .action-icon:hover { transform: translateY(-3px); }
-        .icon-check:hover { background: var(--success); color: #000; box-shadow: 0 5px 15px rgba(0,230,118,0.4); }
-        .icon-trash:hover { background: var(--danger); color: #fff; box-shadow: 0 5px 15px rgba(255,61,0,0.4); }
-        .icon-view:hover { background: var(--info); color: #000; box-shadow: 0 5px 15px rgba(41,182,246,0.4); }
-        .icon-gift:hover { background: var(--gift); color: #fff; box-shadow: 0 5px 15px rgba(224,64,251,0.4); }
-        .icon-edit:hover { background: var(--warning); color: #000; box-shadow: 0 5px 15px rgba(255,193,7,0.4); }
+        .action-icon:hover { transform: translateY(-2px); }
+        .icon-check:hover { background: var(--success); color: #000; }
+        .icon-trash:hover { background: var(--danger); color: #fff; }
+        .icon-view:hover { background: var(--info); color: #000; }
+        .icon-gift:hover { background: var(--gift); color: #fff; }
+        .icon-edit:hover { background: var(--warning); color: #000; }
 
-        .empty-state { text-align: center; padding: 80px 20px; color: var(--text-dim); background: var(--card-bg); border-radius: 16px; border: 1px dashed var(--border-glass); }
-        .empty-state i { font-size: 50px; margin-bottom: 20px; opacity: 0.3; }
-        .empty-state p { font-size: 16px; font-weight: 500; }
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--text-dim); background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px dashed var(--border-glass); }
+        .empty-state i { font-size: 40px; margin-bottom: 15px; opacity: 0.3; }
+        .empty-state p { font-size: 14px; font-weight: 500; }
 
         /* ==================== 5. MODALS & FORMS ==================== */
         .glass-input {
-            width: 100%; padding: 16px 20px; background: rgba(0,0,0,0.3);
-            border: 1px solid var(--border-glass); border-radius: 12px;
-            color: #fff; font-size: 15px; margin-bottom: 20px; outline: none;
+            width: 100%; padding: 12px 15px; background: rgba(0,0,0,0.4);
+            border: 1px solid var(--border-glass); border-radius: 8px;
+            color: #fff; font-size: 14px; margin-bottom: 15px; outline: none;
             transition: var(--transition);
         }
-        .glass-input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(0,230,118,0.1); }
-        .input-label { display: block; font-size: 12px; color: var(--text-dim); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+        .glass-input:focus { border-color: var(--primary); box-shadow: 0 0 8px rgba(0,230,118,0.1); }
+        .input-label { display: block; font-size: 11px; color: var(--text-dim); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
         
         .btn-primary {
-            width: 100%; padding: 18px; border: none; border-radius: 12px;
+            width: 100%; padding: 14px; border: none; border-radius: 8px;
             background: linear-gradient(135deg, var(--primary), var(--primary-hover));
-            color: #000; font-family: 'Orbitron', sans-serif; font-weight: 900;
-            font-size: 15px; letter-spacing: 1.5px; cursor: pointer;
+            color: #000; font-family: 'Orbitron', sans-serif; font-weight: 800;
+            font-size: 14px; letter-spacing: 1px; cursor: pointer;
             box-shadow: var(--primary-glow); transition: var(--transition);
         }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,230,118,0.4); }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,230,118,0.3); }
         .btn-primary:active { transform: scale(0.98); }
 
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
             display: flex; justify-content: center; align-items: center;
             z-index: 2000; opacity: 0; visibility: hidden; transition: var(--transition);
         }
         .modal-overlay.active { opacity: 1; visibility: visible; }
         .play-modal {
-            background: var(--bg-dark); width: 90%; max-width: 500px;
-            border-radius: 24px; border: 1px solid var(--border-glass);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.7); transform: scale(0.9);
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--bg-dark); width: 95%; max-width: 500px;
+            border-radius: 16px; border: 1px solid var(--border-glass);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7); transform: scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden; max-height: 90vh; display: flex; flex-direction: column;
         }
         .modal-overlay.active .play-modal { transform: scale(1); }
         .modal-header {
-            padding: 25px 30px; border-bottom: 1px solid var(--border-glass);
+            padding: 20px; border-bottom: 1px solid var(--border-glass);
             display: flex; justify-content: space-between; align-items: center;
             background: rgba(255,255,255,0.02);
         }
-        .modal-header h3 { font-family: 'Orbitron', sans-serif; font-size: 20px; color: #fff; display:flex; align-items:center; gap:10px;}
-        .close-modal { font-size: 24px; color: var(--text-dim); cursor: pointer; transition: var(--transition); }
-        .close-modal:hover { color: var(--danger); transform: rotate(90deg); }
-        .modal-body { padding: 30px; overflow-y: auto; }
+        .modal-header h3 { font-family: 'Orbitron', sans-serif; font-size: 16px; color: #fff; display:flex; align-items:center; gap:8px;}
+        .close-modal { font-size: 20px; color: var(--text-dim); cursor: pointer; transition: var(--transition); }
+        .close-modal:hover { color: var(--danger); }
+        .modal-body { padding: 25px; overflow-y: auto; }
 
-        .report-card { border-left: 4px solid var(--danger); }
-        .badge-danger { display: inline-block; background: rgba(255, 61, 0, 0.15); color: var(--danger); padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; margin-top: 8px; border: 1px solid rgba(255, 61, 0, 0.3); letter-spacing: 0.5px; text-transform: uppercase;}
-        .time-badge { color: var(--primary); font-size: 12px; font-family: monospace; font-weight: bold; background: rgba(0, 230, 118, 0.1); padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(0,230,118,0.2); display: inline-flex; align-items: center; gap: 5px;}
+        .report-card { border-left: 3px solid var(--danger); }
+        .badge-danger { display: inline-block; background: rgba(255, 61, 0, 0.15); color: var(--danger); padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; margin-top: 6px; border: 1px solid rgba(255, 61, 0, 0.3); text-transform: uppercase;}
+        .time-badge { color: var(--primary); font-size: 11px; font-family: monospace; font-weight: bold; background: rgba(0, 230, 118, 0.1); padding: 3px 6px; border-radius: 4px; border: 1px solid rgba(0,230,118,0.2); display: inline-flex; align-items: center; gap: 4px;}
 
-        .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.1); transition: .4s; border-radius: 34px; border: 1px solid var(--border-glass); }
-        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: var(--text-dim); transition: .4s; border-radius: 50%; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: var(--text-dim); transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: rgba(255, 61, 0, 0.2); border-color: var(--danger); }
-        input:checked + .slider:before { transform: translateX(22px); background-color: var(--danger); box-shadow: 0 0 10px var(--danger); }
+        input:checked + .slider:before { transform: translateX(20px); background-color: var(--danger); box-shadow: 0 0 8px var(--danger); }
 
         .app-select-box {
             background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass);
-            border-radius: 12px; max-height: 250px; overflow-y: auto;
-            padding: 15px; margin-bottom: 20px;
+            border-radius: 8px; max-height: 200px; overflow-y: auto;
+            padding: 10px; margin-bottom: 15px;
         }
-        .app-check-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); transition: var(--transition); border-radius: 8px;}
+        .app-check-item { display: flex; align-items: center; gap: 10px; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); transition: var(--transition); border-radius: 6px;}
         .app-check-item:hover { background: rgba(255,255,255,0.02); }
         .app-check-item:last-child { border-bottom: none; }
-        .app-check-item input { width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer;}
-        .app-check-item label { font-size: 14px; color: #fff; cursor: pointer; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500;}
+        .app-check-item input { width: 16px; height: 16px; accent-color: var(--primary); cursor: pointer;}
+        .app-check-item label { font-size: 13px; color: #fff; cursor: pointer; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500;}
 
         /* Config Card Wrapper */
-        .config-wrapper { background: var(--card-bg); border: 1px solid var(--border-glass); padding: 30px; border-radius: 20px; margin-bottom: 30px; box-shadow: var(--shadow-soft); }
+        .config-wrapper { background: var(--card-bg); border: 1px solid var(--border-glass); padding: 25px; border-radius: 16px; margin-bottom: 25px; box-shadow: var(--shadow-soft); }
 
         @media (max-width: 768px) {
-            .stats-grid { grid-template-columns: repeat(2, 1fr); padding: 20px; gap: 15px;}
+            .stats-grid { grid-template-columns: repeat(2, 1fr); padding: 15px 20px; gap: 10px;}
             .master-header { padding: 15px 20px; }
             .data-panel { padding: 0 20px; }
             .item-card { flex-direction: column; text-align: center; }
             .item-actions { justify-content: center; width: 100%; margin-top: 10px; }
-        }
-        @media (max-width: 480px) {
-            .stats-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -297,53 +295,61 @@
 
     <div class="stats-grid">
         <div class="stat-card">
-            <i class="fas fa-box" style="color: var(--primary);"></i>
-            <div class="stat-val" id="statLiveApps">0</div>
-            <div class="stat-lbl">Live Catalog</div>
+            <i class="fas fa-server" style="color: var(--primary);"></i>
+            <div class="stat-info">
+                <div class="stat-val" id="statLiveApps">0</div>
+                <div class="stat-lbl">LIVE APPS</div>
+            </div>
         </div>
         <div class="stat-card">
-            <i class="fas fa-clock" style="color: var(--warning);"></i>
-            <div class="stat-val" id="statPendingApps">0</div>
-            <div class="stat-lbl">Pending Review</div>
+            <i class="fas fa-code-branch" style="color: var(--warning);"></i>
+            <div class="stat-info">
+                <div class="stat-val" id="statPendingApps">0</div>
+                <div class="stat-lbl">PENDING</div>
+            </div>
         </div>
         <div class="stat-card">
-            <i class="fas fa-users" style="color: var(--info);"></i>
-            <div class="stat-val" id="statUsers">0</div>
-            <div class="stat-lbl">Registered Users</div>
+            <i class="fas fa-microchip" style="color: var(--info);"></i>
+            <div class="stat-info">
+                <div class="stat-val" id="statUsers">0</div>
+                <div class="stat-lbl">USERS DB</div>
+            </div>
         </div>
         <div class="stat-card">
-            <i class="fas fa-flag" style="color: var(--danger);"></i>
-            <div class="stat-val" id="statReports">0</div>
-            <div class="stat-lbl">Active Reports</div>
+            <i class="fas fa-bug" style="color: var(--danger);"></i>
+            <div class="stat-info">
+                <div class="stat-val" id="statReports">0</div>
+                <div class="stat-lbl">REPORTS</div>
+            </div>
         </div>
     </div>
 
     <div class="tab-menu-wrapper">
         <div class="tab-chip active" onclick="switchAdminPanelSection('users', this)"><i class="fas fa-users"></i> Live Users</div>
         <div class="tab-chip" onclick="switchAdminPanelSection('pending', this)"><i class="fas fa-hourglass-half"></i> Pending</div>
-        <div class="tab-chip" onclick="switchAdminPanelSection('live', this)"><i class="fas fa-server"></i> Live Catalog</div>
+        <div class="tab-chip" onclick="switchAdminPanelSection('live', this)"><i class="fas fa-database"></i> App Database</div>
         <div class="tab-chip" onclick="switchAdminPanelSection('voucher', this)"><i class="fas fa-ticket-alt"></i> Vouchers</div>
-        <div class="tab-chip" onclick="switchAdminPanelSection('reports', this)"><i class="fas fa-exclamation-triangle"></i> Reports</div>
-        <div class="tab-chip" onclick="switchAdminPanelSection('notices', this)"><i class="fas fa-bell"></i> Notices</div>
-        <div class="tab-chip" onclick="switchAdminPanelSection('config', this)"><i class="fas fa-cogs"></i> Config</div>
+        <div class="tab-chip" onclick="switchAdminPanelSection('reports', this)"><i class="fas fa-bug"></i> Violations</div>
+        <div class="tab-chip" onclick="switchAdminPanelSection('notices', this)"><i class="fas fa-satellite-dish"></i> Notices</div>
+        <div class="tab-chip" onclick="switchAdminPanelSection('config', this)"><i class="fas fa-terminal"></i> System Config</div>
     </div>
 
     <div id="usersPanel" class="data-panel active">
-        <div class="section-title"><i class="fas fa-database"></i> Global User Database</div>
+        <div class="section-title"><i class="fas fa-network-wired"></i> Global User Node Registry</div>
         <div id="liveUsersTrackingContainer">
             <div class="empty-state"><i class="fas fa-circle-notch fa-spin" style="color:var(--info);"></i><p>Fetching active users...</p></div>
         </div>
     </div>
 
     <div id="pendingPanel" class="data-panel">
-        <div class="section-title"><i class="fas fa-tasks"></i> Review Queue</div>
+        <div class="section-title"><i class="fas fa-tasks"></i> Staging Queue / Pending Review</div>
         <div id="pendingContainerQueue">
             <div class="empty-state"><i class="fas fa-circle-notch fa-spin" style="color:var(--warning);"></i><p>Syncing Pending Nodes...</p></div>
         </div>
     </div>
 
     <div id="livePanel" class="data-panel">
-        <div class="section-title"><i class="fas fa-layer-group"></i> Active Applications</div>
+        <div class="section-title"><i class="fas fa-layer-group"></i> Production / Active Applications</div>
         <div id="liveWarehouseContainer">
             <div class="empty-state"><i class="fas fa-circle-notch fa-spin" style="color:var(--primary);"></i><p>Syncing Live Nodes...</p></div>
         </div>
@@ -351,54 +357,54 @@
 
     <div id="voucherPanel" class="data-panel">
         <div class="config-wrapper">
-            <div class="section-title"><i class="fas fa-magic"></i> Mint Gift Voucher</div>
+            <div class="section-title"><i class="fas fa-magic"></i> Mint Secure Voucher Block</div>
             
-            <label class="input-label">Voucher Code String</label>
-            <input type="text" id="vCode" class="glass-input" placeholder="e.g. MVX500COINS" style="text-transform:uppercase; font-family:'Orbitron', sans-serif; font-weight:bold; letter-spacing:2px; font-size:16px;">
+            <label class="input-label">Voucher Key Sequence</label>
+            <input type="text" id="vCode" class="glass-input" placeholder="e.g. MVX500COINS" style="text-transform:uppercase; font-family:'Orbitron', sans-serif; font-weight:bold; letter-spacing:2px;">
 
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
                 <div>
-                    <label class="input-label">Reward Type</label>
+                    <label class="input-label">Reward Allocation Type</label>
                     <select id="vType" class="glass-input" onchange="toggleVoucherRewardInterface(this.value)">
-                        <option value="coins">Coins Deposit</option>
-                        <option value="premium_bypass">Premium Unlock (Apps)</option>
+                        <option value="coins">Virtual Coins Deposit</option>
+                        <option value="premium_bypass">Premium Node Unlock</option>
                     </select>
                 </div>
                 <div>
-                    <label class="input-label">Max Claims</label>
+                    <label class="input-label">Max Usage Limit</label>
                     <input type="number" id="vMaxClaims" class="glass-input" placeholder="e.g. 10" value="10">
                 </div>
             </div>
 
             <div id="voucherCoinUI">
-                <label class="input-label" style="color:var(--warning);">Coins Quantity</label>
+                <label class="input-label" style="color:var(--warning);">Coins Quantity Parameter</label>
                 <input type="number" id="vValueCoins" class="glass-input" placeholder="e.g. 500">
             </div>
 
             <div id="voucherAppUI" style="display:none;">
-                <label class="input-label" style="color:var(--primary);">Select Premium Apps to Unlock</label>
+                <label class="input-label" style="color:var(--primary);">Target Premium Packages to Bind</label>
                 <div class="app-select-box">
-                    <div class="app-check-item" style="border-bottom: 1px solid rgba(0,230,118,0.3); margin-bottom: 10px; background: rgba(0,230,118,0.05);">
+                    <div class="app-check-item" style="border-bottom: 1px solid rgba(0,230,118,0.3); margin-bottom: 8px; background: rgba(0,230,118,0.05);">
                         <input type="checkbox" id="vCheckAllApps" onchange="toggleAllVoucherApps(this.checked)">
-                        <label for="vCheckAllApps" style="color:var(--primary); font-weight:800; letter-spacing:1px;">GRANT ACCESS TO ALL APPS</label>
+                        <label for="vCheckAllApps" style="color:var(--primary); font-weight:700;">OVERRIDE: UNLOCK ALL</label>
                     </div>
                     <div id="voucherAppCheckboxContainer">
-                        <div style="text-align:center; font-size:13px; color:var(--text-dim); padding:15px;">Loading applications...</div>
+                        <div style="text-align:center; font-size:12px; color:var(--text-dim); padding:10px;">Loading applications...</div>
                     </div>
                 </div>
             </div>
 
-            <button class="btn-primary" onclick="executeVoucherMintingProtocolToServer()"><i class="fas fa-plus-circle"></i> GENERATE VOUCHER</button>
+            <button class="btn-primary" onclick="executeVoucherMintingProtocolToServer()"><i class="fas fa-plus-circle"></i> INITIALIZE VOUCHER</button>
         </div>
 
-        <div class="section-title"><i class="fas fa-ticket-alt"></i> Active Vouchers</div>
+        <div class="section-title"><i class="fas fa-ticket-alt"></i> Distributed Vouchers</div>
         <div id="liveVouchersTrackingContainer">
-            <div class="empty-state"><p>No active vouchers generated.</p></div>
+            <div class="empty-state"><p>No active vouchers tracked.</p></div>
         </div>
     </div>
 
     <div id="reportsPanel" class="data-panel">
-        <div class="section-title"><i class="fas fa-shield-alt"></i> Security Violations</div>
+        <div class="section-title"><i class="fas fa-bug"></i> System Violations Log</div>
         <div id="userReportsTrackingContainer">
             <div class="empty-state"><i class="fas fa-circle-notch fa-spin" style="color:var(--danger);"></i><p>Scanning violations...</p></div>
         </div>
@@ -406,39 +412,39 @@
 
     <div id="noticesPanel" class="data-panel">
         <div class="config-wrapper">
-            <div class="section-title"><i class="fas fa-paper-plane"></i> Dispatch Manual Notice</div>
+            <div class="section-title"><i class="fas fa-satellite-dish"></i> Global Broadcast System</div>
             
-            <label class="input-label">Alert Title</label>
-            <input type="text" id="nTitle" class="glass-input" placeholder="e.g. Server Maintenance Started">
+            <label class="input-label">Alert Header</label>
+            <input type="text" id="nTitle" class="glass-input" placeholder="e.g. Database Maintenance">
             
-            <label class="input-label">Detailed Message</label>
-            <textarea id="nMessage" class="glass-input" placeholder="Write notification message here..." style="min-height: 100px; resize:vertical;"></textarea>
+            <label class="input-label">Payload Message</label>
+            <textarea id="nMessage" class="glass-input" placeholder="Write notification string here..." style="min-height: 80px; resize:vertical;"></textarea>
             
-            <label class="input-label" style="color:var(--info);">Mention Target App (Optional)</label>
+            <label class="input-label" style="color:var(--info);">Bind Target Node (Optional)</label>
             <select id="nAppSelect" class="glass-input">
-                <option value="">-- Do Not Mention Any App --</option>
+                <option value="">-- No Local Bind --</option>
             </select>
 
-            <label class="input-label">Or Custom Link (Optional)</label>
-            <input type="text" id="nLink" class="glass-input" placeholder="e.g. https://google.com">
+            <label class="input-label">External URI Link (Optional)</label>
+            <input type="text" id="nLink" class="glass-input" placeholder="e.g. https://domain.com">
 
-            <button class="btn-primary" style="background: linear-gradient(135deg, var(--info), #0288D1);" onclick="dispatchManualSystemNotice()"><i class="fas fa-broadcast-tower"></i> BROADCAST NOTICE</button>
+            <button class="btn-primary" style="background: linear-gradient(135deg, var(--info), #0288D1);" onclick="dispatchManualSystemNotice()"><i class="fas fa-paper-plane"></i> TRANSMIT BROADCAST</button>
         </div>
 
-        <div class="section-title"><i class="fas fa-history"></i> Live Broadcast History</div>
+        <div class="section-title"><i class="fas fa-history"></i> Transmission Logs</div>
         <div id="globalNoticesTrackingContainer">
-            <div class="empty-state"><i class="fas fa-circle-notch fa-spin" style="color:var(--info);"></i><p>Fetching broadcasts...</p></div>
+            <div class="empty-state"><i class="fas fa-circle-notch fa-spin" style="color:var(--info);"></i><p>Fetching logs...</p></div>
         </div>
     </div>
 
     <div id="configPanel" class="data-panel">
         <div class="config-wrapper">
-            <div class="section-title"><i class="fas fa-tools"></i> Global Store Configuration</div>
+            <div class="section-title"><i class="fas fa-terminal"></i> Core System Directives</div>
 
-            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255, 61, 0, 0.05); border:1px solid rgba(255, 61, 0, 0.3); padding:20px; border-radius:12px; margin-bottom:25px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255, 61, 0, 0.05); border:1px solid rgba(255, 61, 0, 0.3); padding:15px; border-radius:8px; margin-bottom:20px;">
                 <div>
-                    <h4 style="color:var(--danger); font-size:16px; margin-bottom:6px; font-weight:700;"><i class="fas fa-lock"></i> Maintenance Mode</h4>
-                    <p style="font-size:12px; color:var(--text-dim); line-height:1.4;">Lock down the store for updates. Users will see a maintenance screen.</p>
+                    <h4 style="color:var(--danger); font-size:14px; margin-bottom:4px; font-weight:700;"><i class="fas fa-lock"></i> Maintenance Lockdown</h4>
+                    <p style="font-size:11px; color:var(--text-dim);">Suspends public API access for updates.</p>
                 </div>
                 <label class="switch">
                     <input type="checkbox" id="configMaintenanceMode" onchange="updateSystemConfigData('maintenanceMode', this.checked)">
@@ -446,38 +452,38 @@
                 </label>
             </div>
 
-            <label class="input-label" style="color:var(--warning);">New User Signup Bonus (Coins)</label>
-            <div style="display:flex; gap:15px; margin-bottom:25px;">
+            <label class="input-label" style="color:var(--warning);">Default Account Creation Bonus (Coins)</label>
+            <div style="display:flex; gap:10px; margin-bottom:20px;">
                 <input type="number" id="configBonusCoins" class="glass-input" style="margin-bottom:0;" placeholder="e.g. 100">
-                <button class="btn-primary" style="width:140px; background:var(--warning); color:#000;" onclick="updateSystemConfigData('signupBonus', parseInt(document.getElementById('configBonusCoins').value))"><i class="fas fa-save"></i> SAVE</button>
+                <button class="btn-primary" style="width:120px; background:var(--warning); color:#000;" onclick="updateSystemConfigData('signupBonus', parseInt(document.getElementById('configBonusCoins').value))"><i class="fas fa-save"></i> SET</button>
             </div>
 
-            <div style="margin-bottom:25px;">
-                <label class="input-label">Default Theme Mode</label>
+            <div style="margin-bottom:20px;">
+                <label class="input-label">Base Layout Theme</label>
                 <select id="configDefaultTheme" class="glass-input" onchange="updateSystemConfigData('defaultTheme', this.value)">
-                    <option value="dark">Dark Mode</option>
-                    <option value="light">Light Mode</option>
+                    <option value="dark">Dark Matrix</option>
+                    <option value="light">Light Surface</option>
                 </select>
             </div>
             
-            <div style="margin-bottom:30px;">
-                <label class="input-label" style="color:var(--primary);">Global Store Logo (ImgBB Upload)</label>
-                <div style="background:rgba(0,0,0,0.3); padding:20px; border-radius:12px; border:1px solid var(--border-glass);">
-                    <input type="file" id="configLogoFile" class="glass-input" accept="image/*" style="padding:12px; margin-bottom:15px; border-color:rgba(0,230,118,0.3);">
-                    <img id="configLogoPreview" style="width:80px; height:80px; border-radius:16px; object-fit:cover; display:none; margin-bottom:15px; border:2px solid var(--primary); box-shadow:var(--primary-glow);">
+            <div style="margin-bottom:25px;">
+                <label class="input-label" style="color:var(--primary);">System Brand Logo (ImgBB Stream)</label>
+                <div style="background:rgba(0,0,0,0.3); padding:15px; border-radius:8px; border:1px solid var(--border-glass);">
+                    <input type="file" id="configLogoFile" class="glass-input" accept="image/*" style="padding:10px; margin-bottom:10px;">
+                    <img id="configLogoPreview" style="width:60px; height:60px; border-radius:10px; object-fit:cover; display:none; margin-bottom:10px; border:1px solid var(--primary);">
                     <input type="hidden" id="configLogoUrl">
-                    <p id="configLogoStatus" style="font-size:12px; color:var(--warning); margin-bottom:15px; font-weight:600;"></p>
-                    <button class="btn-primary" style="padding:15px;" onclick="updateSystemConfigData('storeLogo', document.getElementById('configLogoUrl').value)"><i class="fas fa-cloud-upload-alt"></i> APPLY NEW LOGO</button>
+                    <p id="configLogoStatus" style="font-size:11px; color:var(--warning); margin-bottom:10px; font-family:monospace;"></p>
+                    <button class="btn-primary" style="padding:12px;" onclick="updateSystemConfigData('storeLogo', document.getElementById('configLogoUrl').value)"><i class="fas fa-cloud-upload-alt"></i> INJECT LOGO</button>
                 </div>
             </div>
 
-            <label class="input-label" style="color:var(--info); font-size: 14px; border-bottom: 1px solid var(--border-glass); padding-bottom: 10px; margin-bottom: 15px;"><i class="fas fa-user-shield"></i> Master Admin Access Manager</label>
-            <div style="display:flex; gap:15px; margin-bottom:20px;">
-                <input type="email" id="configNewAdminEmail" class="glass-input" style="margin-bottom:0;" placeholder="e.g. admin@mvx.com">
-                <button class="btn-primary" style="width:140px; background:var(--info); color:#000;" onclick="addNewMasterAdminEmail()"><i class="fas fa-plus"></i> ADD ADMIN</button>
+            <label class="input-label" style="color:var(--info); border-bottom: 1px dashed var(--border-glass); padding-bottom: 8px; margin-bottom: 12px;"><i class="fas fa-user-shield"></i> Sub-Admin Access Keys</label>
+            <div style="display:flex; gap:10px; margin-bottom:15px;">
+                <input type="email" id="configNewAdminEmail" class="glass-input" style="margin-bottom:0;" placeholder="Authorize email address...">
+                <button class="btn-primary" style="width:120px; background:var(--info); color:#000;" onclick="addNewMasterAdminEmail()"><i class="fas fa-plus"></i> ADD</button>
             </div>
             <div class="app-select-box" id="configAdminListContainer">
-                <div style="text-align:center; font-size:13px; color:var(--text-dim);">Loading authorized emails...</div>
+                <div style="text-align:center; font-size:12px; color:var(--text-dim);">Scanning authorized keys...</div>
             </div>
 
         </div>
@@ -487,79 +493,124 @@
     <div class="modal-overlay" id="userGiftModal">
         <div class="play-modal">
             <div class="modal-header">
-                <h3><i class="fas fa-gift" style="color:var(--gift);"></i> Direct User Reward</h3>
+                <h3><i class="fas fa-gift" style="color:var(--gift);"></i> Force Reward Injection</h3>
                 <i class="fas fa-times close-modal" onclick="closeGiftModal()"></i>
             </div>
             <div class="modal-body">
-                <div style="text-align:center; margin-bottom:25px; background: rgba(255,255,255,0.02); padding: 20px; border-radius: 16px; border: 1px solid var(--border-glass);">
-                    <img src="" id="giftUserAvatar" style="width:80px; height:80px; border-radius:50%; border:3px solid var(--gift); box-shadow: 0 0 15px rgba(224, 64, 251, 0.3); object-fit:cover; margin-bottom:12px;">
-                    <h3 id="giftUserName" style="color:#fff; font-size:20px; font-weight:700;">User Name</h3>
-                    <p id="giftUserEmail" style="color:var(--text-dim); font-size:13px; margin-top:4px; font-family:monospace;"></p>
+                <div style="text-align:center; margin-bottom:20px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; border: 1px solid var(--border-glass);">
+                    <img src="" id="giftUserAvatar" style="width:60px; height:60px; border-radius:50%; border:2px solid var(--gift); object-fit:cover; margin-bottom:10px;">
+                    <h3 id="giftUserName" style="color:#fff; font-size:16px; font-weight:700;">User Name</h3>
+                    <p id="giftUserEmail" style="color:var(--text-dim); font-size:11px; margin-top:2px; font-family:monospace;"></p>
                 </div>
 
-                <label class="input-label">Select Reward Type</label>
+                <label class="input-label">Allocation Protocol</label>
                 <select id="giftTypeSelector" class="glass-input" onchange="toggleDirectGiftUI(this.value)">
-                    <option value="coins">Send MVX Coins Balance</option>
-                    <option value="premium_app">Gift Premium App (+ Password Bypass)</option>
+                    <option value="coins">Inject Virtual Coins</option>
+                    <option value="premium_app">Authorize Premium Package</option>
                 </select>
 
                 <div id="giftCoinsUI">
-                    <label class="input-label" style="color:var(--warning);">Amount of Coins to Send</label>
+                    <label class="input-label" style="color:var(--warning);">Coin Volume</label>
                     <input type="number" id="giftCoinsAmount" class="glass-input" placeholder="e.g. 1000">
                 </div>
 
                 <div id="giftAppUI" style="display:none;">
-                    <label class="input-label" style="color:var(--primary);">Select App to Gift</label>
+                    <label class="input-label" style="color:var(--primary);">Select Target Node</label>
                     <select id="giftAppSelect" class="glass-input">
-                        <option value="">-- Select Premium App --</option>
+                        <option value="">-- Awaiting Selection --</option>
                     </select>
                 </div>
 
-                <button class="btn-primary" style="background: linear-gradient(135deg, var(--gift), #D500F9); margin-top: 10px;" onclick="dispatchDirectGiftToUser()"><i class="fas fa-paper-plane"></i> SEND REWARD NOW</button>
+                <button class="btn-primary" style="background: linear-gradient(135deg, var(--gift), #D500F9); margin-top: 5px;" onclick="dispatchDirectGiftToUser()"><i class="fas fa-bolt"></i> EXECUTE INJECTION</button>
             </div>
         </div>
     </div>
 
     <div class="modal-overlay" id="masterAppEditModal">
-        <div class="play-modal" style="max-width: 600px;">
+        <div class="play-modal" style="max-width: 650px;">
             <div class="modal-header">
-                <h3><i class="fas fa-edit" style="color:var(--warning);"></i> Master Package Editor</h3>
+                <h3><i class="fas fa-edit" style="color:var(--warning);"></i> Full Package Configuration Editor</h3>
                 <i class="fas fa-times close-modal" onclick="document.getElementById('masterAppEditModal').classList.remove('active')"></i>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="padding: 20px;">
                 <input type="hidden" id="meAppId">
                 
-                <label class="input-label">Application Title</label>
-                <input type="text" id="meName" class="glass-input">
-                
-                <label class="input-label" style="color:var(--info);">Authorized Developer</label>
-                <input type="text" id="meDev" class="glass-input">
-                
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
                     <div>
-                        <label class="input-label">Version</label>
-                        <input type="text" id="meVer" class="glass-input">
+                        <label class="input-label">Package Title</label>
+                        <input type="text" id="meName" class="glass-input" style="margin-bottom: 10px;">
                     </div>
                     <div>
-                        <label class="input-label">Package Size</label>
-                        <input type="text" id="meSize" class="glass-input">
+                        <label class="input-label" style="color:var(--info);">Authorized Developer</label>
+                        <input type="text" id="meDev" class="glass-input" style="margin-bottom: 10px;">
+                    </div>
+                </div>
+                
+                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:15px; margin-bottom: 10px;">
+                    <div>
+                        <label class="input-label">Version Target</label>
+                        <input type="text" id="meVer" class="glass-input" style="margin-bottom: 0;">
+                    </div>
+                    <div>
+                        <label class="input-label">Data Size</label>
+                        <input type="text" id="meSize" class="glass-input" style="margin-bottom: 0;">
+                    </div>
+                    <div>
+                        <label class="input-label">Access Model</label>
+                        <select id="meCat" class="glass-input" style="margin-bottom: 0;" onchange="toggleEditCoinPrice(this.value)">
+                            <option value="free">Free Access</option>
+                            <option value="paid">Premium (Coins)</option>
+                        </select>
                     </div>
                 </div>
 
-                <label class="input-label" style="color:var(--primary);">Main Download Link / Endpoint</label>
+                <div id="editCoinPriceWrapper" style="display:none; margin-bottom: 10px;">
+                    <label class="input-label" style="color:var(--warning);">Coin Deduction Value</label>
+                    <input type="number" id="meCoinPrice" class="glass-input" placeholder="0" style="margin-bottom: 0;">
+                </div>
+
+                <div style="display:flex; align-items: center; gap: 10px; margin-bottom: 15px; background: rgba(255,255,255,0.02); padding: 10px; border-radius: 8px; border: 1px dashed var(--border-glass);">
+                    <input type="checkbox" id="meTrending" style="width: 16px; height: 16px; accent-color: var(--primary);">
+                    <label for="meTrending" style="color: #fff; font-size: 13px; cursor: pointer;">Flag Node as Trending</label>
+                </div>
+
+                <label class="input-label" style="color:var(--primary);">Application Icon / Logo (ImgBB Stream)</label>
+                <div style="background:rgba(0,0,0,0.3); padding:12px; border-radius:8px; border:1px solid var(--border-glass); margin-bottom: 15px;">
+                    <input type="file" id="meLogoFile" class="glass-input" accept="image/*" style="padding:8px; margin-bottom:10px; border:1px dashed var(--primary);">
+                    <div style="display:flex; gap:15px; align-items:center;">
+                        <img id="meLogoPreview" style="width:50px; height:50px; border-radius:8px; object-fit:cover; border:1px solid var(--border-glass);">
+                        <div style="flex:1;">
+                            <input type="text" id="meLogoUrl" class="glass-input" placeholder="Or paste direct image URL here..." style="margin-bottom: 4px; font-size:12px;">
+                            <p id="meLogoStatus" style="font-size:10px; color:var(--warning); margin-bottom:0; font-family:monospace;"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <label class="input-label" style="color:var(--primary);">Core Download Endpoint</label>
                 <input type="text" id="meMainLink" class="glass-input">
 
-                <label class="input-label">Changelog & Description</label>
-                <textarea id="meDescription" class="glass-input" style="min-height:100px; resize:vertical; line-height: 1.5;"></textarea>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom: 10px;">
+                    <div style="background: rgba(255,61,0,0.05); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,61,0,0.2);">
+                        <label class="input-label" style="color:var(--danger);">Archive Password Lock</label>
+                        <input type="text" id="mePassword" class="glass-input" placeholder="Leave empty for public access" style="margin-bottom:0;">
+                    </div>
+                    <div style="background: rgba(255,255,255,0.02); padding: 10px; border-radius: 8px; border: 1px solid var(--border-glass);">
+                        <label class="input-label">Password Retrieval URI</label>
+                        <input type="text" id="meGetPassLink" class="glass-input" placeholder="External URL" style="margin-bottom:0;">
+                    </div>
+                </div>
+
+                <label class="input-label">System Description & Changelogs</label>
+                <textarea id="meDescription" class="glass-input" style="min-height:90px; resize:vertical; line-height: 1.5; font-size: 13px;"></textarea>
                 
-                <button class="btn-primary" style="background:linear-gradient(135deg, var(--warning), #FF8F00); color:#000; margin-top: 10px;" onclick="submitMasterAppUpdate()"><i class="fas fa-save"></i> SAVE MASTER UPDATES</button>
+                <button class="btn-primary" style="background:linear-gradient(135deg, var(--warning), #FF8F00); color:#000; margin-top: 5px;" onclick="submitMasterAppUpdate()"><i class="fas fa-save"></i> SYNCHRONIZE CONFIGURATION</button>
             </div>
         </div>
     </div>
 
     <div class="lightbox-overlay" id="adminLightbox" onclick="closeAdminLightbox()">
-        <i class="fas fa-times lightbox-close" onclick="closeAdminLightbox()" style="position: absolute; top: 25px; right: 30px; font-size: 35px; color: #fff; cursor: pointer; z-index: 10000; text-shadow: 0 0 10px rgba(0,0,0,0.8); transition: 0.3s;"></i>
-        <img src="" class="lightbox-img" id="adminLightboxImg" onclick="event.stopPropagation()" style="max-width: 90%; max-height: 90%; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.8); transform: scale(0.9); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);">
+        <i class="fas fa-times lightbox-close" onclick="closeAdminLightbox()" style="position: absolute; top: 20px; right: 25px; font-size: 30px; color: #fff; cursor: pointer; z-index: 10000; text-shadow: 0 0 10px rgba(0,0,0,0.8); transition: 0.3s;"></i>
+        <img src="" class="lightbox-img" id="adminLightboxImg" onclick="event.stopPropagation()" style="max-width: 90%; max-height: 90%; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
     </div>
 
 
@@ -604,16 +655,16 @@
             if(!dateTimestamp) return "Unknown";
             const seconds = Math.floor((new Date() - dateTimestamp) / 1000);
             let interval = seconds / 31536000;
-            if (interval > 1) return Math.floor(interval) + " years ago";
+            if (interval > 1) return Math.floor(interval) + " years";
             interval = seconds / 2592000;
-            if (interval > 1) return Math.floor(interval) + " months ago";
+            if (interval > 1) return Math.floor(interval) + " months";
             interval = seconds / 86400;
-            if (interval > 1) return Math.floor(interval) + " days ago";
+            if (interval > 1) return Math.floor(interval) + " days";
             interval = seconds / 3600;
-            if (interval > 1) return Math.floor(interval) + " hours ago";
+            if (interval > 1) return Math.floor(interval) + " hrs";
             interval = seconds / 60;
-            if (interval > 1) return Math.floor(interval) + " mins ago";
-            return Math.floor(seconds) + " seconds ago";
+            if (interval > 1) return Math.floor(interval) + " mins";
+            return Math.floor(seconds) + " sec";
         }
 
         document.getElementById('configLogoFile').addEventListener('change', function(e) {
@@ -624,7 +675,7 @@
             const preview = document.getElementById('configLogoPreview');
             const urlOutput = document.getElementById('configLogoUrl');
             
-            status.innerText = "Uploading image to ImgBB Servers...";
+            status.innerText = "Transmitting to ImgBB...";
             status.style.color = "var(--warning)";
             
             const formData = new FormData();
@@ -638,14 +689,14 @@
                     urlOutput.value = json.data.url;
                     preview.src = json.data.url;
                     preview.style.display = 'block';
-                    status.innerText = "Image Upload Complete! Click 'APPLY NEW LOGO' to save.";
+                    status.innerText = "Injection Ready! Click APPLY LOGO.";
                     status.style.color = "var(--success)";
                 } else {
-                    status.innerText = "Upload Failed. Server rejected file.";
+                    status.innerText = "Transmission Failed.";
                     status.style.color = "var(--danger)";
                 }
             }).catch(() => {
-                status.innerText = "Network Transmission Error.";
+                status.innerText = "Network Failure.";
                 status.style.color = "var(--danger)";
             });
         });
@@ -670,21 +721,21 @@
                         let email = conf.masterAdmins[key];
                         adminHtml += `
                             <div class="app-check-item" style="justify-content:space-between; background: rgba(0,0,0,0.2);">
-                                <label style="cursor:default; font-family:monospace; font-size:14px;"><i class="fas fa-crown" style="color:var(--info); margin-right:8px;"></i> ${email}</label>
-                                <button class="action-icon icon-trash" style="width:35px; height:35px; font-size:14px;" onclick="removeMasterAdminEmail('${key}')"><i class="fas fa-times"></i></button>
+                                <label style="cursor:default; font-family:monospace; font-size:12px;"><i class="fas fa-key" style="color:var(--info); margin-right:6px;"></i> ${email}</label>
+                                <button class="action-icon icon-trash" style="width:30px; height:30px; font-size:12px;" onclick="removeMasterAdminEmail('${key}')"><i class="fas fa-times"></i></button>
                             </div>
                         `;
                     });
                     adminListDiv.innerHTML = adminHtml;
                 } else if(adminListDiv) {
-                    adminListDiv.innerHTML = '<div style="text-align:center; font-size:13px; color:var(--text-dim); padding:15px;">No extra admins currently assigned.</div>';
+                    adminListDiv.innerHTML = '<div style="text-align:center; font-size:11px; color:var(--text-dim); padding:10px;">No external keys authorized.</div>';
                 }
             }
         });
 
         window.updateSystemConfigData = function(key, value) {
             databaseRef.ref(`settings/${key}`).set(value).then(() => {
-                if(key === 'storeLogo') { alert("Global Store Logo Updated Successfully!"); }
+                if(key === 'storeLogo') { alert("Visual Brand Config Updated!"); }
                 console.log(`Config [${key}] updated to:`, value);
             });
         };
@@ -692,7 +743,7 @@
         window.addNewMasterAdminEmail = function() {
             const emailInput = document.getElementById('configNewAdminEmail');
             const email = emailInput.value.trim().toLowerCase();
-            if(!email || !email.includes('@')) { alert('Please enter a valid email format.'); return; }
+            if(!email || !email.includes('@')) { alert('Invalid syntax for email string.'); return; }
             
             const safeKey = email.replace(/\./g, ','); 
             databaseRef.ref(`settings/masterAdmins/${safeKey}`).set(email).then(() => {
@@ -701,7 +752,7 @@
         };
 
         window.removeMasterAdminEmail = function(safeKey) {
-            if(confirm("Revoke Master Admin access for this email?")) {
+            if(confirm("Revoke operational clearance for this key?")) {
                 databaseRef.ref(`settings/masterAdmins/${safeKey}`).remove();
             }
         };
@@ -711,7 +762,7 @@
 
             if (!snapshot.exists()) {
                 document.getElementById('statUsers').innerText = 0;
-                container.innerHTML = `<div class="empty-state"><i class="fas fa-users-slash"></i><p>No registered users found.</p></div>`;
+                container.innerHTML = `<div class="empty-state"><i class="fas fa-server"></i><p>DB Offline / Empty.</p></div>`;
                 return;
             }
 
@@ -727,7 +778,7 @@
             document.getElementById('statUsers').innerText = usersArr.length || 0;
 
             if(usersArr.length === 0) {
-                container.innerHTML = `<div class="empty-state"><i class="fas fa-users-slash"></i><p>No active users.</p></div>`;
+                container.innerHTML = `<div class="empty-state"><i class="fas fa-server"></i><p>Zero active user nodes.</p></div>`;
                 return;
             }
 
@@ -736,18 +787,18 @@
             let html = '';
             usersArr.forEach(user => {
                 let timeString = timeSince(user.sortTime);
-                let roleBadge = user.role === 'owner' ? `<span style="background:var(--warning); color:#000; font-size:9px; padding:2px 6px; border-radius:4px; margin-left:8px; font-weight:800; vertical-align:middle;">OWNER</span>` : '';
+                let roleBadge = user.role === 'owner' ? `<span style="background:var(--warning); color:#000; font-size:9px; padding:2px 4px; border-radius:4px; margin-left:5px; font-weight:800; font-family:monospace;">ROOT</span>` : '';
 
                 html += `
                     <div class="item-card">
-                        <img src="${user.avatarUrl}" class="item-img zoomable-img" onclick="openAdminLightbox('${user.avatarUrl}')" onerror="this.src='https://via.placeholder.com/70/121212/00e676?text=USR'">
+                        <img src="${user.avatarUrl}" class="item-img zoomable-img" onclick="openAdminLightbox('${user.avatarUrl}')" onerror="this.src='https://via.placeholder.com/60/121212/00e676?text=USR'">
                         <div class="item-info">
                             <h3>${user.name} ${roleBadge}</h3>
-                            <p style="font-family:monospace; margin-bottom:6px;">${user.email}</p>
-                            <span class="time-badge"><i class="fas fa-clock"></i> Active: ${timeString}</span>
+                            <p style="font-family:monospace; margin-bottom:4px;">${user.email}</p>
+                            <span class="time-badge"><i class="fas fa-satellite"></i> Ping: ${timeString}</span>
                         </div>
                         <div class="item-actions">
-                            <button class="action-icon icon-gift" onclick="openUserGiftModal('${user.uid}', '${user.name.replace(/'/g, "\\'")}', '${user.email}', '${user.avatarUrl}')" title="Send Reward"><i class="fas fa-gift"></i></button>
+                            <button class="action-icon icon-gift" onclick="openUserGiftModal('${user.uid}', '${user.name.replace(/'/g, "\\'")}', '${user.email}', '${user.avatarUrl}')" title="Inject Data"><i class="fas fa-bolt"></i></button>
                         </div>
                     </div>
                 `;
@@ -785,19 +836,19 @@
 
             if(giftType === 'coins') {
                 const coinsAmt = parseInt(document.getElementById('giftCoinsAmount').value);
-                if(!coinsAmt || coinsAmt <= 0) { alert("Please enter a valid coin amount."); return; }
+                if(!coinsAmt || coinsAmt <= 0) { alert("Syntax error: Invalid integer amount."); return; }
                 
                 databaseRef.ref(`users/${currentGiftTargetUid}/coins`).once('value').then(snap => {
                     const currentBal = parseInt(snap.val()) || 0;
                     updates[`users/${currentGiftTargetUid}/coins`] = currentBal + coinsAmt;
-                    pushNotiMessage = `🎁 Congrats ${currentGiftTargetName}! Admin has gifted you ${coinsAmt} MVX Coins.`;
+                    pushNotiMessage = `⚡ System override: Master allocated ${coinsAmt} Coins to your profile.`;
                     executeGiftDatabaseUpdate(updates, pushNotiMessage);
                 });
                 return; 
             } 
             else if(giftType === 'premium_app') {
                 const appId = document.getElementById('giftAppSelect').value;
-                if(!appId) { alert("Select an application to gift."); return; }
+                if(!appId) { alert("Target node missing. Select a package."); return; }
                 
                 let targetAppObj = storeAppsCacheForSelects.find(a => a.id === appId);
                 let appTitle = targetAppObj ? targetAppObj.appName : "a Premium App";
@@ -805,7 +856,7 @@
                 updates[`users/${currentGiftTargetUid}/unlocked_apps/${appId}`] = true;
                 updates[`users/${currentGiftTargetUid}/unlocked_passwords/${appId}`] = true;
                 
-                pushNotiMessage = `🎁 Special Reward! Admin unlocked '${appTitle}' for you!`;
+                pushNotiMessage = `⚡ Security Clearance Granted: Access to '${appTitle}' authorized.`;
                 executeGiftDatabaseUpdate(updates, pushNotiMessage);
             }
         }
@@ -816,18 +867,18 @@
                 const timeStr = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) + " | " + date.toLocaleDateString();
                 
                 databaseRef.ref('system_broadcasts').push({
-                    title: "Exclusive Reward Deposited!",
+                    title: "System Injection Protocol",
                     message: globalPushMsg,
                     type: "normal",
                     timeString: timeStr,
-                    sender: "Master System",
+                    sender: "Core Server",
                     link: "", 
                     timestamp: firebase.database.ServerValue.TIMESTAMP
                 });
 
-                alert("Reward successfully dispatched to user account!");
+                alert("Injection procedure successful.");
                 closeGiftModal();
-            }).catch(err => alert("Error processing transaction: " + err.message));
+            }).catch(err => alert("Protocol failure: " + err.message));
         }
 
         databaseRef.ref('store_apps').on('value', (snap) => { 
@@ -839,13 +890,13 @@
             const giftSelect = document.getElementById('giftAppSelect');
             
             if(!snap.exists()) {
-                if(vContainer) vContainer.innerHTML = '<div style="text-align:center; font-size:13px; color:var(--danger); padding:15px;">No applications available in database.</div>';
+                if(vContainer) vContainer.innerHTML = '<div style="text-align:center; font-size:11px; color:var(--danger); padding:10px;">Offline / No data blocks.</div>';
                 return;
             }
 
             let vHtml = '';
-            let nHtml = '<option value="">-- Do Not Mention Any App --</option>';
-            let giftHtml = '<option value="">-- Select Premium App --</option>';
+            let nHtml = '<option value="">-- No Local Bind --</option>';
+            let giftHtml = '<option value="">-- Awaiting Selection --</option>';
 
             snap.forEach(child => {
                 let app = child.val();
@@ -855,7 +906,7 @@
                 vHtml += `
                     <div class="app-check-item">
                         <input type="checkbox" class="v-app-checkbox" value="${app.id}" id="chk_${app.id}">
-                        <label for="chk_${app.id}">${app.appName} <span style="color:${app.category === 'paid' ? 'var(--warning)' : 'var(--success)'}; font-size:11px; margin-left:5px;">${app.category === 'paid' ? '(Premium)' : '(Free)'}</span></label>
+                        <label for="chk_${app.id}">${app.appName} <span style="color:${app.category === 'paid' ? 'var(--warning)' : 'var(--success)'}; font-size:10px; margin-left:4px; font-family:monospace;">[${app.category.toUpperCase()}]</span></label>
                     </div>
                 `;
                 nHtml += `<option value="${app.id}">${app.appName}</option>`;
@@ -865,8 +916,8 @@
             if(vContainer) vContainer.innerHTML = vHtml;
             if(nSelect) nSelect.innerHTML = nHtml;
             if(giftSelect) {
-                if(giftHtml === '<option value="">-- Select Premium App --</option>') {
-                     giftSelect.innerHTML = '<option value="">-- No Premium Apps Available --</option>';
+                if(giftHtml === '<option value="">-- Awaiting Selection --</option>') {
+                     giftSelect.innerHTML = '<option value="">-- Null: No Paid Blocks --</option>';
                 } else {
                      giftSelect.innerHTML = giftHtml;
                 }
@@ -879,7 +930,7 @@
         databaseRef.ref('pending_apps').on('value', (snapshot) => {
             const container = document.getElementById('pendingContainerQueue');
             if (!snapshot.exists()) {
-                container.innerHTML = `<div class="empty-state"><i class="fas fa-check-double" style="color:var(--success); opacity:1; font-size:40px;"></i><p style="margin-top:15px;">Pipeline is completely clear.</p></div>`;
+                container.innerHTML = `<div class="empty-state"><i class="fas fa-check-double" style="color:var(--success); opacity:1; font-size:30px;"></i><p style="margin-top:10px;">Queue is zeroed.</p></div>`;
                 return;
             }
 
@@ -887,16 +938,16 @@
             snapshot.forEach((child) => {
                 const app = child.val();
                 html += `
-                    <div class="item-card" style="border-left: 4px solid var(--warning);">
-                        <img src="${app.logoUrl}" class="item-img zoomable-img" onclick="openAdminLightbox('${app.logoUrl}')" onerror="this.src='https://via.placeholder.com/70/121212/00e676?text=APP'">
+                    <div class="item-card" style="border-left: 3px solid var(--warning);">
+                        <img src="${app.logoUrl}" class="item-img zoomable-img" onclick="openAdminLightbox('${app.logoUrl}')" onerror="this.src='https://via.placeholder.com/60/121212/00e676?text=APP'">
                         <div class="item-info">
                             <h3>${app.appName}</h3>
-                            <p style="font-family:monospace; margin-bottom:5px;">Uploader: <span style="color:#fff;">${app.uploaderName}</span></p>
-                            <span style="background:rgba(255,193,7,0.1); color:var(--warning); padding:3px 8px; border-radius:4px; font-size:10px; font-weight:800;">${app.category.toUpperCase()} PACKAGE</span>
+                            <p style="font-family:monospace; margin-bottom:4px; font-size:11px;">Origin: <span style="color:#fff;">${app.uploaderName}</span></p>
+                            <span style="background:rgba(255,193,7,0.1); color:var(--warning); padding:2px 6px; border-radius:4px; font-size:9px; font-weight:800; font-family:monospace;">${app.category.toUpperCase()} BLOCK</span>
                         </div>
                         <div class="item-actions">
-                            <button class="action-icon icon-check" onclick="approvePendingPackageNode('${child.key}')" title="Approve & Publish"><i class="fas fa-check"></i></button>
-                            <button class="action-icon icon-trash" onclick="deletePendingPackageNode('${child.key}')" title="Reject & Delete"><i class="fas fa-times"></i></button>
+                            <button class="action-icon icon-check" onclick="approvePendingPackageNode('${child.key}')" title="Compile & Run"><i class="fas fa-terminal"></i></button>
+                            <button class="action-icon icon-trash" onclick="deletePendingPackageNode('${child.key}')" title="Drop Table"><i class="fas fa-times"></i></button>
                         </div>
                     </div>
                 `;
@@ -905,21 +956,21 @@
         });
 
         window.approvePendingPackageNode = function(key) {
-            if(confirm("Approve and deploy this package directly to the live store?")) {
+            if(confirm("Execute move to production server?")) {
                 databaseRef.ref(`pending_apps/${key}`).once('value').then(snap => {
                     let appData = snap.val();
                     appData.status = 'approved';
                     appData.approvedAt = firebase.database.ServerValue.TIMESTAMP;
                     databaseRef.ref(`store_apps/${key}`).set(appData).then(() => { 
                         databaseRef.ref(`pending_apps/${key}`).remove(); 
-                        alert("Application Published Successfully!");
+                        alert("Node active in production.");
                     });
                 });
             }
         };
 
         window.deletePendingPackageNode = function(key) {
-            if(confirm("Reject and permanently delete this submission?")) {
+            if(confirm("Wipe staging node?")) {
                 databaseRef.ref(`pending_apps/${key}`).remove();
             }
         };
@@ -927,29 +978,70 @@
         databaseRef.ref('store_apps').on('value', (snapshot) => {
             const warehouse = document.getElementById('liveWarehouseContainer');
             if (!snapshot.exists()) {
-                warehouse.innerHTML = `<div class="empty-state"><i class="fas fa-box-open"></i><p>No live apps in database.</p></div>`;
+                warehouse.innerHTML = `<div class="empty-state"><i class="fas fa-database"></i><p>Production DB Empty.</p></div>`;
                 return;
             }
             let html = ''; let appsArray = [];
             snapshot.forEach((child) => { appsArray.push({id: child.key, ...child.val()}); });
             appsArray.reverse().forEach((app) => {
                 html += `
-                    <div class="item-card" style="border-left: 4px solid var(--success);">
-                        <img src="${app.logoUrl}" class="item-img zoomable-img" onclick="openAdminLightbox('${app.logoUrl}')" onerror="this.src='https://via.placeholder.com/70/121212/00e676?text=LIVE'">
+                    <div class="item-card" style="border-left: 3px solid var(--success);">
+                        <img src="${app.logoUrl}" class="item-img zoomable-img" onclick="openAdminLightbox('${app.logoUrl}')" onerror="this.src='https://via.placeholder.com/60/121212/00e676?text=LIVE'">
                         <div class="item-info">
                             <h3>${app.appName}</h3>
-                            <p style="color:var(--primary); font-size:11px; font-family:monospace; margin-bottom:4px;">Dev: ${app.developerName || app.uploaderName || "Unknown"}</p>
-                            <p><i class="fas fa-download" style="color:var(--text-dim); margin-right:4px;"></i> ${app.downloads || 0} &nbsp;&nbsp;|&nbsp;&nbsp; <i class="fas fa-hdd" style="color:var(--text-dim); margin-right:4px;"></i> ${app.size}</p>
+                            <p style="color:var(--primary); font-size:10px; font-family:monospace; margin-bottom:4px;">Dev: ${app.developerName || app.uploaderName || "Unknown"}</p>
+                            <p style="font-family:monospace;"><i class="fas fa-cloud-download-alt" style="color:var(--text-dim); margin-right:4px;"></i> ${app.downloads || 0} &nbsp;&nbsp;|&nbsp;&nbsp; <i class="fas fa-hdd" style="color:var(--text-dim); margin-right:4px;"></i> ${app.size}</p>
                         </div>
                         <div class="item-actions">
-                            <button class="action-icon icon-edit" onclick="openMasterAppEdit('${app.id}')" title="Edit Properties"><i class="fas fa-edit"></i></button>
-                            <button class="action-icon icon-view" onclick="window.open('details.html?id=${app.id}', '_blank')" title="View in Store"><i class="fas fa-external-link-alt"></i></button>
-                            <button class="action-icon icon-trash" onclick="executeLiveAppWipeProtocol('${app.id}', '${app.appName}')" title="Delete from Database"><i class="fas fa-trash-alt"></i></button>
+                            <button class="action-icon icon-edit" onclick="openMasterAppEdit('${app.id}')" title="Configure Config"><i class="fas fa-code"></i></button>
+                            <button class="action-icon icon-view" onclick="window.open('details.html?id=${app.id}', '_blank')" title="Ping Live View"><i class="fas fa-wifi"></i></button>
+                            <button class="action-icon icon-trash" onclick="executeLiveAppWipeProtocol('${app.id}', '${app.appName}')" title="Drop Production Node"><i class="fas fa-ban"></i></button>
                         </div>
                     </div>
                 `;
             });
             warehouse.innerHTML = html;
+        });
+
+        // -------------------------------------------------------------
+        // UPDATE: EDIT MODAL JAVASCRIPT FUNCTIONS (WITH ALL FEATURES)
+        // -------------------------------------------------------------
+        
+        window.toggleEditCoinPrice = function(val) {
+            document.getElementById('editCoinPriceWrapper').style.display = (val === 'paid') ? 'block' : 'none';
+        };
+
+        document.getElementById('meLogoFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+            
+            const status = document.getElementById('meLogoStatus');
+            const preview = document.getElementById('meLogoPreview');
+            const urlOutput = document.getElementById('meLogoUrl');
+            
+            status.innerText = "Transmitting Stream...";
+            status.style.color = "var(--warning)";
+            
+            const formData = new FormData();
+            formData.append("image", file);
+            
+            fetch(`https://api.imgbb.com/1/upload?key=820eb9aa6a57f863045a52c1929efc9c`, {
+                method: "POST",
+                body: formData
+            }).then(res => res.json()).then(json => {
+                if(json.success) {
+                    urlOutput.value = json.data.url;
+                    preview.src = json.data.url;
+                    status.innerText = "Stream Captured!";
+                    status.style.color = "var(--success)";
+                } else {
+                    status.innerText = "Stream Dropped.";
+                    status.style.color = "var(--danger)";
+                }
+            }).catch(() => {
+                status.innerText = "Network Socket Error.";
+                status.style.color = "var(--danger)";
+            });
         });
 
         window.openMasterAppEdit = function(appId) {
@@ -962,7 +1054,22 @@
                 document.getElementById('meDev').value = app.developerName || app.uploaderName || "";
                 document.getElementById('meVer').value = app.version || "";
                 document.getElementById('meSize').value = app.size || "";
+                
+                document.getElementById('meCat').value = app.category || "free";
+                toggleEditCoinPrice(app.category || "free");
+                document.getElementById('meCoinPrice').value = app.coinPrice || 0;
+                
+                document.getElementById('meTrending').checked = app.isTrending || false;
+                
+                document.getElementById('meLogoUrl').value = app.logoUrl || "";
+                document.getElementById('meLogoPreview').src = app.logoUrl || "https://via.placeholder.com/50";
+                document.getElementById('meLogoFile').value = '';
+                document.getElementById('meLogoStatus').innerText = '';
+                
                 document.getElementById('meMainLink').value = app.downloadUrl || "";
+                document.getElementById('mePassword').value = app.zipPassword || "";
+                document.getElementById('meGetPassLink').value = app.getPasswordLink || "";
+                
                 document.getElementById('meDescription').value = app.description || "";
                 
                 document.getElementById('masterAppEditModal').classList.add('active');
@@ -974,28 +1081,36 @@
             let name = document.getElementById('meName').value.trim();
             let link = document.getElementById('meMainLink').value.trim();
             
-            if(!name || !link) { alert("Title and Endpoint Link are mandatory."); return; }
+            if(!name || !link) { alert("Title and Endpoint parameters are null. Aborting update."); return; }
             
             let updates = {
                 appName: name,
                 developerName: document.getElementById('meDev').value.trim(),
                 version: document.getElementById('meVer').value.trim(),
                 size: document.getElementById('meSize').value.trim(),
+                category: document.getElementById('meCat').value,
+                coinPrice: parseInt(document.getElementById('meCoinPrice').value) || 0,
+                isTrending: document.getElementById('meTrending').checked,
+                logoUrl: document.getElementById('meLogoUrl').value.trim() || "https://via.placeholder.com/150",
                 downloadUrl: link,
+                zipPassword: document.getElementById('mePassword').value.trim(),
+                getPasswordLink: document.getElementById('meGetPassLink').value.trim(),
                 description: document.getElementById('meDescription').value.trim()
             };
             
             databaseRef.ref(`store_apps/${appId}`).update(updates).then(() => {
-                alert("Master Registry Config Updated Successfully!");
+                alert("Config Override Pushed to Production!");
                 document.getElementById('masterAppEditModal').classList.remove('active');
             });
         };
 
         window.executeLiveAppWipeProtocol = function(key, name) {
-            if(confirm(`CRITICAL WARNING: Permanently delete "${name}" from the live production store? This action cannot be reversed.`)) {
+            if(confirm(`SYSTEM WARNING: Purging node [${name}] destroys data permanently. Proceed?`)) {
                 databaseRef.ref(`store_apps/${key}`).remove();
             }
         };
+
+        // -------------------------------------------------------------
 
         window.toggleVoucherRewardInterface = function(val) {
             document.getElementById('voucherCoinUI').style.display = (val === 'coins') ? 'block' : 'none';
@@ -1013,18 +1128,18 @@
             
             let finalRewardValue = "";
 
-            if (!code) { alert("Voucher Code string is required."); return; }
+            if (!code) { alert("Key sequence missing."); return; }
 
             if (type === 'coins') {
                 finalRewardValue = document.getElementById('vValueCoins').value.trim();
-                if(!finalRewardValue || finalRewardValue <= 0) { alert("Enter a valid coin deposit amount."); return; }
+                if(!finalRewardValue || finalRewardValue <= 0) { alert("Invalid integer parameter."); return; }
             } else {
                 if (document.getElementById('vCheckAllApps').checked) {
                     finalRewardValue = "ALL_APPS";
                 } else {
                     let checkedList = [];
                     document.querySelectorAll('.v-app-checkbox:checked').forEach(cb => checkedList.push(cb.value));
-                    if (checkedList.length === 0) { alert("Select at least one premium app to bundle."); return; }
+                    if (checkedList.length === 0) { alert("No targets bound to voucher array."); return; }
                     finalRewardValue = checkedList.join(',');
                 }
             }
@@ -1037,7 +1152,7 @@
                 rewardValue: finalRewardValue, 
                 mintedAt: firebase.database.ServerValue.TIMESTAMP
             }).then(() => {
-                alert(`Voucher Node [${code}] generated and broadcasted.`);
+                alert(`Protocol Node [${code}] executed.`);
                 document.getElementById('vCode').value = ''; 
                 document.getElementById('vValueCoins').value = '';
                 document.getElementById('vCheckAllApps').checked = false;
@@ -1047,12 +1162,12 @@
 
         databaseRef.ref('redeem_codes').on('value', (snapshot) => {
             const logs = document.getElementById('liveVouchersTrackingContainer');
-            if(!snapshot.exists()) { logs.innerHTML = `<div class="empty-state"><i class="fas fa-ticket-alt"></i><p>No active vouchers currently exist.</p></div>`; return; }
+            if(!snapshot.exists()) { logs.innerHTML = `<div class="empty-state"><i class="fas fa-ticket-alt"></i><p>Matrix empty.</p></div>`; return; }
             let html = '';
             snapshot.forEach(child => {
                 const voucher = child.val();
                 let shortVal = voucher.rewardValue;
-                if(shortVal.length > 25) shortVal = shortVal.substring(0, 25) + '...'; 
+                if(shortVal.length > 20) shortVal = shortVal.substring(0, 20) + '...'; 
 
                 const usagePercent = Math.min(100, Math.round((voucher.currentClaims / voucher.maxClaims) * 100));
                 let usageColor = "var(--success)";
@@ -1060,31 +1175,31 @@
                 if(usagePercent >= 100) usageColor = "var(--danger)";
 
                 html += `
-                    <div class="item-card" style="border-left: 4px solid var(--gift);">
+                    <div class="item-card" style="border-left: 3px solid var(--gift);">
                         <div class="item-info">
-                            <h3 style="font-family:'Orbitron', sans-serif; color:var(--gift); font-size:18px; letter-spacing:1px;">${voucher.codeString}</h3>
-                            <p style="margin-bottom:8px; font-weight:600;"><span style="color:#fff;">Type:</span> ${voucher.rewardType.replace('_', ' ').toUpperCase()} <span style="opacity:0.5;">|</span> <span style="color:var(--info);">${shortVal}</span></p>
-                            <div style="display:flex; align-items:center; gap:10px;">
-                                <div style="flex:1; height:6px; background:rgba(255,255,255,0.1); border-radius:10px; overflow:hidden;">
+                            <h3 style="font-family:'Orbitron', sans-serif; color:var(--gift); font-size:15px; letter-spacing:1px;">${voucher.codeString}</h3>
+                            <p style="margin-bottom:6px; font-weight:600; font-family:monospace;"><span style="color:#fff;">Mode:</span> ${voucher.rewardType.replace('_', ' ').toUpperCase()} <span style="opacity:0.5;">|</span> <span style="color:var(--info);">${shortVal}</span></p>
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <div style="flex:1; height:4px; background:rgba(255,255,255,0.1); border-radius:10px; overflow:hidden;">
                                     <div style="height:100%; width:${usagePercent}%; background:${usageColor}; border-radius:10px;"></div>
                                 </div>
-                                <span style="font-size:11px; font-family:monospace; color:${usageColor}; font-weight:bold;">${voucher.currentClaims}/${voucher.maxClaims} Claims</span>
+                                <span style="font-size:10px; font-family:monospace; color:${usageColor}; font-weight:bold;">${voucher.currentClaims}/${voucher.maxClaims} Hit</span>
                             </div>
                         </div>
                         <div class="item-actions">
-                            <button class="action-icon icon-trash" onclick="dropActiveVoucherFromNetwork('${child.key}')" title="Revoke Voucher"><i class="fas fa-ban"></i></button>
+                            <button class="action-icon icon-trash" onclick="dropActiveVoucherFromNetwork('${child.key}')" title="Wipe Routine"><i class="fas fa-ban"></i></button>
                         </div>
                     </div>
                 `;
             });
             logs.innerHTML = html;
         });
-        window.dropActiveVoucherFromNetwork = function(key) { if(confirm("Revoke and delete this voucher entirely?")) databaseRef.ref(`redeem_codes/${key}`).remove(); };
+        window.dropActiveVoucherFromNetwork = function(key) { if(confirm("Nullify and wipe this block from network?")) databaseRef.ref(`redeem_codes/${key}`).remove(); };
 
         databaseRef.ref('reports').on('value', (snapshot) => {
             const reportsBox = document.getElementById('userReportsTrackingContainer');
             if (!snapshot.exists()) {
-                reportsBox.innerHTML = `<div class="empty-state"><i class="fas fa-shield-check" style="color:var(--success); opacity:1; font-size:40px;"></i><p style="margin-top:15px;">System secure. Zero violations reported.</p></div>`;
+                reportsBox.innerHTML = `<div class="empty-state"><i class="fas fa-shield-check" style="color:var(--success); opacity:1; font-size:30px;"></i><p style="margin-top:10px;">Firewall clear.</p></div>`;
                 return;
             }
             let html = ''; let reportsArr = [];
@@ -1093,20 +1208,20 @@
                 html += `
                     <div class="item-card report-card" style="background: linear-gradient(to right, rgba(255,61,0,0.05), transparent);">
                         <div class="item-info">
-                            <h3 style="color:var(--danger); font-size:16px; margin-bottom:8px;"><i class="fas fa-exclamation-triangle" style="margin-right:5px;"></i> TARGET: ${rpt.appName}</h3>
-                            <p style="font-family:monospace; margin-bottom:6px;">Reporter: <span style="color:#fff;">${rpt.reportedByName}</span></p>
+                            <h3 style="color:var(--danger); font-size:14px; margin-bottom:6px;"><i class="fas fa-exclamation-triangle" style="margin-right:4px;"></i> TRACE: ${rpt.appName}</h3>
+                            <p style="font-family:monospace; margin-bottom:4px; font-size:11px;">Origin: <span style="color:#fff;">${rpt.reportedByName}</span></p>
                             <span class="badge-danger">${rpt.violationReason}</span>
                         </div>
                         <div class="item-actions">
-                            <button class="action-icon icon-view" onclick="window.open('details.html?id=${rpt.appId}', '_blank')" title="Investigate Application"><i class="fas fa-search"></i></button>
-                            <button class="action-icon icon-check" onclick="dropReportNodeFromRegistry('${rpt.id}')" title="Resolve & Dismiss Report"><i class="fas fa-check-double"></i></button>
+                            <button class="action-icon icon-view" onclick="window.open('details.html?id=${rpt.appId}', '_blank')" title="Trace Node"><i class="fas fa-crosshairs"></i></button>
+                            <button class="action-icon icon-check" onclick="dropReportNodeFromRegistry('${rpt.id}')" title="Clear Warning"><i class="fas fa-power-off"></i></button>
                         </div>
                     </div>
                 `;
             });
             reportsBox.innerHTML = html;
         });
-        window.dropReportNodeFromRegistry = function(key) { if(confirm("Mark this violation report as handled and clear from logs?")) databaseRef.ref(`reports/${key}`).remove(); };
+        window.dropReportNodeFromRegistry = function(key) { if(confirm("Dismiss this warning flag from the system?")) databaseRef.ref(`reports/${key}`).remove(); };
 
         window.dispatchManualSystemNotice = function() {
             const title = document.getElementById('nTitle').value.trim();
@@ -1114,7 +1229,7 @@
             const appId = document.getElementById('nAppSelect').value;
             const customLink = document.getElementById('nLink').value.trim();
 
-            if(!title || !msg) { alert("Title and Detailed Message fields are obligatory."); return; }
+            if(!title || !msg) { alert("Missing parameters: Header and Payload required."); return; }
 
             let finalLink = customLink;
             if(appId !== "") { finalLink = `details.html?id=${appId}`; }
@@ -1127,11 +1242,11 @@
                 message: msg,
                 type: "alert",
                 timeString: timeStr,
-                sender: "Master Administrator",
+                sender: "System Override",
                 link: finalLink || "", 
                 timestamp: firebase.database.ServerValue.TIMESTAMP
             }).then(() => {
-                alert("Global Notice successfully broadcasted across the network!");
+                alert("Payload successfully injected into global network!");
                 document.getElementById('nTitle').value = '';
                 document.getElementById('nMessage').value = '';
                 document.getElementById('nAppSelect').value = '';
@@ -1142,32 +1257,32 @@
         databaseRef.ref('system_broadcasts').on('value', (snapshot) => {
             const noticesBox = document.getElementById('globalNoticesTrackingContainer');
             if (!snapshot.exists()) {
-                noticesBox.innerHTML = `<div class="empty-state"><i class="fas fa-broadcast-tower"></i><p>Broadcast history is clean.</p></div>`;
+                noticesBox.innerHTML = `<div class="empty-state"><i class="fas fa-satellite"></i><p>Logs clear.</p></div>`;
                 return;
             }
             let html = ''; let noticesArr = [];
             snapshot.forEach(child => noticesArr.push({id: child.key, ...child.val()}));
             noticesArr.reverse().forEach(note => {
-                let linkHtml = note.link ? `<a href="${note.link}" target="_blank" style="color:var(--info); font-size:12px; font-weight:bold; text-decoration:none; display:inline-block; margin-top:8px;"><i class="fas fa-link"></i> Embedded Link Attached</a>` : '';
+                let linkHtml = note.link ? `<a href="${note.link}" target="_blank" style="color:var(--info); font-size:11px; font-weight:bold; text-decoration:none; display:inline-block; margin-top:6px; font-family:monospace;"><i class="fas fa-link"></i> Linked Routine</a>` : '';
                 let borderCol = note.type === 'alert' ? 'var(--danger)' : 'var(--info)';
                 
                 html += `
-                    <div class="item-card" style="border-left: 4px solid ${borderCol};">
+                    <div class="item-card" style="border-left: 3px solid ${borderCol};">
                         <div class="item-info">
-                            <h3 style="color:#fff; font-size:16px; margin-bottom:8px;">${note.title}</h3>
-                            <p style="font-size:13px; line-height:1.5; color:#ccc;">${note.message}</p>
+                            <h3 style="color:#fff; font-size:14px; margin-bottom:6px;">${note.title}</h3>
+                            <p style="font-size:12px; line-height:1.4; color:#ccc;">${note.message}</p>
                             ${linkHtml}
-                            <p style="font-size:11px; color:var(--text-dim); margin-top:10px; font-family:monospace;"><i class="fas fa-clock"></i> Timestamp: ${note.timeString}</p>
+                            <p style="font-size:10px; color:var(--text-dim); margin-top:8px; font-family:monospace;"><i class="fas fa-clock"></i> Timestamp: ${note.timeString}</p>
                         </div>
                         <div class="item-actions">
-                            <button class="action-icon icon-trash" onclick="dropBroadcastNoticeFromLiveDatabase('${note.id}')" title="Delete Broadcast Log"><i class="fas fa-trash-alt"></i></button>
+                            <button class="action-icon icon-trash" onclick="dropBroadcastNoticeFromLiveDatabase('${note.id}')" title="Purge Record"><i class="fas fa-eraser"></i></button>
                         </div>
                     </div>
                 `;
             });
             noticesBox.innerHTML = html;
         });
-        window.dropBroadcastNoticeFromLiveDatabase = function(key) { if(confirm("Purge this broadcast from the global network history?")) databaseRef.ref(`system_broadcasts/${key}`).remove(); };
+        window.dropBroadcastNoticeFromLiveDatabase = function(key) { if(confirm("Wipe this record instance?")) databaseRef.ref(`system_broadcasts/${key}`).remove(); };
 
     </script>
 </body>
