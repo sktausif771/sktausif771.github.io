@@ -1,17 +1,6 @@
 /* ==========================================================================
-   MVX STORE V5.6 - MAIN SYSTEM ARCHITECTURE & SERVICE WORKER
+   MVX STORE V5.6 - MAIN SYSTEM ARCHITECTURE
    ========================================================================== */
-
-// NEW: SERVICE WORKER REGISTRATION FOR NATIVE PUSH NOTIFICATIONS
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-        navigator.serviceWorker.register('sw.js').then(function(registration) {
-            console.log('ServiceWorker registration successful with scope: ', registration.scope);
-        }, function(err) {
-            console.log('ServiceWorker registration failed: ', err);
-        });
-    });
-}
 
 let userProfile = null; 
 let masterPressTimer = null;

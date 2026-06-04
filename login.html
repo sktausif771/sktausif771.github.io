@@ -13,17 +13,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
     <style>
-        /* ==========================================================================
-           MVX GATEWAY - PREMIUM UI ARCHITECTURE V4.0 (EXPANDED VERSION)
-           ========================================================================== */
         :root {
             --bg-base: #020617;
             --bg-panel: rgba(15, 23, 42, 0.7);
             --primary: #00e6b8;
             --primary-glow: 0 0 25px rgba(0, 230, 184, 0.3);
             --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --danger: #ff003c;
             --border-light: rgba(0, 230, 184, 0.2);
             --border-focus: rgba(0, 230, 184, 0.8);
             --font-tech: 'Orbitron', sans-serif;
@@ -49,7 +44,6 @@
             position: relative;
         }
 
-        /* Ambient Background Overlay */
         .cyber-grid {
             position: absolute; 
             top: 0; 
@@ -64,7 +58,6 @@
             pointer-events: none;
         }
 
-        /* Main Gateway Container */
         .gateway-container {
             position: relative;
             width: 100%;
@@ -89,7 +82,6 @@
             border-color: var(--border-focus); 
         }
 
-        /* Branding Section */
         .brand-header { 
             margin-bottom: 35px; 
         }
@@ -127,96 +119,17 @@
             border-radius: 4px;
         }
 
-        /* Strict Security Checklist Area */
-        .security-checklist {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            padding: 20px 15px;
-            margin-bottom: 30px;
-            text-align: left;
-        }
-
-        .check-item { 
-            display: flex; 
-            align-items: flex-start; 
-            gap: 12px; 
-            margin-bottom: 15px; 
-            padding-bottom: 15px;
-            border-bottom: 1px dashed rgba(255,255,255,0.05);
-            transition: opacity 0.3s ease;
-        }
-
-        .check-item:last-child { 
-            margin-bottom: 0; 
-            padding-bottom: 0; 
-            border-bottom: none; 
-        }
-        
-        .check-item input[type="checkbox"] { 
-            appearance: none; 
-            width: 22px; 
-            height: 22px; 
-            border: 2px solid var(--border-light); 
-            border-radius: 6px; 
-            background: transparent; 
-            cursor: pointer; 
-            flex-shrink: 0; 
-            position: relative; 
-            transition: all 0.2s ease; 
-            margin-top: 2px;
-        }
-
-        .check-item input[type="checkbox"]:checked { 
-            background: var(--primary); 
-            border-color: var(--primary); 
-            box-shadow: 0 0 10px var(--primary);
-        }
-
-        .check-item input[type="checkbox"]:checked::after {
-            content: '✔'; 
-            position: absolute; 
-            color: #000; 
-            font-size: 14px; 
-            font-weight: 900; 
-            top: 50%; 
-            left: 50%; 
-            transform: translate(-50%, -50%);
-        }
-        
-        .check-item label { 
-            font-size: 13.5px; 
-            color: var(--text-muted); 
-            cursor: pointer; 
-            line-height: 1.5; 
-            font-weight: 500;
-        }
-
-        .check-item label strong { 
-            color: #ffffff; 
-            display: block; 
-            margin-bottom: 2px; 
-            font-size: 14px;
-        }
-
-        .required-tag { 
-            color: var(--danger); 
-            font-size: 11px; 
-            font-weight: 700; 
-            letter-spacing: 1px; 
-        }
-
-        /* Login Button Architecture */
         .auth-container { 
             position: relative; 
+            margin-top: 20px;
         }
         
         .btn-google { 
             width: 100%; 
             padding: 16px; 
-            background: #1e293b; 
-            color: #64748b; 
-            border: 2px solid #334155; 
+            background: #ffffff; 
+            color: #020617; 
+            border: 2px solid #ffffff; 
             border-radius: 10px; 
             font-family: var(--font-tech); 
             font-size: 16px; 
@@ -225,7 +138,8 @@
             align-items: center; 
             justify-content: center; 
             gap: 12px; 
-            cursor: not-allowed; 
+            cursor: pointer; 
+            box-shadow: 0 0 20px rgba(255,255,255,0.2); 
             transition: all 0.3s ease; 
             overflow: hidden;
         }
@@ -233,50 +147,18 @@
         .btn-google svg { 
             width: 24px; 
             height: 24px;
-            filter: grayscale(100%); 
-            opacity: 0.5; 
-            transition: 0.3s; 
             flex-shrink: 0;
         }
-        
-        /* Active State when conditions are met */
-        .btn-google.ready { 
-            background: #ffffff; 
-            color: #020617; 
-            border-color: #ffffff;
-            cursor: pointer; 
-            box-shadow: 0 0 20px rgba(255,255,255,0.2); 
-        }
 
-        .btn-google.ready svg { 
-            filter: grayscale(0%); 
-            opacity: 1; 
-        }
-
-        .btn-google.ready:hover { 
+        .btn-google:hover { 
             transform: translateY(-2px); 
             box-shadow: 0 5px 25px rgba(255,255,255,0.4); 
         }
 
-        .btn-google.ready:active { 
+        .btn-google:active { 
             transform: translateY(1px); 
         }
 
-        /* Status Message Indicator */
-        #status-message {
-            margin-top: 15px; 
-            font-size: 13px; 
-            font-weight: 600; 
-            color: var(--danger); 
-            min-height: 20px; 
-            transition: color 0.3s;
-        }
-
-        #status-message.success { 
-            color: var(--primary); 
-        }
-
-        /* Processing Loader Overlays */
         .loader-overlay {
             position: absolute; 
             top: 0; 
@@ -335,39 +217,16 @@
                 <div class="brand-subtitle">SECURE GATEWAY</div>
             </div>
 
-            <div class="security-checklist">
-                
-                <div class="check-item">
-                    <input type="checkbox" id="ageVerify">
-                    <label for="ageVerify">
-                        <strong>User Agreement</strong>
-                        I agree to the Store's Terms and confirm I am 13+ years old.
-                    </label>
-                </div>
-                
-                <div class="check-item">
-                    <input type="checkbox" id="notiVerify">
-                    <label for="notiVerify">
-                        <strong>System Alerts <span class="required-tag">[REQUIRED]</span></strong>
-                        I allow Notification Access to receive critical system updates.
-                    </label>
-                </div>
-
-            </div>
-
             <div class="auth-container">
-                <button id="authButton" class="btn-google" disabled onclick="initiateLoginProtocol()">
-                    
+                <button id="authButton" class="btn-google" onclick="initiateLoginProtocol()">
                     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                         <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                         <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                         <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                     </svg>
-
                     SIGN IN WITH GOOGLE
                 </button>
-                <div id="status-message">Complete the checklist above to initialize</div>
             </div>
 
         </div>
@@ -380,69 +239,11 @@
     <script src="firebase-config.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const ageCheckbox = document.getElementById('ageVerify');
-            const notiCheckbox = document.getElementById('notiVerify');
-            const authBtn = document.getElementById('authButton');
-            const statusMsg = document.getElementById('status-message');
-            
-            // Engine to check if all conditions are met
-            function checkGatewayStatus() {
-                if(ageCheckbox.checked && notiCheckbox.checked) {
-                    authBtn.removeAttribute('disabled');
-                    authBtn.classList.add('ready');
-                    statusMsg.innerText = "System Ready! Sign in with Google.";
-                    statusMsg.className = "success";
-                } else {
-                    authBtn.setAttribute('disabled', 'true');
-                    authBtn.classList.remove('ready');
-                    statusMsg.innerText = "Complete the checklist above to initialize the system";
-                    statusMsg.className = "";
-                }
-            }
-
-            // Age Check Event
-            ageCheckbox.addEventListener('change', checkGatewayStatus);
-
-            // Strict Notification Permission Engine
-            notiCheckbox.addEventListener('change', (e) => {
-                if(notiCheckbox.checked) {
-                    // Browser support check
-                    if (!('Notification' in window)) {
-                        alert("Your browser does not support notifications. Please use Google Chrome for full access.");
-                        notiCheckbox.checked = false;
-                        return;
-                    }
-
-                    // Native Permission Request Protocol
-                    Notification.requestPermission().then(permission => {
-                        if (permission === 'granted') {
-                            // Perfect! Allow them to proceed
-                            checkGatewayStatus();
-                        } else if (permission === 'denied') {
-                            // User clicked block/deny
-                            notiCheckbox.checked = false;
-                            checkGatewayStatus();
-                            alert("⚠️ ACCESS DENIED: Security Policy requires Notifications to be Enabled. Please allow it from your browser settings.");
-                        } else {
-                            // User closed the popup without action
-                            notiCheckbox.checked = false;
-                            checkGatewayStatus();
-                        }
-                    });
-                } else {
-                    checkGatewayStatus();
-                }
-            });
-        });
-
-        // Trigger Login Function (Connects to firebase-config.js)
+        // Trigger Direct Login Function
         function initiateLoginProtocol() {
-            // Verify if next file (firebase-config.js) has loaded properly
             if(typeof window.startGoogleLogin === 'function') {
                 window.startGoogleLogin(); 
             } else {
-                // Fallback if config is missing
                 alert("⚠️ SYSTEM ERROR: firebase-config.js file not found or API keys are missing.");
             }
         }

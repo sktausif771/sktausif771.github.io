@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let currentUser = null;
     let userProfile = null;
-    let activeContentType = 'mod_app'; // UPDATE: Default tab set to 'mod_app' as requested
+    let activeContentType = 'mod_app';
     let activeFilterType = 'all';    
 
     const IMGBB_API_KEY = "820eb9aa6a57f863045a52c1929efc9c"; 
@@ -42,6 +42,11 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             runSystemAutoApproveEngine();
             listenForLiveSystemNotifications();
+        } else {
+            currentUser = null;
+            userProfile = null;
+            loadStoreFeed(activeFilterType, activeContentType);
+            listenForLiveSystemNotifications();
         }
     });
 
@@ -66,6 +71,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (tabAvatar) {
             tabAvatar.src = userProfile.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile.name}`;
+        }
+
+        const topProfilePic = document.getElementById('topProfileBtn');
+        if (topProfilePic) {
+            topProfilePic.src = userProfile.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile.name}`;
         }
 
         const ownerLogoSection = document.getElementById('ownerLogoEditSection');
@@ -204,9 +214,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // 6. MASTER PLAY STORE APPLICATION PUBLISH MODAL FORM LAYOUT (CLEAN UI)
     // ==========================================================================
     window.openUploadModal = function() {
-        if (!userProfile) return;
+        // LOGIN CHECK: Redirects to login page if user is not authenticated
+        if (!currentUser) {
+            window.location.href = 'login.html';
+            return;
+        }
 
-        const isMasterOwner = (userProfile.role === 'owner');
+        const isMasterOwner = (userProfile && userProfile.role === 'owner');
         uploadedScreenshotsList = []; 
 
         let categoryOptionsHTML = `<option value="free">Free App</option>`;
@@ -561,7 +575,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // ==========================================================================
-    // 9. LIVE BROADCAST INBOX & 100% NATIVE PHONE PUSH NOTIFICATION ENGINE
+    // 9. IN-APP SYSTEM NOTIFICATIONS (PUSH NOTIFICATIONS REMOVED)
     // ==========================================================================
     window.clearLocalNotifications = function() {
         document.getElementById('notificationInboxDisplay').innerHTML = `<div class="empty-msg" style="text-align:center; color:var(--text-secondary); padding:40px;"><i class="fas fa-trash-alt" style="font-size:30px; margin-bottom:10px;"></i><br>Inbox cleared locally.</div>`;
@@ -571,7 +585,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function listenForLiveSystemNotifications() {
         const inbox = document.getElementById('notificationInboxDisplay');
         const badge = document.getElementById('notiAlert');
-        let isInitialLoad = true; // পেজ রিলোড দেওয়ার সময় আগের নোটিশগুলো যাতে আবার না বাজে
         
         db.ref('system_broadcasts').on('value', (snapshot) => {
             if(!inbox) return;
@@ -584,17 +597,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let html = '';
             let notices = [];
-            let latestNoteForPush = null; // নতুন নোটিশ ট্র্যাক করার জন্য
-
-            snapshot.forEach(child => {
-                let note = {id: child.key, ...child.val()};
-                notices.push(note);
-                latestNoteForPush = note; // লুপের শেষেরটাই সবচেয়ে নতুন নোটিশ
-            });
-            
+            snapshot.forEach(child => notices.push({id: child.key, ...child.val()}));
             notices.reverse();
 
-            // ওয়েবসাইটের ভেতরের ইনবক্স আপডেট করা
             notices.forEach(note => {
                 const alertClass = note.type === 'alert' ? 'system-alert' : '';
                 let clickAction = "";
@@ -622,35 +627,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
             });
             inbox.innerHTML = html;
-
-            // ====================================================================
-            // 🚀 MASTER TRICK: 100% NATIVE MOBILE STATUS BAR PUSH NOTIFICATION
-            // ====================================================================
-            if (isInitialLoad) {
-                isInitialLoad = false;
-                return; // প্রথমবার পেজ লোড হলে নোটিফিকেশন বাজবে না
-            }
-
-            // নতুন নোটিশ আসলে ডাইরেক্ট ইউজারের ফোনে পুশ করা
-            if (latestNoteForPush && Notification.permission === 'granted') {
-                if ('serviceWorker' in navigator) {
-                    navigator.serviceWorker.ready.then(function(registration) {
-                        registration.showNotification(latestNoteForPush.title, {
-                            body: latestNoteForPush.message,
-                            icon: 'https://via.placeholder.com/192/020617/00e6b8?text=MVX',
-                            vibrate: [200, 100, 200, 100, 200], // ফোন কাঁপবে
-                            data: { url: latestNoteForPush.link || '/index.html' },
-                            requireInteraction: true
-                        });
-                    });
-                } else {
-                    // সার্ভিস ওয়ার্কার না থাকলে ফলব্যাক মেথড
-                    new Notification(latestNoteForPush.title, {
-                        body: latestNoteForPush.message,
-                        icon: 'https://via.placeholder.com/192/020617/00e6b8?text=MVX'
-                    });
-                }
-            }
         });
     }
 
@@ -682,7 +658,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                         type: "normal",
                                         timeString: timeStr,
                                         sender: "System Bot",
-                                        link: `details.html?id=${child.key}`, // Added automatic link to details page
+                                        link: `details.html?id=${child.key}`, 
                                         timestamp: firebase.database.ServerValue.TIMESTAMP
                                     });
                                 }
@@ -738,6 +714,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Profile Settings View Initializer Bypass Override
     window.openProfileQuickSettings = function() {
+        // LOGIN CHECK: Redirects to login page if user is not authenticated
+        if (!currentUser) {
+            window.location.href = 'login.html';
+            return;
+        }
+
         if (typeof window.isMasterTimerActive !== 'undefined' && window.isMasterTimerActive) return;
         const modal = document.getElementById('profileEditModal');
         if (modal) {
@@ -759,7 +741,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // My Uploads Fetch and Generator Engine
     window.fetchMyUploadedApps = function() {
         const container = document.getElementById('myUploadsContainer');
-        if (!container || !currentUser) return;
+        if (!currentUser) {
+             if(container) container.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-dim);">Please login to view your uploads.</div>`;
+             return;
+        }
 
         container.innerHTML = `<div style="text-align:center; padding:30px;"><i class="fas fa-circle-notch fa-spin" style="color:var(--primary); font-size:24px;"></i><p style="margin-top:10px;">Scanning your ecosystem packages...</p></div>`;
 

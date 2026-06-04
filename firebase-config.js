@@ -23,7 +23,7 @@ window.database = firebase.database();
 window.auth = firebase.auth();
 
 /* ==========================================================================
-   [FIXED] GOOGLE LOGIN FUNCTION FOR LOGIN.HTML
+   DIRECT GOOGLE LOGIN FUNCTION FOR LOGIN.HTML (No Notifications check)
    ========================================================================== */
 window.startGoogleLogin = function() {
     var provider = new firebase.auth.GoogleAuthProvider();
@@ -32,70 +32,93 @@ window.startGoogleLogin = function() {
     var loader = document.getElementById('systemLoader');
     if(loader) loader.style.display = 'flex';
     
-    window.auth.signInWithPopup(provider).catch(function(error) {
+    window.auth.signInWithPopup(provider).then((result) => {
+        var user = result.user;
+        var isNewUser = result.additionalUserInfo.isNewUser;
+        
+        window.database.ref('settings').once('value').then((snap) => {
+            let settings = snap.exists() ? snap.val() : {};
+            let signupBonus = settings.signupBonus || 0;
+            
+            if (isNewUser) {
+                window.database.ref(`users/${user.uid}`).set({
+                    name: user.displayName || "MVX User",
+                    email: user.email,
+                    avatarUrl: user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.displayName}`,
+                    coins: signupBonus,
+                    role: 'user',
+                    joinedAt: firebase.database.ServerValue.TIMESTAMP,
+                    lastLogin: firebase.database.ServerValue.TIMESTAMP,
+                    followers: 0,
+                    following: 0
+                });
+            } else {
+                window.database.ref(`users/${user.uid}/lastLogin`).set(firebase.database.ServerValue.TIMESTAMP);
+            }
+        });
+    }).catch((error) => {
         if(loader) loader.style.display = 'none';
-        alert("⚠️ Login Failed: " + error.message);
+        alert("Google Sign-In Failed: " + error.message);
     });
 };
 
 /* ==========================================================================
-   DYNAMIC SIGNUP BONUS & MAINTENANCE LOCK ACCESS CONTROL SYSTEM
+   AUTH STATE OBSERVER (Allows Non-Logged in Users to browse)
    ========================================================================== */
-
-function getSafeEmailKey(email) {
-    return email ? email.toLowerCase().replace(/\./g, ',') : "";
-}
-
 window.auth.onAuthStateChanged((user) => {
     if (user) {
-        const safeEmailKey = getSafeEmailKey(user.email);
-        
-        window.database.ref('settings').once('value').then((snapshot) => {
-            const settings = snapshot.val() || {};
-            const isMaintenanceActive = settings.maintenanceMode || false;
-            const masterAdminsList = settings.masterAdmins || {};
+        window.database.ref('settings').once('value').then((configSnap) => {
+            let isMaintenanceActive = false;
+            let masterAdmins = {};
             
-            const isWhitelistedAdmin = masterAdminsList[safeEmailKey] ? true : false;
+            if (configSnap.exists()) {
+                isMaintenanceActive = configSnap.val().maintenanceMode || false;
+                masterAdmins = configSnap.val().masterAdmins || {};
+            }
 
             window.database.ref(`users/${user.uid}`).once('value').then((userSnap) => {
+                if (!userSnap.exists()) return;
                 let userData = userSnap.val();
+                let updates = {};
 
-                if (!userSnap.exists()) {
-                    const assignedBonusCoins = parseInt(settings.signupBonus) || 0;
-                    const systemDeterminedRole = isWhitelistedAdmin ? 'owner' : 'user';
-
-                    userData = {
-                        name: user.displayName || "MVX User",
-                        email: user.email,
-                        avatarUrl: user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.uid}`,
-                        coins: assignedBonusCoins, 
-                        role: systemDeterminedRole,
-                        joinedAt: firebase.database.ServerValue.TIMESTAMP,
-                        lastLogin: firebase.database.ServerValue.TIMESTAMP
-                    };
-
-                    window.database.ref(`users/${user.uid}`).set(userData).then(() => {
-                        executeAccessControlRoutingRules(user, userData, isMaintenanceActive);
-                    });
-                } 
-                else {
-                    let updates = { lastLogin: firebase.database.ServerValue.TIMESTAMP };
-                    
-                    if (isWhitelistedAdmin && userData.role !== 'owner') {
-                        updates['role'] = 'owner';
-                        userData.role = 'owner';
-                    } 
-                    else if (!isWhitelistedAdmin && userData.role === 'owner' && user.email !== "sktausifhhh@gmail.com") {
-                        updates['role'] = 'user';
-                        userData.role = 'user';
+                // Default Whitelisted Owner Emails
+                const ownerEmails = [
+                    "sktausif07ff@gmail.com", 
+                    "sktausif771@gmail.com", 
+                    "sktausifhhh@gmail.com", 
+                    "white2k177@gmail.com"
+                ];
+                
+                let isWhitelistedAdmin = ownerEmails.includes(user.email);
+                if (!isWhitelistedAdmin) {
+                    const safeEmail = user.email.replace(/\./g, ',');
+                    if (masterAdmins[safeEmail]) {
+                        isWhitelistedAdmin = true;
                     }
+                }
 
+                if (isWhitelistedAdmin && userData.role !== 'owner') {
+                    updates['role'] = 'owner';
+                    userData.role = 'owner';
+                } 
+                else if (!isWhitelistedAdmin && userData.role === 'owner') {
+                    updates['role'] = 'user';
+                    userData.role = 'user';
+                }
+
+                if (Object.keys(updates).length > 0) {
                     window.database.ref(`users/${user.uid}`).update(updates).then(() => {
                         executeAccessControlRoutingRules(user, userData, isMaintenanceActive);
                     });
+                } else {
+                    executeAccessControlRoutingRules(user, userData, isMaintenanceActive);
                 }
             });
         });
+    } else {
+        // User is logged out: We just clear session, but DO NOT redirect them to login page.
+        sessionStorage.removeItem('mvx_role');
+        sessionStorage.removeItem('mvx_session');
     }
 });
 
