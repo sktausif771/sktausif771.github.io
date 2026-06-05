@@ -151,6 +151,7 @@
 
     <main class="play-main-content" id="youTabContent" style="display: none;">
         
+        <!-- LOGGED IN PROFILE VIEW -->
         <div class="you-header" id="loggedInProfileView" style="display: none; align-items: center; gap: 20px; padding: 20px; background: var(--bg-surface); border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 30px;">
             <div style="position: relative; display: inline-block; flex-shrink: 0;">
                 <img src="" id="youTabAvatar" alt="User Avatar Image" style="width: 75px; height: 75px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);">
@@ -161,14 +162,15 @@
             </div>
             <div class="you-info" style="flex: 1; overflow: hidden;">
                 <h2 onclick="editUserNamePrompt()" style="cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: 'Orbitron', sans-serif; font-size: 20px; margin-bottom: 4px;" title="Click to edit name">
-                    <span id="youTabName" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></span> 
+                    <span id="youTabName" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Loading...</span> 
                     <i class="fas fa-pen" style="font-size: 12px; color: var(--text-secondary);"></i>
                 </h2>
-                <p id="youTabEmail" style="font-size: 12px; color: var(--text-secondary);"></p>
+                <p id="youTabEmail" style="font-size: 13px; color: var(--text-dim); font-family: monospace;"></p>
                 <p id="directAvatarStatus" style="font-size: 11px; color: var(--warning); margin-top: 4px; display: none; font-weight: bold;"></p>
             </div>
         </div>
 
+        <!-- GMAIL STYLE LOGGED OUT VIEW -->
         <div class="google-login-card" id="loggedOutLoginView" onclick="window.location.href='login.html'">
             <div class="g-logo-container">
                 <svg viewBox="0 0 24 24" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
@@ -185,6 +187,7 @@
             <i class="fas fa-chevron-right g-arrow"></i>
         </div>
 
+        <!-- REDEEM BOX (Visible for ALL logged-in users) -->
         <div class="redeem-box" id="redeemBoxSection" style="max-width: 350px; margin: 0 auto 25px auto; padding: 15px; border-radius: 12px; display: none;">
             <h4 id="lblClaimTitle" style="font-size: 15px; margin-bottom: 12px;"><i class="fas fa-gift" style="color: var(--primary);"></i> Claim Premium Gift Code</h4>
             <div style="display: flex; gap: 8px;">
@@ -196,12 +199,14 @@
 
         <div class="you-menu-list">
             
+            <!-- ADMIN PANEL -->
             <div class="you-menu-item" id="menuAdminPanelItem" style="display: none;" onclick="window.location.href='admin.html'">
                 <i class="fas fa-user-shield" style="color: var(--danger);"></i>
                 <span style="color: var(--danger); font-weight: 700;">Admin Panel</span>
                 <i class="fas fa-chevron-right arrow"></i>
             </div>
 
+            <!-- PUBLISH APP -->
             <div class="you-menu-item" id="menuPublishItem" onclick="openUploadModal()" style="display: none;">
                 <i class="fas fa-cloud-upload-alt" style="color: var(--primary);"></i>
                 <span id="lblUploadApp">Publish Package File</span>
@@ -220,12 +225,14 @@
                 <i class="fas fa-exchange-alt arrow" style="font-size:14px;"></i>
             </div>
             
+            <!-- COIN BALANCE -->
             <div class="you-menu-item" id="menuCoinItem" style="display: none;">
                 <i class="fas fa-wallet" style="color: #ffd700;"></i>
                 <span id="lblCoinBalance">MVX Coin Balance</span>
                 <span style="margin-left:auto; margin-right:15px; font-weight:900; color:#ffd700; font-size:16px;" id="navCoinDisplay">0</span>
             </div>
             
+            <!-- SIGN OUT -->
             <div class="you-menu-item" id="menuSignOutItem" style="color: var(--danger); display: none;" onclick="secureLogout()">
                 <i class="fas fa-sign-out-alt"></i>
                 <span id="lblSignOut">Secure Sign Out</span>
@@ -271,6 +278,7 @@
         </div>
     </div>
 
+    <!-- MY UPLOADS MODAL -->
     <div class="modal-overlay" id="myUploadsModal">
         <div class="play-modal" style="max-width: 600px; width: 95%;">
             <div class="modal-header">
@@ -288,6 +296,7 @@
         </div>
     </div>
 
+    <!-- UPDATE APPLICATION MODAL -->
     <div class="modal-overlay" id="userAppEditModal">
         <div class="play-modal" style="max-width: 550px;">
             <div class="modal-header">
@@ -332,7 +341,6 @@
     <script src="store-logic.js"></script>
 
     <script>
-        // Internal View Switcher for Auth States
         document.addEventListener('DOMContentLoaded', () => {
             if(typeof firebase !== 'undefined') {
                 firebase.auth().onAuthStateChanged((user) => {
@@ -384,7 +392,6 @@
             if(badge) badge.style.display = 'none';
         }
 
-        // Toggles the My Uploads modal directly
         function openMyUploadsModal() {
             document.getElementById('myUploadsModal').classList.add('active');
             if(typeof window.fetchMyUploadedApps === 'function') window.fetchMyUploadedApps();
@@ -393,7 +400,6 @@
         function closeUserAppEditModal() {
             document.getElementById('userAppEditModal').classList.remove('active');
         }
-
     </script>
 </body>
 </html>

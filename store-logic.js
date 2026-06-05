@@ -19,14 +19,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const IMGBB_API_KEY = "820eb9aa6a57f863045a52c1929efc9c"; 
 
     // ==========================================================================
-    // 1. DYNAMIC UI INJECTION FOR "MY UPLOADS" (Fulfills User Request)
+    // 1. DYNAMIC UI INJECTION FOR "MY UPLOADS" (Only for Admins)
     // ==========================================================================
     const menuList = document.querySelector('.you-menu-list');
     if (menuList && !document.getElementById('menuMyUploadsItem')) {
         const myUpBtn = document.createElement('div');
         myUpBtn.className = 'you-menu-item';
         myUpBtn.id = 'menuMyUploadsItem';
-        myUpBtn.style.display = 'none';
+        myUpBtn.style.display = 'none'; // Hidden by default
         myUpBtn.onclick = function() { 
             if(typeof openMyUploadsModal === 'function') openMyUploadsModal(); 
         };
@@ -35,12 +35,11 @@ document.addEventListener('DOMContentLoaded', () => {
             <span style="color: var(--info); font-weight: 700;">My Uploads</span>
             <i class="fas fa-chevron-right arrow"></i>
         `;
-        menuList.insertBefore(myUpBtn, menuList.children[1] || menuList.firstChild);
+        menuList.insertBefore(myUpBtn, menuList.children[2] || menuList.firstChild);
     }
 
-    // Disable Top Profile Icon Click Action as requested
+    // Disable Top Profile Icon Click Action completely
     window.openMyUploadsIfAdmin = function() {
-        console.log("Top profile icon click action disabled for all users.");
         return false;
     };
 
@@ -79,16 +78,46 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ==========================================================================
-    // 4. SYSTEM INTERFACE PIPELINE ELEMENTS MANAGER
+    // 4. SYSTEM INTERFACE PIPELINE ELEMENTS MANAGER (Fix for Name, Image & Coins)
     // ==========================================================================
     function executeSystemInterfacePipelineUpdates() {
-        if (!userProfile) return;
+        if (!userProfile || !currentUser) return;
 
+        // Admin Access Checks
         const isAdmin = (userProfile.role === 'owner' || sessionStorage.getItem('mvx_role') === 'owner');
         const myUpBtn = document.getElementById('menuMyUploadsItem');
         if(myUpBtn) {
             myUpBtn.style.display = isAdmin ? 'flex' : 'none';
         }
+
+        // Fetching Real Google Account Details
+        let realName = userProfile.name;
+        if (!realName || realName === "MVX User") {
+            realName = currentUser.displayName || "MVX User";
+        }
+
+        let realAvatar = userProfile.avatarUrl;
+        if (!realAvatar || realAvatar.includes("dicebear")) {
+            realAvatar = currentUser.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${realName}`;
+        }
+
+        // Updating UI Elements
+        const tabName = document.getElementById('youTabName');
+        const tabEmail = document.getElementById('youTabEmail');
+        const tabAvatar = document.getElementById('youTabAvatar');
+        const topProfilePic = document.getElementById('topProfileBtn');
+        const coinDisplay = document.getElementById('navCoinDisplay');
+
+        if (tabName) tabName.innerText = realName;
+        if (tabEmail) tabEmail.innerText = userProfile.email || currentUser.email || "";
+        
+        // Exact Coin Balance Fix
+        if (coinDisplay) {
+            coinDisplay.innerText = userProfile.coins !== undefined ? userProfile.coins : 0;
+        }
+
+        if (tabAvatar) tabAvatar.src = realAvatar;
+        if (topProfilePic) topProfilePic.src = realAvatar;
     }
 
     // ==========================================================================
@@ -168,12 +197,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Fix: Trigger Feed Load on Page Start Immediately
+    // AUTO LOAD APPS ON START (Fix for Infinite Loading)
     setTimeout(() => {
         if(typeof window.loadStoreFeed === 'function') {
             window.loadStoreFeed('all', 'mod_app');
         }
-    }, 300);
+    }, 200);
 
     // ==========================================================================
     // 6. SMART TAGS FIELD ARRAY CONTROLLER CONTEXT

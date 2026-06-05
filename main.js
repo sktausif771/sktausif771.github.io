@@ -72,72 +72,6 @@ document.addEventListener('DOMContentLoaded', () => {
             navModApp: "মড অ্যাপ",
             navSearch: "সার্চ",
             navYou: "প্রোফাইল"
-        },
-        es: {
-            storeTitle: "TIENDA MVX",
-            loadingStore: "Escaneando la infraestructura de la base de datos...",
-            catAll: "Todos los artículos",
-            catTrending: "Tendencias ahora",
-            catPremium: "Aplicaciones Premium",
-            searchTitle: "Motor de búsqueda inteligente",
-            searchPrompt: "Escriba cualquier palabra clave para obtener datos",
-            searchInput: "Buscar aplicaciones, archivos o etiquetas...",
-            notiTitle: "Notificaciones del sistema",
-            clearScreen: "Limpiar pantalla",
-            claimTitle: "Reclamar código de regalo premium",
-            claimInput: "Ingrese el código del cupón",
-            btnClaim: "RECLAMAR",
-            uploadApp: "Publicar archivo de paquete",
-            coinBalance: "Saldo de monedas MVX",
-            signOut: "Cierre de sesión seguro",
-            navFiles: "Archivos",
-            navModApp: "Aplicación Mod",
-            navSearch: "Buscar",
-            navYou: "Tú"
-        },
-        hi: {
-            storeTitle: "एमवीएक्स स्टोर",
-            loadingStore: "डेटाबेस इन्फ्रास्ट्रक्चर स्कैन किया जा रहा है...",
-            catAll: "सभी आइटम",
-            catTrending: "अभी ट्रेंडिंग",
-            catPremium: "प्रीमियम ऐप्स",
-            searchTitle: "स्मार्ट सर्च थैंक्स",
-            searchPrompt: "एप्लिकेशन डेटा लाने के लिए कोई भी कीवर्ड टाइप करें",
-            searchInput: "ऐप्स, फ़ाइलें, मॉड या टैग खोजें...",
-            notiTitle: "सिस्टम सूचनाएं",
-            clearScreen: "स्क्रीन साफ़ करें",
-            claimTitle: "प्रीमियम उपहार कोड का दावा करें",
-            claimInput: "रिडीम वाउचर कोड दर्ज करें",
-            btnClaim: "दावा करें",
-            uploadApp: "पैकेज फ़ाइल प्रकाशित करें",
-            coinBalance: "एमवीएक्स सिक्का शेष",
-            signOut: "सुरक्षित साइन आउट",
-            navFiles: "फ़ाइलें",
-            navModApp: "मोड ऐप",
-            navSearch: "खोजें",
-            navYou: "आप"
-        },
-        ar: {
-            storeTitle: "متجر MVX",
-            loadingStore: "جاري فحص بنية قاعدة البيانات...",
-            catAll: "جميع المواد",
-            catTrending: "الشائع الآن",
-            catPremium: "التطبيقات المميزة",
-            searchTitle: "محرك البحث الذكي",
-            searchPrompt: "اكتب أي كلمة رئيسية لجلب البيانات",
-            searchInput: "ابحث عن التطبيقات أو الملفات أو العلامات...",
-            notiTitle: "إشعارات النظام",
-            clearScreen: "مسح الشاشة",
-            claimTitle: "مطالبة برمز هدية مميز",
-            claimInput: "أدخل رمز قسيمة الرديم",
-            btnClaim: "مطالبة",
-            uploadApp: "نشر ملف الحزمة",
-            coinBalance: "رصيد عملات MVX",
-            signOut: "تسجيل خروج آمن",
-            navFiles: "الملفات",
-            navModApp: "تطبيق مود",
-            navSearch: "بحث",
-            navYou: "أنت"
         }
     };
 
@@ -184,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const langLabel = document.getElementById('currentLanguageLabel');
         if(langLabel) {
-            const labels = { en: "English", bn: "বাংলা", es: "Español", hi: "हिन्दी", ar: "العربية" };
+            const labels = { en: "English", bn: "বাংলা" };
             langLabel.innerText = labels[lang] || "English";
         }
     };
@@ -234,6 +168,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const menuPublishItem = document.getElementById('menuPublishItem');
         const menuCoinItem = document.getElementById('menuCoinItem');
         const menuSignOutItem = document.getElementById('menuSignOutItem');
+        const menuAdminPanelItem = document.getElementById('menuAdminPanelItem');
+        const redeemBoxSection = document.getElementById('redeemBoxSection');
         
         if (user) {
             currentUserAuth = user;
@@ -246,29 +182,39 @@ document.addEventListener('DOMContentLoaded', () => {
                 const currentSessionRole = sessionStorage.getItem('mvx_role');
                 const isAdmin = (currentSessionRole === 'owner' || userProfile.role === 'owner');
                 
-                const adminBtn = document.getElementById('menuAdminPanelItem');
-                if (adminBtn) adminBtn.style.display = isAdmin ? 'flex' : 'none';
-
-                // Publish Package option only for admins
+                // Show Admin Options only for Admins
+                if (menuAdminPanelItem) menuAdminPanelItem.style.display = isAdmin ? 'flex' : 'none';
                 if (menuPublishItem) menuPublishItem.style.display = isAdmin ? 'flex' : 'none';
                 
-                // Coin balance and Sign Out option for ALL logged-in users
+                // Show standard user options for ALL logged-in users
                 if (menuCoinItem) menuCoinItem.style.display = 'flex';
                 if (menuSignOutItem) menuSignOutItem.style.display = 'flex';
+                if (redeemBoxSection) redeemBoxSection.style.display = 'block';
 
-                // Update UI Information securely avoiding 'undefined'
+                // Update UI Information securely (Gmail Info Extraction)
                 const topProfilePic = document.getElementById('topProfileBtn');
                 const youTabAvatar = document.getElementById('youTabAvatar');
                 
-                const safeName = userProfile.name || "MVX User";
-                const safeAvatar = userProfile.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${safeName}`;
+                let realName = userProfile.name;
+                if (!realName || realName === "MVX User") {
+                    realName = user.displayName || "MVX User";
+                }
 
-                if (topProfilePic) topProfilePic.src = safeAvatar;
-                if (youTabAvatar) youTabAvatar.src = safeAvatar;
+                let realAvatar = userProfile.avatarUrl;
+                if (!realAvatar || realAvatar.includes("dicebear")) {
+                    realAvatar = user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${realName}`;
+                }
 
-                if (document.getElementById('youTabName')) document.getElementById('youTabName').innerText = safeName;
-                if (document.getElementById('youTabEmail')) document.getElementById('youTabEmail').innerText = userProfile.email || "";
-                if (document.getElementById('navCoinDisplay')) document.getElementById('navCoinDisplay').innerText = userProfile.coins || 0;
+                if (topProfilePic) topProfilePic.src = realAvatar;
+                if (youTabAvatar) youTabAvatar.src = realAvatar;
+
+                if (document.getElementById('youTabName')) document.getElementById('youTabName').innerText = realName;
+                if (document.getElementById('youTabEmail')) document.getElementById('youTabEmail').innerText = user.email || userProfile.email || "";
+                
+                // Exact Coin Balance Fix
+                if (document.getElementById('navCoinDisplay')) {
+                    document.getElementById('navCoinDisplay').innerText = userProfile.coins !== undefined ? userProfile.coins : 0;
+                }
             });
         } else {
             currentUserAuth = null;
@@ -276,11 +222,11 @@ document.addEventListener('DOMContentLoaded', () => {
             sessionStorage.removeItem('mvx_role');
             sessionStorage.removeItem('mvx_session');
             
-            const adminBtn = document.getElementById('menuAdminPanelItem');
-            if (adminBtn) adminBtn.style.display = 'none';
+            if (menuAdminPanelItem) menuAdminPanelItem.style.display = 'none';
             if (menuPublishItem) menuPublishItem.style.display = 'none';
             if (menuCoinItem) menuCoinItem.style.display = 'none';
             if (menuSignOutItem) menuSignOutItem.style.display = 'none';
+            if (redeemBoxSection) redeemBoxSection.style.display = 'none';
         }
     });
 
@@ -337,12 +283,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
 
-                const flatTitle = appTitle.replace(/\s+/g, '');
-                const flatQuery = query.replace(/\s+/g, '');
-                if (!isMatch && flatTitle.includes(flatQuery)) {
-                    isMatch = true;
-                }
-
                 if (isMatch) {
                     matchCount++;
                     const priceLabel = app.category === 'paid' ? `${app.coinPrice || 0} Coins` : 'FREE';
@@ -378,7 +318,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // REDEEM VOUCHER PROTOCOL
+    // REDEEM VOUCHER PROTOCOL (Accessible to all logged-in users)
     window.executeRedeemProtocol = function() {
         const codeInput = document.getElementById('redeemInputCode');
         const statusTxt = document.getElementById('redeemStatusMsg');
@@ -497,7 +437,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.editUserNamePrompt = function() {
         if (!currentUserAuth || !userProfile) return;
         
-        let newName = prompt("Enter your new profile name:", userProfile.name);
+        let newName = prompt("Enter your new profile name:", document.getElementById('youTabName').innerText);
         
         if (newName !== null && newName.trim() !== "") {
             db.ref('users/' + currentUserAuth.uid).update({
@@ -516,6 +456,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 openMyUploadsModal();
             }
         }
+    };
+
+    window.safeOpenURLInNewTab = function(url) {
+        if (!url || url.trim() === "" || url === "#") return;
+        let targetUrl = url.trim();
+        
+        if (!/^https?:\/\//i.test(targetUrl)) {
+            targetUrl = 'https://' + targetUrl;
+        }
+        window.open(targetUrl, '_blank');
     };
 
     // LOGOUT LOGIC
