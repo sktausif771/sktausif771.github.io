@@ -4,6 +4,7 @@
 
 let userProfile = null; 
 let currentUserAuth = null;
+let currentGlobalLanguage = 'en';
 
 document.addEventListener('DOMContentLoaded', () => {
     if (typeof firebase === 'undefined') {
@@ -14,12 +15,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const db = firebase.database();
     const auth = firebase.auth();
 
+    // 1. Maintenance Mode
     db.ref('settings/maintenanceMode').on('value', (snapshot) => {
         const isMaintenanceActive = snapshot.val();
         if (isMaintenanceActive === true) {
             const currentRole = sessionStorage.getItem('mvx_role');
             if (currentRole !== 'owner') {
-                alert("🛠 System Update: Server is undergoing maintenance. You are being securely logged out.");
+                alert("System Update: Server is undergoing maintenance.");
                 sessionStorage.clear();
                 auth.signOut().then(() => {
                     window.location.replace('login.html?error=maintenance');
@@ -28,451 +30,340 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // 2. Language Dictionary (Fixed All Languages)
     const languageDictionary = {
         en: {
-            storeTitle: "MVX STORE",
-            loadingStore: "Scanning Database Infrastructure...",
-            catAll: "All Items",
-            catTrending: "Trending Now",
-            catPremium: "Premium Apps",
-            searchTitle: "Smart Search Engine",
-            searchPrompt: "Type any keyword or tag to fetch application data",
-            searchInput: "Search apps, files, mods or tags...",
-            notiTitle: "System Notifications",
-            clearScreen: "Clear Screen",
-            claimTitle: "Claim Premium Gift Code",
-            claimInput: "Enter Redeem Voucher Code",
-            btnClaim: "CLAIM",
-            uploadApp: "Publish Package File",
-            coinBalance: "MVX Coin Balance",
-            signOut: "Secure Sign Out",
-            navFiles: "Files",
-            navModApp: "Mod App",
-            navSearch: "Search",
-            navYou: "You"
+            storeTitle: "MVX STORE", loadingStore: "Loading Database...",
+            catAll: "All", catTrending: "Trending", catPremium: "Premium",
+            searchTitle: "Search", searchPrompt: "Type keyword to search",
+            lblUploadApp: "Upload App", lblCoinBalance: "Coin Balance", lblSignOut: "Logout",
+            navFiles: "Files", navModApp: "Mods", navSearch: "Search", navYou: "Profile",
+            lblNotiTitle: "Notifications", langName: "English (Default)"
         },
         bn: {
-            storeTitle: "এমভিএক্স স্টোর",
-            loadingStore: "ডাটাবেজ কানেকশন চেক করা হচ্ছে...",
-            catAll: "সব ফাইল",
-            catTrending: "ট্রেন্ডিং ফাইল",
-            catPremium: "প্রিমিয়াম অ্যাপস",
-            searchTitle: "স্মার্ট সার্চ ইঞ্জিন",
-            searchPrompt: "অ্যাপের নাম অথবা ট্যাগ লিখে সার্চ করুন",
-            searchInput: "অ্যাপস, ফাইল, মড বা ট্যাগ খুঁজুন...",
-            notiTitle: "সিস্টেম নোটিফিকেশন",
-            clearScreen: "স্ক্রিন ক্লিয়ার করুন",
-            claimTitle: "প্রিমিয়াম গিফট কোড ক্লেইম করুন",
-            claimInput: "রিডিম ভাউচার কোড দিন",
-            btnClaim: "ক্লেইম",
-            uploadApp: "নতুন ফাইল আপলোড করুন",
-            coinBalance: "এমভিএক্স কয়েন ব্যালেন্স",
-            signOut: "নিরাপদ লগআউট",
-            navFiles: "ফাইলস",
-            navModApp: "মড অ্যাপ",
-            navSearch: "সার্চ",
-            navYou: "প্রোফাইল"
+            storeTitle: "এমভিএক্স স্টোর", loadingStore: "ডেটাবেস লোড হচ্ছে...",
+            catAll: "সব", catTrending: "ট্রেন্ডিং", catPremium: "প্রিমিয়াম",
+            searchTitle: "সার্চ করুন", searchPrompt: "খুঁজতে এখানে লিখুন",
+            lblUploadApp: "অ্যাপ আপলোড", lblCoinBalance: "কয়েন ব্যালেন্স", lblSignOut: "লগআউট",
+            navFiles: "ফাইল", navModApp: "মডস", navSearch: "সার্চ", navYou: "প্রোফাইল",
+            lblNotiTitle: "নোটিফিকেশন", langName: "বাংলা (Bengali)"
+        },
+        es: {
+            storeTitle: "TIENDA MVX", loadingStore: "Cargando Base de Datos...",
+            catAll: "Todo", catTrending: "Tendencias", catPremium: "Premium",
+            searchTitle: "Buscar", searchPrompt: "Escribe para buscar",
+            lblUploadApp: "Subir App", lblCoinBalance: "Monedas", lblSignOut: "Cerrar sesión",
+            navFiles: "Archivos", navModApp: "Mods", navSearch: "Buscar", navYou: "Perfil",
+            lblNotiTitle: "Notificaciones", langName: "Español (Spanish)"
+        },
+        hi: {
+            storeTitle: "एमवीएक्स स्टोर", loadingStore: "लोड हो रहा है...",
+            catAll: "सभी", catTrending: "ट्रेंडिंग", catPremium: "प्रीमियम",
+            searchTitle: "खोजें", searchPrompt: "खोजने के लिए टाइप करें",
+            lblUploadApp: "ऐप अपलोड", lblCoinBalance: "सिक्के", lblSignOut: "लॉग आउट",
+            navFiles: "फाइलें", navModApp: "मोड्स", navSearch: "खोज", navYou: "प्रोफ़ाइल",
+            lblNotiTitle: "सूचनाएं", langName: "हिन्दी (Hindi)"
+        },
+        ar: {
+            storeTitle: "متجر MVX", loadingStore: "جاري التحميل...",
+            catAll: "الكل", catTrending: "رائج", catPremium: "مميز",
+            searchTitle: "بحث", searchPrompt: "اكتب للبحث",
+            lblUploadApp: "رفع تطبيق", lblCoinBalance: "عملات", lblSignOut: "تسجيل الخروج",
+            navFiles: "ملفات", navModApp: "تطبيقات", navSearch: "بحث", navYou: "حسابي",
+            lblNotiTitle: "إشعارات", langName: "العربية (Arabic)"
         }
     };
 
-    window.applySystemLanguageLocalization = function(lang) {
-        localStorage.setItem('mvx_lang', lang);
-        const dict = languageDictionary[lang] || languageDictionary['en'];
+    window.changeSystemLanguage = function(langCode) {
+        currentGlobalLanguage = langCode;
+        const dict = languageDictionary[langCode] || languageDictionary['en'];
+        
+        if(document.getElementById('lblStoreTitle')) document.getElementById('lblStoreTitle').innerText = dict.storeTitle;
+        if(document.getElementById('lblLoadingStore')) document.getElementById('lblLoadingStore').innerText = dict.loadingStore;
+        if(document.getElementById('btnCatAll')) document.getElementById('btnCatAll').innerText = dict.catAll;
+        if(document.getElementById('btnCatTrending')) document.getElementById('btnCatTrending').innerText = dict.catTrending;
+        if(document.getElementById('btnCatPremium')) document.getElementById('btnCatPremium').innerText = dict.catPremium;
+        if(document.getElementById('lblSearchTitle')) document.getElementById('lblSearchTitle').innerText = dict.searchTitle;
+        
+        const sp = document.getElementById('lblSearchPrompt'); 
+        if(sp) sp.innerHTML = `<i class="fas fa-search-plus" style="font-size: 40px; margin-bottom: 15px; color: var(--border-color);"></i><h3>${dict.searchPrompt}</h3>`;
+        
+        if(document.getElementById('lblUploadApp')) document.getElementById('lblUploadApp').innerText = dict.lblUploadApp;
+        if(document.getElementById('lblCoinBalance')) document.getElementById('lblCoinBalance').innerText = dict.lblCoinBalance;
+        if(document.getElementById('lblSignOut')) document.getElementById('lblSignOut').innerText = dict.lblSignOut;
+        if(document.getElementById('navFiles')) document.getElementById('navFiles').innerText = dict.navFiles;
+        if(document.getElementById('navModApp')) document.getElementById('navModApp').innerText = dict.navModApp;
+        if(document.getElementById('navSearch')) document.getElementById('navSearch').innerText = dict.navSearch;
+        if(document.getElementById('navYou')) document.getElementById('navYou').innerText = dict.navYou;
+        
+        if(document.getElementById('currentLanguageLabel')) document.getElementById('currentLanguageLabel').innerText = dict.langName;
 
-        const mapping = {
-            'lblStoreTitle': dict.storeTitle,
-            'lblLoadingStore': dict.loadingStore,
-            'btnCatAll': dict.catAll,
-            'btnCatTrending': dict.catTrending,
-            'btnCatPremium': dict.catPremium,
-            'lblSearchTitle': dict.searchTitle,
-            'lblSearchPrompt': `<h3>${dict.searchPrompt}</h3>`,
-            'lblNotiTitle': `<i class="fas fa-envelope-open-text" style="color: var(--primary);"></i> ${dict.notiTitle}`,
-            'btnClearScreen': dict.clearScreen,
-            'lblClaimTitle': `<i class="fas fa-gift" style="color: var(--primary);"></i> ${dict.claimTitle}`,
-            'btnClaimCode': dict.btnClaim,
-            'lblUploadApp': dict.uploadApp,
-            'lblCoinBalance': dict.coinBalance,
-            'lblSignOut': dict.signOut,
-            'navFiles': dict.navFiles,
-            'navModApp': dict.navModApp,
-            'navSearch': dict.navSearch,
-            'navYou': dict.navYou
-        };
-
-        for (const [id, value] of Object.entries(mapping)) {
-            const el = document.getElementById(id);
-            if (el) {
-                if (id === 'lblSearchPrompt' || id === 'lblNotiTitle' || id === 'lblClaimTitle') {
-                    el.innerHTML = value;
-                } else {
-                    el.innerText = value;
-                }
-            }
-        }
-
-        const sInput = document.getElementById('storeSearchInput');
-        if(sInput) sInput.placeholder = dict.searchInput;
-        const rInput = document.getElementById('redeemInputCode');
-        if(rInput) rInput.placeholder = dict.claimInput;
-
-        const langLabel = document.getElementById('currentLanguageLabel');
-        if(langLabel) {
-            const labels = { en: "English", bn: "বাংলা" };
-            langLabel.innerText = labels[lang] || "English";
-        }
-    };
-
-    window.changeSystemLanguage = function(lang) {
-        applySystemLanguageLocalization(lang);
         document.getElementById('languageSelectModal').classList.remove('active');
     };
 
-    let savedLang = localStorage.getItem('mvx_lang') || 'en';
-    applySystemLanguageLocalization(savedLang);
-    const langSelectorEl = document.getElementById('sysLanguageSelector');
-    if(langSelectorEl) langSelectorEl.value = savedLang;
-
-    // Theme Switcher Engine
+    // Theme Toggle Logic
     const themeBtn = document.getElementById('themeToggleBtn');
-    const themeLabel = document.getElementById('currentThemeLabel');
-    
-    let savedTheme = localStorage.getItem('mvx_theme') || 'dark';
-    
-    db.ref('settings/defaultTheme').once('value').then(snap => {
-        if(snap.exists() && !localStorage.getItem('mvx_theme')) {
-            savedTheme = snap.val();
-        }
-        document.documentElement.setAttribute('data-theme', savedTheme);
-        updateThemeUIElements(savedTheme);
-    });
-
     if (themeBtn) {
         themeBtn.addEventListener('click', () => {
-            let activeTheme = document.documentElement.getAttribute('data-theme');
-            let newTheme = (activeTheme === 'dark') ? 'light' : 'dark';
-            
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', newTheme);
+            document.getElementById('currentThemeLabel').innerText = newTheme === 'light' ? 'Light Mode' : 'Dark Mode';
             localStorage.setItem('mvx_theme', newTheme);
-            updateThemeUIElements(newTheme);
         });
-    }
-
-    function updateThemeUIElements(theme) {
-        if (!themeLabel) return;
-        themeLabel.innerText = (theme === 'dark') ? "Dark Mode" : "Light Mode";
-    }
-
-    // MAIN AUTH LISTENER
-    auth.onAuthStateChanged((user) => {
-        const menuPublishItem = document.getElementById('menuPublishItem');
-        const menuCoinItem = document.getElementById('menuCoinItem');
-        const menuSignOutItem = document.getElementById('menuSignOutItem');
-        const menuAdminPanelItem = document.getElementById('menuAdminPanelItem');
-        const redeemBoxSection = document.getElementById('redeemBoxSection');
         
+        const savedTheme = localStorage.getItem('mvx_theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.getElementById('currentThemeLabel').innerText = savedTheme === 'light' ? 'Light Mode' : 'Dark Mode';
+        }
+    }
+
+    // 3. User Auth Logic
+    auth.onAuthStateChanged((user) => {
         if (user) {
             currentUserAuth = user;
-            db.ref('users/' + user.uid).on('value', (snapshot) => {
-                if (!snapshot.exists()) return;
-                
-                userProfile = snapshot.val();
-                
-                // Admin Status & Button Display Check
-                const currentSessionRole = sessionStorage.getItem('mvx_role');
-                const isAdmin = (currentSessionRole === 'owner' || userProfile.role === 'owner');
-                
-                // Show Admin Options only for Admins
-                if (menuAdminPanelItem) menuAdminPanelItem.style.display = isAdmin ? 'flex' : 'none';
-                if (menuPublishItem) menuPublishItem.style.display = isAdmin ? 'flex' : 'none';
-                
-                // Show standard user options for ALL logged-in users
-                if (menuCoinItem) menuCoinItem.style.display = 'flex';
-                if (menuSignOutItem) menuSignOutItem.style.display = 'flex';
-                if (redeemBoxSection) redeemBoxSection.style.display = 'block';
+            db.ref(`users/${user.uid}`).on('value', (snap) => {
+                if (snap.exists()) {
+                    userProfile = snap.val();
+                    document.getElementById('topLoginBtn').style.display = 'none';
+                    const pBtn = document.getElementById('topProfileBtn');
+                    pBtn.src = userProfile.avatarUrl || 'https://via.placeholder.com/40';
+                    pBtn.style.display = 'block';
 
-                // Update UI Information securely (Gmail Info Extraction)
-                const topProfilePic = document.getElementById('topProfileBtn');
-                const youTabAvatar = document.getElementById('youTabAvatar');
-                
-                let realName = userProfile.name;
-                if (!realName || realName === "MVX User") {
-                    realName = user.displayName || "MVX User";
-                }
+                    document.getElementById('youTabAvatar').src = userProfile.avatarUrl || 'https://via.placeholder.com/75';
+                    document.getElementById('youTabName').innerText = userProfile.name || 'User';
+                    document.getElementById('youTabEmail').innerText = userProfile.email || 'No Email';
+                    
+                    document.getElementById('navCoinDisplay').innerText = userProfile.coins || 0;
+                    document.getElementById('menuCoinItem').style.display = 'flex';
+                    document.getElementById('menuSignOutItem').style.display = 'flex';
+                    document.getElementById('redeemBoxSection').style.display = 'block';
 
-                let realAvatar = userProfile.avatarUrl;
-                if (!realAvatar || realAvatar.includes("dicebear")) {
-                    realAvatar = user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${realName}`;
-                }
-
-                if (topProfilePic) topProfilePic.src = realAvatar;
-                if (youTabAvatar) youTabAvatar.src = realAvatar;
-
-                if (document.getElementById('youTabName')) document.getElementById('youTabName').innerText = realName;
-                if (document.getElementById('youTabEmail')) document.getElementById('youTabEmail').innerText = user.email || userProfile.email || "";
-                
-                // Exact Coin Balance Fix
-                if (document.getElementById('navCoinDisplay')) {
-                    document.getElementById('navCoinDisplay').innerText = userProfile.coins !== undefined ? userProfile.coins : 0;
+                    if (userProfile.role === 'owner' || userProfile.role === 'admin') {
+                        document.getElementById('menuAdminPanelItem').style.display = 'flex';
+                        document.getElementById('menuPublishItem').style.display = 'flex';
+                    } else {
+                        document.getElementById('menuAdminPanelItem').style.display = 'none';
+                        document.getElementById('menuPublishItem').style.display = 'none';
+                    }
                 }
             });
         } else {
             currentUserAuth = null;
             userProfile = null;
-            sessionStorage.removeItem('mvx_role');
-            sessionStorage.removeItem('mvx_session');
-            
-            if (menuAdminPanelItem) menuAdminPanelItem.style.display = 'none';
-            if (menuPublishItem) menuPublishItem.style.display = 'none';
-            if (menuCoinItem) menuCoinItem.style.display = 'none';
-            if (menuSignOutItem) menuSignOutItem.style.display = 'none';
-            if (redeemBoxSection) redeemBoxSection.style.display = 'none';
+            document.getElementById('topLoginBtn').style.display = 'block';
+            document.getElementById('topProfileBtn').style.display = 'none';
+            document.getElementById('menuCoinItem').style.display = 'none';
+            document.getElementById('menuSignOutItem').style.display = 'none';
+            document.getElementById('menuAdminPanelItem').style.display = 'none';
+            document.getElementById('menuPublishItem').style.display = 'none';
+            document.getElementById('redeemBoxSection').style.display = 'none';
         }
     });
 
-    // SMART SEARCH PROTOCOL
-    const searchInput = document.getElementById('storeSearchInput');
-    const searchGrid = document.getElementById('searchResultGrid');
-
-    if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.trim().toLowerCase();
-            executeSmartSearchProtocol(query);
-        });
-    }
-
-    function executeSmartSearchProtocol(query) {
-        if (!searchGrid) return;
-        let activeLang = localStorage.getItem('mvx_lang') || 'en';
-
-        if (query.length === 0) {
-            searchGrid.innerHTML = `
-                <div style="text-align: center; padding: 40px; grid-column: 1/-1; color: var(--text-secondary);">
-                    <i class="fas fa-search-plus" style="font-size: 40px; margin-bottom: 15px; color: var(--border-color);"></i>
-                    <h3>${(languageDictionary[activeLang] || languageDictionary['en']).searchPrompt}</h3>
-                </div>
-            `;
-            return;
-        }
-
-        searchGrid.innerHTML = `<div style="text-align:center; padding: 30px; grid-column: 1/-1;"><i class="fas fa-spinner fa-spin" style="font-size:26px; color:var(--primary);"></i></div>`;
-
-        db.ref('store_apps').orderByChild('status').equalTo('approved').once('value').then((snapshot) => {
-            if (!snapshot.exists()) {
-                searchGrid.innerHTML = `<div style="text-align:center; padding:30px; grid-column:1/-1; color:var(--text-secondary);">No items match query inside catalog nodes.</div>`;
-                return;
-            }
-
-            let html = '';
-            let matchCount = 0;
-
-            snapshot.forEach((child) => {
-                const app = child.val();
-                const appTitle = app.appName.toLowerCase();
-                const appDesc = (app.description || "").toLowerCase();
-                const appTags = app.tags || [];
-
-                let isMatch = appTitle.includes(query) || appDesc.includes(query);
-                
-                if (!isMatch) {
-                    for (let i = 0; i < appTags.length; i++) {
-                        if (appTags[i].toLowerCase().includes(query)) {
-                            isMatch = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (isMatch) {
-                    matchCount++;
-                    const priceLabel = app.category === 'paid' ? `${app.coinPrice || 0} Coins` : 'FREE';
-                    const badgeClass = app.category === 'paid' ? 'badge-paid' : 'badge-free';
-
-                    html += `
-                        <div class="app-card" onclick="window.location.href='details.html?id=${child.key}'">
-                            <span class="badge ${badgeClass}">${priceLabel}</span>
-                            <img src="${app.logoUrl}" class="app-icon-large" onerror="this.src='https://via.placeholder.com/75/121212/00e6b8?text=FILE'">
-                            <div class="app-info-list">
-                                <h3 class="app-title-list">${app.appName}</h3>
-                                <div class="app-dev-list">${app.uploaderName || "Developer"} • ${app.size || "0 MB"}</div>
-                                <div class="app-meta-list">
-                                    <span style="color:var(--primary); font-weight:700;"><i class="fas fa-arrow-alt-circle-down"></i> ${app.downloads || 0}</span>
-                                    <span>v${app.version || "1.0"}</span>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }
-            });
-
-            if (matchCount > 0) {
-                searchGrid.innerHTML = html;
-            } else {
-                searchGrid.innerHTML = `
-                    <div style="text-align:center; padding:40px; grid-column:1/-1; color:var(--text-secondary);">
-                        <i class="fas fa-frown" style="font-size:30px; margin-bottom:10px; color:var(--danger);"></i>
-                        <p>No results found matching your key terms or tags.</p>
-                    </div>
-                `;
-            }
-        });
-    }
-
-    // REDEEM VOUCHER PROTOCOL (Accessible to all logged-in users)
-    window.executeRedeemProtocol = function() {
-        const codeInput = document.getElementById('redeemInputCode');
-        const statusTxt = document.getElementById('redeemStatusMsg');
-        
-        if (!codeInput || !statusTxt) return;
-        const rawCode = codeInput.value.trim().toUpperCase();
-
-        if (rawCode.length === 0) {
-            statusTxt.innerText = "Please input a valid coupon code sequence.";
-            statusTxt.style.color = "var(--danger)";
-            return;
-        }
-
-        statusTxt.innerText = "Connecting Gateway Authentication Banks...";
-        statusTxt.style.color = "var(--warning)";
-
-        const user = auth.currentUser;
-        const redeemRef = db.ref('redeem_codes/' + rawCode);
-        
-        redeemRef.once('value').then((snapshot) => {
-            if (!snapshot.exists()) {
-                statusTxt.innerText = "❌ Invalid or Expired Redeem Token!";
-                statusTxt.style.color = "var(--danger)";
-                return;
-            }
-
-            const codeData = snapshot.val();
-            
-            if (codeData.currentClaims >= codeData.maxClaims) {
-                statusTxt.innerText = "⚠️ Code has reached maximum claim saturation threshold.";
-                statusTxt.style.color = "var(--danger)";
-                return;
-            }
-
-            if (codeData.claimed_users && codeData.claimed_users[user.uid]) {
-                statusTxt.innerText = "🚫 Token node usage redundancy constraint: Already claimed once!";
-                statusTxt.style.color = "var(--danger)";
-                return;
-            }
-
-            db.ref('users/' + user.uid).once('value').then((userSnap) => {
-                if (!userSnap.exists()) return;
-                const userData = userSnap.val();
-                let rewardUpdate = {};
-
-                if (codeData.rewardType === 'coins') {
-                    const bonusCoins = parseInt(codeData.rewardValue) || 0;
-                    const currentBalance = parseInt(userData.coins) || 0;
-                    rewardUpdate['coins'] = currentBalance + bonusCoins;
-                    statusTxt.innerText = `🎉 Wallet Successfully Allocated +${bonusCoins} MVX Coins!`;
-                } 
-                else if (codeData.rewardType === 'premium_bypass') {
-                    const appTargetValue = codeData.rewardValue;
-
-                    if (appTargetValue.toLowerCase() === 'all_apps') {
-                        db.ref('store_apps').once('value').then((allAppsSnap) => {
-                            if (allAppsSnap.exists()) {
-                                allAppsSnap.forEach((appChild) => {
-                                    rewardUpdate[`unlocked_apps/${appChild.key}`] = true;
-                                    rewardUpdate[`unlocked_passwords/${appChild.key}`] = true;
-                                });
-                                finishRedeemTransactionUpdatePipeline(user.uid, userData, redeemRef, codeData, rewardUpdate, "🚀 Universal Master Package Access Bypass Enabled!");
-                            }
-                        });
-                        return; 
-                    } else if (appTargetValue.includes(',')) {
-                        const multipleAppsList = appTargetValue.split(',');
-                        multipleAppsList.forEach((id) => {
-                            let cleanId = id.trim();
-                            if(cleanId) {
-                                rewardUpdate[`unlocked_apps/${cleanId}`] = true;
-                                rewardUpdate[`unlocked_passwords/${cleanId}`] = true;
-                            }
-                        });
-                        finishRedeemTransactionUpdatePipeline(user.uid, userData, redeemRef, codeData, rewardUpdate, "🚀 Multiple Custom Premium Target Packages Unlocked!");
-                        return;
-                    } else {
-                        rewardUpdate[`unlocked_apps/${appTargetValue}`] = true;
-                        rewardUpdate[`unlocked_passwords/${appTargetValue}`] = true;
-                        finishRedeemTransactionUpdatePipeline(user.uid, userData, redeemRef, codeData, rewardUpdate, "🚀 Target Premium Application Unlocked Successfully.");
-                        return;
-                    }
-                }
-
-                finishRedeemTransactionUpdatePipeline(user.uid, userData, redeemRef, codeData, rewardUpdate, null);
-            });
-        }).catch((err) => {
-            statusTxt.innerText = "Sync failure token mismatch: " + err.message;
-            statusTxt.style.color = "var(--danger)";
-        });
-    };
-
-    function finishRedeemTransactionUpdatePipeline(uid, userData, redeemRef, codeData, rewardUpdate, successOverrideText) {
-        const statusTxt = document.getElementById('redeemStatusMsg');
-        const codeInput = document.getElementById('redeemInputCode');
-
-        statusTxt.style.color = "var(--success)";
-        if(successOverrideText) {
-            statusTxt.innerText = successOverrideText;
-        }
-
-        db.ref('users/' + uid).update(rewardUpdate);
-
-        let codeUpdates = {};
-        codeUpdates['currentClaims'] = (codeData.currentClaims || 0) + 1;
-        codeUpdates[`claimed_users/${uid}`] = {
-            name: userData.name,
-            email: userData.email,
-            timestamp: firebase.database.ServerValue.TIMESTAMP
-        };
-        redeemRef.update(codeUpdates);
-        if(codeInput) codeInput.value = '';
-    }
-
-    // NEW LOGIC: NAME EDIT PROMPT
+    // 4. Edit Profile Logic
     window.editUserNamePrompt = function() {
         if (!currentUserAuth || !userProfile) return;
-        
-        let newName = prompt("Enter your new profile name:", document.getElementById('youTabName').innerText);
-        
+        let newName = prompt("Enter your new profile name:", userProfile.name);
         if (newName !== null && newName.trim() !== "") {
-            db.ref('users/' + currentUserAuth.uid).update({
-                name: newName.trim()
-            }).catch(err => {
-                alert("Error updating name: " + err.message);
-            });
+            db.ref('users/' + currentUserAuth.uid).update({ name: newName.trim() });
         }
     };
 
-    // LOGIC: TOP PROFILE PIC CLICK ACTION (ONLY OPENS FOR ADMINS)
+    // Direct Avatar Upload Logic
+    const avatarUploader = document.getElementById('directAvatarUpload');
+    if (avatarUploader) {
+        avatarUploader.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if(!file || !currentUserAuth) return;
+            
+            const status = document.getElementById('directAvatarStatus');
+            status.innerText = "Uploading...";
+            status.style.display = "block";
+            status.style.color = "var(--warning)";
+            
+            const formData = new FormData();
+            formData.append("image", file);
+            
+            fetch(`https://api.imgbb.com/1/upload?key=820eb9aa6a57f863045a52c1929efc9c`, {
+                method: "POST",
+                body: formData
+            }).then(res => res.json()).then(json => {
+                if(json.success) {
+                    const newUrl = json.data.url;
+                    db.ref(`users/${currentUserAuth.uid}`).update({ avatarUrl: newUrl }).then(() => {
+                        document.getElementById('youTabAvatar').src = newUrl;
+                        document.getElementById('topProfileBtn').src = newUrl;
+                        status.innerText = "Avatar Updated!";
+                        status.style.color = "var(--success)";
+                        setTimeout(() => status.style.display = "none", 3000);
+                    });
+                } else {
+                    status.innerText = "Upload Failed.";
+                    status.style.color = "var(--danger)";
+                }
+            }).catch(() => {
+                status.innerText = "Network Error.";
+                status.style.color = "var(--danger)";
+            });
+        });
+    }
+
     window.openMyUploadsIfAdmin = function() {
         const currentSessionRole = sessionStorage.getItem('mvx_role');
         if (userProfile && (userProfile.role === 'owner' || currentSessionRole === 'owner')) {
-            if (typeof openMyUploadsModal === 'function') {
-                openMyUploadsModal();
-            }
+            if (typeof openMyUploadsModal === 'function') openMyUploadsModal();
         }
     };
 
-    window.safeOpenURLInNewTab = function(url) {
-        if (!url || url.trim() === "" || url === "#") return;
-        let targetUrl = url.trim();
-        
-        if (!/^https?:\/\//i.test(targetUrl)) {
-            targetUrl = 'https://' + targetUrl;
-        }
-        window.open(targetUrl, '_blank');
-    };
-
-    // LOGOUT LOGIC
     window.secureLogout = function() {
-        if (confirm("Clear local cache and close active session?")) {
+        if (confirm("Log out from your account?")) {
             sessionStorage.clear(); 
-            auth.signOut().then(() => window.location.replace('login.html'));
+            auth.signOut().then(() => window.location.reload());
         }
     };
+
+    // 5. Notifications Engine (With App Logo Support & Button)
+    db.ref('system_broadcasts').limitToLast(20).on('value', async (snap) => {
+        const container = document.getElementById('notificationInboxDisplay');
+        const badge = document.getElementById('notiAlert');
+        if (!container) return;
+
+        if (!snap.exists()) {
+            container.innerHTML = `<div class="noti-card"><p class="noti-msg" style="text-align:center;">No notifications.</p></div>`;
+            if(badge) badge.style.display = 'none';
+            return;
+        }
+
+        let notes = [];
+        snap.forEach(c => notes.push(c.val()));
+        notes.reverse();
+
+        if(notes.length > 0 && badge && document.getElementById('notificationTabContent').style.display === 'none') {
+            badge.style.display = 'block';
+        }
+
+        let html = '';
+        for (let note of notes) {
+            let borderCls = note.type === 'alert' ? 'system-alert' : '';
+            let actionHtml = '';
+
+            if (note.link && note.link.trim() !== "") {
+                if (note.link.includes('details.html?id=')) {
+                    const appId = note.link.split('=')[1];
+                    let logoUrl = 'https://via.placeholder.com/40/121212/00e6b8?text=APP';
+                    
+                    // Fetch real App Logo from database
+                    try {
+                        const appSnap = await db.ref(`store_apps/${appId}`).once('value');
+                        if(appSnap.exists()) logoUrl = appSnap.val().logoUrl || logoUrl;
+                    } catch(e){}
+                    
+                    actionHtml = `
+                        <div class="noti-app-preview">
+                            <img src="${logoUrl}" class="noti-app-logo">
+                            <a href="${note.link}" class="noti-action-btn"><i class="fas fa-eye"></i> View App</a>
+                        </div>
+                    `;
+                } else {
+                    // Regular Website Link
+                    actionHtml = `<a href="${note.link}" target="_blank" class="noti-action-btn" style="background:var(--info); color:#fff;"><i class="fas fa-link"></i> View Link</a>`;
+                }
+            }
+
+            html += `
+                <div class="noti-card ${borderCls}">
+                    <div class="noti-header">
+                        <span class="noti-title">${note.title}</span>
+                        <span class="noti-time">${note.timeString}</span>
+                    </div>
+                    <p class="noti-msg">${note.message}</p>
+                    ${actionHtml}
+                </div>
+            `;
+        }
+        container.innerHTML = html;
+    });
+
+    window.clearLocalNotifications = function() {
+        document.getElementById('notificationInboxDisplay').innerHTML = `<div class="noti-card"><p class="noti-msg" style="text-align:center;">Notifications cleared.</p></div>`;
+        const badge = document.getElementById('notiAlert');
+        if(badge) badge.style.display = 'none';
+    };
+
+    // 6. Redeem Code System
+    window.executeRedeemProtocol = function() {
+        const codeInput = document.getElementById('redeemInputCode').value.trim().toUpperCase();
+        const statusLabel = document.getElementById('redeemStatusMsg');
+        
+        if (!codeInput) { statusLabel.innerText = "Please enter a code."; statusLabel.style.color = "var(--danger)"; return; }
+        if (!currentUserAuth) { statusLabel.innerText = "Login required."; statusLabel.style.color = "var(--danger)"; return; }
+
+        document.getElementById('btnClaimCode').innerText = "Wait...";
+
+        db.ref(`redeem_codes/${codeInput}`).once('value').then(snap => {
+            if (!snap.exists()) {
+                statusLabel.innerText = "Invalid or expired code.";
+                statusLabel.style.color = "var(--danger)";
+                document.getElementById('btnClaimCode').innerText = "CLAIM";
+                return;
+            }
+
+            let voucher = snap.val();
+
+            db.ref(`users/${currentUserAuth.uid}/redeemed_history/${codeInput}`).once('value').then(hSnap => {
+                if (hSnap.exists()) {
+                    statusLabel.innerText = "You already used this code.";
+                    statusLabel.style.color = "var(--danger)";
+                    document.getElementById('btnClaimCode').innerText = "CLAIM";
+                    return;
+                }
+
+                if (voucher.currentClaims >= voucher.maxClaims) {
+                    statusLabel.innerText = "Code limit reached.";
+                    statusLabel.style.color = "var(--danger)";
+                    document.getElementById('btnClaimCode').innerText = "CLAIM";
+                    return;
+                }
+
+                let updates = {};
+                updates[`redeem_codes/${codeInput}/currentClaims`] = voucher.currentClaims + 1;
+                updates[`users/${currentUserAuth.uid}/redeemed_history/${codeInput}`] = firebase.database.ServerValue.TIMESTAMP;
+
+                if (voucher.rewardType === 'coins') {
+                    let rewardAmt = parseInt(voucher.rewardValue);
+                    let curCoins = userProfile.coins || 0;
+                    updates[`users/${currentUserAuth.uid}/coins`] = curCoins + rewardAmt;
+                    statusLabel.innerText = `Success! ${rewardAmt} Coins Added.`;
+                } else if (voucher.rewardType === 'premium_bypass') {
+                    if (voucher.rewardValue === 'ALL_APPS') {
+                        updates[`users/${currentUserAuth.uid}/premium_all_access`] = true;
+                        statusLabel.innerText = `Success! All Premium Apps Unlocked.`;
+                    } else {
+                        let appIds = voucher.rewardValue.split(',');
+                        appIds.forEach(id => {
+                            updates[`users/${currentUserAuth.uid}/unlocked_apps/${id}`] = true;
+                        });
+                        statusLabel.innerText = `Success! Premium App(s) Unlocked.`;
+                    }
+                }
+
+                db.ref().update(updates).then(() => {
+                    statusLabel.style.color = "var(--success)";
+                    document.getElementById('redeemInputCode').value = '';
+                    document.getElementById('btnClaimCode').innerText = "CLAIM";
+                    setTimeout(() => statusLabel.innerText = "", 4000);
+                });
+            });
+        });
+    };
+
+    // System Config Sync
+    db.ref('settings').on('value', (snap) => {
+        if (snap.exists() && snap.val().storeLogo) {
+            const logo = document.getElementById('mainStoreLogo');
+            if (logo) logo.src = snap.val().storeLogo;
+        }
+    });
 });

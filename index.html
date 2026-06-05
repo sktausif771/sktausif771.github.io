@@ -103,40 +103,40 @@
     <main class="play-main-content" id="mainStoreFeed">
         
         <div class="play-categories">
-            <button class="cat-chip active" id="btnCatAll" data-filter="all">All Items</button>
-            <button class="cat-chip" id="btnCatTrending" data-filter="trending">Trending Now</button>
-            <button class="cat-chip" id="btnCatPremium" data-filter="premium">Premium Apps</button>
+            <button class="cat-chip active" id="btnCatAll" data-filter="all">All</button>
+            <button class="cat-chip" id="btnCatTrending" data-filter="trending">Trending</button>
+            <button class="cat-chip" id="btnCatPremium" data-filter="premium">Premium</button>
         </div>
 
-        <h2 class="play-section-title" id="feedSectionTitle">Recommended Files <i class="fas fa-arrow-right" style="font-size:12px; color:var(--text-secondary);"></i></h2>
+        <h2 class="play-section-title" id="feedSectionTitle">Apps & Files <i class="fas fa-arrow-right" style="font-size:12px; color:var(--text-secondary);"></i></h2>
         
         <div class="play-app-grid" id="storeAppGrid">
             <div style="text-align:center; padding: 50px; grid-column: 1/-1;">
                 <i class="fas fa-spinner fa-spin" style="font-size:32px; color:var(--primary);"></i>
-                <p style="margin-top:15px; color:var(--text-secondary); font-weight:500;" id="lblLoadingStore">Scanning Database Infrastructure...</p>
+                <p style="margin-top:15px; color:var(--text-secondary); font-weight:500;" id="lblLoadingStore">Loading Database...</p>
             </div>
         </div>
     </main>
 
     <main class="play-main-content" id="searchTabContent" style="display: none;">
-        <h2 class="play-section-title" id="lblSearchTitle">Smart Search Engine</h2>
+        <h2 class="play-section-title" id="lblSearchTitle">Search</h2>
         <div style="position: relative; margin-bottom: 25px;">
-            <input type="text" id="storeSearchInput" class="play-input" placeholder="Search apps, files, mods or tags..." style="padding-left: 50px; margin-bottom: 0;">
+            <input type="text" id="storeSearchInput" class="play-input" placeholder="Search apps, mods or tags..." style="padding-left: 50px; margin-bottom: 0;">
             <i class="fas fa-search" style="position: absolute; top: 18px; left: 20px; color: var(--text-secondary); font-size: 18px;"></i>
         </div>
         
         <div class="play-app-grid" id="searchResultGrid">
             <div style="text-align: center; padding: 40px; grid-column: 1/-1; color: var(--text-secondary);" id="lblSearchPrompt">
                 <i class="fas fa-search-plus" style="font-size: 40px; margin-bottom: 15px; color: var(--border-color);"></i>
-                <h3>Type any keyword or tag to fetch application data</h3>
+                <h3>Type any keyword to search</h3>
             </div>
         </div>
     </main>
 
     <main class="play-main-content" id="notificationTabContent" style="display: none;">
         <div class="play-section-title">
-            <h2 id="lblNotiTitle"><i class="fas fa-envelope-open-text" style="color: var(--primary);"></i> System Notifications</h2>
-            <button class="cat-chip" onclick="clearLocalNotifications()" style="padding: 5px 12px; font-size: 11px;" id="btnClearScreen">Clear Screen</button>
+            <h2 id="lblNotiTitle"><i class="fas fa-bell" style="color: var(--primary);"></i> Notifications</h2>
+            <button class="cat-chip" onclick="clearLocalNotifications()" style="padding: 5px 12px; font-size: 11px;" id="btnClearScreen">Clear</button>
         </div>
         <div class="noti-container" id="notificationInboxDisplay">
             <div class="noti-card">
@@ -144,7 +144,7 @@
                     <span class="noti-title">System Alert</span>
                     <span class="noti-time">Just Now</span>
                 </div>
-                <p class="noti-msg">Notification box is empty or sync is initializing.</p>
+                <p class="noti-msg">Notification box is empty.</p>
             </div>
         </div>
     </main>
@@ -155,8 +155,9 @@
         <div class="you-header" id="loggedInProfileView" style="display: none; align-items: center; gap: 20px; padding: 20px; background: var(--bg-surface); border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 30px;">
             <div style="position: relative; display: inline-block; flex-shrink: 0;">
                 <img src="" id="youTabAvatar" alt="User Avatar Image" style="width: 75px; height: 75px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);">
-                <label for="directAvatarUpload" style="position: absolute; bottom: 0; right: -5px; background: var(--bg-surface); border: 2px solid var(--border-color); border-radius: 50%; width: 28px; height: 28px; display: flex; justify-content: center; align-items: center; cursor: pointer; color: var(--primary); box-shadow: 0 2px 10px rgba(0,0,0,0.5); transition: 0.3s;">
-                    <i class="fas fa-camera" style="font-size: 12px;"></i>
+                <!-- FIXED: Changed camera icon to plus icon -->
+                <label for="directAvatarUpload" class="avatar-upload-label">
+                    <i class="fas fa-plus" style="font-size: 14px;"></i>
                 </label>
                 <input type="file" id="directAvatarUpload" accept="image/*" style="display: none;">
             </div>
@@ -182,16 +183,16 @@
             </div>
             <div class="g-text-container">
                 <h2>LOGIN</h2>
-                <p>Sign in to access your profile</p>
+                <p>Sign in to access profile</p>
             </div>
             <i class="fas fa-chevron-right g-arrow"></i>
         </div>
 
         <!-- REDEEM BOX (Visible for ALL logged-in users) -->
         <div class="redeem-box" id="redeemBoxSection" style="max-width: 350px; margin: 0 auto 25px auto; padding: 15px; border-radius: 12px; display: none;">
-            <h4 id="lblClaimTitle" style="font-size: 15px; margin-bottom: 12px;"><i class="fas fa-gift" style="color: var(--primary);"></i> Claim Premium Gift Code</h4>
+            <h4 id="lblClaimTitle" style="font-size: 15px; margin-bottom: 12px;"><i class="fas fa-gift" style="color: var(--primary);"></i> Redeem Code</h4>
             <div style="display: flex; gap: 8px;">
-                <input type="text" id="redeemInputCode" class="play-input" placeholder="Enter Redeem Voucher Code" style="margin-bottom:0; text-transform:uppercase; font-family:monospace; font-size:14px; font-weight:bold; letter-spacing:1px; padding: 10px;">
+                <input type="text" id="redeemInputCode" class="play-input" placeholder="Enter Code" style="margin-bottom:0; text-transform:uppercase; font-family:monospace; font-size:14px; font-weight:bold; letter-spacing:1px; padding: 10px;">
                 <button class="play-btn" style="width: 90px; padding: 10px; font-size: 13px;" onclick="executeRedeemProtocol()" id="btnClaimCode">CLAIM</button>
             </div>
             <p id="redeemStatusMsg" style="font-size:11px; font-weight:600; margin-top:8px; color:var(--primary);"></p>
@@ -209,7 +210,7 @@
             <!-- PUBLISH APP -->
             <div class="you-menu-item" id="menuPublishItem" onclick="openUploadModal()" style="display: none;">
                 <i class="fas fa-cloud-upload-alt" style="color: var(--primary);"></i>
-                <span id="lblUploadApp">Publish Package File</span>
+                <span id="lblUploadApp">Upload App</span>
                 <i class="fas fa-chevron-right arrow"></i>
             </div>
             
@@ -221,21 +222,21 @@
 
             <div class="you-menu-item" id="themeToggleBtn">
                 <i class="fas fa-paint-brush" style="color: var(--warning);"></i>
-                <span>Theme Mode: <strong id="currentThemeLabel" style="color: var(--primary);">Dark Mode</strong></span>
+                <span>Theme: <strong id="currentThemeLabel" style="color: var(--primary);">Dark Mode</strong></span>
                 <i class="fas fa-exchange-alt arrow" style="font-size:14px;"></i>
             </div>
             
             <!-- COIN BALANCE -->
             <div class="you-menu-item" id="menuCoinItem" style="display: none;">
                 <i class="fas fa-wallet" style="color: #ffd700;"></i>
-                <span id="lblCoinBalance">MVX Coin Balance</span>
+                <span id="lblCoinBalance">Coin Balance</span>
                 <span style="margin-left:auto; margin-right:15px; font-weight:900; color:#ffd700; font-size:16px;" id="navCoinDisplay">0</span>
             </div>
             
             <!-- SIGN OUT -->
             <div class="you-menu-item" id="menuSignOutItem" style="color: var(--danger); display: none;" onclick="secureLogout()">
                 <i class="fas fa-sign-out-alt"></i>
-                <span id="lblSignOut">Secure Sign Out</span>
+                <span id="lblSignOut">Logout</span>
             </div>
         </div>
     </main>
@@ -247,7 +248,7 @@
         </div>
         <div class="nav-item active" id="defaultTabBtn" onclick="switchTab('mod_app', this)">
             <i class="fas fa-robot"></i>
-            <span id="navModApp">Mod App</span>
+            <span id="navModApp">Mods</span>
         </div>
         <div class="nav-item" onclick="switchTab('search', this)">
             <i class="fas fa-search"></i>
@@ -255,18 +256,17 @@
         </div>
         <div class="nav-item" onclick="switchTab('you', this)">
             <i class="fas fa-user-circle"></i>
-            <span id="navYou">You</span>
+            <span id="navYou">Profile</span>
         </div>
     </nav>
 
     <div class="modal-overlay" id="languageSelectModal">
         <div class="play-modal">
             <div class="modal-header">
-                <h3><i class="fas fa-globe" style="color:var(--primary);"></i> Select Region Language</h3>
+                <h3><i class="fas fa-globe" style="color:var(--primary);"></i> Language</h3>
                 <i class="fas fa-times close-modal" onclick="document.getElementById('languageSelectModal').classList.remove('active')"></i>
             </div>
             <div class="modal-body">
-                <label class="modal-label">Choose Interface Language</label>
                 <select id="sysLanguageSelector" class="play-input" onchange="changeSystemLanguage(this.value)">
                     <option value="en">English (Default)</option>
                     <option value="bn">বাংলা (Bengali)</option>
@@ -289,7 +289,7 @@
                 <div id="myUploadsContainer">
                     <div style="text-align:center; padding: 30px; color:var(--text-secondary);">
                         <i class="fas fa-spinner fa-spin" style="font-size:24px; color:var(--primary);"></i>
-                        <p style="margin-top:10px;">Fetching your uploads...</p>
+                        <p style="margin-top:10px;">Loading uploads...</p>
                     </div>
                 </div>
             </div>
@@ -300,14 +300,14 @@
     <div class="modal-overlay" id="userAppEditModal">
         <div class="play-modal" style="max-width: 550px;">
             <div class="modal-header">
-                <h3><i class="fas fa-edit" style="color:var(--warning);"></i> Update Application</h3>
+                <h3><i class="fas fa-edit" style="color:var(--warning);"></i> Edit App</h3>
                 <i class="fas fa-times close-modal" onclick="closeUserAppEditModal()"></i>
             </div>
             <div class="modal-body">
                 <input type="hidden" id="euAppId">
                 <input type="hidden" id="euAppStatus">
                 
-                <label class="modal-label">App Name</label>
+                <label class="modal-label">App Title</label>
                 <input type="text" id="euName" class="play-input">
                 
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
@@ -321,13 +321,13 @@
                     </div>
                 </div>
 
-                <label class="modal-label">Main Download Link</label>
+                <label class="modal-label">Download Link</label>
                 <input type="text" id="euMainLink" class="play-input">
 
                 <label class="modal-label">Description</label>
                 <textarea id="euDescription" class="play-input" style="min-height:80px; resize:vertical;"></textarea>
                 
-                <button class="play-btn" style="background:var(--warning); color:#000;" onclick="submitUserAppUpdate()">SAVE UPDATES</button>
+                <button class="play-btn" style="background:var(--warning); color:#000;" onclick="submitUserAppUpdate()">SAVE</button>
             </div>
         </div>
     </div>

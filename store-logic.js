@@ -1,5 +1,5 @@
 /* ==========================================================================
-   MVX STORE V5.6 - CORE DATA ENGINE & ADVANCED UPLOAD PROTOCOL (FINAL LINK SYNC)
+   MVX STORE V5.6 - CORE DATA ENGINE & ADVANCED UPLOAD PROTOCOL
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const myUpBtn = document.createElement('div');
         myUpBtn.className = 'you-menu-item';
         myUpBtn.id = 'menuMyUploadsItem';
-        myUpBtn.style.display = 'none'; // Hidden by default
+        myUpBtn.style.display = 'none'; 
         myUpBtn.onclick = function() { 
             if(typeof openMyUploadsModal === 'function') openMyUploadsModal(); 
         };
@@ -38,7 +38,6 @@ document.addEventListener('DOMContentLoaded', () => {
         menuList.insertBefore(myUpBtn, menuList.children[2] || menuList.firstChild);
     }
 
-    // Disable Top Profile Icon Click Action completely
     window.openMyUploadsIfAdmin = function() {
         return false;
     };
@@ -78,19 +77,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ==========================================================================
-    // 4. SYSTEM INTERFACE PIPELINE ELEMENTS MANAGER (Fix for Name, Image & Coins)
+    // 4. SYSTEM INTERFACE PIPELINE ELEMENTS MANAGER
     // ==========================================================================
     function executeSystemInterfacePipelineUpdates() {
         if (!userProfile || !currentUser) return;
 
-        // Admin Access Checks
         const isAdmin = (userProfile.role === 'owner' || sessionStorage.getItem('mvx_role') === 'owner');
         const myUpBtn = document.getElementById('menuMyUploadsItem');
         if(myUpBtn) {
             myUpBtn.style.display = isAdmin ? 'flex' : 'none';
         }
 
-        // Fetching Real Google Account Details
         let realName = userProfile.name;
         if (!realName || realName === "MVX User") {
             realName = currentUser.displayName || "MVX User";
@@ -101,7 +98,6 @@ document.addEventListener('DOMContentLoaded', () => {
             realAvatar = currentUser.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${realName}`;
         }
 
-        // Updating UI Elements
         const tabName = document.getElementById('youTabName');
         const tabEmail = document.getElementById('youTabEmail');
         const tabAvatar = document.getElementById('youTabAvatar');
@@ -110,18 +106,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (tabName) tabName.innerText = realName;
         if (tabEmail) tabEmail.innerText = userProfile.email || currentUser.email || "";
-        
-        // Exact Coin Balance Fix
-        if (coinDisplay) {
-            coinDisplay.innerText = userProfile.coins !== undefined ? userProfile.coins : 0;
-        }
-
+        if (coinDisplay) coinDisplay.innerText = userProfile.coins !== undefined ? userProfile.coins : 0;
         if (tabAvatar) tabAvatar.src = realAvatar;
         if (topProfilePic) topProfilePic.src = realAvatar;
     }
 
     // ==========================================================================
-    // 5. PLAY STORE DATA RENDERING GRID (LOAD BUG FIXED)
+    // 5. PLAY STORE DATA RENDERING GRID
     // ==========================================================================
     window.loadStoreFeed = function(filter, contentType) {
         activeFilterType = filter || activeFilterType;
@@ -131,8 +122,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!grid) return;
 
         let activeLang = localStorage.getItem('mvx_lang') || 'en';
-        let loadingMsg = "Scanning Database Infrastructure...";
-        if(activeLang === 'bn') loadingMsg = "ডাটাবেজ কানেকশন চেক করা হচ্ছে...";
+        let loadingMsg = "Loading Apps...";
+        if(activeLang === 'bn') loadingMsg = "অ্যাপ লোড হচ্ছে...";
 
         grid.innerHTML = `
             <div style="text-align:center; padding: 50px; grid-column: 1/-1;">
@@ -143,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         db.ref('store_apps').orderByChild('status').equalTo('approved').once('value').then((snapshot) => {
             if (!snapshot.exists()) {
-                grid.innerHTML = `<div style="text-align:center; padding:50px; grid-column:1/-1; color:var(--text-secondary);">No applications live in database catalog.</div>`;
+                grid.innerHTML = `<div style="text-align:center; padding:50px; grid-column:1/-1; color:var(--text-secondary);">No apps found.</div>`;
                 return;
             }
 
@@ -185,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
-            grid.innerHTML = html || `<div style="text-align:center; padding:50px; grid-column:1/-1; color:var(--text-secondary);">No content found inside this layout card grid.</div>`;
+            grid.innerHTML = html || `<div style="text-align:center; padding:50px; grid-column:1/-1; color:var(--text-secondary);">No apps match your filter.</div>`;
         });
     };
 
@@ -197,7 +188,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // AUTO LOAD APPS ON START (Fix for Infinite Loading)
     setTimeout(() => {
         if(typeof window.loadStoreFeed === 'function') {
             window.loadStoreFeed('all', 'mod_app');
@@ -205,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 200);
 
     // ==========================================================================
-    // 6. SMART TAGS FIELD ARRAY CONTROLLER CONTEXT
+    // 6. SMART TAGS FIELD ARRAY CONTROLLER
     // ==========================================================================
     let uploadedTagsList = [];
     
@@ -252,7 +242,37 @@ document.addEventListener('DOMContentLoaded', () => {
     let uploadedScreenshotsList = [];
 
     // ==========================================================================
-    // 7. MASTER PLAY STORE APPLICATION PUBLISH MODAL FORM LAYOUT
+    // 7. DYNAMIC LINKS LOGIC (MAX 5)
+    // ==========================================================================
+    window.addNewLinkRow = function() {
+        const container = document.getElementById('dynamicLinksContainer');
+        const rows = container.querySelectorAll('.dynamic-link-row').length;
+        
+        if (rows >= 5) {
+            alert("Maximum 5 links allowed.");
+            return;
+        }
+        
+        const newRow = document.createElement('div');
+        newRow.className = 'dynamic-link-row';
+        newRow.style.cssText = 'display:flex; gap:10px; margin-top:12px;';
+        newRow.innerHTML = `
+            <input type="text" class="play-input ex-link-title" placeholder="Link Title" style="margin-bottom:0; flex:1;">
+            <input type="text" class="play-input ex-link-url" placeholder="Download Link" style="margin-bottom:0; flex:2;">
+        `;
+        container.appendChild(newRow);
+        
+        if (rows + 1 >= 5) {
+            document.getElementById('addMoreLinkBtn').style.display = 'none';
+        }
+    }
+
+    window.toggleCoinPriceInputBoxField = function(value) {
+        document.getElementById('coinPriceWrapper').style.display = (value === 'paid') ? 'block' : 'none';
+    };
+
+    // ==========================================================================
+    // 8. MASTER PUBLISH MODAL FORM LAYOUT (CLEAN UI & BASIC ENGLISH)
     // ==========================================================================
     window.openUploadModal = function() {
         if (!currentUser) {
@@ -268,11 +288,6 @@ document.addEventListener('DOMContentLoaded', () => {
             categoryOptionsHTML += `<option value="paid">Premium (Coins)</option>`;
         }
 
-        let encodingMethodsHTML = `<option value="imgbb">ImgBB Upload</option>`;
-        if (isMasterOwner) {
-            encodingMethodsHTML += `<option value="base64">Base64 Code</option>`;
-        }
-
         let uploadModal = document.createElement('div');
         uploadModal.id = 'dynamicUploadModal';
         uploadModal.className = 'modal-overlay active';
@@ -284,33 +299,33 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div class="modal-body">
                     
-                    <label class="modal-label">App Name</label>
-                    <input type="text" id="pName" class="play-input" placeholder="Enter app name">
+                    <label class="modal-label">App Title</label>
+                    <input type="text" id="pName" class="play-input" placeholder="App name">
 
-                    <label class="modal-label">Developer Name</label>
-                    <input type="text" id="pDevName" class="play-input" placeholder="e.g. Tausif Modz V3">
+                    <label class="modal-label">Developer</label>
+                    <input type="text" id="pDevName" class="play-input" placeholder="Developer name">
 
                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
                         <div>
                             <label class="modal-label">Version</label>
-                            <input type="text" id="pVer" class="play-input" placeholder="e.g. 1.0">
+                            <input type="text" id="pVer" class="play-input" placeholder="1.0">
                         </div>
                         <div>
                             <label class="modal-label">Size</label>
-                            <input type="text" id="pSize" class="play-input" placeholder="e.g. 45 MB">
+                            <input type="text" id="pSize" class="play-input" placeholder="50 MB">
                         </div>
                     </div>
 
                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
                         <div>
-                            <label class="modal-label">Select Tab</label>
+                            <label class="modal-label">Section</label>
                             <select id="pType" class="play-input">
-                                <option value="mod_app">Mod App Tab</option>
-                                <option value="files">Files Tab</option>
+                                <option value="mod_app">Mods</option>
+                                <option value="files">Files</option>
                             </select>
                         </div>
                         <div>
-                            <label class="modal-label">Access Type</label>
+                            <label class="modal-label">App Type</label>
                             <select id="pCat" class="play-input" onchange="toggleCoinPriceInputBoxField(this.value)">
                                 ${categoryOptionsHTML}
                             </select>
@@ -325,7 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div style="display:flex; gap:20px; margin-bottom:20px; background: rgba(255,255,255,0.02); padding: 15px; border-radius: 10px; border: 1px solid var(--border-color);">
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <input type="checkbox" id="pTrendingCheck" style="width: 16px; height: 16px; cursor: pointer;">
-                            <span style="font-size: 13px; color: var(--text-primary);">Trending Status</span>
+                            <span style="font-size: 13px; color: var(--text-primary);">Trending App</span>
                         </div>
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <input type="checkbox" id="pPushNotificationCheck" style="width: 16px; height: 16px; cursor: pointer;">
@@ -335,66 +350,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     <hr style="border:0; border-top:1px solid var(--border-color); margin:15px 0;">
 
-                    <div style="display:grid; grid-template-columns: 1fr; gap:15px;">
-                        <div>
-                            <label class="modal-label" style="color:var(--primary);">App Logo</label>
-                            <select id="logoMethod" class="play-input" onchange="toggleUploadMethodInputsStructure('logo', this.value)" style="margin-bottom:10px;">
-                                ${encodingMethodsHTML}
-                            </select>
-                            <div id="logoFileBox">
-                                <input type="file" id="logoFile" class="play-input" accept="image/*" style="padding:10px; margin-bottom:5px;">
-                            </div>
-                            <img id="logoPreviewImg" class="preview-thumbnail" alt="Preview" style="max-width:60px; border-radius:8px; display:none; margin-bottom:10px;">
+                    <div style="margin-bottom: 15px; text-align: center; background:rgba(0,0,0,0.02); padding:15px; border-radius:8px; border:1px solid var(--border-color);">
+                        <label class="modal-label" style="text-align:left; color:var(--primary);">App Logo</label>
+                        <div style="position:relative; display:inline-block;">
+                            <img id="logoPreviewImg" style="width:80px; height:80px; border-radius:12px; object-fit:cover; border:2px dashed var(--border-color); background:rgba(0,0,0,0.2); display:block;">
+                            <label for="logoFile" style="position:absolute; bottom:-5px; right:-5px; background:var(--primary); width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#000; box-shadow:0 2px 10px rgba(0,0,0,0.5); transition:0.2s;">
+                                <i class="fas fa-plus"></i>
+                            </label>
+                            <input type="file" id="logoFile" accept="image/*" style="display:none;">
                             <input type="hidden" id="logoUrlOutput">
-                            <p id="logoProcessStatus" style="font-size:11px; color:var(--warning); margin-bottom:10px;"></p>
                         </div>
-                        
-                        <div>
-                            <label class="modal-label" style="color:var(--primary);">Screenshots (Max 5)</label>
-                            <div style="background: rgba(255,255,255,0.02); padding: 10px; border-radius: 10px; border: 1px solid var(--border-color);">
-                                <input type="file" id="screenshotFileBtn" class="play-input" accept="image/*" style="padding:10px; margin-bottom:5px;">
-                                <div class="screenshot-preview-container" id="screenshotPreviewWrapper"></div>
-                                <p id="screenshotProcessStatus" style="font-size:11px; color:var(--warning);"></p>
-                            </div>
+                        <p id="logoProcessStatus" style="font-size:11px; color:var(--warning); margin-top:10px; font-family:monospace;"></p>
+                    </div>
+
+                    <div style="background: rgba(0,0,0,0.02); padding: 10px; border-radius: 10px; border: 1px solid var(--border-color); margin-bottom: 15px;">
+                        <label class="modal-label" style="color:var(--primary);">Screenshots (Max 5)</label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <label for="screenshotFileBtn" class="upload-plus-box" style="width: 60px; height: 100px; flex-shrink: 0; margin-bottom: 0;">
+                                <i class="fas fa-plus"></i>
+                            </label>
+                            <input type="file" id="screenshotFileBtn" accept="image/*" style="display:none;">
+                            <div class="screenshot-preview-container" id="screenshotPreviewWrapper" style="margin-bottom:0; display:flex; gap:10px; overflow-x:auto;"></div>
                         </div>
+                        <p id="screenshotProcessStatus" style="font-size:11px; color:var(--warning); margin-top:5px;"></p>
                     </div>
 
                     <hr style="border:0; border-top:1px solid var(--border-color); margin:15px 0;">
 
-                    <label class="modal-label">Main Download Link</label>
-                    <input type="text" id="pMainLink" class="play-input" placeholder="Paste URL here">
-
-                    <div style="background: rgba(255,82,82,0.02); padding: 15px; border-radius: 12px; border: 1px dashed rgba(255,82,82,0.2); margin-bottom: 20px;">
-                        <label class="modal-label" style="color: var(--danger); font-weight: bold;">Zip Password (Optional)</label>
-                        <input type="password" id="pPassword" class="play-input" placeholder="Enter password" style="margin-bottom: 12px;">
-                        
-                        <label class="modal-label">Get Password Link</label>
-                        <input type="text" id="pGetPassLink" class="play-input" placeholder="URL to get password" style="margin-bottom: 0;">
-                    </div>
-
-                    <label class="modal-label" style="color: var(--warning);">Extra Links (Up to 3)</label>
-                    <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 20px; display: flex; flex-direction: column; gap: 12px;" id="extraLinksInputContainer">
-                        <div style="display:flex; gap:10px;">
-                            <input type="text" class="play-input ex-link-title" placeholder="Title 1" style="margin-bottom:0; flex:1;">
-                            <input type="text" class="play-input ex-link-url" placeholder="URL 1" style="margin-bottom:0; flex:2;">
-                        </div>
-                        <div style="display:flex; gap:10px;">
-                            <input type="text" class="play-input ex-link-title" placeholder="Title 2" style="margin-bottom:0; flex:1;">
-                            <input type="text" class="play-input ex-link-url" placeholder="URL 2" style="margin-bottom:0; flex:2;">
-                        </div>
-                        <div style="display:flex; gap:10px;">
-                            <input type="text" class="play-input ex-link-title" placeholder="Title 3" style="margin-bottom:0; flex:1;">
-                            <input type="text" class="play-input ex-link-url" placeholder="URL 3" style="margin-bottom:0; flex:2;">
+                    <label class="modal-label">Download Links (Max 5)</label>
+                    <div id="dynamicLinksContainer" style="background: rgba(0,0,0,0.02); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 10px; display: flex; flex-direction: column;">
+                        <div class="dynamic-link-row" style="display:flex; gap:10px;">
+                            <input type="text" class="play-input ex-link-title" placeholder="Title (e.g. Server 1)" style="margin-bottom:0; flex:1;">
+                            <input type="text" class="play-input ex-link-url" placeholder="Download Link" style="margin-bottom:0; flex:2;">
                         </div>
                     </div>
+                    <button id="addMoreLinkBtn" class="add-link-btn" style="margin-bottom:20px;" onclick="addNewLinkRow()"><i class="fas fa-plus"></i> Add Link</button>
 
-                    <label class="modal-label">Search Tags (Comma separated)</label>
+                    <label class="modal-label">Tags (Use comma to separate)</label>
                     <div class="tags-container" id="tagsInputContainer" style="padding: 8px;">
                         <input type="text" id="tagInputField" class="tag-input-field" placeholder="Add tags..." style="padding: 5px;">
                     </div>
 
                     <label class="modal-label">Description</label>
-                    <textarea id="pDescription" class="play-input" placeholder="App description & details..." style="min-height:80px; resize:vertical;"></textarea>
+                    <textarea id="pDescription" class="play-input" placeholder="App description..." style="min-height:80px; resize:vertical;"></textarea>
 
                     <button class="play-btn" id="executePublishBtn" onclick="commitPackageToPendingDatabaseNode()">UPLOAD APP</button>
                 </div>
@@ -404,168 +402,117 @@ document.addEventListener('DOMContentLoaded', () => {
 
         initializeTagsInputEngine();
 
+        // AUTOMATIC LOGO UPLOAD LOGIC
         document.getElementById('logoFile').addEventListener('change', (e) => {
-            executeBinaryAssetProcessingStream(e.target.files[0], 'logoMethod', 'logoUrlOutput', 'logoProcessStatus', 'logoPreviewImg');
-        });
+            const file = e.target.files[0];
+            if(!file) return;
+            const status = document.getElementById('logoProcessStatus');
+            const preview = document.getElementById('logoPreviewImg');
+            const output = document.getElementById('logoUrlOutput');
+            
+            status.innerText = "Uploading...";
+            status.style.color = "var(--warning)";
 
-        document.getElementById('screenshotFileBtn').addEventListener('change', (e) => {
-            if (uploadedScreenshotsList.length >= 5) {
-                alert("Upload Limit Reached: Maximum of 5 gallery screenshots allocated.");
-                e.target.value = '';
-                return;
-            }
-            executeGalleryScreenshotUploadProcessingStream(e.target.files[0]);
-        });
-    };
-
-    window.toggleCoinPriceInputBoxField = function(value) {
-        document.getElementById('coinPriceWrapper').style.display = (value === 'paid') ? 'block' : 'none';
-    };
-
-    window.toggleUploadMethodInputsStructure = function(type, method) {
-        const output = document.getElementById(`${type}UrlOutput`);
-        const fileBox = document.getElementById(`${type}FileBox`);
-        const preview = document.getElementById(`${type}PreviewImg`);
-
-        if (method === 'base64') {
-            if(fileBox) fileBox.style.display = 'none';
-            if(preview) preview.style.display = 'none';
-            output.type = 'text';
-            output.className = 'play-input';
-            output.placeholder = "Paste Base64 code...";
-        } else {
-            if(fileBox) fileBox.style.display = 'block';
-            output.type = 'hidden';
-            output.placeholder = "";
-        }
-        output.value = '';
-    };
-
-    // ==========================================================================
-    // 8. CORE BINARY CONVERTER & CLOUD API ENGINE
-    // ==========================================================================
-    function executeBinaryAssetProcessingStream(file, methodSelectId, outputInputId, statusParaId, previewImgId) {
-        if (!file) return;
-
-        const method = document.getElementById(methodSelectId).value;
-        const output = document.getElementById(outputInputId);
-        const status = document.getElementById(statusParaId);
-        const preview = document.getElementById(previewImgId);
-
-        status.innerText = "Processing...";
-        status.style.color = "var(--warning)";
-
-        if (method === 'base64') {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                output.value = e.target.result;
-                status.innerText = "Base64 Success!";
-                status.style.color = "var(--success)";
-                if(preview) {
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
-                }
-            };
-            reader.readAsDataURL(file);
-        } else {
             const formData = new FormData();
             formData.append("image", file);
 
             fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
                 method: "POST",
                 body: formData
-            })
-            .then(res => res.json())
-            .then(json => {
+            }).then(res => res.json()).then(json => {
                 if (json.success) {
                     output.value = json.data.url;
-                    status.innerText = "Upload Complete!";
+                    preview.src = json.data.url;
+                    status.innerText = "Uploaded!";
                     status.style.color = "var(--success)";
-                    if(preview) {
-                        preview.src = json.data.url;
-                        preview.style.display = 'block';
-                    }
+                    setTimeout(() => status.innerText = "", 3000);
                 } else {
                     status.innerText = "Upload failed.";
                     status.style.color = "var(--danger)";
                 }
-            })
-            .catch(() => {
+            }).catch(() => {
                 status.innerText = "Network error.";
                 status.style.color = "var(--danger)";
             });
-        }
-    }
-
-    function executeGalleryScreenshotUploadProcessingStream(file) {
-        if(!file) return;
-        const status = document.getElementById('screenshotProcessStatus');
-        const wrapper = document.getElementById('screenshotPreviewWrapper');
-
-        status.innerText = "Uploading...";
-        status.style.color = "var(--warning)";
-
-        const formData = new FormData();
-        formData.append("image", file);
-
-        fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-            method: "POST",
-            body: formData
-        })
-        .then(res => res.json())
-        .then(json => {
-            if (json.success) {
-                const imgUrl = json.data.url;
-                uploadedScreenshotsList.push(imgUrl);
-
-                let thumb = document.createElement('img');
-                thumb.src = imgUrl;
-                thumb.className = 'sc-preview-thumb';
-                wrapper.appendChild(thumb);
-
-                status.innerText = `Screenshot ${uploadedScreenshotsList.length}/5 Synced!`;
-                status.style.color = "var(--success)";
-            } else {
-                status.innerText = "Upload failed.";
-                status.style.color = "var(--danger)";
-            }
-            document.getElementById('screenshotFileBtn').value = '';
-        })
-        .catch(() => {
-            status.innerText = "Network error.";
-            status.style.color = "var(--danger)";
         });
-    }
+
+        // AUTOMATIC SCREENSHOT UPLOAD LOGIC
+        document.getElementById('screenshotFileBtn').addEventListener('change', (e) => {
+            if (uploadedScreenshotsList.length >= 5) {
+                alert("Maximum 5 screenshots allowed.");
+                e.target.value = '';
+                return;
+            }
+            
+            const file = e.target.files[0];
+            if(!file) return;
+            const status = document.getElementById('screenshotProcessStatus');
+            const wrapper = document.getElementById('screenshotPreviewWrapper');
+
+            status.innerText = "Uploading...";
+            status.style.color = "var(--warning)";
+
+            const formData = new FormData();
+            formData.append("image", file);
+
+            fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                method: "POST",
+                body: formData
+            }).then(res => res.json()).then(json => {
+                if (json.success) {
+                    const imgUrl = json.data.url;
+                    uploadedScreenshotsList.push(imgUrl);
+
+                    let thumb = document.createElement('img');
+                    thumb.src = imgUrl;
+                    thumb.className = 'sc-preview-thumb';
+                    wrapper.appendChild(thumb);
+
+                    status.innerText = `Screenshot ${uploadedScreenshotsList.length}/5 Uploaded!`;
+                    status.style.color = "var(--success)";
+                } else {
+                    status.innerText = "Upload failed.";
+                    status.style.color = "var(--danger)";
+                }
+                document.getElementById('screenshotFileBtn').value = '';
+            }).catch(() => {
+                status.innerText = "Network error.";
+                status.style.color = "var(--danger)";
+            });
+        });
+    };
 
     // ==========================================================================
-    // 9. DATABASE COMMIT PACKAGES CONTROLLER
+    // 9. DATABASE COMMIT LOGIC
     // ==========================================================================
     window.commitPackageToPendingDatabaseNode = function() {
         const name = document.getElementById('pName').value.trim();
         const devName = document.getElementById('pDevName').value.trim(); 
-        const mainLink = document.getElementById('pMainLink').value.trim();
         const logoData = document.getElementById('logoUrlOutput').value.trim();
         const isTrendingChecked = document.getElementById('pTrendingCheck').checked;
         const isPushNotificationChecked = document.getElementById('pPushNotificationCheck').checked;
 
-        if (!name || !mainLink) {
-            alert("App Name and Download Link are required.");
-            return;
-        }
-
-        let collectedExtraLinks = [];
+        // Collect Dynamic Links
+        let collectedLinks = [];
         const titles = document.querySelectorAll('.ex-link-title');
         const urls = document.querySelectorAll('.ex-link-url');
-        
+        let mainLink = "";
+
         for(let i = 0; i < urls.length; i++) {
             let tVal = titles[i].value.trim();
             let uVal = urls[i].value.trim();
             if(uVal !== "") {
-                collectedExtraLinks.push({
+                if(mainLink === "") mainLink = uVal; 
+                collectedLinks.push({
                     title: tVal || `Link ${i + 1}`,
                     url: uVal
                 });
             }
+        }
+
+        if (!name || mainLink === "") {
+            alert("App Name and at least one Download Link are required.");
+            return;
         }
 
         const btn = document.getElementById('executePublishBtn');
@@ -584,10 +531,10 @@ document.addEventListener('DOMContentLoaded', () => {
             sendNotification: isPushNotificationChecked, 
             logoUrl: logoData || "https://via.placeholder.com/150/121212/00e6b8?text=APP",
             screenshots: uploadedScreenshotsList, 
-            downloadUrl: mainLink,
-            zipPassword: document.getElementById('pPassword').value.trim() || "",
-            getPasswordLink: document.getElementById('pGetPassLink').value.trim() || "",
-            extraLinks: collectedExtraLinks, 
+            downloadUrl: mainLink, // Fallback for backward compatibility
+            zipPassword: "", // Kept empty to remove feature safely without DB crash
+            getPasswordLink: "", 
+            extraLinks: collectedLinks, 
             tags: uploadedTagsList, 
             description: document.getElementById('pDescription').value.trim() || "No description provided.",
             uploaderUid: currentUser.uid,
@@ -615,13 +562,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // ==========================================================================
-    // 10. IN-APP SYSTEM NOTIFICATIONS
+    // 10. SYSTEM AUTO APPROVAL & NOTIFICATIONS BOT
     // ==========================================================================
-    window.clearLocalNotifications = function() {
-        document.getElementById('notificationInboxDisplay').innerHTML = `<div class="empty-msg" style="text-align:center; color:var(--text-secondary); padding:40px;"><i class="fas fa-trash-alt" style="font-size:30px; margin-bottom:10px;"></i><br>Inbox cleared locally.</div>`;
-        document.getElementById('notiAlert').style.display = 'none';
-    };
-
     function listenForLiveSystemNotifications() {
         const inbox = document.getElementById('notificationInboxDisplay');
         const badge = document.getElementById('notiAlert');
@@ -634,45 +576,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             if(badge) badge.style.display = 'block'; 
-
-            let html = '';
-            let notices = [];
-            snapshot.forEach(child => notices.push({id: child.key, ...child.val()}));
-            notices.reverse();
-
-            notices.forEach(note => {
-                const alertClass = note.type === 'alert' ? 'system-alert' : '';
-                let clickAction = "";
-                let cursorStyle = "";
-                let linkIndicator = "";
-                
-                if (note.link && note.link.trim() !== "") {
-                    let safeUrl = note.link;
-                    if (!/^https?:\/\//i.test(safeUrl) && !safeUrl.startsWith('details.html')) {
-                        safeUrl = 'https://' + safeUrl;
-                    }
-                    clickAction = `onclick="window.open('${safeUrl}', '_blank')"`;
-                    cursorStyle = `cursor: pointer; transition: transform 0.2s; border-color: var(--primary);`;
-                    linkIndicator = `<i class="fas fa-external-link-alt" style="color:var(--primary); font-size:12px; float:right;"></i>`;
-                }
-
-                html += `
-                    <div class="noti-card ${alertClass}" ${clickAction} style="${cursorStyle}">
-                        <div class="noti-header">
-                            <span class="noti-title"><i class="fas fa-bullhorn"></i> ${note.title} ${linkIndicator}</span>
-                            <span class="noti-time">${note.timeString || "Recent"}</span>
-                        </div>
-                        <p class="noti-msg">${note.message}</p>
-                    </div>
-                `;
-            });
-            inbox.innerHTML = html;
         });
     }
 
-    // ==========================================================================
-    // 11. AUTOMATED APP DEPLOYMENT & AUTO-NOTIFICATION BOT (CRON SIMULATOR)
-    // ==========================================================================
     function runSystemAutoApproveEngine() {
         setInterval(() => {
             db.ref('pending_apps').once('value').then((snapshot) => {
@@ -687,24 +593,20 @@ document.addEventListener('DOMContentLoaded', () => {
                             appRecord.approvedAt = firebase.database.ServerValue.TIMESTAMP;
 
                             db.ref(`store_apps/${child.key}`).set(appRecord).then(() => {
-                                
                                 if (appRecord.sendNotification === true) {
                                     const date = new Date();
                                     const timeStr = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) + " | " + date.toLocaleDateString();
-                                    
                                     db.ref('system_broadcasts').push({
-                                        title: "New Application Live!",
-                                        message: `🚀 '${appRecord.appName}' (v${appRecord.version}) has been deployed successfully. Tap to explore details.`,
+                                        title: "New App Uploaded!",
+                                        message: `'${appRecord.appName}' (v${appRecord.version}) is now available.`,
                                         type: "normal",
                                         timeString: timeStr,
-                                        sender: "System Bot",
+                                        sender: "System",
                                         link: `details.html?id=${child.key}`, 
                                         timestamp: firebase.database.ServerValue.TIMESTAMP
                                     });
                                 }
-
                                 db.ref(`pending_apps/${child.key}`).remove();
-                                console.log(`[STAGING QUEUE]: Auto-deploy completed for: ${appRecord.appName}`);
                             });
                         }
                     });
@@ -714,53 +616,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================================================
-    // 12. DIRECT AVATAR UPLOAD LISTENER & MY UPLOADS LOGIC
+    // 11. MY UPLOADS & EDIT LOGIC (CLEAN ENGLISH)
     // ==========================================================================
-    
-    // Direct Avatar Upload from the new Camera Icon
-    document.body.addEventListener('change', (e) => {
-        if (e.target && e.target.id === 'directAvatarUpload') {
-            const file = e.target.files[0];
-            if (!file || !currentUser) return;
-
-            const status = document.getElementById('directAvatarStatus');
-            if (status) {
-                status.style.display = 'block';
-                status.innerText = "Uploading Avatar to ImgBB...";
-                status.style.color = "var(--warning)";
-            }
-
-            const formData = new FormData();
-            formData.append("image", file);
-
-            fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-                method: "POST",
-                body: formData
-            })
-            .then(res => res.json())
-            .then(json => {
-                if (json.success) {
-                    const newAvatarUrl = json.data.url;
-                    db.ref('users/' + currentUser.uid).update({
-                        avatarUrl: newAvatarUrl
-                    }).then(() => {
-                        if (status) {
-                            status.innerText = "Avatar Updated Successfully!";
-                            status.style.color = "var(--success)";
-                            setTimeout(() => { status.style.display = 'none'; }, 3000);
-                        }
-                    });
-                } else {
-                    if (status) { status.innerText = "Upload failed."; status.style.color = "var(--danger)"; }
-                }
-            })
-            .catch(() => {
-                if (status) { status.innerText = "Network Error."; status.style.color = "var(--danger)"; }
-            });
-        }
-    });
-
-    // My Uploads Fetch Engine
     window.fetchMyUploadedApps = function() {
         const container = document.getElementById('myUploadsContainer');
         if (!currentUser) {
@@ -768,7 +625,7 @@ document.addEventListener('DOMContentLoaded', () => {
              return;
         }
 
-        container.innerHTML = `<div style="text-align:center; padding:30px;"><i class="fas fa-circle-notch fa-spin" style="color:var(--primary); font-size:24px;"></i><p style="margin-top:10px;">Scanning your ecosystem packages...</p></div>`;
+        container.innerHTML = `<div style="text-align:center; padding:30px;"><i class="fas fa-circle-notch fa-spin" style="color:var(--primary); font-size:24px;"></i><p style="margin-top:10px;">Loading your apps...</p></div>`;
 
         let html = '';
         Promise.all([
@@ -796,13 +653,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             if (userApps.length === 0) {
-                container.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-dim);"><i class="fas fa-box-open" style="font-size:35px; margin-bottom:10px; opacity:0.5;"></i><p>You have not published any package blocks yet.</p></div>`;
+                container.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-dim);"><i class="fas fa-box-open" style="font-size:35px; margin-bottom:10px; opacity:0.5;"></i><p>You have no uploads yet.</p></div>`;
                 return;
             }
 
             userApps.reverse().forEach(app => {
                 const isLive = app.node === 'store_apps';
-                const statusBadge = isLive ? `<span style="color:var(--success); font-size:10px; font-weight:bold; background:rgba(46,213,115,0.1); padding:2px 6px; border-radius:4px; border:1px solid rgba(46,213,115,0.2);">Live Store</span>` : `<span style="color:var(--warning); font-size:10px; font-weight:bold; background:rgba(255,165,0,0.1); padding:2px 6px; border-radius:4px; border:1px solid rgba(255,165,0,0.2);">Pending Review</span>`;
+                const statusBadge = isLive ? `<span style="color:var(--success); font-size:10px; font-weight:bold; background:rgba(46,213,115,0.1); padding:2px 6px; border-radius:4px; border:1px solid rgba(46,213,115,0.2);">Live</span>` : `<span style="color:var(--warning); font-size:10px; font-weight:bold; background:rgba(255,165,0,0.1); padding:2px 6px; border-radius:4px; border:1px solid rgba(255,165,0,0.2);">Pending</span>`;
                 
                 html += `
                     <div style="display:flex; align-items:center; gap:12px; background:rgba(0,0,0,0.2); margin-bottom:12px; padding:12px; border-radius:12px; border:1px solid var(--border-glass);">
@@ -849,7 +706,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const desc = document.getElementById('euDescription').value.trim();
 
         if (!name || !link) {
-            alert("App Name and Download Link are required parameters.");
+            alert("App Name and Download Link are required.");
             return;
         }
 
@@ -858,11 +715,11 @@ document.addEventListener('DOMContentLoaded', () => {
             version: ver || "1.0",
             size: size || "0 MB",
             downloadUrl: link,
-            description: desc || "No description provided."
+            description: desc || ""
         };
 
         db.ref(`${node}/${appId}`).update(updates).then(() => {
-            alert("Application Package Synchronized Successfully!");
+            alert("App Updated Successfully!");
             document.getElementById('userAppEditModal').classList.remove('active');
             window.fetchMyUploadedApps();
             if (typeof window.loadStoreFeed === 'function') window.loadStoreFeed();
@@ -870,9 +727,9 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.deleteUserApp = function(appId, node) {
-        if (confirm("DANGER: Are you sure you want to permanently wipe this application block registry from the master server?")) {
+        if (confirm("Are you sure you want to delete this app?")) {
             db.ref(`${node}/${appId}`).remove().then(() => {
-                alert("Wipe lifecycle transaction completed.");
+                alert("App Deleted.");
                 window.fetchMyUploadedApps();
                 if (typeof window.loadStoreFeed === 'function') window.loadStoreFeed();
             });
