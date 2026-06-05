@@ -19,7 +19,33 @@ document.addEventListener('DOMContentLoaded', () => {
     const IMGBB_API_KEY = "820eb9aa6a57f863045a52c1929efc9c"; 
 
     // ==========================================================================
-    // 1. GLOBAL STORE BRAND LOGO SYNCHRONIZER
+    // 1. DYNAMIC UI INJECTION FOR "MY UPLOADS" (Fulfills User Request)
+    // ==========================================================================
+    const menuList = document.querySelector('.you-menu-list');
+    if (menuList && !document.getElementById('menuMyUploadsItem')) {
+        const myUpBtn = document.createElement('div');
+        myUpBtn.className = 'you-menu-item';
+        myUpBtn.id = 'menuMyUploadsItem';
+        myUpBtn.style.display = 'none';
+        myUpBtn.onclick = function() { 
+            if(typeof openMyUploadsModal === 'function') openMyUploadsModal(); 
+        };
+        myUpBtn.innerHTML = `
+            <i class="fas fa-folder-open" style="color: var(--info);"></i>
+            <span style="color: var(--info); font-weight: 700;">My Uploads</span>
+            <i class="fas fa-chevron-right arrow"></i>
+        `;
+        menuList.insertBefore(myUpBtn, menuList.children[1] || menuList.firstChild);
+    }
+
+    // Disable Top Profile Icon Click Action as requested
+    window.openMyUploadsIfAdmin = function() {
+        console.log("Top profile icon click action disabled for all users.");
+        return false;
+    };
+
+    // ==========================================================================
+    // 2. GLOBAL STORE BRAND LOGO SYNCHRONIZER
     // ==========================================================================
     db.ref('settings/storeLogo').on('value', (snapshot) => {
         const logoImg = document.getElementById('mainStoreLogo');
@@ -29,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ==========================================================================
-    // 2. AUTH STATE TRIGGER & BACKGROUND CONTROLLERS
+    // 3. AUTH STATE TRIGGER & BACKGROUND CONTROLLERS
     // ==========================================================================
     auth.onAuthStateChanged((user) => {
         if (user) {
@@ -37,6 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
             db.ref('users/' + user.uid).on('value', (snapshot) => {
                 if (snapshot.exists()) {
                     userProfile = snapshot.val();
+                    executeSystemInterfacePipelineUpdates();
                 }
             });
             runSystemAutoApproveEngine();
@@ -44,13 +71,28 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             currentUser = null;
             userProfile = null;
-            loadStoreFeed(activeFilterType, activeContentType);
             listenForLiveSystemNotifications();
+            
+            const myUpBtn = document.getElementById('menuMyUploadsItem');
+            if(myUpBtn) myUpBtn.style.display = 'none';
         }
     });
 
     // ==========================================================================
-    // 3. PLAY STORE DATA RENDERING GRID
+    // 4. SYSTEM INTERFACE PIPELINE ELEMENTS MANAGER
+    // ==========================================================================
+    function executeSystemInterfacePipelineUpdates() {
+        if (!userProfile) return;
+
+        const isAdmin = (userProfile.role === 'owner' || sessionStorage.getItem('mvx_role') === 'owner');
+        const myUpBtn = document.getElementById('menuMyUploadsItem');
+        if(myUpBtn) {
+            myUpBtn.style.display = isAdmin ? 'flex' : 'none';
+        }
+    }
+
+    // ==========================================================================
+    // 5. PLAY STORE DATA RENDERING GRID (LOAD BUG FIXED)
     // ==========================================================================
     window.loadStoreFeed = function(filter, contentType) {
         activeFilterType = filter || activeFilterType;
@@ -126,8 +168,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Fix: Trigger Feed Load on Page Start Immediately
+    setTimeout(() => {
+        if(typeof window.loadStoreFeed === 'function') {
+            window.loadStoreFeed('all', 'mod_app');
+        }
+    }, 300);
+
     // ==========================================================================
-    // 4. SMART TAGS FIELD ARRAY CONTROLLER CONTEXT
+    // 6. SMART TAGS FIELD ARRAY CONTROLLER CONTEXT
     // ==========================================================================
     let uploadedTagsList = [];
     
@@ -174,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let uploadedScreenshotsList = [];
 
     // ==========================================================================
-    // 5. MASTER PLAY STORE APPLICATION PUBLISH MODAL FORM LAYOUT
+    // 7. MASTER PLAY STORE APPLICATION PUBLISH MODAL FORM LAYOUT
     // ==========================================================================
     window.openUploadModal = function() {
         if (!currentUser) {
@@ -364,7 +413,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // ==========================================================================
-    // 6. CORE BINARY CONVERTER & CLOUD API ENGINE
+    // 8. CORE BINARY CONVERTER & CLOUD API ENGINE
     // ==========================================================================
     function executeBinaryAssetProcessingStream(file, methodSelectId, outputInputId, statusParaId, previewImgId) {
         if (!file) return;
@@ -460,7 +509,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================================================
-    // 7. DATABASE COMMIT PACKAGES CONTROLLER
+    // 9. DATABASE COMMIT PACKAGES CONTROLLER
     // ==========================================================================
     window.commitPackageToPendingDatabaseNode = function() {
         const name = document.getElementById('pName').value.trim();
@@ -537,7 +586,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // ==========================================================================
-    // 8. IN-APP SYSTEM NOTIFICATIONS
+    // 10. IN-APP SYSTEM NOTIFICATIONS
     // ==========================================================================
     window.clearLocalNotifications = function() {
         document.getElementById('notificationInboxDisplay').innerHTML = `<div class="empty-msg" style="text-align:center; color:var(--text-secondary); padding:40px;"><i class="fas fa-trash-alt" style="font-size:30px; margin-bottom:10px;"></i><br>Inbox cleared locally.</div>`;
@@ -593,7 +642,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================================================
-    // 9. AUTOMATED APP DEPLOYMENT & AUTO-NOTIFICATION BOT (CRON SIMULATOR)
+    // 11. AUTOMATED APP DEPLOYMENT & AUTO-NOTIFICATION BOT (CRON SIMULATOR)
     // ==========================================================================
     function runSystemAutoApproveEngine() {
         setInterval(() => {
@@ -636,7 +685,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================================================
-    // 10. NEW: DIRECT AVATAR UPLOAD LISTENER & MY UPLOADS LOGIC
+    // 12. DIRECT AVATAR UPLOAD LISTENER & MY UPLOADS LOGIC
     // ==========================================================================
     
     // Direct Avatar Upload from the new Camera Icon

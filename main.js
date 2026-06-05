@@ -231,6 +231,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // MAIN AUTH LISTENER
     auth.onAuthStateChanged((user) => {
+        const menuPublishItem = document.getElementById('menuPublishItem');
+        const menuCoinItem = document.getElementById('menuCoinItem');
+        const menuSignOutItem = document.getElementById('menuSignOutItem');
+        
         if (user) {
             currentUserAuth = user;
             db.ref('users/' + user.uid).on('value', (snapshot) => {
@@ -243,19 +247,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 const isAdmin = (currentSessionRole === 'owner' || userProfile.role === 'owner');
                 
                 const adminBtn = document.getElementById('menuAdminPanelItem');
-                if (adminBtn) {
-                    adminBtn.style.display = isAdmin ? 'flex' : 'none';
-                }
+                if (adminBtn) adminBtn.style.display = isAdmin ? 'flex' : 'none';
 
-                // Update UI Information
+                // Publish Package option only for admins
+                if (menuPublishItem) menuPublishItem.style.display = isAdmin ? 'flex' : 'none';
+                
+                // Coin balance and Sign Out option for ALL logged-in users
+                if (menuCoinItem) menuCoinItem.style.display = 'flex';
+                if (menuSignOutItem) menuSignOutItem.style.display = 'flex';
+
+                // Update UI Information securely avoiding 'undefined'
                 const topProfilePic = document.getElementById('topProfileBtn');
                 const youTabAvatar = document.getElementById('youTabAvatar');
                 
-                if (topProfilePic) topProfilePic.src = userProfile.avatarUrl;
-                if (youTabAvatar) youTabAvatar.src = userProfile.avatarUrl;
+                const safeName = userProfile.name || "MVX User";
+                const safeAvatar = userProfile.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${safeName}`;
 
-                if (document.getElementById('youTabName')) document.getElementById('youTabName').innerText = userProfile.name;
-                if (document.getElementById('youTabEmail')) document.getElementById('youTabEmail').innerText = userProfile.email;
+                if (topProfilePic) topProfilePic.src = safeAvatar;
+                if (youTabAvatar) youTabAvatar.src = safeAvatar;
+
+                if (document.getElementById('youTabName')) document.getElementById('youTabName').innerText = safeName;
+                if (document.getElementById('youTabEmail')) document.getElementById('youTabEmail').innerText = userProfile.email || "";
                 if (document.getElementById('navCoinDisplay')) document.getElementById('navCoinDisplay').innerText = userProfile.coins || 0;
             });
         } else {
@@ -266,6 +278,9 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const adminBtn = document.getElementById('menuAdminPanelItem');
             if (adminBtn) adminBtn.style.display = 'none';
+            if (menuPublishItem) menuPublishItem.style.display = 'none';
+            if (menuCoinItem) menuCoinItem.style.display = 'none';
+            if (menuSignOutItem) menuSignOutItem.style.display = 'none';
         }
     });
 
@@ -493,7 +508,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // NEW LOGIC: TOP PROFILE PIC CLICK ACTION (ONLY OPENS FOR ADMINS)
+    // LOGIC: TOP PROFILE PIC CLICK ACTION (ONLY OPENS FOR ADMINS)
     window.openMyUploadsIfAdmin = function() {
         const currentSessionRole = sessionStorage.getItem('mvx_role');
         if (userProfile && (userProfile.role === 'owner' || currentSessionRole === 'owner')) {
@@ -503,18 +518,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    window.safeOpenURLInNewTab = function(url) {
-        if (!url || url.trim() === "" || url === "#") return;
-        let targetUrl = url.trim();
-        
-        if (!/^https?:\/\//i.test(targetUrl)) {
-            targetUrl = 'https://' + targetUrl;
-        }
-        window.open(targetUrl, '_blank');
-    };
-
+    // LOGOUT LOGIC
     window.secureLogout = function() {
-        if (confirm("Clear local cache and close active storage network pipeline?")) {
+        if (confirm("Clear local cache and close active session?")) {
             sessionStorage.clear(); 
             auth.signOut().then(() => window.location.replace('login.html'));
         }
