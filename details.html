@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#121212">
-    <title>Application Details | MVX STORE</title>
+    <title>App Details | MVX STORE</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,515 +13,403 @@
     <link rel="stylesheet" href="style.css">
 
     <style>
-        /* Details Page Specific Premium Extensions */
         .details-header { display: flex; gap: 20px; align-items: center; margin-bottom: 25px; }
-        .details-logo { width: 90px; height: 90px; border-radius: 20px; object-fit: cover; border: 1px solid var(--border-color); flex-shrink: 0; }
-        .details-meta-box { flex: 1; overflow: hidden; }
-        .details-title { font-family: var(--font-header); font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 5px; white-space: normal; overflow: visible; text-overflow: unset; line-height: 1.2; }
-        .details-dev { font-size: 14px; color: var(--primary); font-weight: 600; }
+        .details-logo { width: 90px; height: 90px; border-radius: 20px; object-fit: cover; border: 1px solid var(--border-color); box-shadow: var(--primary-shadow); }
+        .details-info { flex: 1; }
+        .details-title { font-family: var(--font-header); font-size: 24px; font-weight: 800; margin-bottom: 5px; display: flex; align-items: center; gap: 8px; }
+        .details-dev { font-size: 14px; color: var(--primary); font-weight: 600; margin-bottom: 10px; }
         
-        .stats-row { display: flex; justify-content: space-between; background: var(--bg-surface); border: 1px solid var(--border-color); padding: 15px; border-radius: 14px; margin-bottom: 25px; text-align: center; }
-        .stat-item { flex: 1; border-right: 1px solid var(--border-color); }
-        .stat-item:last-child { border-right: none; }
-        .stat-val { font-family: var(--font-header); font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 4px; }
-        .stat-lbl { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
+        .meta-stats-bar { display: flex; gap: 20px; align-items: center; font-size: 12px; color: var(--text-secondary); font-weight: 600; background: rgba(0,0,0,0.2); padding: 10px 15px; border-radius: 12px; border: 1px solid var(--border-color); display: inline-flex;}
+        .meta-stats-bar div { display: flex; align-items: center; gap: 6px; }
+        
+        .main-action-btn { width: 100%; padding: 16px; border-radius: 14px; border: none; font-family: var(--font-header); font-size: 18px; font-weight: 800; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 25px; }
+        .main-action-btn.free { background: var(--primary); color: #000; box-shadow: var(--primary-shadow); }
+        .main-action-btn.paid { background: var(--warning); color: #000; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3); }
+        .main-action-btn.locked { background: var(--danger); color: #fff; box-shadow: 0 4px 15px rgba(255, 82, 82, 0.3); }
+        .main-action-btn:active { transform: scale(0.98); }
 
-        .desc-box { background: var(--bg-surface); border: 1px solid var(--border-color); padding: 20px; border-radius: 16px; margin-bottom: 25px; line-height: 1.6; font-size: 14px; color: var(--text-secondary); }
-        .desc-box h3 { font-family: var(--font-header); color: #fff; margin-bottom: 12px; font-size: 18px; }
+        .about-section { margin-bottom: 30px; line-height: 1.6; font-size: 14px; color: var(--text-secondary); background: var(--bg-surface); padding: 20px; border-radius: 16px; border: 1px solid var(--border-color); }
+        .about-title { font-family: var(--font-header); font-size: 18px; color: var(--text-primary); margin-bottom: 10px; font-weight: 700; }
+        
+        .extra-links-container { display: flex; flex-direction: column; gap: 10px; margin-bottom: 30px; }
+        .extra-link-btn { background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); color: var(--text-primary); padding: 12px 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; text-decoration: none; font-size: 13px; font-weight: 600; transition: 0.2s; }
+        .extra-link-btn:hover { border-color: var(--primary); color: var(--primary); transform: translateX(5px); }
 
-        .extra-links-box { background: var(--bg-surface); border: 1px solid var(--border-color); padding: 20px; border-radius: 16px; margin-bottom: 25px; }
-        .extra-links-box h3 { font-family: var(--font-header); color: #fff; margin-bottom: 15px; font-size: 18px; }
-        .ex-link-btn { display: flex; align-items: center; justify-content: space-between; background: var(--bg-base); border: 1px solid var(--border-color); padding: 14px; border-radius: 10px; color: var(--text-primary); text-decoration: none; margin-bottom: 10px; font-weight: 600; font-size: 14px; transition: all 0.2s; cursor: pointer; }
-        .ex-link-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .tags-display { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 30px; }
+        .tag-pill { background: var(--primary-dim); color: var(--primary); padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; border: 1px solid rgba(0,230,184,0.2); }
 
-        .top-action-bar { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; margin-bottom: 15px; }
-        .back-circle-btn { width: 44px; height: 44px; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; cursor: pointer; transition: 0.2s; }
-        .back-circle-btn:hover { border-color: var(--primary); color: var(--primary); }
-
-        .user-rating-input-zone { background: var(--bg-surface); border: 1px solid var(--border-color); padding: 15px; border-radius: 14px; margin-bottom: 25px; text-align: center; }
-        .user-rating-input-zone h4 { font-family: var(--font-header); margin-bottom: 8px; font-size: 16px; color: #fff; }
-        .rating-stars-input-container { display: flex; justify-content: center; gap: 8px; font-size: 24px; color: rgba(255,255,255,0.1); cursor: pointer; }
-        .rating-stars-input-container i.active { color: var(--warning); }
-        .rating-confirm-btn { background: var(--primary); color: #000; border: none; padding: 8px 20px; border-radius: 8px; font-family: var(--font-header); font-weight: 800; margin-top: 15px; cursor: pointer; display: none; }
+        .back-nav { display: inline-flex; align-items: center; gap: 8px; color: var(--text-secondary); font-weight: 600; font-size: 14px; cursor: pointer; margin-bottom: 20px; text-decoration: none; transition: 0.2s; }
+        .back-nav:hover { color: var(--primary); }
     </style>
 </head>
 <body>
 
-    <div class="play-main-content" style="padding-top: 10px;">
-        
-        <div class="top-action-bar">
-            <div class="back-circle-btn" onclick="window.location.replace('index.html')"><i class="fas fa-arrow-left"></i></div>
-            
+    <header class="play-top-nav">
+        <a href="index.html" class="back-nav" style="margin-bottom:0;"><i class="fas fa-arrow-left"></i> Back to Store</a>
+        <div class="top-actions">
             <div class="three-dot-container">
-                <button class="three-dot-btn" onclick="toggleDetailsThreeDotDropdown()"><i class="fas fa-ellipsis-v"></i></button>
-                <div class="dropdown-menu" id="threeDotMenuDropdown">
-                    <div class="dropdown-item" onclick="executeAppUrlCopyProtocol()"><i class="fas fa-link"></i> Copy Link</div>
-                    <div class="dropdown-item report-btn" onclick="openApplicationReportModal()"><i class="fas fa-flag"></i> Report App</div>
+                <button class="three-dot-btn" onclick="toggleDetailsDropdown()"><i class="fas fa-ellipsis-v"></i></button>
+                <div class="dropdown-menu" id="detailsDropdownMenu">
+                    <div class="dropdown-item" onclick="shareCurrentApp()"><i class="fas fa-share-alt"></i> Share App</div>
+                    <div class="dropdown-item report-btn" onclick="openReportModal()"><i class="fas fa-flag"></i> Report App</div>
                 </div>
             </div>
         </div>
+    </header>
 
-        <div class="details-header">
-            <img src="" id="appDetailsLogo" class="details-logo" alt="App Logo">
-            <div class="details-meta-box">
-                <h2 id="appDetailsTitle" class="details-title">Loading Package Title...</h2>
-                <div id="appDetailsDev" class="details-dev">Authorized Developer</div>
-            </div>
+    <main class="play-main-content">
+        <div id="detailsLoader" style="text-align:center; padding:50px;">
+            <i class="fas fa-spinner fa-spin" style="font-size:35px; color:var(--primary);"></i>
+            <p style="margin-top:15px; font-weight:600; color:var(--text-secondary);">Loading App Details...</p>
         </div>
 
-        <div class="stats-row">
-            <div class="stat-item rating-interactive" onclick="toggleRatingPercentageBreakdownBlock()">
-                <div class="stat-val" id="appDetailsRating">0.0 <i class="fas fa-star" style="color:var(--warning); font-size:13px;"></i></div>
-                <div class="stat-lbl" style="text-decoration: underline;">Reviews Map <i class="fas fa-chevron-down" style="font-size:9px;"></i></div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-val" id="appDetailsSize">0 MB</div>
-                <div class="stat-lbl">File Size</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-val" id="appDetailsDownloads">0</div>
-                <div class="stat-lbl">Downloads</div>
-            </div>
-        </div>
-
-        <div class="rating-details-wrapper" id="ratingDistributionBreakdownPanel">
-            <div class="rating-row"><div class="rating-star-lbl">5 Star</div><div class="rating-bar-bg"><div class="rating-bar-fill" id="rbFill5"></div></div></div>
-            <div class="rating-row"><div class="rating-star-lbl">4 Star</div><div class="rating-bar-bg"><div class="rating-bar-fill" id="rbFill4"></div></div></div>
-            <div class="rating-row"><div class="rating-star-lbl">3 Star</div><div class="rating-bar-bg"><div class="rating-bar-fill" id="rbFill3"></div></div></div>
-            <div class="rating-row"><div class="rating-star-lbl">2 Star</div><div class="rating-bar-bg"><div class="rating-bar-fill" id="rbFill2"></div></div></div>
-            <div class="rating-row"><div class="rating-star-lbl">1 Star</div><div class="rating-bar-bg"><div class="rating-bar-fill" id="rbFill1"></div></div></div>
-        </div>
-
-        <div class="play-section-title" id="galleryHeadingTitle" style="display:none;">Gallery Screenshots</div>
-        <div class="screenshot-gallery" id="appDetailsScreenshotGallery"></div>
-
-        <div class="desc-box">
-            <h3>Description & Changelogs</h3>
-            <p id="appDetailsDescription">Initializing documentation components from cloud registries...</p>
-        </div>
-
-        <div class="extra-links-box" id="extraLinksMainWrapper" style="display: none;">
-            <h3>Alternative Action Framework Links</h3>
-            <div id="extraLinksInjectionsContainer"></div>
-        </div>
-
-        <div class="user-rating-input-zone">
-            <h4>Rate this application</h4>
-            <div class="rating-stars-input-container" id="interactiveStarsSubmissionTrack">
-                <i class="fas fa-star" data-star="1" onclick="selectUserStarRatingValue(1)"></i>
-                <i class="fas fa-star" data-star="2" onclick="selectUserStarRatingValue(2)"></i>
-                <i class="fas fa-star" data-star="3" onclick="selectUserStarRatingValue(3)"></i>
-                <i class="fas fa-star" data-star="4" onclick="selectUserStarRatingValue(4)"></i>
-                <i class="fas fa-star" data-star="5" onclick="selectUserStarRatingValue(5)"></i>
-            </div>
-            <button id="btnConfirmRating" class="rating-confirm-btn" onclick="confirmAndSubmitUserRating()">SUBMIT RATING</button>
-        </div>
-
-        <div style="margin-bottom: 30px; margin-top: 15px;">
-            <button class="play-btn" id="masterInstallActionButton" onclick="processMasterActionRouting()">INSTALL</button>
-        </div>
-
-    </div>
-
-    <div class="modal-overlay" id="coinUnlockTransactionModal">
-        <div class="play-modal">
-            <div class="modal-header">
-                <h3>Premium License Allocation</h3>
-                <i class="fas fa-times close-modal" onclick="closeDetailsSystemModals('coinUnlockTransactionModal')"></i>
-            </div>
-            <div class="modal-body install-popup-body">
-                <i class="fas fa-wallet install-popup-icon" style="color:var(--paid-color);"></i>
-                <h3>Unlock Premium Application?</h3>
-                <p>This premium node requires a core license authorization charge. The transaction will deduct exactly <strong id="lblModalCoinCost" style="color:#fff;">0</strong> MVX Coins from your permanent wallet balance profile.</p>
-                <button class="play-btn" onclick="executeCoinDeductionUnlockProtocol()">CONFIRM WALLET TRANSACTION</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="passwordProtectionGateModal">
-        <div class="play-modal">
-            <div class="modal-header">
-                <h3>Package Security Protection</h3>
-                <i class="fas fa-times close-modal" onclick="closeDetailsSystemModals('passwordProtectionGateModal')"></i>
-            </div>
-            <div class="modal-body install-popup-body">
-                <i class="fas fa-lock install-popup-icon" style="color:var(--danger);"></i>
-                <h3>Secure Zip Password Required</h3>
-                <p>This package structure utilizes compression locks. Input the correct sequence below to validate archive download paths.</p>
-                
-                <input type="password" id="appZipPasswordInputField" class="play-input" placeholder="Enter Installation Password" style="text-align:center; letter-spacing:3px; font-weight:bold; font-size:16px;">
-                
-                <button class="play-btn" style="margin-bottom:12px;" onclick="verifyPackageArchivePasswordCredentials()">AUTHENTICATE PASSWORD</button>
-                
-                <div style="display:flex; justify-content:center; margin-top:15px;">
-                    <div id="modalGetPassBtn" class="ex-link-btn" style="width:100%; margin-bottom:0; padding:12px; font-size:13px; justify-content:center; background:rgba(255,255,255,0.02);" onclick="triggerSafeExternalRedirection(this.getAttribute('data-url'))"><i class="fas fa-key"></i> Get Password</div>
+        <div id="detailsContentWrapper" style="display:none; animation: fadeIn 0.4s ease-out;">
+            
+            <div class="details-header">
+                <img src="" id="dLogo" class="details-logo">
+                <div class="details-info">
+                    <h1 class="details-title" id="dTitle">Loading... <i class="fas fa-check-circle verified-tick" style="color:var(--primary); font-size:18px;"></i></h1>
+                    <div class="details-dev" id="dDev">Developer</div>
+                    <div class="meta-stats-bar">
+                        <div><i class="fas fa-star" style="color:var(--warning);"></i> <span id="dRating">0.0</span></div>
+                        <div><i class="fas fa-download" style="color:var(--info);"></i> <span id="dDowns">0</span></div>
+                        <div><i class="fas fa-hdd" style="color:var(--success);"></i> <span id="dSize">0 MB</span></div>
+                        <div id="dVerBadge" style="background:var(--primary-dim); color:var(--primary); padding:2px 6px; border-radius:6px; border:1px solid var(--primary);">v1.0</div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <div class="modal-overlay" id="applicationReportSystemModal">
+            <div class="screenshot-gallery" id="dGallery" style="display:none;"></div>
+
+            <button id="mainDownloadBtn" class="main-action-btn free" onclick="handlePrimaryAppAction()">
+                <i class="fas fa-download"></i> Loading...
+            </button>
+
+            <div class="extra-links-container" id="dExtraLinks" style="display:none;"></div>
+
+            <div class="about-section">
+                <div class="about-title">Description</div>
+                <div id="dDesc" style="white-space: pre-wrap;"></div>
+            </div>
+
+            <div class="tags-display" id="dTags" style="display:none;"></div>
+            
+        </div>
+    </main>
+
+    <div class="modal-overlay" id="reportIssueModal">
         <div class="play-modal">
             <div class="modal-header">
-                <h3>Report Application Security Violation</h3>
-                <i class="fas fa-times close-modal" onclick="closeDetailsSystemModals('applicationReportSystemModal')"></i>
+                <h3><i class="fas fa-flag" style="color:var(--danger);"></i> Report App</h3>
+                <i class="fas fa-times close-modal" onclick="closeDetailsSystemModals('reportIssueModal')"></i>
             </div>
             <div class="modal-body">
-                <label class="modal-label">Select Violated Category Condition</label>
-                <select id="reportIssueCategorySelector" class="play-input">
-                    <option value="Spam">SPAM / FLOOD DATA REDUNDANCY</option>
-                    <option value="Scamming">SCAMMING / PHISHING INJECTORS</option>
-                    <option value="Malware">MALWARE / INFECTED CRACK EXECUTABLES</option>
+                <p style="font-size:13px; color:var(--text-secondary); margin-bottom:15px; line-height:1.5;">Please tell us why you are reporting this app. False reports may lead to account suspension.</p>
+                <label class="modal-label">Reason</label>
+                <select id="reportReasonSelect" class="play-input">
+                    <option value="Fake or Scam App">Fake or Scam App</option>
+                    <option value="Contains Virus/Malware">Contains Virus/Malware</option>
+                    <option value="Does Not Work">Does Not Work</option>
+                    <option value="Inappropriate Content">Inappropriate Content</option>
+                    <option value="Other Issue">Other Issue</option>
                 </select>
-                <button class="play-btn" onclick="submitApplicationViolationReportToServer()">DISPATCH SECURITY REPORT</button>
+                <button class="play-btn" style="background:var(--danger); color:#fff; margin-top:10px;" onclick="submitAppReportToAdmin()">Submit Report</button>
             </div>
         </div>
     </div>
 
-    <div class="lightbox-overlay" id="screenshotLightboxViewer" onclick="closeScreenshotFullZoomLightbox()">
-        <i class="fas fa-times lightbox-close" onclick="closeScreenshotFullZoomLightbox()"></i>
-        <img src="" class="lightbox-img" id="lightboxTargetSourceImg" onclick="event.stopPropagation()">
+    <div class="modal-overlay" id="premiumPurchaseConfirmModal">
+        <div class="play-modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-gem" style="color:var(--warning);"></i> Premium App</h3>
+                <i class="fas fa-times close-modal" onclick="closeDetailsSystemModals('premiumPurchaseConfirmModal')"></i>
+            </div>
+            <div class="modal-body" style="text-align:center;">
+                <i class="fas fa-coins" style="font-size:50px; color:var(--warning); margin-bottom:15px;"></i>
+                <h2 style="font-family:var(--font-header); font-size:22px; color:#fff; margin-bottom:10px;" id="premiumUnlockPriceLabel">0 Coins</h2>
+                <p style="font-size:13px; color:var(--text-secondary); margin-bottom:20px; line-height:1.5;">You need to spend coins to unlock this premium app. Once unlocked, you can download it anytime.</p>
+                <div style="display:flex; justify-content:space-between; background:rgba(0,0,0,0.2); padding:15px; border-radius:12px; border:1px solid var(--border-color); margin-bottom:20px;">
+                    <span style="font-weight:600; font-size:13px; color:var(--text-secondary);">Your Balance:</span>
+                    <span style="font-weight:800; font-size:14px; color:var(--warning);" id="userCurrentCoinBalanceLabel">0 Coins</span>
+                </div>
+                <button class="play-btn" style="background:var(--warning); color:#000;" onclick="executePremiumPurchaseTransaction()">Unlock Now</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="lockedAppGateModal">
+        <div class="play-modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-lock" style="color:var(--danger);"></i> App is Locked</h3>
+                <i class="fas fa-times close-modal" onclick="closeDetailsSystemModals('lockedAppGateModal')"></i>
+            </div>
+            <div class="modal-body" style="text-align:center;">
+                <i class="fas fa-key" style="font-size:45px; color:var(--danger); margin-bottom:15px;"></i>
+                <p style="font-size:13px; color:var(--text-secondary); margin-bottom:20px; line-height:1.5;">Watch the tutorial video to get the Redeem Code. Enter the code below to unlock this app.</p>
+                
+                <button class="play-btn" style="background:var(--danger); color:#fff; margin-bottom:20px; font-size: 14px;" onclick="openTutorialVideoLink()" id="watchVideoBtn">
+                    <i class="fab fa-youtube"></i> Watch Video to get Code
+                </button>
+
+                <label class="modal-label" style="text-align: left;">Enter Redeem Code</label>
+                <input type="text" id="appRedeemCodeInputField" class="play-input" placeholder="Paste code here..." style="text-transform:uppercase; font-family:monospace; font-weight:bold; letter-spacing:1px; text-align:center;">
+                
+                <button class="play-btn" style="background:var(--success); color:#000;" onclick="verifyRedeemCodeForApp()">Unlock App</button>
+            </div>
+        </div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    
     <script src="firebase-config.js"></script>
 
     <script>
         const database = firebase.database();
-        const authorization = firebase.auth();
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const targetAppId = urlParams.get('id');
-
+        const auth = firebase.auth();
+        
+        let targetAppId = new URLSearchParams(window.location.search).get('id');
         let targetApplicationObject = null;
-        let loggedInUserProfileCache = null;
         let activeUserIdToken = null;
-        let currentSelectedStarRating = 0;
+        let userProfileData = null;
+        let userHasAccess = false;
 
-        if (!targetAppId) {
-            window.location.replace('index.html');
-        }
-
-        function toggleDetailsThreeDotDropdown() {
-            document.getElementById('threeDotMenuDropdown').classList.toggle('show');
-        }
-
-        window.addEventListener('click', function(e) {
-            if (!e.target.matches('.three-dot-btn') && !e.target.matches('.fa-ellipsis-v')) {
-                const dropdown = document.getElementById('threeDotMenuDropdown');
-                if (dropdown && dropdown.classList.contains('show')) {
-                    dropdown.classList.remove('show');
-                }
-            }
-        });
-
-        function closeDetailsSystemModals(id) {
-            document.getElementById(id).classList.remove('active');
-        }
-
-        function openApplicationReportModal() {
-            if (!activeUserIdToken) {
-                alert("Please login to report this application.");
-                window.location.href = 'login.html';
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!targetAppId) {
+                alert("Invalid App Link.");
+                window.location.replace('index.html');
                 return;
             }
-            document.getElementById('applicationReportSystemModal').classList.add('active');
-        }
 
-        function triggerSafeExternalRedirection(url) {
-            if (!url || url.trim() === "" || url === "#") return;
-            let secureUrl = url.trim();
-            if (!/^https?:\/\//i.test(secureUrl)) {
-                secureUrl = 'https://' + secureUrl;
-            }
-            window.open(secureUrl, '_blank');
-        }
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    activeUserIdToken = user.uid;
+                    database.ref(`users/${user.uid}`).on('value', (snap) => {
+                        if(snap.exists()) {
+                            userProfileData = snap.val();
+                            document.getElementById('userCurrentCoinBalanceLabel').innerText = `${userProfileData.coins || 0} Coins`;
+                            evaluateApplicationStateLicenseOwnershipMatrix();
+                        }
+                    });
+                } else {
+                    activeUserIdToken = null;
+                    userProfileData = null;
+                    evaluateApplicationStateLicenseOwnershipMatrix();
+                }
+            });
 
-        authorization.onAuthStateChanged((user) => {
-            if (user) {
-                activeUserIdToken = user.uid;
-                database.ref(`users/${user.uid}`).on('value', (snap) => {
-                    if (snap.exists()) {
-                        loggedInUserProfileCache = snap.val();
-                        fetchApplicationMetaDetailsNodeLogs();
-                    } else {
-                        fetchApplicationMetaDetailsNodeLogs();
-                    }
-                });
-            } else {
-                activeUserIdToken = null;
-                loggedInUserProfileCache = null;
-                fetchApplicationMetaDetailsNodeLogs();
-            }
+            fetchAndRenderTargetApplicationData();
         });
 
-        function fetchApplicationMetaDetailsNodeLogs() {
-            database.ref(`store_apps/${targetAppId}`).on('value', (snapshot) => {
-                if (!snapshot.exists()) return;
+        function fetchAndRenderTargetApplicationData() {
+            database.ref(`store_apps/${targetAppId}`).once('value').then((snapshot) => {
+                if (!snapshot.exists()) {
+                    document.getElementById('detailsLoader').innerHTML = `<i class="fas fa-exclamation-triangle" style="font-size:35px; color:var(--danger);"></i><p style="margin-top:15px; font-weight:600; color:var(--text-secondary);">App not found or deleted.</p>`;
+                    return;
+                }
 
                 targetApplicationObject = snapshot.val();
-                renderApplicationDetailsUserInterfaceGrid();
-            });
-            
-            database.ref(`store_apps/${targetAppId}/views`).transaction((v) => (v || 0) + 1);
-        }
+                
+                document.getElementById('detailsLoader').style.display = 'none';
+                document.getElementById('detailsContentWrapper').style.display = 'block';
 
-        function renderApplicationDetailsUserInterfaceGrid() {
-            const app = targetApplicationObject;
+                document.getElementById('dLogo').src = targetApplicationObject.logoUrl || "https://via.placeholder.com/90";
+                document.getElementById('dTitle').innerHTML = `${targetApplicationObject.appName} <i class="fas fa-check-circle verified-tick" style="color:var(--primary); font-size:18px; margin-left:5px;"></i>`;
+                document.getElementById('dDev').innerText = targetApplicationObject.developerName || targetApplicationObject.uploaderName || "Unknown Developer";
+                
+                document.getElementById('dDowns').innerText = targetApplicationObject.downloads || 0;
+                document.getElementById('dSize').innerText = targetApplicationObject.size || "Unknown";
+                document.getElementById('dVerBadge').innerText = `v${targetApplicationObject.version || "1.0"}`;
+                
+                let ratingVal = parseFloat(targetApplicationObject.rating || 0).toFixed(1);
+                document.getElementById('dRating').innerText = ratingVal;
 
-            document.getElementById('appDetailsLogo').src = app.logoUrl;
-            document.getElementById('appDetailsTitle').innerText = app.appName;
-            document.getElementById('appDetailsDev').innerText = app.developerName || app.uploaderName || "Authorized Developer";
-            document.getElementById('appDetailsSize').innerText = app.size || "0 MB";
-            document.getElementById('appDetailsDownloads').innerText = app.downloads || 0;
-            document.getElementById('appDetailsDescription').innerText = app.description;
+                document.getElementById('dDesc').innerText = targetApplicationObject.description || "No description provided.";
 
-            const roundedRating = (app.rating || 0).toFixed(1);
-            document.getElementById('appDetailsRating').innerHTML = `${roundedRating} <i class="fas fa-star" style="color:var(--warning); font-size:13px;"></i>`;
-
-            if(activeUserIdToken && app.voted_users && app.voted_users[activeUserIdToken]) {
-                const legacyStarCount = app.voted_users[activeUserIdToken];
-                highlightInteractiveRatingStarsTrackBox(legacyStarCount);
-                document.getElementById('btnConfirmRating').style.display = 'none';
-            }
-
-            const gallery = document.getElementById('appDetailsScreenshotGallery');
-            const heading = document.getElementById('galleryHeadingTitle');
-            gallery.innerHTML = '';
-            
-            if (app.screenshots && app.screenshots.length > 0) {
-                heading.style.display = 'block';
-                app.screenshots.forEach(url => {
-                    let img = document.createElement('img');
-                    img.src = url;
-                    img.className = 'screenshot-img';
-                    img.loading = 'lazy';
-                    img.onclick = () => launchScreenshotFullZoomLightbox(url); 
-                    gallery.appendChild(img);
-                });
-            } else {
-                heading.style.display = 'none';
-            }
-
-            const extraContainer = document.getElementById('extraLinksInjectionsContainer');
-            const extraWrapper = document.getElementById('extraLinksMainWrapper');
-            extraContainer.innerHTML = '';
-
-            if (app.extraLinks && app.extraLinks.length > 0) {
-                extraWrapper.style.display = 'block';
-                app.extraLinks.forEach((item) => {
-                    let a = document.createElement('div');
-                    a.className = 'ex-link-btn';
-                    a.onclick = () => triggerSafeExternalRedirection(item.url);
-                    a.innerHTML = `<span><i class="fas fa-external-link-alt" style="color:var(--primary); margin-right:8px;"></i> ${item.title || "Alternative URL"}</span> <i class="fas fa-chevron-right" style="font-size:12px; color:var(--text-secondary);"></i>`;
-                    extraContainer.appendChild(a);
-                });
-            } else {
-                extraWrapper.style.display = 'none';
-            }
-
-            evaluateApplicationStateLicenseOwnershipMatrix();
-        }
-
-        function launchScreenshotFullZoomLightbox(url) {
-            document.getElementById('lightboxTargetSourceImg').src = url;
-            document.getElementById('screenshotLightboxViewer').classList.add('active');
-        }
-        function closeScreenshotFullZoomLightbox() {
-            document.getElementById('screenshotLightboxViewer').classList.remove('active');
-        }
-
-        function toggleRatingPercentageBreakdownBlock() {
-            const panel = document.getElementById('ratingDistributionBreakdownPanel');
-            const app = targetApplicationObject;
-            
-            if(panel.style.display === 'block') {
-                panel.style.display = 'none';
-                return;
-            }
-            panel.style.display = 'block';
-
-            const total = app.totalRatingsCount || 0;
-            const dist = app.ratingDistribution || {1:0, 2:0, 3:0, 4:0, 5:0};
-
-            for(let i=1; i<=5; i++) {
-                let percent = 0;
-                if(total > 0 && dist[i]) {
-                    percent = Math.round((dist[i] / total) * 100);
+                // Gallery Render
+                if (targetApplicationObject.screenshots && targetApplicationObject.screenshots.length > 0) {
+                    const galBox = document.getElementById('dGallery');
+                    galBox.style.display = 'flex';
+                    let gHtml = '';
+                    targetApplicationObject.screenshots.forEach(sc => {
+                        gHtml += `<img src="${sc}" class="screenshot-img">`;
+                    });
+                    galBox.innerHTML = gHtml;
                 }
-                document.getElementById(`rbFill${i}`).style.width = percent + '%';
-            }
-        }
 
-        window.selectUserStarRatingValue = function(count) {
-            if (!activeUserIdToken) {
-                alert("Please login to rate this application.");
-                window.location.href = 'login.html';
-                return;
-            }
-            const app = targetApplicationObject;
-            if(app.voted_users && app.voted_users[activeUserIdToken]) {
-                alert("Rating Locked: You have already submitted stars rating evaluation inside this file registry node.");
-                return;
-            }
-            currentSelectedStarRating = count;
-            highlightInteractiveRatingStarsTrackBox(count);
-            document.getElementById('btnConfirmRating').style.display = 'inline-block';
-        }
-
-        function highlightInteractiveRatingStarsTrackBox(count) {
-            document.querySelectorAll('#interactiveStarsSubmissionTrack i').forEach(star => {
-                let val = parseInt(star.getAttribute('data-star'));
-                if(val <= count) star.classList.add('active');
-                else star.classList.remove('active');
-            });
-        }
-
-        window.confirmAndSubmitUserRating = function() {
-            if (!activeUserIdToken) {
-                alert("Please login to rate this application.");
-                window.location.href = 'login.html';
-                return;
-            }
-            if(currentSelectedStarRating === 0) {
-                alert("Please select a star rating first.");
-                return;
-            }
-
-            const app = targetApplicationObject;
-            if(app.voted_users && app.voted_users[activeUserIdToken]) {
-                alert("Rating Locked: You have already submitted stars rating evaluation inside this file registry node.");
-                document.getElementById('btnConfirmRating').style.display = 'none';
-                return;
-            }
-
-            document.getElementById('btnConfirmRating').innerText = "SUBMITTING...";
-            document.getElementById('btnConfirmRating').disabled = true;
-
-            const targetRef = database.ref(`store_apps/${targetAppId}`);
-            targetRef.runTransaction((currentApp) => {
-                if (currentApp) {
-                    if (!currentApp.ratingDistribution) {
-                        currentApp.ratingDistribution = {1:0, 2:0, 3:0, 4:0, 5:0};
-                    }
-                    if (!currentApp.voted_users) {
-                        currentApp.voted_users = {};
-                    }
-
-                    currentApp.voted_users[activeUserIdToken] = currentSelectedStarRating;
-                    currentApp.ratingDistribution[currentSelectedStarRating] = (currentApp.ratingDistribution[currentSelectedStarRating] || 0) + 1;
-                    currentApp.totalRatingsCount = (currentApp.totalRatingsCount || 0) + 1;
-
-                    let sum = 0;
-                    for(let i=1; i<=5; i++) {
-                        sum += (currentApp.ratingDistribution[i] || 0) * i;
-                    }
-                    currentApp.rating = sum / currentApp.totalRatingsCount;
+                // Extra Links Render
+                if (targetApplicationObject.extraLinks && targetApplicationObject.extraLinks.length > 0) {
+                    const eBox = document.getElementById('dExtraLinks');
+                    eBox.style.display = 'flex';
+                    let eHtml = '<div class="about-title" style="margin-bottom:10px;">Extra Links</div>';
+                    targetApplicationObject.extraLinks.forEach(ex => {
+                        eHtml += `<a href="${ex.url}" target="_blank" class="extra-link-btn"><span><i class="fas fa-link" style="color:var(--primary); margin-right:8px;"></i> ${ex.title}</span> <i class="fas fa-external-link-alt" style="font-size:10px; color:var(--text-secondary);"></i></a>`;
+                    });
+                    eBox.innerHTML = eHtml;
                 }
-                return currentApp;
-            }).then(() => {
-                alert("Thank you! Your ratings metrics have been appended across server mappings.");
-                document.getElementById('btnConfirmRating').style.display = 'none';
-                document.getElementById('btnConfirmRating').innerText = "SUBMIT RATING";
-                document.getElementById('btnConfirmRating').disabled = false;
-            }).catch(err => {
-                alert("Error submitting rating: " + err.message);
-                document.getElementById('btnConfirmRating').innerText = "SUBMIT RATING";
-                document.getElementById('btnConfirmRating').disabled = false;
+
+                // Tags Render
+                if (targetApplicationObject.tags && targetApplicationObject.tags.length > 0) {
+                    const tBox = document.getElementById('dTags');
+                    tBox.style.display = 'flex';
+                    let tHtml = '';
+                    targetApplicationObject.tags.forEach(tg => {
+                        tHtml += `<span class="tag-pill">#${tg}</span>`;
+                    });
+                    tBox.innerHTML = tHtml;
+                }
+
+                evaluateApplicationStateLicenseOwnershipMatrix();
             });
         }
 
         function evaluateApplicationStateLicenseOwnershipMatrix() {
-            const app = targetApplicationObject;
-            const btn = document.getElementById('masterInstallActionButton');
+            if (!targetApplicationObject) return;
 
-            if (app.category === 'paid') {
-                const hasUnlocked = loggedInUserProfileCache && loggedInUserProfileCache.unlocked_apps && loggedInUserProfileCache.unlocked_apps[targetAppId];
-                if (!hasUnlocked) {
-                    btn.innerText = `UNLOCK PACKAGE FOR ${app.coinPrice} COINS`;
-                    btn.style.background = 'var(--paid-color)';
-                    btn.style.color = '#000';
-                    return;
+            const btn = document.getElementById('mainDownloadBtn');
+            const cat = targetApplicationObject.category || 'free';
+            const price = parseInt(targetApplicationObject.coinPrice) || 0;
+
+            userHasAccess = false;
+
+            if (cat === 'free') {
+                userHasAccess = true;
+            } else {
+                if (userProfileData) {
+                    if (userProfileData.role === 'owner') userHasAccess = true;
+                    if (userProfileData.premium_all_access === true) userHasAccess = true;
+                    if (userProfileData.unlocked_apps && userProfileData.unlocked_apps[targetAppId] === true) userHasAccess = true;
                 }
             }
 
-            btn.innerText = "INSTALL";
-            btn.style.background = 'var(--primary)';
-            btn.style.color = '#000';
+            btn.className = 'main-action-btn';
+
+            if (userHasAccess) {
+                btn.classList.add('free');
+                btn.innerHTML = `<i class="fas fa-download"></i> Download Now`;
+            } else {
+                if (cat === 'paid') {
+                    btn.classList.add('paid');
+                    btn.innerHTML = `<i class="fas fa-lock"></i> Unlock (${price} Coins)`;
+                    document.getElementById('premiumUnlockPriceLabel').innerText = `${price} Coins`;
+                } else if (cat === 'locked') {
+                    btn.classList.add('locked');
+                    btn.innerHTML = `<i class="fas fa-key"></i> Unlock via Code`;
+                }
+            }
         }
 
-        window.processMasterActionRouting = function() {
+        window.handlePrimaryAppAction = function() {
+            if (!targetApplicationObject) return;
+
             if (!activeUserIdToken) {
-                alert("Please login to install or unlock this application.");
                 window.location.href = 'login.html';
                 return;
             }
-            const app = targetApplicationObject;
 
-            if (app.category === 'paid') {
-                const hasUnlocked = loggedInUserProfileCache && loggedInUserProfileCache.unlocked_apps && loggedInUserProfileCache.unlocked_apps[targetAppId];
-                if (!hasUnlocked) {
-                    document.getElementById('lblModalCoinCost').innerText = app.coinPrice;
-                    document.getElementById('coinUnlockTransactionModal').classList.add('active');
-                    return;
+            if (userHasAccess) {
+                executeSecureDownloadRegistryNodeTransaction();
+            } else {
+                if (targetApplicationObject.category === 'paid') {
+                    document.getElementById('premiumPurchaseConfirmModal').classList.add('active');
+                } else if (targetApplicationObject.category === 'locked') {
+                    document.getElementById('lockedAppGateModal').classList.add('active');
                 }
             }
-
-            const hasPasswordBypassed = loggedInUserProfileCache && loggedInUserProfileCache.unlocked_passwords && loggedInUserProfileCache.unlocked_passwords[targetAppId];
-            if (app.zipPassword && app.zipPassword.trim() !== "" && !hasPasswordBypassed) {
-                const getPass = document.getElementById('modalGetPassBtn');
-                getPass.setAttribute('data-url', app.getPasswordLink || "#");
-                getPass.style.display = app.getPasswordLink ? 'flex' : 'none';
-
-                document.getElementById('passwordProtectionGateModal').classList.add('active');
-                return;
-            }
-
-            executeSecureDownloadRegistryNodeTransaction();
         };
 
-        window.executeCoinDeductionUnlockProtocol = function() {
-            if (!activeUserIdToken) return;
-            const app = targetApplicationObject;
-            const currentCoinsBalance = parseInt(loggedInUserProfileCache.coins) || 0;
-
-            if (currentCoinsBalance < app.coinPrice) {
-                alert("Transaction Rejected: Saturated coin liquidity profile balance.");
-                closeDetailsSystemModals('coinUnlockTransactionModal');
-                return;
-            }
-
-            const updatingUserBalanceDelta = currentCoinsBalance - app.coinPrice;
-            
-            let updates = {};
-            updates[`users/${activeUserIdToken}/coins`] = updatingUserBalanceDelta;
-            updates[`users/${activeUserIdToken}/unlocked_apps/${targetAppId}`] = true;
-
-            database.ref().update(updates).then(() => {
-                alert("Transaction Cleared! Premium package license allocated.");
-                closeDetailsSystemModals('coinUnlockTransactionModal');
-                evaluateApplicationStateLicenseOwnershipMatrix();
-            });
+        window.closeDetailsSystemModals = function(id) {
+            document.getElementById(id).classList.remove('active');
         };
 
-        window.verifyPackageArchivePasswordCredentials = function() {
-            if (!activeUserIdToken) return;
-            const app = targetApplicationObject;
-            const inputVal = document.getElementById('appZipPasswordInputField').value.trim();
+        window.executePremiumPurchaseTransaction = function() {
+            const price = parseInt(targetApplicationObject.coinPrice) || 0;
+            const currentBalance = parseInt(userProfileData.coins) || 0;
 
-            if (inputVal === app.zipPassword) {
-                database.ref(`users/${activeUserIdToken}/unlocked_passwords/${targetAppId}`).set(true).then(() => {
-                    alert("Access Token Authorized! Password sequence validated.");
-                    closeDetailsSystemModals('passwordProtectionGateModal');
+            if (currentBalance >= price) {
+                let updates = {};
+                updates[`users/${activeUserIdToken}/coins`] = currentBalance - price;
+                updates[`users/${activeUserIdToken}/unlocked_apps/${targetAppId}`] = true;
+
+                database.ref().update(updates).then(() => {
+                    alert("App Unlocked Successfully!");
+                    closeDetailsSystemModals('premiumPurchaseConfirmModal');
                     evaluateApplicationStateLicenseOwnershipMatrix();
-                    executeSecureDownloadRegistryNodeTransaction(); 
                 });
             } else {
-                alert("Security Interrupt: Key sequence mismatch failed verification.");
-                document.getElementById('appZipPasswordInputField').value = '';
+                alert("Insufficient Coins! You need " + (price - currentBalance) + " more coins.");
             }
+        };
+
+        // NEW: Tutorial Video Link Opener
+        window.openTutorialVideoLink = function() {
+            if (targetApplicationObject && targetApplicationObject.videoLink) {
+                let vLink = targetApplicationObject.videoLink.trim();
+                if (!/^https?:\/\//i.test(vLink)) vLink = 'https://' + vLink;
+                window.open(vLink, '_blank');
+            } else {
+                alert("No video link provided by the developer.");
+            }
+        };
+
+        // NEW: Redeem Code Verification for App Unlock
+        window.verifyRedeemCodeForApp = function() {
+            const code = document.getElementById('appRedeemCodeInputField').value.trim().toUpperCase();
+            if (!code) { alert("Please enter the redeem code."); return; }
+
+            database.ref(`redeem_codes/${code}`).once('value').then(snap => {
+                if (!snap.exists()) {
+                    alert("Invalid or expired code.");
+                    return;
+                }
+
+                let voucher = snap.val();
+
+                database.ref(`users/${activeUserIdToken}/redeemed_history/${code}`).once('value').then(hSnap => {
+                    if (hSnap.exists()) {
+                        alert("You have already used this code.");
+                        return;
+                    }
+
+                    if (voucher.currentClaims >= voucher.maxClaims) {
+                        alert("Code usage limit reached.");
+                        return;
+                    }
+
+                    if (voucher.rewardType === 'premium_bypass') {
+                        let isMatched = false;
+                        if (voucher.rewardValue === 'ALL_APPS') isMatched = true;
+                        else {
+                            let allowedApps = voucher.rewardValue.split(',');
+                            if (allowedApps.includes(targetAppId)) isMatched = true;
+                        }
+
+                        if (isMatched) {
+                            let updates = {};
+                            updates[`redeem_codes/${code}/currentClaims`] = voucher.currentClaims + 1;
+                            updates[`users/${activeUserIdToken}/redeemed_history/${code}`] = firebase.database.ServerValue.TIMESTAMP;
+                            
+                            if (voucher.rewardValue === 'ALL_APPS') {
+                                updates[`users/${activeUserIdToken}/premium_all_access`] = true;
+                            } else {
+                                updates[`users/${activeUserIdToken}/unlocked_apps/${targetAppId}`] = true;
+                            }
+
+                            database.ref().update(updates).then(() => {
+                                alert("App Unlocked Successfully!");
+                                document.getElementById('appRedeemCodeInputField').value = '';
+                                closeDetailsSystemModals('lockedAppGateModal');
+                                evaluateApplicationStateLicenseOwnershipMatrix();
+                            });
+                        } else {
+                            alert("This code is not valid for this specific app.");
+                        }
+                    } else {
+                        alert("This code is for Coins, please redeem it in your profile section.");
+                    }
+                });
+            });
         };
 
         function executeSecureDownloadRegistryNodeTransaction() {
@@ -545,6 +433,73 @@
                 }
             });
         }
+
+        function triggerSafeExternalRedirection(url) {
+            if (!url) return;
+            let targetUrl = url.trim();
+            if (!/^https?:\/\//i.test(targetUrl)) targetUrl = 'https://' + targetUrl;
+            window.location.href = targetUrl;
+        }
+
+        window.toggleDetailsDropdown = function() {
+            document.getElementById('detailsDropdownMenu').classList.toggle('show');
+        };
+
+        document.addEventListener('click', function(event) {
+            const isClickInside = event.target.closest('.three-dot-container');
+            if (!isClickInside) {
+                const dropdowns = document.getElementsByClassName("dropdown-menu");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    let openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        });
+
+        window.shareCurrentApp = function() {
+            const url = window.location.href;
+            if (navigator.share) {
+                navigator.share({
+                    title: targetApplicationObject ? targetApplicationObject.appName : 'App Store',
+                    url: url
+                });
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert("Link copied to clipboard!");
+                });
+            }
+        };
+
+        window.openReportModal = function() {
+            if(!activeUserIdToken) {
+                window.location.href = 'login.html';
+                return;
+            }
+            document.getElementById('reportIssueModal').classList.add('active');
+            document.getElementById('detailsDropdownMenu').classList.remove('show');
+        };
+
+        window.submitAppReportToAdmin = function() {
+            const reason = document.getElementById('reportReasonSelect').value;
+            if (!targetAppId || !activeUserIdToken) return;
+
+            const reportPayload = {
+                appId: targetAppId,
+                appName: targetApplicationObject.appName || "Unknown",
+                reportedByUid: activeUserIdToken,
+                reportedByName: userProfileData ? userProfileData.name : "User",
+                violationReason: reason,
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            };
+
+            database.ref('reports').push(reportPayload).then(() => {
+                alert("Report submitted successfully. Thank you for your feedback.");
+                closeDetailsSystemModals('reportIssueModal');
+            });
+        };
+
     </script>
 </body>
 </html>

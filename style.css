@@ -173,17 +173,17 @@ body {
     align-items: center;
 }
 
-/* ==================== 3. APP CARDS (LIST VIEW) ==================== */
+/* ==================== 3. APP CARDS (LIST VIEW) - FIXED UI ==================== */
 .play-app-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 15px;
+    gap: 12px; /* Tighter gap for better layout */
 }
 .app-card {
     background: var(--bg-surface);
     border: 1px solid var(--border-color);
     border-radius: 16px;
-    padding: 15px;
+    padding: 12px 15px; /* Clean padding */
     display: flex;
     align-items: center;
     gap: 15px;
@@ -196,9 +196,9 @@ body {
     transform: translateY(-2px);
 }
 .app-icon-large {
-    width: 65px;
-    height: 65px;
-    border-radius: 14px;
+    width: 55px; /* Smaller picture size */
+    height: 55px;
+    border-radius: 12px;
     object-fit: cover;
     border: 1px solid var(--border-color);
     flex-shrink: 0;
@@ -211,40 +211,49 @@ body {
 }
 .app-title-list {
     font-family: var(--font-header);
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 700;
     color: var(--text-primary);
-    margin-bottom: 4px;
+    margin-bottom: 2px;
     white-space: normal;
     overflow: visible;
     text-overflow: unset;
-    line-height: 1.3;
+    line-height: 1.2;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.app-title-list .verified-tick {
+    color: var(--primary);
+    font-size: 13px; /* Beautiful verified tick icon size */
 }
 .app-dev-list {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--text-secondary);
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 }
 .app-meta-list {
     font-size: 11px;
     color: var(--text-secondary);
     display: flex;
-    gap: 15px;
+    gap: 12px;
     font-weight: 600;
 }
 .badge {
     position: absolute;
-    top: -10px;
+    top: -8px;
     right: 15px;
     padding: 4px 10px;
     border-radius: 6px;
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 800;
     letter-spacing: 0.5px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    text-transform: uppercase;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 .badge-free { background: var(--free-color); color: #000; }
 .badge-paid { background: var(--paid-color); color: #000; }
+.badge-locked { background: var(--danger); color: #fff; } /* New Locked Badge */
 
 /* ==================== 4. BOTTOM NAVIGATION ==================== */
 .play-bottom-nav {
@@ -578,7 +587,7 @@ body {
     transform: scale(1.1);
 }
 
-/* --- ADDED FOR NEW UPLOAD PLUS BUTTON & LINK BUTTON --- */
+/* --- UPLOAD PLUS BUTTON & LINK BUTTON --- */
 .upload-plus-box {
     width: 70px;
     height: 70px;
@@ -619,7 +628,7 @@ body {
     background: var(--primary-dim);
 }
 
-/* --- ADDED FOR NOTIFICATION APP UI --- */
+/* --- NOTIFICATION APP UI --- */
 .noti-app-preview {
     display: flex;
     align-items: center;

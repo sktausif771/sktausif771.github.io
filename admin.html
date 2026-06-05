@@ -192,8 +192,8 @@
             background: var(--card-bg);
             border: 1px solid var(--border-glass);
             border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 15px;
+            padding: 12px 15px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             gap: 15px;
@@ -203,12 +203,12 @@
         }
         .item-card:hover { border-color: rgba(255,255,255,0.15); transform: translateX(2px); }
         
-        .item-img { width: 60px; height: 60px; border-radius: 10px; object-fit: cover; border: 1px solid var(--border-glass); flex-shrink: 0; }
+        .item-img { width: 55px; height: 55px; border-radius: 12px; object-fit: cover; border: 1px solid var(--border-glass); flex-shrink: 0; }
         .zoomable-img { cursor: zoom-in; transition: var(--transition); }
         .zoomable-img:hover { transform: scale(1.1); border-color: var(--primary); box-shadow: var(--primary-glow); }
 
         .item-info { flex: 1; overflow: hidden; }
-        .item-info h3 { font-size: 16px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; font-weight: 600; display:flex; align-items:center; gap:8px;}
+        .item-info h3 { font-size: 15px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; font-weight: 600; display:flex; align-items:center; gap:8px;}
         .item-info p { font-size: 12px; color: var(--text-dim); margin-bottom: 2px; }
         
         .item-actions { display: flex; align-items: center; position: relative; }
@@ -572,9 +572,10 @@
                     </div>
                     <div>
                         <label class="input-label">Type</label>
-                        <select id="meCat" class="glass-input" style="margin-bottom: 0;" onchange="toggleEditCoinPrice(this.value)">
+                        <select id="meCat" class="glass-input" style="margin-bottom: 0;" onchange="toggleEditAccessType(this.value)">
                             <option value="free">Free App</option>
                             <option value="paid">Premium</option>
+                            <option value="locked">Locked</option>
                         </select>
                     </div>
                 </div>
@@ -582,6 +583,11 @@
                 <div id="editCoinPriceWrapper" style="display:none; margin-bottom: 10px;">
                     <label class="input-label" style="color:var(--warning);">Coin Price</label>
                     <input type="number" id="meCoinPrice" class="glass-input" placeholder="0" style="margin-bottom: 0;">
+                </div>
+                
+                <div id="editVideoLinkWrapper" style="display:none; margin-bottom: 10px;">
+                    <label class="input-label" style="color:var(--danger);">Video Link</label>
+                    <input type="text" id="meVideoLink" class="glass-input" placeholder="YouTube/Video URL" style="margin-bottom: 0;">
                 </div>
 
                 <div style="display:flex; align-items: center; gap: 10px; margin-bottom: 15px; background: rgba(255,255,255,0.02); padding: 10px; border-radius: 8px; border: 1px dashed var(--border-glass);">
@@ -671,7 +677,7 @@
             if(confirm("Are you sure you want to grant admin access to this user account?")) {
                 databaseRef.ref(`users/${uid}/role`).set('owner').then(() => {
                     if(email && email !== 'No Email') {
-                        const safeKey = email.replace(/\./g, ',');
+                        const safeKey = email.replace(/\\./g, ',');
                         databaseRef.ref(`settings/masterAdmins/${safeKey}`).set(email);
                     }
                     alert("User promoted to ADMIN status successfully!");
@@ -767,16 +773,16 @@
                             adminHtml += `
                                 <div class="app-check-item" style="justify-content:space-between; background: rgba(0,0,0,0.2);">
                                     <label style="cursor:default; font-family:monospace; font-size:12px;"><i class="fas fa-key" style="color:var(--info); margin-right:6px;"></i> ${email}</label>
-                                    <button class="action-icon icon-trash" style="width:30px; height:30px; font-size:12px; background:transparent; border:none; color:var(--text-dim); cursor:pointer; transition:0.3s;" onmouseover="this.style.color='var(--danger)'" onmouseout="this.style.color='var(--text-dim)'" onclick="removeMasterAdminEmail('${key}')"><i class="fas fa-times"></i></button>
+                                    <button class=\"action-icon icon-trash\" style=\"width:30px; height:30px; font-size:12px; background:transparent; border:none; color:var(--text-dim); cursor:pointer; transition:0.3s;\" onmouseover=\"this.style.color='var(--danger)'\" onmouseout=\"this.style.color='var(--text-dim)'\" onclick=\"removeMasterAdminEmail('${key}')\"><i class=\"fas fa-times\"></i></button>
                                 </div>
                             `;
                         }
                     });
                     
-                    if(adminHtml === '') adminHtml = '<div style="text-align:center; font-size:11px; color:var(--text-dim); padding:10px;">No external keys authorized.</div>';
+                    if(adminHtml === '') adminHtml = '<div style=\"text-align:center; font-size:11px; color:var(--text-dim); padding:10px;\">No external keys authorized.</div>';
                     adminListDiv.innerHTML = adminHtml;
                 } else if(adminListDiv) {
-                    adminListDiv.innerHTML = '<div style="text-align:center; font-size:11px; color:var(--text-dim); padding:10px;">No external keys authorized.</div>';
+                    adminListDiv.innerHTML = '<div style=\"text-align:center; font-size:11px; color:var(--text-dim); padding:10px;\">No external keys authorized.</div>';
                 }
             }
         });
@@ -793,7 +799,7 @@
             const email = emailInput.value.trim().toLowerCase();
             if(!email || !email.includes('@')) { alert('Invalid syntax for email string.'); return; }
             
-            const safeKey = email.replace(/\./g, ','); 
+            const safeKey = email.replace(/\\./g, ','); 
             databaseRef.ref(`settings/masterAdmins/${safeKey}`).set(email).then(() => {
                 emailInput.value = '';
             });
@@ -811,7 +817,7 @@
             if (!snapshot.exists()) {
                 document.getElementById('statUsers').innerText = 0;
                 if(document.getElementById('statActiveToday')) document.getElementById('statActiveToday').innerText = 0;
-                container.innerHTML = `<div class="empty-state"><i class="fas fa-server"></i><p>DB Offline / Empty.</p></div>`;
+                container.innerHTML = `<div class=\"empty-state\"><i class=\"fas fa-server\"></i><p>DB Offline / Empty.</p></div>`;
                 return;
             }
 
@@ -841,7 +847,7 @@
             if(document.getElementById('statActiveToday')) document.getElementById('statActiveToday').innerText = activeTodayCount;
 
             if(usersArr.length === 0) {
-                container.innerHTML = `<div class="empty-state"><i class="fas fa-server"></i><p>Zero active user nodes.</p></div>`;
+                container.innerHTML = `<div class=\"empty-state\"><i class=\"fas fa-server\"></i><p>Zero active user nodes.</p></div>`;
                 return;
             }
 
@@ -853,25 +859,25 @@
                 
                 let roleBadge = '';
                 if (user.email === 'sktausif771@gmail.com') {
-                    roleBadge = `<span style="background:var(--success); color:#000; font-size:9px; padding:2px 4px; border-radius:4px; margin-left:5px; font-weight:800; font-family:monospace;">OWNER</span>`;
+                    roleBadge = `<span style=\"background:var(--success); color:#000; font-size:9px; padding:2px 4px; border-radius:4px; margin-left:5px; font-weight:800; font-family:monospace;\">OWNER</span>`;
                 } else if (user.role === 'owner') {
-                    roleBadge = `<span style="background:var(--warning); color:#000; font-size:9px; padding:2px 4px; border-radius:4px; margin-left:5px; font-weight:800; font-family:monospace;">ADMIN</span>`;
+                    roleBadge = `<span style=\"background:var(--warning); color:#000; font-size:9px; padding:2px 4px; border-radius:4px; margin-left:5px; font-weight:800; font-family:monospace;\">ADMIN</span>`;
                 }
 
                 html += `
-                    <div class="item-card">
-                        <img src="${user.avatarUrl}" class="item-img zoomable-img" onclick="openAdminLightbox('${user.avatarUrl}')" onerror="this.src='https://via.placeholder.com/60/121212/00e676?text=USR'">
-                        <div class="item-info">
+                    <div class=\"item-card\">
+                        <img src=\"${user.avatarUrl}\" class=\"item-img zoomable-img\" onclick=\"openAdminLightbox('${user.avatarUrl}')\" onerror=\"this.src='https://via.placeholder.com/60/121212/00e676?text=USR'\">
+                        <div class=\"item-info\">
                             <h3>${user.name} ${roleBadge}</h3>
-                            <p style="font-family:monospace; margin-bottom:4px;">${user.email}</p>
-                            <span class="time-badge"><i class="fas fa-satellite"></i> Ping: ${timeString}</span>
+                            <p style=\"font-family:monospace; margin-bottom:4px;\">${user.email}</p>
+                            <span class=\"time-badge\"><i class=\"fas fa-satellite\"></i> Ping: ${timeString}</span>
                         </div>
-                        <div class="item-actions">
-                            <div class="dropdown">
-                                <button class="dropdown-btn"><i class="fas fa-bars"></i></button>
-                                <div class="dropdown-content">
-                                    <button class="dropdown-item" onclick="openUserGiftModal('${user.uid}', '${user.name.replace(/'/g, "\\'")}', '${user.email}', '${user.avatarUrl}')"><i class="fas fa-gift" style="color:var(--gift);"></i> Gift</button>
-                                    <button class="dropdown-item" onclick="makeUserAdminProtocol('${user.uid}', '${user.email}')"><i class="fas fa-user-shield" style="color:var(--primary);"></i> Add Admin</button>
+                        <div class=\"item-actions\">
+                            <div class=\"dropdown\">
+                                <button class=\"dropdown-btn\"><i class=\"fas fa-bars\"></i></button>
+                                <div class=\"dropdown-content\">
+                                    <button class=\"dropdown-item\" onclick=\"openUserGiftModal('${user.uid}', '${user.name.replace(/'/g, "\\\\'")}', '${user.email}', '${user.avatarUrl}')\"><i class=\"fas fa-gift\" style=\"color:var(--gift);\"></i> Gift</button>
+                                    <button class=\"dropdown-item\" onclick=\"makeUserAdminProtocol('${user.uid}', '${user.email}')\"><i class=\"fas fa-user-shield\" style=\"color:var(--primary);\"></i> Add Admin</button>
                                 </div>
                             </div>
                         </div>
@@ -965,13 +971,13 @@
             const giftSelect = document.getElementById('giftAppSelect');
             
             if(!snap.exists()) {
-                if(vContainer) vContainer.innerHTML = '<div style="text-align:center; font-size:11px; color:var(--danger); padding:10px;">Offline / No data blocks.</div>';
+                if(vContainer) vContainer.innerHTML = '<div style=\"text-align:center; font-size:11px; color:var(--danger); padding:10px;\">Offline / No data blocks.</div>';
                 return;
             }
 
             let vHtml = '';
-            let nHtml = '<option value="">-- No App Selected --</option>';
-            let giftHtml = '<option value="">-- Select --</option>';
+            let nHtml = '<option value=\"\">-- No App Selected --</option>';
+            let giftHtml = '<option value=\"\">-- Select --</option>';
 
             snap.forEach(child => {
                 let app = child.val();
@@ -979,20 +985,20 @@
                 storeAppsCacheForSelects.push(app);
 
                 vHtml += `
-                    <div class="app-check-item">
-                        <input type="checkbox" class="v-app-checkbox" value="${app.id}" id="chk_${app.id}">
-                        <label for="chk_${app.id}">${app.appName} <span style="color:${app.category === 'paid' ? 'var(--warning)' : 'var(--success)'}; font-size:10px; margin-left:4px; font-family:monospace;">[${app.category.toUpperCase()}]</span></label>
+                    <div class=\"app-check-item\">
+                        <input type=\"checkbox\" class=\"v-app-checkbox\" value=\"${app.id}\" id=\"chk_${app.id}\">
+                        <label for=\"chk_${app.id}\">${app.appName} <span style=\"color:${app.category === 'paid' ? 'var(--warning)' : 'var(--success)'}; font-size:10px; margin-left:4px; font-family:monospace;\">[${app.category.toUpperCase()}]</span></label>
                     </div>
                 `;
-                nHtml += `<option value="${app.id}">${app.appName}</option>`;
-                if(app.category === 'paid') { giftHtml += `<option value="${app.id}">${app.appName}</option>`; }
+                nHtml += `<option value=\"${app.id}\">${app.appName}</option>`;
+                if(app.category === 'paid') { giftHtml += `<option value=\"${app.id}\">${app.appName}</option>`; }
             });
 
             if(vContainer) vContainer.innerHTML = vHtml;
             if(nSelect) nSelect.innerHTML = nHtml;
             if(giftSelect) {
-                if(giftHtml === '<option value="">-- Select --</option>') {
-                     giftSelect.innerHTML = '<option value="">-- No Premium Apps --</option>';
+                if(giftHtml === '<option value=\"\">-- Select --</option>') {
+                     giftSelect.innerHTML = '<option value=\"\">-- No Premium Apps --</option>';
                 } else {
                      giftSelect.innerHTML = giftHtml;
                 }
@@ -1005,27 +1011,36 @@
         databaseRef.ref('pending_apps').on('value', (snapshot) => {
             const container = document.getElementById('pendingContainerQueue');
             if (!snapshot.exists()) {
-                container.innerHTML = `<div class="empty-state"><i class="fas fa-check-double" style="color:var(--success); opacity:1; font-size:30px;"></i><p style="margin-top:10px;">No pending apps.</p></div>`;
+                container.innerHTML = `<div class=\"empty-state\"><i class=\"fas fa-check-double\" style=\"color:var(--success); opacity:1; font-size:30px;\"></i><p style=\"margin-top:10px;\">No pending apps.</p></div>`;
                 return;
             }
 
             let html = '';
             snapshot.forEach((child) => {
                 const app = child.val();
+                let badgeHTML = '';
+                if(app.category === 'paid') {
+                    badgeHTML = `<span style=\"background:rgba(255,193,7,0.1); color:var(--warning); padding:2px 6px; border-radius:4px; font-size:9px; font-weight:800; font-family:monospace;\">PREMIUM</span>`;
+                } else if(app.category === 'locked') {
+                    badgeHTML = `<span style=\"background:rgba(255,61,0,0.1); color:var(--danger); padding:2px 6px; border-radius:4px; font-size:9px; font-weight:800; font-family:monospace;\">LOCKED</span>`;
+                } else {
+                    badgeHTML = `<span style=\"background:rgba(0,230,118,0.1); color:var(--success); padding:2px 6px; border-radius:4px; font-size:9px; font-weight:800; font-family:monospace;\">FREE</span>`;
+                }
+
                 html += `
-                    <div class="item-card" style="border-left: 3px solid var(--warning);">
-                        <img src="${app.logoUrl}" class="item-img zoomable-img" onclick="openAdminLightbox('${app.logoUrl}')" onerror="this.src='https://via.placeholder.com/60/121212/00e676?text=APP'">
-                        <div class="item-info">
-                            <h3>${app.appName}</h3>
-                            <p style="font-family:monospace; margin-bottom:4px; font-size:11px;">Developer: <span style="color:#fff;">${app.uploaderName}</span></p>
-                            <span style="background:rgba(255,193,7,0.1); color:var(--warning); padding:2px 6px; border-radius:4px; font-size:9px; font-weight:800; font-family:monospace;">${app.category.toUpperCase()}</span>
+                    <div class=\"item-card\" style=\"border-left: 3px solid var(--warning);\">
+                        <img src=\"${app.logoUrl}\" class=\"item-img zoomable-img\" style=\"width:55px; height:55px;\" onclick=\"openAdminLightbox('${app.logoUrl}')\" onerror=\"this.src='https://via.placeholder.com/60/121212/00e676?text=APP'\">
+                        <div class=\"item-info\">
+                            <h3>${app.appName} <i class=\"fas fa-check-circle verified-tick\" style=\"color:var(--primary); font-size:12px;\"></i></h3>
+                            <p style=\"font-family:monospace; margin-bottom:4px; font-size:11px;\">Developer: <span style=\"color:#fff;\">${app.uploaderName}</span></p>
+                            ${badgeHTML}
                         </div>
-                        <div class="item-actions">
-                            <div class="dropdown">
-                                <button class="dropdown-btn"><i class="fas fa-bars"></i></button>
-                                <div class="dropdown-content">
-                                    <button class="dropdown-item" onclick="approvePendingPackageNode('${child.key}')"><i class="fas fa-check" style="color:var(--success);"></i> Approve</button>
-                                    <button class="dropdown-item" onclick="deletePendingPackageNode('${child.key}')"><i class="fas fa-trash-alt" style="color:var(--danger);"></i> Delete</button>
+                        <div class=\"item-actions\">
+                            <div class=\"dropdown\">
+                                <button class=\"dropdown-btn\"><i class=\"fas fa-bars\"></i></button>
+                                <div class=\"dropdown-content\">
+                                    <button class=\"dropdown-item\" onclick=\"approvePendingPackageNode('${child.key}')\"><i class=\"fas fa-check\" style=\"color:var(--success);\"></i> Approve</button>
+                                    <button class=\"dropdown-item\" onclick=\"deletePendingPackageNode('${child.key}')\"><i class=\"fas fa-trash-alt\" style=\"color:var(--danger);\"></i> Delete</button>
                                 </div>
                             </div>
                         </div>
@@ -1058,27 +1073,31 @@
         databaseRef.ref('store_apps').on('value', (snapshot) => {
             const warehouse = document.getElementById('liveWarehouseContainer');
             if (!snapshot.exists()) {
-                warehouse.innerHTML = `<div class="empty-state"><i class="fas fa-database"></i><p>No active apps.</p></div>`;
+                warehouse.innerHTML = `<div class=\"empty-state\"><i class=\"fas fa-database\"></i><p>No active apps.</p></div>`;
                 return;
             }
             let html = ''; let appsArray = [];
             snapshot.forEach((child) => { appsArray.push({id: child.key, ...child.val()}); });
             appsArray.reverse().forEach((app) => {
+                let badgeCol = 'var(--success)';
+                if(app.category === 'paid') badgeCol = 'var(--warning)';
+                if(app.category === 'locked') badgeCol = 'var(--danger)';
+
                 html += `
-                    <div class="item-card" style="border-left: 3px solid var(--success);">
-                        <img src="${app.logoUrl}" class="item-img zoomable-img" onclick="openAdminLightbox('${app.logoUrl}')" onerror="this.src='https://via.placeholder.com/60/121212/00e676?text=LIVE'">
-                        <div class="item-info">
-                            <h3>${app.appName}</h3>
-                            <p style="color:var(--primary); font-size:10px; font-family:monospace; margin-bottom:4px;">Dev: ${app.developerName || app.uploaderName || "Unknown"}</p>
-                            <p style="font-family:monospace;"><i class="fas fa-cloud-download-alt" style="color:var(--text-dim); margin-right:4px;"></i> ${app.downloads || 0} &nbsp;&nbsp;|&nbsp;&nbsp; <i class="fas fa-hdd" style="color:var(--text-dim); margin-right:4px;"></i> ${app.size}</p>
+                    <div class=\"item-card\" style=\"border-left: 3px solid ${badgeCol};\">
+                        <img src=\"${app.logoUrl}\" class=\"item-img zoomable-img\" style=\"width:55px; height:55px;\" onclick=\"openAdminLightbox('${app.logoUrl}')\" onerror=\"this.src='https://via.placeholder.com/60/121212/00e676?text=LIVE'\">
+                        <div class=\"item-info\">
+                            <h3>${app.appName} <i class=\"fas fa-check-circle verified-tick\" style=\"color:var(--primary); font-size:12px;\"></i></h3>
+                            <p style=\"color:var(--primary); font-size:10px; font-family:monospace; margin-bottom:4px;\">Dev: ${app.developerName || app.uploaderName || "Unknown"}</p>
+                            <p style=\"font-family:monospace;\"><i class=\"fas fa-cloud-download-alt\" style=\"color:var(--text-dim); margin-right:4px;\"></i> ${app.downloads || 0} &nbsp;&nbsp;|&nbsp;&nbsp; <i class=\"fas fa-hdd\" style=\"color:var(--text-dim); margin-right:4px;\"></i> ${app.size}</p>
                         </div>
-                        <div class="item-actions">
-                            <div class="dropdown">
-                                <button class="dropdown-btn"><i class="fas fa-bars"></i></button>
-                                <div class="dropdown-content">
-                                    <button class="dropdown-item" onclick="openMasterAppEdit('${app.id}')"><i class="fas fa-edit" style="color:var(--warning);"></i> Edit</button>
-                                    <button class="dropdown-item" onclick="window.open('details.html?id=${app.id}', '_blank')"><i class="fas fa-eye" style="color:var(--info);"></i> Preview</button>
-                                    <button class="dropdown-item" onclick="executeLiveAppWipeProtocol('${app.id}', '${app.appName}')"><i class="fas fa-trash-alt" style="color:var(--danger);"></i> Delete</button>
+                        <div class=\"item-actions\">
+                            <div class=\"dropdown\">
+                                <button class=\"dropdown-btn\"><i class=\"fas fa-bars\"></i></button>
+                                <div class=\"dropdown-content\">
+                                    <button class=\"dropdown-item\" onclick=\"openMasterAppEdit('${app.id}')\"><i class=\"fas fa-edit\" style=\"color:var(--warning);\"></i> Edit</button>
+                                    <button class=\"dropdown-item\" onclick=\"window.open('details.html?id=${app.id}', '_blank')\"><i class=\"fas fa-eye\" style=\"color:var(--info);\"></i> Preview</button>
+                                    <button class=\"dropdown-item\" onclick=\"executeLiveAppWipeProtocol('${app.id}', '${app.appName}')\"><i class=\"fas fa-trash-alt\" style=\"color:var(--danger);\"></i> Delete</button>
                                 </div>
                             </div>
                         </div>
@@ -1087,9 +1106,11 @@
             });
             warehouse.innerHTML = html;
         });
-        
-        window.toggleEditCoinPrice = function(val) {
+
+        // NEW TOGGLE ACCESS TYPE (Handling Paid and Locked)
+        window.toggleEditAccessType = function(val) {
             document.getElementById('editCoinPriceWrapper').style.display = (val === 'paid') ? 'block' : 'none';
+            document.getElementById('editVideoLinkWrapper').style.display = (val === 'locked') ? 'block' : 'none';
         };
 
         // NEW DYNAMIC LINK ROW ADDER
@@ -1106,8 +1127,8 @@
             newRow.className = 'dynamic-link-row';
             newRow.style.cssText = 'display:flex; gap:10px; margin-top:12px;';
             newRow.innerHTML = `
-                <input type="text" class="glass-input ex-link-title" placeholder="Title (e.g. Server 1)" value="${title}" style="margin-bottom:0; flex:1;">
-                <input type="text" class="glass-input ex-link-url" placeholder="Download Link" value="${url}" style="margin-bottom:0; flex:2;">
+                <input type=\"text\" class=\"glass-input ex-link-title\" placeholder=\"Title (e.g. Server 1)\" value=\"${title}\" style=\"margin-bottom:0; flex:1;\">
+                <input type=\"text\" class=\"glass-input ex-link-url\" placeholder=\"Download Link\" value=\"${url}\" style=\"margin-bottom:0; flex:2;\">
             `;
             container.appendChild(newRow);
             
@@ -1162,8 +1183,9 @@
                 document.getElementById('meSize').value = app.size || "";
                 
                 document.getElementById('meCat').value = app.category || "free";
-                toggleEditCoinPrice(app.category || "free");
+                toggleEditAccessType(app.category || "free");
                 document.getElementById('meCoinPrice').value = app.coinPrice || 0;
+                document.getElementById('meVideoLink').value = app.videoLink || "";
                 
                 document.getElementById('meTrending').checked = app.isTrending || false;
                 
@@ -1224,12 +1246,17 @@
                 size: document.getElementById('meSize').value.trim(),
                 category: document.getElementById('meCat').value,
                 coinPrice: parseInt(document.getElementById('meCoinPrice').value) || 0,
+                videoLink: document.getElementById('meVideoLink').value.trim(),
                 isTrending: document.getElementById('meTrending').checked,
                 logoUrl: document.getElementById('meLogoUrl').value.trim() || "https://via.placeholder.com/150",
-                downloadUrl: mainLink, // Fallback
+                downloadUrl: mainLink, 
                 extraLinks: collectedLinks,
                 description: document.getElementById('meDescription').value.trim()
             };
+            
+            // Removing old password fields to ensure clean database
+            updates.zipPassword = null;
+            updates.getPasswordLink = null;
             
             databaseRef.ref(`store_apps/${appId}`).update(updates).then(() => {
                 alert("App updated successfully!");
@@ -1293,7 +1320,7 @@
 
         databaseRef.ref('redeem_codes').on('value', (snapshot) => {
             const logs = document.getElementById('liveVouchersTrackingContainer');
-            if(!snapshot.exists()) { logs.innerHTML = `<div class="empty-state"><i class="fas fa-ticket-alt"></i><p>No active codes.</p></div>`; return; }
+            if(!snapshot.exists()) { logs.innerHTML = `<div class=\"empty-state\"><i class=\"fas fa-ticket-alt\"></i><p>No active codes.</p></div>`; return; }
             let html = '';
             snapshot.forEach(child => {
                 const voucher = child.val();
@@ -1306,22 +1333,22 @@
                 if(usagePercent >= 100) usageColor = "var(--danger)";
 
                 html += `
-                    <div class="item-card" style="border-left: 3px solid var(--gift);">
-                        <div class="item-info">
-                            <h3 style="font-family:'Orbitron', sans-serif; color:var(--gift); font-size:15px; letter-spacing:1px;">${voucher.codeString}</h3>
-                            <p style="margin-bottom:6px; font-weight:600; font-family:monospace;"><span style="color:#fff;">Type:</span> ${voucher.rewardType.replace('_', ' ').toUpperCase()} <span style="opacity:0.5;">|</span> <span style="color:var(--info);">${shortVal}</span></p>
-                            <div style="display:flex; align-items:center; gap:8px;">
-                                <div style="flex:1; height:4px; background:rgba(255,255,255,0.1); border-radius:10px; overflow:hidden;">
-                                    <div style="height:100%; width:${usagePercent}%; background:${usageColor}; border-radius:10px;"></div>
+                    <div class=\"item-card\" style=\"border-left: 3px solid var(--gift);\">
+                        <div class=\"item-info\">
+                            <h3 style=\"font-family:'Orbitron', sans-serif; color:var(--gift); font-size:15px; letter-spacing:1px;\">${voucher.codeString}</h3>
+                            <p style=\"margin-bottom:6px; font-weight:600; font-family:monospace;\"><span style=\"color:#fff;\">Type:</span> ${voucher.rewardType.replace('_', ' ').toUpperCase()} <span style=\"opacity:0.5;\">|</span> <span style=\"color:var(--info);\">${shortVal}</span></p>
+                            <div style=\"display:flex; align-items:center; gap:8px;\">
+                                <div style=\"flex:1; height:4px; background:rgba(255,255,255,0.1); border-radius:10px; overflow:hidden;\">
+                                    <div style=\"height:100%; width:${usagePercent}%; background:${usageColor}; border-radius:10px;\"></div>
                                 </div>
-                                <span style="font-size:10px; font-family:monospace; color:${usageColor}; font-weight:bold;">${voucher.currentClaims}/${voucher.maxClaims} Used</span>
+                                <span style=\"font-size:10px; font-family:monospace; color:${usageColor}; font-weight:bold;\">${voucher.currentClaims}/${voucher.maxClaims} Used</span>
                             </div>
                         </div>
-                        <div class="item-actions">
-                            <div class="dropdown">
-                                <button class="dropdown-btn"><i class="fas fa-bars"></i></button>
-                                <div class="dropdown-content">
-                                    <button class="dropdown-item" onclick="dropActiveVoucherFromNetwork('${child.key}')"><i class="fas fa-trash-alt" style="color:var(--danger);"></i> Delete</button>
+                        <div class=\"item-actions\">
+                            <div class=\"dropdown\">
+                                <button class=\"dropdown-btn\"><i class=\"fas fa-bars\"></i></button>
+                                <div class=\"dropdown-content\">
+                                    <button class=\"dropdown-item\" onclick=\"dropActiveVoucherFromNetwork('${child.key}')\"><i class=\"fas fa-trash-alt\" style=\"color:var(--danger);\"></i> Delete</button>
                                 </div>
                             </div>
                         </div>
@@ -1344,26 +1371,26 @@
         databaseRef.ref('reports').on('value', (snapshot) => {
             const reportsBox = document.getElementById('userReportsTrackingContainer');
             if (!snapshot.exists()) {
-                reportsBox.innerHTML = `<div class="empty-state"><i class="fas fa-shield-check" style="color:var(--success); opacity:1; font-size:30px;"></i><p style="margin-top:10px;">No reports found.</p></div>`;
+                reportsBox.innerHTML = `<div class=\"empty-state\"><i class=\"fas fa-shield-check\" style=\"color:var(--success); opacity:1; font-size:30px;\"></i><p style=\"margin-top:10px;\">No reports found.</p></div>`;
                 return;
             }
             let html = ''; let reportsArr = [];
             snapshot.forEach(child => reportsArr.push({id: child.key, ...child.val()}));
             reportsArr.reverse().forEach(rpt => {
                 html += `
-                    <div class="item-card report-card" style="background: linear-gradient(to right, rgba(255,61,0,0.05), transparent);">
-                        <div class="item-info">
-                            <h3 style="color:var(--danger); font-size:14px; margin-bottom:6px;"><i class="fas fa-exclamation-triangle" style="margin-right:4px;"></i> APP: ${rpt.appName}</h3>
-                            <p style="font-family:monospace; margin-bottom:4px; font-size:11px;">Reported By: <span style="color:#fff;">${rpt.reportedByName}</span></p>
-                            <span class="badge-danger">${rpt.violationReason}</span>
+                    <div class=\"item-card report-card\" style=\"background: linear-gradient(to right, rgba(255,61,0,0.05), transparent);\">
+                        <div class=\"item-info\">
+                            <h3 style=\"color:var(--danger); font-size:14px; margin-bottom:6px;\"><i class=\"fas fa-exclamation-triangle\" style=\"margin-right:4px;\"></i> APP: ${rpt.appName}</h3>
+                            <p style=\"font-family:monospace; margin-bottom:4px; font-size:11px;\">Reported By: <span style=\"color:#fff;\">${rpt.reportedByName}</span></p>
+                            <span class=\"badge-danger\">${rpt.violationReason}</span>
                         </div>
-                        <div class="item-actions">
-                            <div class="dropdown">
-                                <button class="dropdown-btn"><i class="fas fa-bars"></i></button>
-                                <div class="dropdown-content">
-                                    <button class="dropdown-item" onclick="window.open('details.html?id=${rpt.appId}', '_blank')"><i class="fas fa-eye" style="color:var(--info);"></i> Preview App</button>
-                                    <button class="dropdown-item" onclick="dropReportNodeFromRegistry('${rpt.id}')"><i class="fas fa-times" style="color:var(--warning);"></i> Cross Report</button>
-                                    <button class="dropdown-item" onclick="banReportedApp('${rpt.appId}', '${rpt.id}')"><i class="fas fa-ban" style="color:var(--danger);"></i> Ban App</button>
+                        <div class=\"item-actions\">
+                            <div class=\"dropdown\">
+                                <button class=\"dropdown-btn\"><i class=\"fas fa-bars\"></i></button>
+                                <div class=\"dropdown-content\">
+                                    <button class=\"dropdown-item\" onclick=\"window.open('details.html?id=${rpt.appId}', '_blank')\"><i class=\"fas fa-eye\" style=\"color:var(--info);\"></i> Preview App</button>
+                                    <button class=\"dropdown-item\" onclick=\"dropReportNodeFromRegistry('${rpt.id}')\"><i class=\"fas fa-times\" style=\"color:var(--warning);\"></i> Cross Report</button>
+                                    <button class=\"dropdown-item\" onclick=\"banReportedApp('${rpt.appId}', '${rpt.id}')\"><i class=\"fas fa-ban\" style=\"color:var(--danger);\"></i> Ban App</button>
                                 </div>
                             </div>
                         </div>
@@ -1418,28 +1445,28 @@
         databaseRef.ref('system_broadcasts').on('value', (snapshot) => {
             const noticesBox = document.getElementById('globalNoticesTrackingContainer');
             if (!snapshot.exists()) {
-                noticesBox.innerHTML = `<div class="empty-state"><i class="fas fa-satellite"></i><p>No notifications.</p></div>`;
+                noticesBox.innerHTML = `<div class=\"empty-state\"><i class=\"fas fa-satellite\"></i><p>No notifications.</p></div>`;
                 return;
             }
             let html = ''; let noticesArr = [];
             snapshot.forEach(child => noticesArr.push({id: child.key, ...child.val()}));
             noticesArr.reverse().forEach(note => {
-                let linkHtml = note.link ? `<a href="${note.link}" target="_blank" style="color:var(--info); font-size:11px; font-weight:bold; text-decoration:none; display:inline-block; margin-top:6px; font-family:monospace;"><i class="fas fa-link"></i> View Link</a>` : '';
+                let linkHtml = note.link ? `<a href=\"${note.link}\" target=\"_blank\" style=\"color:var(--info); font-size:11px; font-weight:bold; text-decoration:none; display:inline-block; margin-top:6px; font-family:monospace;\"><i class=\"fas fa-link\"></i> View Link</a>` : '';
                 let borderCol = note.type === 'alert' ? 'var(--danger)' : 'var(--info)';
                 
                 html += `
-                    <div class="item-card" style="border-left: 3px solid ${borderCol};">
-                        <div class="item-info">
-                            <h3 style="color:#fff; font-size:14px; margin-bottom:6px;">${note.title}</h3>
-                            <p style="font-size:12px; line-height:1.4; color:#ccc;">${note.message}</p>
+                    <div class=\"item-card\" style=\"border-left: 3px solid ${borderCol};\">
+                        <div class=\"item-info\">
+                            <h3 style=\"color:#fff; font-size:14px; margin-bottom:6px;\">${note.title}</h3>
+                            <p style=\"font-size:12px; line-height:1.4; color:#ccc;\">${note.message}</p>
                             ${linkHtml}
-                            <p style="font-size:10px; color:var(--text-dim); margin-top:8px; font-family:monospace;"><i class="fas fa-clock"></i> ${note.timeString}</p>
+                            <p style=\"font-size:10px; color:var(--text-dim); margin-top:8px; font-family:monospace;\"><i class=\"fas fa-clock\"></i> ${note.timeString}</p>
                         </div>
-                        <div class="item-actions">
-                            <div class="dropdown">
-                                <button class="dropdown-btn"><i class="fas fa-bars"></i></button>
-                                <div class="dropdown-content">
-                                    <button class="dropdown-item" onclick="dropBroadcastNoticeFromLiveDatabase('${note.id}')"><i class="fas fa-trash-alt" style="color:var(--danger);"></i> Delete</button>
+                        <div class=\"item-actions\">
+                            <div class=\"dropdown\">
+                                <button class=\"dropdown-btn\"><i class=\"fas fa-bars\"></i></button>
+                                <div class=\"dropdown-content\">
+                                    <button class=\"dropdown-item\" onclick=\"dropBroadcastNoticeFromLiveDatabase('${note.id}')\"><i class=\"fas fa-trash-alt\" style=\"color:var(--danger);\"></i> Delete</button>
                                 </div>
                             </div>
                         </div>
