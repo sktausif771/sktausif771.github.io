@@ -37,7 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
             db.ref('users/' + user.uid).on('value', (snapshot) => {
                 if (snapshot.exists()) {
                     userProfile = snapshot.val();
-                    executeSystemInterfacePipelineUpdates();
                 }
             });
             runSystemAutoApproveEngine();
@@ -51,39 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ==========================================================================
-    // 3. SYSTEM INTERFACE PIPELINE ELEMENTS MANAGER
-    // ==========================================================================
-    function executeSystemInterfacePipelineUpdates() {
-        if (!userProfile) return;
-
-        const tabName = document.getElementById('youTabName');
-        const tabEmail = document.getElementById('youTabEmail');
-        const tabAvatar = document.getElementById('youTabAvatar');
-        const coinDisplay = document.getElementById('navCoinDisplay');
-
-        if (tabName) tabName.innerText = userProfile.name || "MVX User";
-        if (tabEmail) tabEmail.innerText = userProfile.email || "";
-        if (coinDisplay) coinDisplay.innerText = userProfile.coins || 0;
-        
-        if (tabAvatar) {
-            tabAvatar.src = userProfile.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile.name}`;
-        }
-
-        const topProfilePic = document.getElementById('topProfileBtn');
-        if (topProfilePic) {
-            topProfilePic.src = userProfile.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile.name}`;
-        }
-
-        const ownerLogoSection = document.getElementById('ownerLogoEditSection');
-        if (userProfile.role === 'owner') {
-            if (ownerLogoSection) ownerLogoSection.style.display = 'block';
-        }
-
-        loadStoreFeed(activeFilterType, activeContentType);
-    }
-
-    // ==========================================================================
-    // 4. PLAY STORE DATA RENDERING GRID
+    // 3. PLAY STORE DATA RENDERING GRID
     // ==========================================================================
     window.loadStoreFeed = function(filter, contentType) {
         activeFilterType = filter || activeFilterType;
@@ -160,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ==========================================================================
-    // 5. SMART TAGS FIELD ARRAY CONTROLLER CONTEXT
+    // 4. SMART TAGS FIELD ARRAY CONTROLLER CONTEXT
     // ==========================================================================
     let uploadedTagsList = [];
     
@@ -207,10 +174,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let uploadedScreenshotsList = [];
 
     // ==========================================================================
-    // 6. MASTER PLAY STORE APPLICATION PUBLISH MODAL FORM LAYOUT (CLEAN UI)
+    // 5. MASTER PLAY STORE APPLICATION PUBLISH MODAL FORM LAYOUT
     // ==========================================================================
     window.openUploadModal = function() {
-        // LOGIN CHECK: Redirects to login page if user is not authenticated
         if (!currentUser) {
             window.location.href = 'login.html';
             return;
@@ -300,7 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <div id="logoFileBox">
                                 <input type="file" id="logoFile" class="play-input" accept="image/*" style="padding:10px; margin-bottom:5px;">
                             </div>
-                            <img id="logoPreviewImg" class="preview-thumbnail" alt="Preview">
+                            <img id="logoPreviewImg" class="preview-thumbnail" alt="Preview" style="max-width:60px; border-radius:8px; display:none; margin-bottom:10px;">
                             <input type="hidden" id="logoUrlOutput">
                             <p id="logoProcessStatus" style="font-size:11px; color:var(--warning); margin-bottom:10px;"></p>
                         </div>
@@ -398,7 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // ==========================================================================
-    // 7. CORE BINARY CONVERTER & CLOUD API ENGINE
+    // 6. CORE BINARY CONVERTER & CLOUD API ENGINE
     // ==========================================================================
     function executeBinaryAssetProcessingStream(file, methodSelectId, outputInputId, statusParaId, previewImgId) {
         if (!file) return;
@@ -494,7 +460,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================================================
-    // 8. DATABASE COMMIT PACKAGES CONTROLLER
+    // 7. DATABASE COMMIT PACKAGES CONTROLLER
     // ==========================================================================
     window.commitPackageToPendingDatabaseNode = function() {
         const name = document.getElementById('pName').value.trim();
@@ -571,7 +537,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // ==========================================================================
-    // 9. IN-APP SYSTEM NOTIFICATIONS (PUSH NOTIFICATIONS REMOVED)
+    // 8. IN-APP SYSTEM NOTIFICATIONS
     // ==========================================================================
     window.clearLocalNotifications = function() {
         document.getElementById('notificationInboxDisplay').innerHTML = `<div class="empty-msg" style="text-align:center; color:var(--text-secondary); padding:40px;"><i class="fas fa-trash-alt" style="font-size:30px; margin-bottom:10px;"></i><br>Inbox cleared locally.</div>`;
@@ -627,7 +593,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================================================
-    // 10. AUTOMATED APP DEPLOYMENT & AUTO-NOTIFICATION BOT (CRON SIMULATOR)
+    // 9. AUTOMATED APP DEPLOYMENT & AUTO-NOTIFICATION BOT (CRON SIMULATOR)
     // ==========================================================================
     function runSystemAutoApproveEngine() {
         setInterval(() => {
@@ -670,20 +636,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================================================
-    // NEW: USER PROFILE DASHBOARD EXTENSIONS (IMGBB AVATAR & MY UPLOADS TRACKER)
+    // 10. NEW: DIRECT AVATAR UPLOAD LISTENER & MY UPLOADS LOGIC
     // ==========================================================================
     
-    // ImgBB User Avatar Selector Stream Listener
+    // Direct Avatar Upload from the new Camera Icon
     document.body.addEventListener('change', (e) => {
-        if (e.target && e.target.id === 'userAvatarFile') {
+        if (e.target && e.target.id === 'directAvatarUpload') {
             const file = e.target.files[0];
-            if (!file) return;
+            if (!file || !currentUser) return;
 
-            const status = document.getElementById('userAvatarStatus');
-            const preview = document.getElementById('editPreviewAvatar');
-            const urlInput = document.getElementById('editAvatarInput');
-
-            if (status) { status.innerText = "Uploading to ImgBB Server..."; status.style.color = "var(--warning)"; }
+            const status = document.getElementById('directAvatarStatus');
+            if (status) {
+                status.style.display = 'block';
+                status.innerText = "Uploading Avatar to ImgBB...";
+                status.style.color = "var(--warning)";
+            }
 
             const formData = new FormData();
             formData.append("image", file);
@@ -695,9 +662,16 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(res => res.json())
             .then(json => {
                 if (json.success) {
-                    urlInput.value = json.data.url;
-                    if (preview) preview.src = json.data.url;
-                    if (status) { status.innerText = "Avatar Synced!"; status.style.color = "var(--success)"; }
+                    const newAvatarUrl = json.data.url;
+                    db.ref('users/' + currentUser.uid).update({
+                        avatarUrl: newAvatarUrl
+                    }).then(() => {
+                        if (status) {
+                            status.innerText = "Avatar Updated Successfully!";
+                            status.style.color = "var(--success)";
+                            setTimeout(() => { status.style.display = 'none'; }, 3000);
+                        }
+                    });
                 } else {
                     if (status) { status.innerText = "Upload failed."; status.style.color = "var(--danger)"; }
                 }
@@ -708,33 +682,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Profile Settings View Initializer Bypass Override
-    window.openProfileQuickSettings = function() {
-        // LOGIN CHECK: Redirects to login page if user is not authenticated
-        if (!currentUser) {
-            window.location.href = 'login.html';
-            return;
-        }
-
-        if (typeof window.isMasterTimerActive !== 'undefined' && window.isMasterTimerActive) return;
-        const modal = document.getElementById('profileEditModal');
-        if (modal) {
-            modal.classList.add('active');
-            if (userProfile) {
-                if (document.getElementById('editNameInput')) document.getElementById('editNameInput').value = userProfile.name || "";
-                if (document.getElementById('editAvatarInput')) document.getElementById('editAvatarInput').value = userProfile.avatarUrl || "";
-                if (document.getElementById('editPreviewAvatar')) document.getElementById('editPreviewAvatar').src = userProfile.avatarUrl || "";
-                if (userProfile.role === 'owner' && document.getElementById('ownerLogoInput')) {
-                    db.ref('settings/storeLogo').once('value').then(snap => {
-                        if (snap.exists()) document.getElementById('ownerLogoInput').value = snap.val();
-                    });
-                }
-            }
-            if (typeof switchUserDashboardTab === 'function') switchUserDashboardTab('settings');
-        }
-    };
-
-    // My Uploads Fetch and Generator Engine
+    // My Uploads Fetch Engine
     window.fetchMyUploadedApps = function() {
         const container = document.getElementById('myUploadsContainer');
         if (!currentUser) {

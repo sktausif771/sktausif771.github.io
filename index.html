@@ -95,12 +95,7 @@
                 
                 <img src="" alt="User Profile" class="top-profile-pic" id="topProfileBtn" 
                      style="display: none;"
-                     onmousedown="startMasterLockTimer()" 
-                     onmouseup="clearMasterLockTimer()" 
-                     onmouseleave="clearMasterLockTimer()" 
-                     ontouchstart="startMasterLockTimer()" 
-                     ontouchend="clearMasterLockTimer()" 
-                     onclick="openProfileQuickSettings()">
+                     onclick="openMyUploadsIfAdmin()">
             </div>
         </div>
     </header>
@@ -156,16 +151,24 @@
 
     <main class="play-main-content" id="youTabContent" style="display: none;">
         
-        <!-- LOGGED IN PROFILE VIEW -->
-        <div class="you-header" id="loggedInProfileView" style="display: none;">
-            <img src="" id="youTabAvatar" alt="User Avatar Image">
-            <div class="you-info">
-                <h2 id="youTabName"></h2>
-                <p id="youTabEmail"></p>
+        <div class="you-header" id="loggedInProfileView" style="display: none; align-items: center; gap: 20px; padding: 20px; background: var(--bg-surface); border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 30px;">
+            <div style="position: relative; display: inline-block; flex-shrink: 0;">
+                <img src="" id="youTabAvatar" alt="User Avatar Image" style="width: 75px; height: 75px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);">
+                <label for="directAvatarUpload" style="position: absolute; bottom: 0; right: -5px; background: var(--bg-surface); border: 2px solid var(--border-color); border-radius: 50%; width: 28px; height: 28px; display: flex; justify-content: center; align-items: center; cursor: pointer; color: var(--primary); box-shadow: 0 2px 10px rgba(0,0,0,0.5); transition: 0.3s;">
+                    <i class="fas fa-camera" style="font-size: 12px;"></i>
+                </label>
+                <input type="file" id="directAvatarUpload" accept="image/*" style="display: none;">
+            </div>
+            <div class="you-info" style="flex: 1; overflow: hidden;">
+                <h2 onclick="editUserNamePrompt()" style="cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: 'Orbitron', sans-serif; font-size: 20px; margin-bottom: 4px;" title="Click to edit name">
+                    <span id="youTabName" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></span> 
+                    <i class="fas fa-pen" style="font-size: 12px; color: var(--text-secondary);"></i>
+                </h2>
+                <p id="youTabEmail" style="font-size: 12px; color: var(--text-secondary);"></p>
+                <p id="directAvatarStatus" style="font-size: 11px; color: var(--warning); margin-top: 4px; display: none; font-weight: bold;"></p>
             </div>
         </div>
 
-        <!-- GMAIL STYLE LOGGED OUT VIEW -->
         <div class="google-login-card" id="loggedOutLoginView" onclick="window.location.href='login.html'">
             <div class="g-logo-container">
                 <svg viewBox="0 0 24 24" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
@@ -192,6 +195,13 @@
         </div>
 
         <div class="you-menu-list">
+            
+            <div class="you-menu-item" id="menuAdminPanelItem" style="display: none;" onclick="window.location.href='admin.html'">
+                <i class="fas fa-user-shield" style="color: var(--danger);"></i>
+                <span style="color: var(--danger); font-weight: 700;">Admin Panel</span>
+                <i class="fas fa-chevron-right arrow"></i>
+            </div>
+
             <div class="you-menu-item" id="menuPublishItem" onclick="openUploadModal()" style="display: none;">
                 <i class="fas fa-cloud-upload-alt" style="color: var(--primary);"></i>
                 <span id="lblUploadApp">Publish Package File</span>
@@ -261,65 +271,19 @@
         </div>
     </div>
 
-    <div class="modal-overlay" id="hiddenGateModal">
-        <div class="play-modal">
-            <div class="modal-header">
-                <h3><i class="fas fa-key" style="color:var(--warning);"></i> Developer Verification Gate</h3>
-                <i class="fas fa-times close-modal" onclick="document.getElementById('hiddenGateModal').classList.remove('active')"></i>
-            </div>
-            <div class="modal-body">
-                <label class="modal-label" id="lblPassPrompt">Enter Access Token Pin Key Sequence</label>
-                <input type="password" id="gatePasswordInput" class="play-input" placeholder="••••••••" style="letter-spacing:5px; text-align:center; font-size:20px;">
-                <button class="play-btn" onclick="verifyHiddenGatePasswordCredentials()">VERIFY SECURITY KEY</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="profileEditModal">
+    <div class="modal-overlay" id="myUploadsModal">
         <div class="play-modal" style="max-width: 600px; width: 95%;">
             <div class="modal-header">
-                <h3><i class="fas fa-user-cog" style="color:var(--primary);"></i> User Dashboard</h3>
-                <i class="fas fa-times close-modal" onclick="closeProfileEditModal()"></i>
+                <h3><i class="fas fa-cloud-upload-alt" style="color:var(--primary);"></i> My Uploads</h3>
+                <i class="fas fa-times close-modal" onclick="document.getElementById('myUploadsModal').classList.remove('active')"></i>
             </div>
-            <div class="modal-body" style="padding: 0;">
-                
-                <div style="display:flex; border-bottom: 1px solid var(--border-color);">
-                    <button class="dashboard-tab" onclick="switchUserDashboardTab('settings')" id="tabBtnSettings" style="flex:1; padding:15px; background:transparent; border:none; color:var(--primary); font-family:var(--font-header); font-size:16px; font-weight:700; cursor:pointer; border-bottom: 2px solid var(--primary);">Profile Settings</button>
-                    <button class="dashboard-tab" onclick="switchUserDashboardTab('uploads')" id="tabBtnUploads" style="flex:1; padding:15px; background:transparent; border:none; color:var(--text-secondary); font-family:var(--font-header); font-size:16px; font-weight:700; cursor:pointer; border-bottom: 2px solid transparent;">My Uploads</button>
-                </div>
-
-                <div id="dashboardSettingsView" style="padding: 25px;">
-                    <div style="text-align: center; margin-bottom: 20px;">
-                        <img src="" id="editPreviewAvatar" style="width:90px; height:90px; border-radius:50%; object-fit:cover; border:3px solid var(--primary); box-shadow:var(--primary-shadow);">
-                    </div>
-                    
-                    <label class="modal-label">User Profile Name</label>
-                    <input type="text" id="editNameInput" class="play-input" placeholder="Change profile name">
-                    
-                    <label class="modal-label">Profile Picture (ImgBB Upload or URL)</label>
-                    <div style="background:rgba(0,0,0,0.2); padding:10px; border-radius:10px; border:1px solid var(--border-color); margin-bottom: 20px;">
-                        <input type="file" id="userAvatarFile" class="play-input" accept="image/*" style="padding:10px; margin-bottom:10px;">
-                        <input type="text" id="editAvatarInput" class="play-input" placeholder="Or Paste Image URL directly" style="margin-bottom:0;">
-                        <p id="userAvatarStatus" style="font-size:11px; color:var(--warning); margin-top:8px;"></p>
-                    </div>
-                    
-                    <div id="ownerLogoEditSection" style="display: none; border-top: 1px dashed var(--border-color); padding-top: 15px; margin-top: 15px;">
-                        <label class="modal-label" style="color: var(--warning);">Global Store Logo Link (Owner Only)</label>
-                        <input type="text" id="ownerLogoInput" class="play-input" placeholder="Paste new main logo URL link">
-                    </div>
-                    
-                    <button class="play-btn" style="margin-top: 10px;" onclick="saveProfileChanges()">SAVE PROFILE</button>
-                </div>
-
-                <div id="dashboardUploadsView" style="display:none; padding: 20px; max-height: 60vh; overflow-y: auto;">
-                    <div id="myUploadsContainer">
-                        <div style="text-align:center; padding: 30px; color:var(--text-secondary);">
-                            <i class="fas fa-spinner fa-spin" style="font-size:24px; color:var(--primary);"></i>
-                            <p style="margin-top:10px;">Fetching your uploads...</p>
-                        </div>
+            <div class="modal-body" style="padding: 20px; max-height: 60vh; overflow-y: auto;">
+                <div id="myUploadsContainer">
+                    <div style="text-align:center; padding: 30px; color:var(--text-secondary);">
+                        <i class="fas fa-spinner fa-spin" style="font-size:24px; color:var(--primary);"></i>
+                        <p style="margin-top:10px;">Fetching your uploads...</p>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -420,43 +384,16 @@
             if(badge) badge.style.display = 'none';
         }
 
-        function closeProfileEditModal() {
-            document.getElementById('profileEditModal').classList.remove('active');
+        // Toggles the My Uploads modal directly
+        function openMyUploadsModal() {
+            document.getElementById('myUploadsModal').classList.add('active');
+            if(typeof window.fetchMyUploadedApps === 'function') window.fetchMyUploadedApps();
         }
 
         function closeUserAppEditModal() {
             document.getElementById('userAppEditModal').classList.remove('active');
         }
 
-        function switchUserDashboardTab(tab) {
-            document.getElementById('tabBtnSettings').style.color = 'var(--text-secondary)';
-            document.getElementById('tabBtnSettings').style.borderBottomColor = 'transparent';
-            document.getElementById('tabBtnUploads').style.color = 'var(--text-secondary)';
-            document.getElementById('tabBtnUploads').style.borderBottomColor = 'transparent';
-            
-            document.getElementById('dashboardSettingsView').style.display = 'none';
-            document.getElementById('dashboardUploadsView').style.display = 'none';
-
-            if(tab === 'settings') {
-                document.getElementById('tabBtnSettings').style.color = 'var(--primary)';
-                document.getElementById('tabBtnSettings').style.borderBottomColor = 'var(--primary)';
-                document.getElementById('dashboardSettingsView').style.display = 'block';
-            } else {
-                document.getElementById('tabBtnUploads').style.color = 'var(--primary)';
-                document.getElementById('tabBtnUploads').style.borderBottomColor = 'var(--primary)';
-                document.getElementById('dashboardUploadsView').style.display = 'block';
-                // Trigger fetch from store-logic.js
-                if(typeof window.fetchMyUploadedApps === 'function') window.fetchMyUploadedApps();
-            }
-        }
-
-        function openProfileQuickSettings() {
-            if (typeof window.isMasterTimerActive !== 'undefined' && window.isMasterTimerActive) {
-                return;
-            }
-            document.getElementById('profileEditModal').classList.add('active');
-            switchUserDashboardTab('settings');
-        }
     </script>
 </body>
 </html>

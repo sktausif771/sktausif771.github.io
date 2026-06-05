@@ -3,8 +3,7 @@
    ========================================================================== */
 
 let userProfile = null; 
-let masterPressTimer = null;
-window.isMasterTimerActive = false;
+let currentUserAuth = null;
 
 document.addEventListener('DOMContentLoaded', () => {
     if (typeof firebase === 'undefined') {
@@ -50,8 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
             navFiles: "Files",
             navModApp: "Mod App",
             navSearch: "Search",
-            navYou: "You",
-            passPrompt: "Enter Access Token Pin Key Sequence"
+            navYou: "You"
         },
         bn: {
             storeTitle: "এমভিএক্স স্টোর",
@@ -73,8 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
             navFiles: "ফাইলস",
             navModApp: "মড অ্যাপ",
             navSearch: "সার্চ",
-            navYou: "প্রোফাইল",
-            passPrompt: "অ্যাডমিন প্যানেল সিকিউরিটি পিন কোড দিন"
+            navYou: "প্রোফাইল"
         },
         es: {
             storeTitle: "TIENDA MVX",
@@ -96,8 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
             navFiles: "Archivos",
             navModApp: "Aplicación Mod",
             navSearch: "Buscar",
-            navYou: "Tú",
-            passPrompt: "Ingrese la secuencia de la clave pin de acceso"
+            navYou: "Tú"
         },
         hi: {
             storeTitle: "एमवीएक्स स्टोर",
@@ -119,8 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
             navFiles: "फ़ाइलें",
             navModApp: "मोड ऐप",
             navSearch: "खोजें",
-            navYou: "आप",
-            passPrompt: "एक्सेस टोकन पिन कुंजी अनुक्रम दर्ज करें"
+            navYou: "आप"
         },
         ar: {
             storeTitle: "متجر MVX",
@@ -142,8 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
             navFiles: "الملفات",
             navModApp: "تطبيق مود",
             navSearch: "بحث",
-            navYou: "أنت",
-            passPrompt: "أدخل تسلسل مفتاح رمز الوصول"
+            navYou: "أنت"
         }
     };
 
@@ -169,8 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
             'navFiles': dict.navFiles,
             'navModApp': dict.navModApp,
             'navSearch': dict.navSearch,
-            'navYou': dict.navYou,
-            'lblPassPrompt': dict.passPrompt
+            'navYou': dict.navYou
         };
 
         for (const [id, value] of Object.entries(mapping)) {
@@ -206,72 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const langSelectorEl = document.getElementById('sysLanguageSelector');
     if(langSelectorEl) langSelectorEl.value = savedLang;
 
-    const HIDDEN_MASTER_PASSKEY = "121345";
-
-    window.startMasterLockTimer = function() {
-        window.isMasterTimerActive = false;
-        masterPressTimer = setTimeout(() => {
-            window.isMasterTimerActive = true;
-            triggerHiddenPasswordGate();
-        }, 5000); 
-    };
-
-    window.clearMasterLockTimer = function() {
-        if (masterPressTimer) {
-            clearTimeout(masterPressTimer);
-        }
-    };
-
-    function triggerHiddenPasswordGate() {
-        if (!userProfile) {
-            const gateModal = document.getElementById('hiddenGateModal');
-            const passInput = document.getElementById('gatePasswordInput');
-            if (gateModal) {
-                if(passInput) passInput.value = ''; 
-                gateModal.classList.add('active');
-            }
-            return;
-        }
-        
-        if (userProfile.role === 'owner') {
-            window.location.href = 'admin.html';
-            return;
-        }
-
-        const gateModal = document.getElementById('hiddenGateModal');
-        const passInput = document.getElementById('gatePasswordInput');
-        if (gateModal) {
-            if(passInput) passInput.value = ''; 
-            gateModal.classList.add('active');
-        }
-    }
-
-    window.verifyHiddenGatePasswordCredentials = function() {
-        const passInput = document.getElementById('gatePasswordInput');
-        if (!passInput) return;
-
-        const inputKey = passInput.value.trim();
-
-        if (inputKey === HIDDEN_MASTER_PASSKEY) {
-            document.getElementById('hiddenGateModal').classList.remove('active');
-            
-            sessionStorage.setItem('mvx_role', 'owner');
-            
-            const currentUser = firebase.auth().currentUser;
-            if (currentUser && userProfile) {
-                if (currentUser.email === "sktausif771@gmail.com") {
-                    firebase.database().ref(`users/${currentUser.uid}/role`).set('owner');
-                }
-                window.location.href = 'admin.html';
-            } else {
-                window.location.href = 'admin.html';
-            }
-        } else {
-            alert("❌ SECURITY VIOLATION: Unauthorized Key Sequence Intercepted.");
-            passInput.value = '';
-        }
-    };
-
+    // Theme Switcher Engine
     const themeBtn = document.getElementById('themeToggleBtn');
     const themeLabel = document.getElementById('currentThemeLabel');
     
@@ -301,65 +229,47 @@ document.addEventListener('DOMContentLoaded', () => {
         themeLabel.innerText = (theme === 'dark') ? "Dark Mode" : "Light Mode";
     }
 
+    // MAIN AUTH LISTENER
     auth.onAuthStateChanged((user) => {
-        const topLoginBtn = document.getElementById('topLoginBtn');
-        const topProfilePic = document.getElementById('topProfileBtn');
-        const menuPublishItem = document.getElementById('menuPublishItem');
-        const menuCoinItem = document.getElementById('menuCoinItem');
-        const menuSignOutItem = document.getElementById('menuSignOutItem');
-        const redeemBoxSection = document.getElementById('redeemBoxSection');
-        const youTabAvatar = document.getElementById('youTabAvatar');
-        const youTabName = document.getElementById('youTabName');
-        const youTabEmail = document.getElementById('youTabEmail');
-
         if (user) {
-            // UI elements for logged in user
-            if(topLoginBtn) topLoginBtn.style.display = 'none';
-            if(topProfilePic) topProfilePic.style.display = 'block';
-            if(menuPublishItem) menuPublishItem.style.display = 'flex';
-            if(menuCoinItem) menuCoinItem.style.display = 'flex';
-            if(menuSignOutItem) menuSignOutItem.style.display = 'flex';
-            if(redeemBoxSection) redeemBoxSection.style.display = 'block';
-
+            currentUserAuth = user;
             db.ref('users/' + user.uid).on('value', (snapshot) => {
                 if (!snapshot.exists()) return;
                 
                 userProfile = snapshot.val();
                 
-                if (user.email === "sktausif771@gmail.com") {
-                    userProfile.role = "owner";
-                    sessionStorage.setItem('mvx_role', 'owner');
-                    db.ref('users/' + user.uid + '/role').set('owner');
-                } else {
-                    sessionStorage.setItem('mvx_role', userProfile.role || 'user');
+                // Admin Status & Button Display Check
+                const currentSessionRole = sessionStorage.getItem('mvx_role');
+                const isAdmin = (currentSessionRole === 'owner' || userProfile.role === 'owner');
+                
+                const adminBtn = document.getElementById('menuAdminPanelItem');
+                if (adminBtn) {
+                    adminBtn.style.display = isAdmin ? 'flex' : 'none';
                 }
 
+                // Update UI Information
+                const topProfilePic = document.getElementById('topProfileBtn');
+                const youTabAvatar = document.getElementById('youTabAvatar');
+                
                 if (topProfilePic) topProfilePic.src = userProfile.avatarUrl;
                 if (youTabAvatar) youTabAvatar.src = userProfile.avatarUrl;
 
-                if (youTabName) youTabName.innerText = userProfile.name;
-                if (youTabEmail) youTabEmail.innerText = userProfile.email;
+                if (document.getElementById('youTabName')) document.getElementById('youTabName').innerText = userProfile.name;
+                if (document.getElementById('youTabEmail')) document.getElementById('youTabEmail').innerText = userProfile.email;
                 if (document.getElementById('navCoinDisplay')) document.getElementById('navCoinDisplay').innerText = userProfile.coins || 0;
             });
         } else {
-            // UI elements for logged out user (Guest mode)
+            currentUserAuth = null;
+            userProfile = null;
             sessionStorage.removeItem('mvx_role');
             sessionStorage.removeItem('mvx_session');
-            userProfile = null;
-
-            if(topLoginBtn) topLoginBtn.style.display = 'block';
-            if(topProfilePic) topProfilePic.style.display = 'none';
-            if(menuPublishItem) menuPublishItem.style.display = 'none';
-            if(menuCoinItem) menuCoinItem.style.display = 'none';
-            if(menuSignOutItem) menuSignOutItem.style.display = 'none';
-            if(redeemBoxSection) redeemBoxSection.style.display = 'none';
-
-            if (youTabAvatar) youTabAvatar.src = "https://via.placeholder.com/70/121212/00e6b8?text=GUEST";
-            if (youTabName) youTabName.innerText = "Guest User";
-            if (youTabEmail) youTabEmail.innerText = "Please login to access profile";
+            
+            const adminBtn = document.getElementById('menuAdminPanelItem');
+            if (adminBtn) adminBtn.style.display = 'none';
         }
     });
 
+    // SMART SEARCH PROTOCOL
     const searchInput = document.getElementById('storeSearchInput');
     const searchGrid = document.getElementById('searchResultGrid');
 
@@ -453,6 +363,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // REDEEM VOUCHER PROTOCOL
     window.executeRedeemProtocol = function() {
         const codeInput = document.getElementById('redeemInputCode');
         const statusTxt = document.getElementById('redeemStatusMsg');
@@ -567,6 +478,31 @@ document.addEventListener('DOMContentLoaded', () => {
         if(codeInput) codeInput.value = '';
     }
 
+    // NEW LOGIC: NAME EDIT PROMPT
+    window.editUserNamePrompt = function() {
+        if (!currentUserAuth || !userProfile) return;
+        
+        let newName = prompt("Enter your new profile name:", userProfile.name);
+        
+        if (newName !== null && newName.trim() !== "") {
+            db.ref('users/' + currentUserAuth.uid).update({
+                name: newName.trim()
+            }).catch(err => {
+                alert("Error updating name: " + err.message);
+            });
+        }
+    };
+
+    // NEW LOGIC: TOP PROFILE PIC CLICK ACTION (ONLY OPENS FOR ADMINS)
+    window.openMyUploadsIfAdmin = function() {
+        const currentSessionRole = sessionStorage.getItem('mvx_role');
+        if (userProfile && (userProfile.role === 'owner' || currentSessionRole === 'owner')) {
+            if (typeof openMyUploadsModal === 'function') {
+                openMyUploadsModal();
+            }
+        }
+    };
+
     window.safeOpenURLInNewTab = function(url) {
         if (!url || url.trim() === "" || url === "#") return;
         let targetUrl = url.trim();
@@ -575,30 +511,6 @@ document.addEventListener('DOMContentLoaded', () => {
             targetUrl = 'https://' + targetUrl;
         }
         window.open(targetUrl, '_blank');
-    };
-
-    window.saveProfileChanges = function() {
-        const user = auth.currentUser;
-        if (!user || !userProfile) return;
-
-        const editNameInput = document.getElementById('editNameInput');
-        const editAvatarInput = document.getElementById('editAvatarInput');
-        const newName = editNameInput ? editNameInput.value.trim() : "";
-        const newAvatar = editAvatarInput ? editAvatarInput.value.trim() : "";
-
-        if (!newName) {
-            alert("⚠️ Display identity parameter missing.");
-            return;
-        }
-
-        db.ref('users/' + user.uid).update({
-            name: newName,
-            avatarUrl: newAvatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${newName}`
-        }).then(() => {
-            const modal = document.getElementById('profileEditModal');
-            if (modal) modal.classList.remove('active');
-            alert("Database synchronized profile changes complete!");
-        });
     };
 
     window.secureLogout = function() {
