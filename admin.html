@@ -841,11 +841,16 @@
 
             snapshot.forEach(child => {
                 let u = child.val();
+                
+                // === NEW FILTER LOGIC ===
+                // Skip ghost accounts without proper email or login data
+                if (!u.email || u.email.trim() === "" || u.email === "No Email") return; 
+
                 u.uid = child.key;
                 u.name = u.name && u.name.trim() !== "" ? u.name : "MVX User";
-                u.email = u.email || "No Email";
                 u.avatarUrl = u.avatarUrl || "https://via.placeholder.com/60/121212/00e676?text=USR";
                 u.sortTime = u.lastLogin || u.joinedAt || 0; 
+                
                 usersArr.push(u);
 
                 if(nowMs - u.sortTime < oneDayMs) {

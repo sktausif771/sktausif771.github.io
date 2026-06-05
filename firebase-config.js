@@ -40,21 +40,23 @@ window.startGoogleLogin = function() {
             let settings = snap.exists() ? snap.val() : {};
             let signupBonus = settings.signupBonus || 0;
             
+            // ফিক্স: লগইন করলেই রিয়েল জিমেইল ডেটা আপডেট হবে
+            let profileUpdates = {
+                name: user.displayName || "MVX User",
+                email: user.email || "No Email",
+                avatarUrl: user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.displayName || 'User'}`,
+                lastLogin: firebase.database.ServerValue.TIMESTAMP
+            };
+
             if (isNewUser) {
-                window.database.ref(`users/${user.uid}`).set({
-                    name: user.displayName || "MVX User",
-                    email: user.email,
-                    avatarUrl: user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.displayName}`,
-                    coins: signupBonus,
-                    role: 'user',
-                    joinedAt: firebase.database.ServerValue.TIMESTAMP,
-                    lastLogin: firebase.database.ServerValue.TIMESTAMP,
-                    followers: 0,
-                    following: 0
-                });
-            } else {
-                window.database.ref(`users/${user.uid}/lastLogin`).set(firebase.database.ServerValue.TIMESTAMP);
+                profileUpdates.coins = signupBonus;
+                profileUpdates.role = 'user';
+                profileUpdates.joinedAt = firebase.database.ServerValue.TIMESTAMP;
+                profileUpdates.followers = 0;
+                profileUpdates.following = 0;
             }
+            
+            window.database.ref(`users/${user.uid}`).update(profileUpdates);
         });
     }).catch((error) => {
         if(loader) loader.style.display = 'none';
@@ -81,6 +83,13 @@ window.auth.onAuthStateChanged((user) => {
                 let userData = userSnap.val();
                 let updates = {};
 
+                // ফিক্স: পুরনো একাউন্টের নাম MVX User থাকলে অটোমেটিক রিয়েল নাম আপডেট হবে
+                if (userData.name === "MVX User" || !userData.email || userData.email === "No Email") {
+                    if (user.displayName) updates['name'] = user.displayName;
+                    if (user.email) updates['email'] = user.email;
+                    if (user.photoURL) updates['avatarUrl'] = user.photoURL;
+                }
+
                 // Default Whitelisted Owner Emails
                 const ownerEmails = [
                     "sktausif07ff@gmail.com", 
@@ -91,8 +100,8 @@ window.auth.onAuthStateChanged((user) => {
                 
                 let isWhitelistedAdmin = ownerEmails.includes(user.email);
                 if (!isWhitelistedAdmin) {
-                    const safeEmail = user.email.replace(/\./g, ',');
-                    if (masterAdmins[safeEmail]) {
+                    const safeEmail = user.email ? user.email.replace(/\./g, ',') : "";
+                    if (safeEmail && masterAdmins[safeEmail]) {
                         isWhitelistedAdmin = true;
                     }
                 }
