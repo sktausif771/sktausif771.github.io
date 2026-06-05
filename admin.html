@@ -82,7 +82,7 @@
         /* ==================== 2. TECHNICAL QUICK STATS (COMPACT) ==================== */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             gap: 15px;
             padding: 20px 30px;
             max-width: 1400px;
@@ -100,10 +100,8 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
             transition: var(--transition);
         }
-        .stat-card:nth-child(1) { border-left-color: var(--primary); }
+        .stat-card:nth-child(1) { border-left-color: var(--info); }
         .stat-card:nth-child(2) { border-left-color: var(--warning); }
-        .stat-card:nth-child(3) { border-left-color: var(--info); }
-        .stat-card:nth-child(4) { border-left-color: var(--danger); }
         
         .stat-card:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.2); border-left-width: 4px; }
         
@@ -112,34 +110,67 @@
         .stat-val { font-size: 20px; font-weight: 800; font-family: 'Orbitron', sans-serif; margin-bottom: 2px; color: #fff; letter-spacing: 1px; }
         .stat-lbl { font-size: 10px; color: var(--text-dim); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; font-family: monospace; }
 
-        /* ==================== 3. HORIZONTAL TAB MENU ==================== */
+        /* ==================== 3. SIDEBAR DRAWER HAMBURGER MENU ==================== */
         .tab-menu-wrapper {
-            padding: 0 30px;
-            margin-bottom: 25px;
-            overflow-x: auto;
-            white-space: nowrap;
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: 280px;
+            height: 100vh;
+            background: #090E17;
+            border-right: 1px solid var(--border-glass);
+            box-shadow: 5px 0 30px rgba(0,0,0,0.8);
+            z-index: 2500;
+            padding: 30px 20px;
             display: flex;
-            gap: 10px;
-            max-width: 1400px;
-            margin-left: auto; margin-right: auto;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+            white-space: nowrap;
+            transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .tab-menu-wrapper::-webkit-scrollbar { display: none; }
-        
+        .tab-menu-wrapper.open { left: 0; }
+        .sidebar-overlay-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 2400;
+            display: none;
+        }
+        .sidebar-overlay-backdrop.active { display: block; }
+        .sidebar-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            color: var(--primary);
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            padding-left: 5px;
+            text-transform: uppercase;
+            border-bottom: 1px dashed var(--border-glass);
+            padding-bottom: 10px;
+        }
         .tab-chip {
             background: var(--card-bg);
             border: 1px solid var(--border-glass);
             color: var(--text-dim);
-            padding: 10px 20px;
+            padding: 12px 20px;
             border-radius: 8px;
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            display: inline-flex;
+            display: flex !important;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
+            width: 100%;
+            text-align: left;
             transition: var(--transition);
         }
-        .tab-chip i { font-size: 14px; }
+        .tab-chip i { font-size: 14px; width: 20px; text-align: center; }
         .tab-chip:hover { border-color: rgba(255,255,255,0.2); color: #fff; }
         .tab-chip.active {
             background: rgba(0, 230, 118, 0.1);
@@ -170,7 +201,7 @@
             gap: 15px;
             transition: var(--transition);
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            overflow: visible; /* Required for dropdown to show outside */
+            overflow: visible;
         }
         .item-card:hover { border-color: rgba(255,255,255,0.15); transform: translateX(2px); }
         
@@ -182,7 +213,6 @@
         .item-info h3 { font-size: 16px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; font-weight: 600; display:flex; align-items:center; gap:8px;}
         .item-info p { font-size: 12px; color: var(--text-dim); margin-bottom: 2px; }
         
-        /* 3-LINE (HAMBURGER) DROPDOWN MENU UI */
         .item-actions { display: flex; align-items: center; position: relative; }
         
         .dropdown { position: relative; display: inline-block; }
@@ -275,7 +305,6 @@
         .app-check-item input { width: 16px; height: 16px; accent-color: var(--primary); cursor: pointer;}
         .app-check-item label { font-size: 13px; color: #fff; cursor: pointer; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500;}
 
-        /* Config Card Wrapper */
         .config-wrapper { background: var(--card-bg); border: 1px solid var(--border-glass); padding: 25px; border-radius: 16px; margin-bottom: 25px; box-shadow: var(--shadow-soft); }
 
         @media (max-width: 768px) {
@@ -289,45 +318,36 @@
 
     <header class="master-header">
         <div class="header-brand">
+            <i class="fas fa-bars" id="hamburgerMenuBtn" style="font-size: 20px; color: var(--primary); cursor: pointer; margin-right: 12px;"></i>
             <i class="fas fa-shield-alt"></i>
             <h1>MASTER PANEL <i class="fas fa-check-circle verified-badge" title="Verified Owner"></i></h1>
         </div>
         <a href="index.html" class="btn-exit"><i class="fas fa-sign-out-alt"></i> Exit</a>
     </header>
 
-    <!-- Technical UI Compact Stats Grid -->
     <div class="stats-grid">
         <div class="stat-card">
-            <i class="fas fa-server" style="color: var(--primary);"></i>
-            <div class="stat-info">
-                <div class="stat-val" id="statLiveApps">0</div>
-                <div class="stat-lbl">LIVE APPS</div>
-            </div>
-        </div>
-        <div class="stat-card">
-            <i class="fas fa-code-branch" style="color: var(--warning);"></i>
-            <div class="stat-info">
-                <div class="stat-val" id="statPendingApps">0</div>
-                <div class="stat-lbl">PENDING</div>
-            </div>
-        </div>
-        <div class="stat-card">
-            <i class="fas fa-microchip" style="color: var(--info);"></i>
+            <i class="fas fa-users" style="color: var(--info);"></i>
             <div class="stat-info">
                 <div class="stat-val" id="statUsers">0</div>
-                <div class="stat-lbl">USERS DB</div>
+                <div class="stat-lbl">Total Users</div>
             </div>
         </div>
         <div class="stat-card">
-            <i class="fas fa-bug" style="color: var(--danger);"></i>
+            <i class="fas fa-bolt" style="color: var(--warning);"></i>
             <div class="stat-info">
-                <div class="stat-val" id="statReports">0</div>
-                <div class="stat-lbl">REPORTS</div>
+                <div class="stat-val" id="statActiveToday">0</div>
+                <div class="stat-lbl">Active Today</div>
             </div>
         </div>
+        
+        <span id="statLiveApps" style="display: none;">0</span>
+        <span id="statPendingApps" style="display: none;">0</span>
+        <span id="statReports" style="display: none;">0</span>
     </div>
 
     <div class="tab-menu-wrapper">
+        <div class="sidebar-title">Navigation Menu</div>
         <div class="tab-chip active" onclick="switchAdminPanelSection('users', this)"><i class="fas fa-users"></i> Live Users</div>
         <div class="tab-chip" onclick="switchAdminPanelSection('pending', this)"><i class="fas fa-hourglass-half"></i> Pending</div>
         <div class="tab-chip" onclick="switchAdminPanelSection('live', this)"><i class="fas fa-database"></i> App Database</div>
@@ -493,7 +513,6 @@
     </div>
 
 
-    <!-- MODALS -->
     <div class="modal-overlay" id="userGiftModal">
         <div class="play-modal">
             <div class="modal-header">
@@ -530,7 +549,6 @@
         </div>
     </div>
 
-    <!-- UPDATE: FULL APP EDITOR MODAL WITH ALL FEATURES -->
     <div class="modal-overlay" id="masterAppEditModal">
         <div class="play-modal" style="max-width: 650px;">
             <div class="modal-header">
@@ -613,13 +631,12 @@
         </div>
     </div>
 
-    <div class="lightbox-overlay" id="adminLightbox" onclick="closeAdminLightbox()">
+    <div class="lightbox-overlay" id="adminLightbox" onclick="closeAdminLightbox()" style="display: none;">
         <i class="fas fa-times lightbox-close" onclick="closeAdminLightbox()" style="position: absolute; top: 20px; right: 25px; font-size: 30px; color: #fff; cursor: pointer; z-index: 10000; text-shadow: 0 0 10px rgba(0,0,0,0.8); transition: 0.3s;"></i>
         <img src="" class="lightbox-img" id="adminLightboxImg" onclick="event.stopPropagation()" style="max-width: 90%; max-height: 90%; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
     </div>
 
 
-    <!-- SCRIPTS -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script src="firebase-config.js"></script>
@@ -636,10 +653,50 @@
             
             if(btnElement) {
                 btnElement.classList.add('active');
-                btnElement.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
             }
             document.getElementById(panelId + 'Panel').classList.add('active');
+
+            // Automatically close the sidebar navigation on item click
+            const menuWrapper = document.querySelector('.tab-menu-wrapper');
+            const backdrop = document.querySelector('.sidebar-overlay-backdrop');
+            if(menuWrapper) menuWrapper.classList.remove('open');
+            if(backdrop) backdrop.classList.remove('active');
         }
+
+        // Setup Hamburger Menu Trigger Logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const hamburger = document.getElementById('hamburgerMenuBtn');
+            const menuWrapper = document.querySelector('.tab-menu-wrapper');
+            
+            let backdrop = document.createElement('div');
+            backdrop.className = 'sidebar-overlay-backdrop';
+            document.body.appendChild(backdrop);
+            
+            if(hamburger) {
+                hamburger.addEventListener('click', () => {
+                    menuWrapper.classList.toggle('open');
+                    backdrop.classList.toggle('active');
+                });
+            }
+            
+            backdrop.addEventListener('click', () => {
+                menuWrapper.classList.remove('open');
+                backdrop.classList.remove('active');
+            });
+        });
+
+        // Add Admin Direct Clearance Protocol
+        window.makeUserAdminProtocol = function(uid, email) {
+            if(confirm("Are you sure you want to grant admin access to this user account?")) {
+                databaseRef.ref(`users/${uid}/role`).set('owner').then(() => {
+                    if(email) {
+                        const safeKey = email.replace(/\./g, ',');
+                        databaseRef.ref(`settings/masterAdmins/${safeKey}`).set(email);
+                    }
+                    alert("User promoted to ADMIN status successfully!");
+                });
+            }
+        };
 
         window.openAdminLightbox = function(url) {
             document.getElementById('adminLightboxImg').src = url;
@@ -768,20 +825,31 @@
 
             if (!snapshot.exists()) {
                 document.getElementById('statUsers').innerText = 0;
+                if(document.getElementById('statActiveToday')) document.getElementById('statActiveToday').innerText = 0;
                 container.innerHTML = `<div class="empty-state"><i class="fas fa-server"></i><p>DB Offline / Empty.</p></div>`;
                 return;
             }
 
             let usersArr = [];
+            let activeTodayCount = 0;
+            const oneDayMs = 24 * 60 * 60 * 1000;
+            const nowMs = Date.now();
+
             snapshot.forEach(child => {
                 let u = child.val();
                 if(!u.name || !u.email || u.name.trim() === "") return; 
                 u.uid = child.key;
                 u.sortTime = u.lastLogin || u.joinedAt || 0; 
                 usersArr.push(u);
+
+                // Calculate active today count dynamically via recent login data metrics
+                if(nowMs - u.sortTime < oneDayMs) {
+                    activeTodayCount++;
+                }
             });
 
             document.getElementById('statUsers').innerText = usersArr.length || 0;
+            if(document.getElementById('statActiveToday')) document.getElementById('statActiveToday').innerText = activeTodayCount;
 
             if(usersArr.length === 0) {
                 container.innerHTML = `<div class="empty-state"><i class="fas fa-server"></i><p>Zero active user nodes.</p></div>`;
@@ -793,7 +861,8 @@
             let html = '';
             usersArr.forEach(user => {
                 let timeString = timeSince(user.sortTime);
-                let roleBadge = user.role === 'owner' ? `<span style="background:var(--warning); color:#000; font-size:9px; padding:2px 4px; border-radius:4px; margin-left:5px; font-weight:800; font-family:monospace;">ROOT</span>` : '';
+                // FIXED: Changed ROOT badge layout parameters to ADMIN
+                let roleBadge = user.role === 'owner' ? `<span style="background:var(--warning); color:#000; font-size:9px; padding:2px 4px; border-radius:4px; margin-left:5px; font-weight:800; font-family:monospace;">ADMIN</span>` : '';
 
                 html += `
                     <div class="item-card">
@@ -807,7 +876,8 @@
                             <div class="dropdown">
                                 <button class="dropdown-btn"><i class="fas fa-bars"></i></button>
                                 <div class="dropdown-content">
-                                    <button class="dropdown-item" onclick="openUserGiftModal('${user.uid}', '${user.name.replace(/'/g, "\\'")}', '${user.email}', '${user.avatarUrl}')"><i class="fas fa-bolt" style="color:var(--gift);"></i> Inject Data</button>
+                                    <button class="dropdown-item" onclick="openUserGiftModal('${user.uid}', '${user.name.replace(/'/g, "\\'")}', '${user.email}', '${user.avatarUrl}')"><i class="fas fa-gift" style="color:var(--gift);"></i> Gift</button>
+                                    <button class="dropdown-item" onclick="makeUserAdminProtocol('${user.uid}', '${user.email}')"><i class="fas fa-user-shield" style="color:var(--primary);"></i> Add Admin</button>
                                 </div>
                             </div>
                         </div>
@@ -893,7 +963,7 @@
         }
 
         databaseRef.ref('store_apps').on('value', (snap) => { 
-            document.getElementById('statLiveApps').innerText = snap.numChildren() || 0; 
+            if(document.getElementById('statLiveApps')) document.getElementById('statLiveApps').innerText = snap.numChildren() || 0; 
             
             storeAppsCacheForSelects = [];
             const vContainer = document.getElementById('voucherAppCheckboxContainer');
@@ -935,8 +1005,8 @@
             }
         });
 
-        databaseRef.ref('pending_apps').on('value', (snap) => { document.getElementById('statPendingApps').innerText = snap.numChildren() || 0; });
-        databaseRef.ref('reports').on('value', (snap) => { document.getElementById('statReports').innerText = snap.numChildren() || 0; });
+        databaseRef.ref('pending_apps').on('value', (snap) => { if(document.getElementById('statPendingApps')) document.getElementById('statPendingApps').innerText = snap.numChildren() || 0; });
+        databaseRef.ref('reports').on('value', (snap) => { if(document.getElementById('statReports')) document.getElementById('statReports').innerText = snap.numChildren() || 0; });
 
         databaseRef.ref('pending_apps').on('value', (snapshot) => {
             const container = document.getElementById('pendingContainerQueue');
@@ -1023,10 +1093,6 @@
             });
             warehouse.innerHTML = html;
         });
-
-        // -------------------------------------------------------------
-        // UPDATE: EDIT MODAL JAVASCRIPT FUNCTIONS (WITH ALL FEATURES)
-        // -------------------------------------------------------------
         
         window.toggleEditCoinPrice = function(val) {
             document.getElementById('editCoinPriceWrapper').style.display = (val === 'paid') ? 'block' : 'none';
@@ -1130,8 +1196,6 @@
                 databaseRef.ref(`store_apps/${key}`).remove();
             }
         };
-
-        // -------------------------------------------------------------
 
         window.toggleVoucherRewardInterface = function(val) {
             document.getElementById('voucherCoinUI').style.display = (val === 'coins') ? 'block' : 'none';
