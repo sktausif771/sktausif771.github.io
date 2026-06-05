@@ -319,7 +319,6 @@
         <a href="index.html" class="btn-exit"><i class="fas fa-sign-out-alt"></i> Exit</a>
     </header>
 
-    <!-- Sidebar Navigation Drawer Layout (BASIC ENGLISH) -->
     <div class="tab-menu-wrapper">
         <div class="sidebar-title">Menu</div>
         <div class="tab-chip active" onclick="switchAdminPanelSection('users', this)"><i class="fas fa-users"></i> Users</div>
@@ -331,7 +330,6 @@
         <div class="tab-chip" onclick="switchAdminPanelSection('config', this)"><i class="fas fa-cog"></i> Settings</div>
     </div>
 
-    <!-- Live Users Panel with Embedded Stats -->
     <div id="usersPanel" class="data-panel active">
         <div class="stats-grid">
             <div class="stat-card">
@@ -348,7 +346,6 @@
                     <div class="stat-lbl">Active Today</div>
                 </div>
             </div>
-            <!-- Prevent JS Error for removed elements -->
             <span class="hidden-sys-val" id="statLiveApps">0</span>
             <span class="hidden-sys-val" id="statPendingApps">0</span>
             <span class="hidden-sys-val" id="statReports">0</span>
@@ -374,7 +371,6 @@
         </div>
     </div>
 
-    <!-- REDEEM CODE PANEL -->
     <div id="voucherPanel" class="data-panel">
         <div class="config-wrapper">
             <div class="section-title"><i class="fas fa-magic"></i> Create Redeem Code</div>
@@ -423,7 +419,6 @@
         </div>
     </div>
 
-    <!-- REPORTS PANEL -->
     <div id="reportsPanel" class="data-panel">
         <div class="section-title"><i class="fas fa-bug"></i> User Reports</div>
         <div id="userReportsTrackingContainer">
@@ -431,7 +426,6 @@
         </div>
     </div>
 
-    <!-- NOTIFICATION PANEL -->
     <div id="noticesPanel" class="data-panel">
         <div class="config-wrapper">
             <div class="section-title"><i class="fas fa-bullhorn"></i> Send Notification</div>
@@ -442,14 +436,12 @@
             <label class="input-label">Notification Message</label>
             <textarea id="nMessage" class="glass-input" placeholder="Write message here..." style="min-height: 80px; resize:vertical;"></textarea>
             
-            <!-- FIXED: Dynamic Notification Type Selector -->
             <label class="input-label" style="color:var(--info);">Notification Type</label>
             <select id="nType" class="glass-input" onchange="toggleNotificationType(this.value)">
                 <option value="app">App Notification</option>
                 <option value="link">Link Notification</option>
             </select>
 
-            <!-- Show App List -->
             <div id="nAppContainer">
                 <label class="input-label">Select App</label>
                 <select id="nAppSelect" class="glass-input">
@@ -457,7 +449,6 @@
                 </select>
             </div>
 
-            <!-- Show Link Box -->
             <div id="nLinkContainer" style="display:none;">
                 <label class="input-label">External Link</label>
                 <input type="text" id="nLink" class="glass-input" placeholder="https://">
@@ -472,7 +463,6 @@
         </div>
     </div>
 
-    <!-- SETTINGS PANEL -->
     <div id="configPanel" class="data-panel">
         <div class="config-wrapper">
             <div class="section-title"><i class="fas fa-cog"></i> Settings</div>
@@ -515,7 +505,6 @@
         </div>
     </div>
 
-    <!-- MODALS -->
     <div class="modal-overlay" id="userGiftModal">
         <div class="play-modal">
             <div class="modal-header">
@@ -552,7 +541,6 @@
         </div>
     </div>
 
-    <!-- UPDATE: FULL APP EDITOR MODAL WITH ALL FEATURES & BASIC ENGLISH -->
     <div class="modal-overlay" id="masterAppEditModal">
         <div class="play-modal" style="max-width: 650px;">
             <div class="modal-header">
@@ -614,19 +602,10 @@
                     <p id="meLogoStatus" style="font-size:11px; color:var(--warning); margin-top:10px; font-family:monospace;"></p>
                 </div>
 
-                <label class="input-label" style="color:var(--primary);">Download Link</label>
-                <input type="text" id="meMainLink" class="glass-input">
-
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom: 10px;">
-                    <div style="background: rgba(255,61,0,0.05); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,61,0,0.2);">
-                        <label class="input-label" style="color:var(--danger);">Zip Password</label>
-                        <input type="text" id="mePassword" class="glass-input" placeholder="Password" style="margin-bottom:0;">
+                <label class="input-label" style="color:var(--primary);">Download Links (Max 5)</label>
+                <div id="meDynamicLinksContainer" style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; border: 1px solid var(--border-glass); margin-bottom: 10px; display: flex; flex-direction: column;">
                     </div>
-                    <div style="background: rgba(255,255,255,0.02); padding: 10px; border-radius: 8px; border: 1px solid var(--border-glass);">
-                        <label class="input-label">Password Link</label>
-                        <input type="text" id="meGetPassLink" class="glass-input" placeholder="Link" style="margin-bottom:0;">
-                    </div>
-                </div>
+                <button id="addMoreEditLinkBtn" class="btn-primary" style="background:transparent; border:1px dashed var(--primary); color:var(--primary); margin-bottom:15px;" onclick="addNewEditLinkRow()"><i class="fas fa-plus"></i> Add Link</button>
 
                 <label class="input-label">App Description</label>
                 <textarea id="meDescription" class="glass-input" style="min-height:90px; resize:vertical; line-height: 1.5; font-size: 13px;"></textarea>
@@ -636,14 +615,12 @@
         </div>
     </div>
 
-    <!-- LIGHTBOX -->
     <div class="lightbox-overlay" id="adminLightbox" onclick="closeAdminLightbox()" style="display: none;">
         <i class="fas fa-times lightbox-close" onclick="closeAdminLightbox()" style="position: absolute; top: 20px; right: 25px; font-size: 30px; color: #fff; cursor: pointer; z-index: 10000; text-shadow: 0 0 10px rgba(0,0,0,0.8); transition: 0.3s;"></i>
         <img src="" class="lightbox-img" id="adminLightboxImg" onclick="event.stopPropagation()" style="max-width: 90%; max-height: 90%; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
     </div>
 
 
-    <!-- SCRIPTS -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script src="firebase-config.js"></script>
@@ -1115,6 +1092,30 @@
             document.getElementById('editCoinPriceWrapper').style.display = (val === 'paid') ? 'block' : 'none';
         };
 
+        // NEW DYNAMIC LINK ROW ADDER
+        window.addNewEditLinkRow = function(title = '', url = '') {
+            const container = document.getElementById('meDynamicLinksContainer');
+            const rows = container.querySelectorAll('.dynamic-link-row').length;
+            
+            if (rows >= 5) {
+                alert("Maximum 5 links allowed.");
+                return;
+            }
+            
+            const newRow = document.createElement('div');
+            newRow.className = 'dynamic-link-row';
+            newRow.style.cssText = 'display:flex; gap:10px; margin-top:12px;';
+            newRow.innerHTML = `
+                <input type="text" class="glass-input ex-link-title" placeholder="Title (e.g. Server 1)" value="${title}" style="margin-bottom:0; flex:1;">
+                <input type="text" class="glass-input ex-link-url" placeholder="Download Link" value="${url}" style="margin-bottom:0; flex:2;">
+            `;
+            container.appendChild(newRow);
+            
+            if (rows + 1 >= 5) {
+                document.getElementById('addMoreEditLinkBtn').style.display = 'none';
+            }
+        };
+
         document.getElementById('meLogoFile').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if(!file) return;
@@ -1171,9 +1172,22 @@
                 document.getElementById('meLogoFile').value = '';
                 document.getElementById('meLogoStatus').innerText = '';
                 
-                document.getElementById('meMainLink').value = app.downloadUrl || "";
-                document.getElementById('mePassword').value = app.zipPassword || "";
-                document.getElementById('meGetPassLink').value = app.getPasswordLink || "";
+                // Set Dynamic Links
+                const linkContainer = document.getElementById('meDynamicLinksContainer');
+                linkContainer.innerHTML = '';
+                document.getElementById('addMoreEditLinkBtn').style.display = 'inline-block';
+                
+                if (app.downloadUrl) {
+                    addNewEditLinkRow('Main Link', app.downloadUrl);
+                } else {
+                    addNewEditLinkRow('', '');
+                }
+                
+                if (app.extraLinks && Array.isArray(app.extraLinks)) {
+                    app.extraLinks.forEach(link => {
+                        addNewEditLinkRow(link.title, link.url);
+                    });
+                }
                 
                 document.getElementById('meDescription').value = app.description || "";
                 
@@ -1184,9 +1198,24 @@
         window.submitMasterAppUpdate = function() {
             let appId = document.getElementById('meAppId').value;
             let name = document.getElementById('meName').value.trim();
-            let link = document.getElementById('meMainLink').value.trim();
             
-            if(!name || !link) { alert("Title and Link are required."); return; }
+            // Collect Links
+            let collectedLinks = [];
+            const container = document.getElementById('meDynamicLinksContainer');
+            const titles = container.querySelectorAll('.ex-link-title');
+            const urls = container.querySelectorAll('.ex-link-url');
+            let mainLink = "";
+
+            for(let i = 0; i < urls.length; i++) {
+                let tVal = titles[i].value.trim();
+                let uVal = urls[i].value.trim();
+                if(uVal !== "") {
+                    if(mainLink === "") mainLink = uVal; 
+                    collectedLinks.push({ title: tVal || `Link ${i + 1}`, url: uVal });
+                }
+            }
+            
+            if(!name || mainLink === "") { alert("App Title and at least one Download Link are required."); return; }
             
             let updates = {
                 appName: name,
@@ -1197,9 +1226,8 @@
                 coinPrice: parseInt(document.getElementById('meCoinPrice').value) || 0,
                 isTrending: document.getElementById('meTrending').checked,
                 logoUrl: document.getElementById('meLogoUrl').value.trim() || "https://via.placeholder.com/150",
-                downloadUrl: link,
-                zipPassword: document.getElementById('mePassword').value.trim(),
-                getPasswordLink: document.getElementById('meGetPassLink').value.trim(),
+                downloadUrl: mainLink, // Fallback
+                extraLinks: collectedLinks,
                 description: document.getElementById('meDescription').value.trim()
             };
             
@@ -1346,7 +1374,6 @@
         });
         window.dropReportNodeFromRegistry = function(key) { if(confirm("Dismiss this report?")) databaseRef.ref(`reports/${key}`).remove(); };
 
-        // UPDATE: Toggle Notification Type (App or Link)
         window.toggleNotificationType = function(val) {
             document.getElementById('nAppContainer').style.display = (val === 'app') ? 'block' : 'none';
             document.getElementById('nLinkContainer').style.display = (val === 'link') ? 'block' : 'none';
