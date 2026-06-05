@@ -302,7 +302,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     auth.onAuthStateChanged((user) => {
+        const topLoginBtn = document.getElementById('topLoginBtn');
+        const topProfilePic = document.getElementById('topProfileBtn');
+        const menuPublishItem = document.getElementById('menuPublishItem');
+        const menuCoinItem = document.getElementById('menuCoinItem');
+        const menuSignOutItem = document.getElementById('menuSignOutItem');
+        const redeemBoxSection = document.getElementById('redeemBoxSection');
+        const youTabAvatar = document.getElementById('youTabAvatar');
+        const youTabName = document.getElementById('youTabName');
+        const youTabEmail = document.getElementById('youTabEmail');
+
         if (user) {
+            // UI elements for logged in user
+            if(topLoginBtn) topLoginBtn.style.display = 'none';
+            if(topProfilePic) topProfilePic.style.display = 'block';
+            if(menuPublishItem) menuPublishItem.style.display = 'flex';
+            if(menuCoinItem) menuCoinItem.style.display = 'flex';
+            if(menuSignOutItem) menuSignOutItem.style.display = 'flex';
+            if(redeemBoxSection) redeemBoxSection.style.display = 'block';
+
             db.ref('users/' + user.uid).on('value', (snapshot) => {
                 if (!snapshot.exists()) return;
                 
@@ -316,22 +334,29 @@ document.addEventListener('DOMContentLoaded', () => {
                     sessionStorage.setItem('mvx_role', userProfile.role || 'user');
                 }
 
-                const topProfilePic = document.getElementById('topProfileBtn');
-                const youTabAvatar = document.getElementById('youTabAvatar');
-                
                 if (topProfilePic) topProfilePic.src = userProfile.avatarUrl;
                 if (youTabAvatar) youTabAvatar.src = userProfile.avatarUrl;
 
-                if (document.getElementById('youTabName')) document.getElementById('youTabName').innerText = userProfile.name;
-                if (document.getElementById('youTabEmail')) document.getElementById('youTabEmail').innerText = userProfile.email;
+                if (youTabName) youTabName.innerText = userProfile.name;
+                if (youTabEmail) youTabEmail.innerText = userProfile.email;
                 if (document.getElementById('navCoinDisplay')) document.getElementById('navCoinDisplay').innerText = userProfile.coins || 0;
-                if (document.getElementById('userFollowersCount')) document.getElementById('userFollowersCount').innerText = userProfile.followers || 0;
-                if (document.getElementById('userFollowingCount')) document.getElementById('userFollowingCount').innerText = userProfile.following || 0;
             });
         } else {
+            // UI elements for logged out user (Guest mode)
             sessionStorage.removeItem('mvx_role');
             sessionStorage.removeItem('mvx_session');
             userProfile = null;
+
+            if(topLoginBtn) topLoginBtn.style.display = 'block';
+            if(topProfilePic) topProfilePic.style.display = 'none';
+            if(menuPublishItem) menuPublishItem.style.display = 'none';
+            if(menuCoinItem) menuCoinItem.style.display = 'none';
+            if(menuSignOutItem) menuSignOutItem.style.display = 'none';
+            if(redeemBoxSection) redeemBoxSection.style.display = 'none';
+
+            if (youTabAvatar) youTabAvatar.src = "https://via.placeholder.com/70/121212/00e6b8?text=GUEST";
+            if (youTabName) youTabName.innerText = "Guest User";
+            if (youTabEmail) youTabEmail.innerText = "Please login to access profile";
         }
     });
 

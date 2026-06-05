@@ -34,13 +34,18 @@
                 <div class="noti-badge" id="notiAlert"></div>
             </div>
             
-            <img src="" alt="User Profile" class="top-profile-pic" id="topProfileBtn" 
-                 onmousedown="startMasterLockTimer()" 
-                 onmouseup="clearMasterLockTimer()" 
-                 onmouseleave="clearMasterLockTimer()" 
-                 ontouchstart="startMasterLockTimer()" 
-                 ontouchend="clearMasterLockTimer()" 
-                 onclick="openProfileQuickSettings()">
+            <div id="topAuthArea" style="display: flex; align-items: center;">
+                <div id="topLoginBtn" onclick="window.location.href='login.html'" style="color: var(--primary); font-family: 'Orbitron', sans-serif; font-size: 13px; font-weight: 800; cursor: pointer; padding: 6px 12px; border: 1px solid var(--primary); border-radius: 8px; display: none;">LOGIN</div>
+                
+                <img src="" alt="User Profile" class="top-profile-pic" id="topProfileBtn" 
+                     style="display: none;"
+                     onmousedown="startMasterLockTimer()" 
+                     onmouseup="clearMasterLockTimer()" 
+                     onmouseleave="clearMasterLockTimer()" 
+                     ontouchstart="startMasterLockTimer()" 
+                     ontouchend="clearMasterLockTimer()" 
+                     onclick="openProfileQuickSettings()">
+            </div>
         </div>
     </header>
 
@@ -94,20 +99,15 @@
     </main>
 
     <main class="play-main-content" id="youTabContent" style="display: none;">
-        <div class="you-header">
-            <img src="" id="youTabAvatar" alt="User Avatar Image">
+        <div class="you-header" id="youTabHeader">
+            <img src="https://via.placeholder.com/70/121212/00e6b8?text=GUEST" id="youTabAvatar" alt="User Avatar Image">
             <div class="you-info">
-                <h2 id="youTabName">Fetching Name...</h2>
-                <p id="youTabEmail">user@mvx.com</p>
-                
-                <div class="follow-stats">
-                    <span id="lblFollowers">Followers: <strong id="userFollowersCount">0</strong></span>
-                    <span id="lblFollowing">Following: <strong id="userFollowingCount">0</strong></span>
+                <h2 id="youTabName">Guest User</h2>
+                <p id="youTabEmail">Please login to access profile</p>
                 </div>
-            </div>
         </div>
 
-        <div class="redeem-box" style="max-width: 350px; margin: 0 auto 25px auto; padding: 15px; border-radius: 12px;">
+        <div class="redeem-box" id="redeemBoxSection" style="max-width: 350px; margin: 0 auto 25px auto; padding: 15px; border-radius: 12px; display: none;">
             <h4 id="lblClaimTitle" style="font-size: 15px; margin-bottom: 12px;"><i class="fas fa-gift" style="color: var(--primary);"></i> Claim Premium Gift Code</h4>
             <div style="display: flex; gap: 8px;">
                 <input type="text" id="redeemInputCode" class="play-input" placeholder="Enter Redeem Voucher Code" style="margin-bottom:0; text-transform:uppercase; font-family:monospace; font-size:14px; font-weight:bold; letter-spacing:1px; padding: 10px;">
@@ -117,7 +117,7 @@
         </div>
 
         <div class="you-menu-list">
-            <div class="you-menu-item" onclick="openUploadModal()">
+            <div class="you-menu-item" id="menuPublishItem" onclick="openUploadModal()" style="display: none;">
                 <i class="fas fa-cloud-upload-alt" style="color: var(--primary);"></i>
                 <span id="lblUploadApp">Publish Package File</span>
                 <i class="fas fa-chevron-right arrow"></i>
@@ -135,13 +135,13 @@
                 <i class="fas fa-exchange-alt arrow" style="font-size:14px;"></i>
             </div>
             
-            <div class="you-menu-item">
+            <div class="you-menu-item" id="menuCoinItem" style="display: none;">
                 <i class="fas fa-wallet" style="color: #ffd700;"></i>
                 <span id="lblCoinBalance">MVX Coin Balance</span>
                 <span style="margin-left:auto; margin-right:15px; font-weight:900; color:#ffd700; font-size:16px;" id="navCoinDisplay">0</span>
             </div>
             
-            <div class="you-menu-item" style="color: var(--danger);" onclick="secureLogout()">
+            <div class="you-menu-item" id="menuSignOutItem" style="color: var(--danger); display: none;" onclick="secureLogout()">
                 <i class="fas fa-sign-out-alt"></i>
                 <span id="lblSignOut">Secure Sign Out</span>
             </div>

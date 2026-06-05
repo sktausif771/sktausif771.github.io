@@ -60,14 +60,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const tabEmail = document.getElementById('youTabEmail');
         const tabAvatar = document.getElementById('youTabAvatar');
         const coinDisplay = document.getElementById('navCoinDisplay');
-        const followersCount = document.getElementById('userFollowersCount');
-        const followingCount = document.getElementById('userFollowingCount');
 
         if (tabName) tabName.innerText = userProfile.name || "MVX User";
         if (tabEmail) tabEmail.innerText = userProfile.email || "";
         if (coinDisplay) coinDisplay.innerText = userProfile.coins || 0;
-        if (followersCount) followersCount.innerText = userProfile.followers || 0;
-        if (followingCount) followingCount.innerText = userProfile.following || 0;
         
         if (tabAvatar) {
             tabAvatar.src = userProfile.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile.name}`;
