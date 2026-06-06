@@ -24,21 +24,15 @@
     --font-body: 'Space Grotesk', sans-serif;
 }
 
-/* LIGHT THEME PROTOCOL (PREMIUM FIXED) */
+/* LIGHT THEME PROTOCOL */
 [data-theme="light"] {
-    --bg-base: #f0f2f5;
+    --bg-base: #f5f6fa;
     --bg-surface: #ffffff;
-    --primary: #00b894;
-    --primary-dim: rgba(0, 184, 148, 0.1);
-    --primary-shadow: 0 4px 15px rgba(0, 184, 148, 0.2);
-    --text-primary: #2d3436;
-    --text-secondary: #636e72;
-    --border-color: #dfe6e9;
-    --danger: #d63031;
-    --warning: #f39c12;
-    --success: #00b894;
-    --free-color: #00b894;
-    --paid-color: #e17055;
+    --primary: #00c49a;
+    --primary-dim: rgba(0, 196, 154, 0.15);
+    --text-primary: #121212;
+    --text-secondary: #555555;
+    --border-color: #e0e0e0;
 }
 
 * {
@@ -173,17 +167,17 @@ body {
     align-items: center;
 }
 
-/* ==================== 3. APP CARDS (LIST VIEW) - FIXED UI ==================== */
+/* ==================== 3. APP CARDS (LIST VIEW) ==================== */
 .play-app-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 12px; /* Tighter gap for better layout */
+    gap: 15px;
 }
 .app-card {
     background: var(--bg-surface);
     border: 1px solid var(--border-color);
     border-radius: 16px;
-    padding: 12px 15px; /* Clean padding */
+    padding: 15px;
     display: flex;
     align-items: center;
     gap: 15px;
@@ -196,9 +190,9 @@ body {
     transform: translateY(-2px);
 }
 .app-icon-large {
-    width: 55px; /* Smaller picture size */
-    height: 55px;
-    border-radius: 12px;
+    width: 65px;
+    height: 65px;
+    border-radius: 14px;
     object-fit: cover;
     border: 1px solid var(--border-color);
     flex-shrink: 0;
@@ -211,49 +205,41 @@ body {
 }
 .app-title-list {
     font-family: var(--font-header);
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 700;
     color: var(--text-primary);
-    margin-bottom: 2px;
+    margin-bottom: 4px;
     white-space: normal;
     overflow: visible;
     text-overflow: unset;
-    line-height: 1.2;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-.app-title-list .verified-tick {
-    color: var(--primary);
-    font-size: 13px; /* Beautiful verified tick icon size */
+    line-height: 1.3;
 }
 .app-dev-list {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--text-secondary);
-    margin-bottom: 4px;
+    margin-bottom: 6px;
 }
 .app-meta-list {
     font-size: 11px;
     color: var(--text-secondary);
     display: flex;
-    gap: 12px;
+    gap: 15px;
     font-weight: 600;
 }
 .badge {
     position: absolute;
-    top: -8px;
+    top: -10px;
     right: 15px;
     padding: 4px 10px;
     border-radius: 6px;
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 800;
     letter-spacing: 0.5px;
-    text-transform: uppercase;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 .badge-free { background: var(--free-color); color: #000; }
 .badge-paid { background: var(--paid-color); color: #000; }
-.badge-locked { background: var(--danger); color: #fff; } /* New Locked Badge */
+.badge-locked { background: var(--danger); color: #fff; }
 
 /* ==================== 4. BOTTOM NAVIGATION ==================== */
 .play-bottom-nav {
@@ -395,7 +381,7 @@ body {
 .tag-input-field {
     border: none;
     background: transparent;
-    color: var(--text-primary);
+    color: #fff;
     outline: none;
     flex: 1;
     min-width: 100px;
@@ -440,7 +426,7 @@ body {
     font-weight: 600;
     font-size: 14px;
 }
-.you-menu-item:hover { background: rgba(0,0,0,0.05); }
+.you-menu-item:hover { background: rgba(255,255,255,0.02); }
 .you-menu-item:last-child { border-bottom: none; }
 .you-menu-item i:first-child { width: 30px; font-size: 18px; text-align: center; margin-right: 10px; }
 .you-menu-item .arrow { margin-left: auto; color: var(--text-secondary); font-size: 12px; }
@@ -489,7 +475,7 @@ body {
     padding: 12px 15px; font-size: 13px; color: var(--text-primary);
     cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: 600;
 }
-.dropdown-item:hover { background: rgba(0,0,0,0.05); }
+.dropdown-item:hover { background: rgba(255,255,255,0.05); }
 .dropdown-item.report-btn { color: var(--danger); border-top: 1px solid var(--border-color); }
 
 /* ==================== 12. RATING DISTRIBUTION & INTERACTIVE STARS ==================== */
@@ -509,9 +495,10 @@ body {
 .rating-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
 .rating-row:last-child { margin-bottom: 0; }
 .rating-star-lbl { font-size: 13px; color: var(--text-secondary); width: 45px; display: flex; align-items: center; gap: 5px; font-weight: 700; }
-.rating-bar-bg { flex: 1; height: 10px; background: rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden; }
+.rating-bar-bg { flex: 1; height: 10px; background: rgba(255, 255, 255, 0.05); border-radius: 10px; overflow: hidden; }
 .rating-bar-fill { height: 100%; background: var(--primary); border-radius: 10px; transition: width 0.5s ease-out; }
 
+/* UPDATE: INTERACTIVE RATING UI */
 .user-rating-input-zone {
     background: var(--bg-surface);
     border: 1px solid var(--border-color);
@@ -531,7 +518,7 @@ body {
     justify-content: center;
     gap: 10px;
     font-size: 30px;
-    color: rgba(0,0,0,0.1);
+    color: rgba(255,255,255,0.1);
     cursor: pointer;
 }
 .rating-stars-input-container i { transition: color 0.2s, transform 0.2s; }
@@ -553,7 +540,7 @@ body {
 }
 .rating-confirm-btn:active { transform: scale(0.95); }
 
-/* ==================== 13. V5.6 PROFILE ENHANCEMENTS & NOTIFICATION EXTRAS ==================== */
+/* ==================== 13. V5.6 PROFILE ENHANCEMENTS ==================== */
 .profile-edit-name {
     cursor: pointer;
     display: flex;
@@ -585,80 +572,4 @@ body {
     background: var(--primary);
     color: #000;
     transform: scale(1.1);
-}
-
-/* --- UPLOAD PLUS BUTTON & LINK BUTTON --- */
-.upload-plus-box {
-    width: 70px;
-    height: 70px;
-    border-radius: 12px;
-    border: 2px dashed var(--border-color);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    font-size: 24px;
-    color: var(--text-secondary);
-    background: rgba(0,0,0,0.02);
-    transition: 0.3s;
-}
-.upload-plus-box:hover {
-    border-color: var(--primary);
-    color: var(--primary);
-    background: var(--primary-dim);
-}
-
-.add-link-btn {
-    background: transparent;
-    color: var(--primary);
-    border: 1px dashed var(--primary);
-    padding: 10px 15px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    transition: 0.3s;
-    width: 100%;
-}
-.add-link-btn:hover {
-    background: var(--primary-dim);
-}
-
-/* --- NOTIFICATION APP UI --- */
-.noti-app-preview {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-top: 10px;
-    padding: 10px;
-    background: rgba(0,0,0,0.05);
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-}
-.noti-app-logo {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-    object-fit: cover;
-    border: 1px solid var(--border-color);
-}
-.noti-action-btn {
-    background: var(--primary);
-    color: #000;
-    padding: 6px 15px;
-    border-radius: 6px;
-    font-size: 11px;
-    font-weight: 700;
-    text-decoration: none;
-    display: inline-block;
-    margin-top: 10px;
-    transition: 0.2s;
-}
-.noti-action-btn:hover {
-    transform: scale(0.97);
-    opacity: 0.9;
 }

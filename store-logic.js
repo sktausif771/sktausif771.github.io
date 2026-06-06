@@ -111,6 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (tabName) tabName.innerText = realName;
         if (tabEmail) tabEmail.innerText = userProfile.email || currentUser.email || "";
         
+        // Exact Coin Balance Fix
         if (coinDisplay) {
             coinDisplay.innerText = userProfile.coins !== undefined ? userProfile.coins : 0;
         }
@@ -120,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================================================
-    // 5. PLAY STORE DATA RENDERING GRID (UPDATED UI & LOCKED BADGE)
+    // 5. PLAY STORE DATA RENDERING GRID (LOAD BUG FIXED)
     // ==========================================================================
     window.loadStoreFeed = function(filter, contentType) {
         activeFilterType = filter || activeFilterType;
@@ -172,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <span class="badge ${badgeClass}">${priceLabel}</span>
                             <img src="${app.logoUrl}" class="app-icon-large" loading="lazy" onerror="this.src='https://via.placeholder.com/75/121212/00e6b8?text=FILE'">
                             <div class="app-info-list" style="width: 100%; word-wrap: break-word; white-space: normal;">
-                                <h3 class="app-title-list">${app.appName} <i class="fas fa-check-circle verified-tick"></i></h3>
+                                <h3 class="app-title-list" style="white-space: normal; overflow: visible; text-overflow: unset; line-height: 1.3; font-size: 17px;">${app.appName} <i class="fas fa-check-circle verified-tick" style="color:var(--primary); font-size:13px; margin-left:4px;"></i></h3>
                                 <div class="app-dev-list">${app.developerName || app.uploaderName || "Developer"} • ${app.size || "0 MB"}</div>
                                 <div class="app-meta-list">
                                     <span style="color:var(--primary); font-weight:700;"><i class="fas fa-arrow-alt-circle-down"></i> ${app.downloads || 0}</span>
@@ -196,6 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // AUTO LOAD APPS ON START
     setTimeout(() => {
         if(typeof window.loadStoreFeed === 'function') {
             window.loadStoreFeed('all', 'mod_app');
@@ -261,10 +263,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const isMasterOwner = (userProfile && userProfile.role === 'owner');
         uploadedScreenshotsList = []; 
 
-        let categoryOptionsHTML = `<option value="free">Free App</option>`;
+        let categoryOptionsHTML = `<option value="free">Free</option>`;
         if (isMasterOwner) {
-            categoryOptionsHTML += `<option value="paid">Premium (Coins)</option>`;
-            categoryOptionsHTML += `<option value="locked">Locked (Video Link)</option>`;
+            categoryOptionsHTML += `<option value="paid">Premium</option>`;
+            categoryOptionsHTML += `<option value="locked">Locked</option>`;
         }
 
         let encodingMethodsHTML = `<option value="imgbb">ImgBB Upload</option>`;
@@ -321,9 +323,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         <input type="number" id="pCoinPrice" class="play-input" placeholder="0" value="0">
                     </div>
 
-                    <div id="videoLinkWrapper" style="display:none;">
+                    <div id="videoLinkWrapper" style="display:none; margin-bottom: 15px;">
                         <label class="modal-label" style="color:var(--danger);">Unlock Video Link</label>
-                        <input type="text" id="pVideoLink" class="play-input" placeholder="Paste YouTube/Tutorial link here">
+                        <input type="text" id="pVideoLink" class="play-input" placeholder="Paste YouTube/Tutorial link here" style="margin-bottom: 0;">
                     </div>
 
                     <div style="display:flex; gap:20px; margin-bottom:20px; background: rgba(255,255,255,0.02); padding: 15px; border-radius: 10px; border: 1px solid var(--border-color);">
@@ -716,49 +718,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================================================
     // 12. DIRECT AVATAR UPLOAD LISTENER & MY UPLOADS LOGIC
     // ==========================================================================
-    document.body.addEventListener('change', (e) => {
-        if (e.target && e.target.id === 'directAvatarUpload') {
-            const file = e.target.files[0];
-            if (!file || !currentUser) return;
-
-            const status = document.getElementById('directAvatarStatus');
-            if (status) {
-                status.style.display = 'block';
-                status.innerText = "Uploading Avatar to ImgBB...";
-                status.style.color = "var(--warning)";
-            }
-
-            const formData = new FormData();
-            formData.append("image", file);
-
-            fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-                method: "POST",
-                body: formData
-            })
-            .then(res => res.json())
-            .then(json => {
-                if (json.success) {
-                    const newAvatarUrl = json.data.url;
-                    db.ref('users/' + currentUser.uid).update({
-                        avatarUrl: newAvatarUrl
-                    }).then(() => {
-                        if (status) {
-                            status.innerText = "Avatar Updated Successfully!";
-                            status.style.color = "var(--success)";
-                            setTimeout(() => { status.style.display = 'none'; }, 3000);
-                        }
-                    });
-                } else {
-                    if (status) { status.innerText = "Upload failed."; status.style.color = "var(--danger)"; }
-                }
-            })
-            .catch(() => {
-                if (status) { status.innerText = "Network Error."; status.style.color = "var(--danger)"; }
-            });
-        }
-    });
-
-    // My Uploads Fetch Engine (UI Fixed to Match Main Grid)
     window.fetchMyUploadedApps = function() {
         const container = document.getElementById('myUploadsContainer');
         if (!currentUser) {
@@ -804,9 +763,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 html += `
                     <div style="display:flex; align-items:center; gap:12px; background:rgba(0,0,0,0.2); margin-bottom:12px; padding:12px; border-radius:12px; border:1px solid var(--border-glass);">
-                        <img src="${app.logoUrl}" style="width:55px; height:55px; border-radius:10px; object-fit:cover; border:1px solid var(--border-glass);">
+                        <img src="${app.logoUrl}" style="width:48px; height:48px; border-radius:10px; object-fit:cover; border:1px solid var(--border-glass);">
                         <div style="flex:1; overflow:hidden;">
-                            <h4 style="font-size:14px; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:4px; display:flex; align-items:center; gap:6px;">${app.appName} <i class="fas fa-check-circle verified-tick" style="color:var(--primary); font-size:12px;"></i></h4>
+                            <h4 style="font-size:14px; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:4px;">${app.appName}</h4>
                             <p style="font-size:12px; color:var(--text-dim); display:flex; align-items:center; gap:8px;">v${app.version} • ${statusBadge}</p>
                         </div>
                         <div style="display:flex; gap:8px;">

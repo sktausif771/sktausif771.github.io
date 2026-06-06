@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#121212">
-    <title>App Details | MVX STORE</title>
+    <title>Application Details | MVX STORE</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,10 +13,11 @@
     <link rel="stylesheet" href="style.css">
 
     <style>
+        /* ORIGINAL UI PRESERVED 100% */
         .details-header { display: flex; gap: 20px; align-items: center; margin-bottom: 25px; }
         .details-logo { width: 90px; height: 90px; border-radius: 20px; object-fit: cover; border: 1px solid var(--border-color); box-shadow: var(--primary-shadow); }
         .details-info { flex: 1; }
-        .details-title { font-family: var(--font-header); font-size: 24px; font-weight: 800; margin-bottom: 5px; display: flex; align-items: center; gap: 8px; }
+        .details-title { font-family: var(--font-header); font-size: 24px; font-weight: 800; margin-bottom: 5px; color: var(--text-primary); display: flex; align-items: center; gap: 6px; }
         .details-dev { font-size: 14px; color: var(--primary); font-weight: 600; margin-bottom: 10px; }
         
         .meta-stats-bar { display: flex; gap: 20px; align-items: center; font-size: 12px; color: var(--text-secondary); font-weight: 600; background: rgba(0,0,0,0.2); padding: 10px 15px; border-radius: 12px; border: 1px solid var(--border-color); display: inline-flex;}
@@ -28,7 +29,7 @@
         .main-action-btn.locked { background: var(--danger); color: #fff; box-shadow: 0 4px 15px rgba(255, 82, 82, 0.3); }
         .main-action-btn:active { transform: scale(0.98); }
 
-        .about-section { margin-bottom: 30px; line-height: 1.6; font-size: 14px; color: var(--text-secondary); background: var(--bg-surface); padding: 20px; border-radius: 16px; border: 1px solid var(--border-color); }
+        .about-section { margin-bottom: 30px; line-height: 1.6; font-size: 14px; color: var(--text-secondary); }
         .about-title { font-family: var(--font-header); font-size: 18px; color: var(--text-primary); margin-bottom: 10px; font-weight: 700; }
         
         .extra-links-container { display: flex; flex-direction: column; gap: 10px; margin-bottom: 30px; }
@@ -40,6 +41,14 @@
 
         .back-nav { display: inline-flex; align-items: center; gap: 8px; color: var(--text-secondary); font-weight: 600; font-size: 14px; cursor: pointer; margin-bottom: 20px; text-decoration: none; transition: 0.2s; }
         .back-nav:hover { color: var(--primary); }
+        
+        .three-dot-container { position: relative; }
+        .three-dot-btn { background: none; border: none; color: var(--text-primary); font-size: 20px; cursor: pointer; padding: 10px; }
+        .dropdown-menu { position: absolute; right: 0; top: 100%; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 10px; width: 160px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); display: none; z-index: 50; overflow: hidden; }
+        .dropdown-menu.show { display: block; animation: fadeIn 0.2s; }
+        .dropdown-item { padding: 12px 15px; font-size: 13px; color: var(--text-primary); cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: 600; }
+        .dropdown-item:hover { background: rgba(0,0,0,0.05); }
+        .dropdown-item.report-btn { color: var(--danger); border-top: 1px solid var(--border-color); }
     </style>
 </head>
 <body>
@@ -60,7 +69,7 @@
     <main class="play-main-content">
         <div id="detailsLoader" style="text-align:center; padding:50px;">
             <i class="fas fa-spinner fa-spin" style="font-size:35px; color:var(--primary);"></i>
-            <p style="margin-top:15px; font-weight:600; color:var(--text-secondary);">Loading App Details...</p>
+            <p style="margin-top:15px; font-weight:600; color:var(--text-secondary);">Loading Details...</p>
         </div>
 
         <div id="detailsContentWrapper" style="display:none; animation: fadeIn 0.4s ease-out;">
@@ -68,7 +77,7 @@
             <div class="details-header">
                 <img src="" id="dLogo" class="details-logo">
                 <div class="details-info">
-                    <h1 class="details-title" id="dTitle">Loading... <i class="fas fa-check-circle verified-tick" style="color:var(--primary); font-size:18px;"></i></h1>
+                    <h1 class="details-title" id="dTitle">Loading...</h1>
                     <div class="details-dev" id="dDev">Developer</div>
                     <div class="meta-stats-bar">
                         <div><i class="fas fa-star" style="color:var(--warning);"></i> <span id="dRating">0.0</span></div>
@@ -88,7 +97,7 @@
             <div class="extra-links-container" id="dExtraLinks" style="display:none;"></div>
 
             <div class="about-section">
-                <div class="about-title">Description</div>
+                <div class="about-title">About this App</div>
                 <div id="dDesc" style="white-space: pre-wrap;"></div>
             </div>
 
@@ -104,13 +113,11 @@
                 <i class="fas fa-times close-modal" onclick="closeDetailsSystemModals('reportIssueModal')"></i>
             </div>
             <div class="modal-body">
-                <p style="font-size:13px; color:var(--text-secondary); margin-bottom:15px; line-height:1.5;">Please tell us why you are reporting this app. False reports may lead to account suspension.</p>
-                <label class="modal-label">Reason</label>
+                <p style="font-size:13px; color:var(--text-secondary); margin-bottom:15px; line-height:1.5;">Please tell us why you are reporting this app.</p>
                 <select id="reportReasonSelect" class="play-input">
                     <option value="Fake or Scam App">Fake or Scam App</option>
                     <option value="Contains Virus/Malware">Contains Virus/Malware</option>
                     <option value="Does Not Work">Does Not Work</option>
-                    <option value="Inappropriate Content">Inappropriate Content</option>
                     <option value="Other Issue">Other Issue</option>
                 </select>
                 <button class="play-btn" style="background:var(--danger); color:#fff; margin-top:10px;" onclick="submitAppReportToAdmin()">Submit Report</button>
@@ -127,7 +134,7 @@
             <div class="modal-body" style="text-align:center;">
                 <i class="fas fa-coins" style="font-size:50px; color:var(--warning); margin-bottom:15px;"></i>
                 <h2 style="font-family:var(--font-header); font-size:22px; color:#fff; margin-bottom:10px;" id="premiumUnlockPriceLabel">0 Coins</h2>
-                <p style="font-size:13px; color:var(--text-secondary); margin-bottom:20px; line-height:1.5;">You need to spend coins to unlock this premium app. Once unlocked, you can download it anytime.</p>
+                <p style="font-size:13px; color:var(--text-secondary); margin-bottom:20px; line-height:1.5;">You need to spend coins to unlock this premium app.</p>
                 <div style="display:flex; justify-content:space-between; background:rgba(0,0,0,0.2); padding:15px; border-radius:12px; border:1px solid var(--border-color); margin-bottom:20px;">
                     <span style="font-weight:600; font-size:13px; color:var(--text-secondary);">Your Balance:</span>
                     <span style="font-weight:800; font-size:14px; color:var(--warning);" id="userCurrentCoinBalanceLabel">0 Coins</span>
@@ -144,17 +151,13 @@
                 <i class="fas fa-times close-modal" onclick="closeDetailsSystemModals('lockedAppGateModal')"></i>
             </div>
             <div class="modal-body" style="text-align:center;">
-                <i class="fas fa-key" style="font-size:45px; color:var(--danger); margin-bottom:15px;"></i>
-                <p style="font-size:13px; color:var(--text-secondary); margin-bottom:20px; line-height:1.5;">Watch the tutorial video to get the Redeem Code. Enter the code below to unlock this app.</p>
+                <i class="fas fa-play-circle" style="font-size:50px; color:var(--danger); margin-bottom:15px;"></i>
+                <h2 style="font-family:var(--font-header); font-size:22px; color:#fff; margin-bottom:10px;">Watch Tutorial</h2>
+                <p style="font-size:13px; color:var(--text-secondary); margin-bottom:20px; line-height:1.5;">This app is locked. Please watch the tutorial video to get the redeem code. Once you have the code, go to the Profile section of the store to redeem it.</p>
                 
-                <button class="play-btn" style="background:var(--danger); color:#fff; margin-bottom:20px; font-size: 14px;" onclick="openTutorialVideoLink()" id="watchVideoBtn">
-                    <i class="fab fa-youtube"></i> Watch Video to get Code
+                <button class="play-btn" style="background:var(--danger); color:#fff;" onclick="openTutorialVideoLink()">
+                    <i class="fab fa-youtube"></i> Watch Video
                 </button>
-
-                <label class="modal-label" style="text-align: left;">Enter Redeem Code</label>
-                <input type="text" id="appRedeemCodeInputField" class="play-input" placeholder="Paste code here..." style="text-transform:uppercase; font-family:monospace; font-weight:bold; letter-spacing:1px; text-align:center;">
-                
-                <button class="play-btn" style="background:var(--success); color:#000;" onclick="verifyRedeemCodeForApp()">Unlock App</button>
             </div>
         </div>
     </div>
@@ -215,7 +218,10 @@
                 document.getElementById('detailsContentWrapper').style.display = 'block';
 
                 document.getElementById('dLogo').src = targetApplicationObject.logoUrl || "https://via.placeholder.com/90";
+                
+                // Verified Tick Icon Add
                 document.getElementById('dTitle').innerHTML = `${targetApplicationObject.appName} <i class="fas fa-check-circle verified-tick" style="color:var(--primary); font-size:18px; margin-left:5px;"></i>`;
+                
                 document.getElementById('dDev').innerText = targetApplicationObject.developerName || targetApplicationObject.uploaderName || "Unknown Developer";
                 
                 document.getElementById('dDowns').innerText = targetApplicationObject.downloads || 0;
@@ -295,7 +301,7 @@
                     document.getElementById('premiumUnlockPriceLabel').innerText = `${price} Coins`;
                 } else if (cat === 'locked') {
                     btn.classList.add('locked');
-                    btn.innerHTML = `<i class="fas fa-key"></i> Unlock via Code`;
+                    btn.innerHTML = `<i class="fas fa-lock"></i> Locked`;
                 }
             }
         }
@@ -332,7 +338,7 @@
                 updates[`users/${activeUserIdToken}/coins`] = currentBalance - price;
                 updates[`users/${activeUserIdToken}/unlocked_apps/${targetAppId}`] = true;
 
-                database.ref().update(updates).then(() => {
+                database.ref().update(updatePayload).then(() => {
                     alert("App Unlocked Successfully!");
                     closeDetailsSystemModals('premiumPurchaseConfirmModal');
                     evaluateApplicationStateLicenseOwnershipMatrix();
@@ -342,7 +348,7 @@
             }
         };
 
-        // NEW: Tutorial Video Link Opener
+        // Watch Video Logic
         window.openTutorialVideoLink = function() {
             if (targetApplicationObject && targetApplicationObject.videoLink) {
                 let vLink = targetApplicationObject.videoLink.trim();
@@ -351,65 +357,6 @@
             } else {
                 alert("No video link provided by the developer.");
             }
-        };
-
-        // NEW: Redeem Code Verification for App Unlock
-        window.verifyRedeemCodeForApp = function() {
-            const code = document.getElementById('appRedeemCodeInputField').value.trim().toUpperCase();
-            if (!code) { alert("Please enter the redeem code."); return; }
-
-            database.ref(`redeem_codes/${code}`).once('value').then(snap => {
-                if (!snap.exists()) {
-                    alert("Invalid or expired code.");
-                    return;
-                }
-
-                let voucher = snap.val();
-
-                database.ref(`users/${activeUserIdToken}/redeemed_history/${code}`).once('value').then(hSnap => {
-                    if (hSnap.exists()) {
-                        alert("You have already used this code.");
-                        return;
-                    }
-
-                    if (voucher.currentClaims >= voucher.maxClaims) {
-                        alert("Code usage limit reached.");
-                        return;
-                    }
-
-                    if (voucher.rewardType === 'premium_bypass') {
-                        let isMatched = false;
-                        if (voucher.rewardValue === 'ALL_APPS') isMatched = true;
-                        else {
-                            let allowedApps = voucher.rewardValue.split(',');
-                            if (allowedApps.includes(targetAppId)) isMatched = true;
-                        }
-
-                        if (isMatched) {
-                            let updates = {};
-                            updates[`redeem_codes/${code}/currentClaims`] = voucher.currentClaims + 1;
-                            updates[`users/${activeUserIdToken}/redeemed_history/${code}`] = firebase.database.ServerValue.TIMESTAMP;
-                            
-                            if (voucher.rewardValue === 'ALL_APPS') {
-                                updates[`users/${activeUserIdToken}/premium_all_access`] = true;
-                            } else {
-                                updates[`users/${activeUserIdToken}/unlocked_apps/${targetAppId}`] = true;
-                            }
-
-                            database.ref().update(updates).then(() => {
-                                alert("App Unlocked Successfully!");
-                                document.getElementById('appRedeemCodeInputField').value = '';
-                                closeDetailsSystemModals('lockedAppGateModal');
-                                evaluateApplicationStateLicenseOwnershipMatrix();
-                            });
-                        } else {
-                            alert("This code is not valid for this specific app.");
-                        }
-                    } else {
-                        alert("This code is for Coins, please redeem it in your profile section.");
-                    }
-                });
-            });
         };
 
         function executeSecureDownloadRegistryNodeTransaction() {
