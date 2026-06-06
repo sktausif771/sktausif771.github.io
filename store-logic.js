@@ -223,6 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (tag && !uploadedTagsList.includes(tag)) {
                     uploadedTagsList.push(tag);
                     renderTagsChipsInsideInputBox();
+                    if (typeof generateAutoTags === 'function') generateAutoTags(); // Update suggestions
                 }
                 input.value = '';
             }
@@ -247,6 +248,49 @@ document.addEventListener('DOMContentLoaded', () => {
     window.removeSelectedTagChip = function(index) {
         uploadedTagsList.splice(index, 1);
         renderTagsChipsInsideInputBox();
+        if (typeof generateAutoTags === 'function') generateAutoTags(); // Refresh suggestions
+    };
+
+    // Auto-Tag Suggestion Logic
+    window.generateAutoTags = function() {
+        const nameInput = document.getElementById('pName');
+        const container = document.getElementById('suggestedTagsContainer');
+        if(!container || !nameInput) return;
+        
+        const nameStr = nameInput.value.trim().toLowerCase();
+        
+        if(!nameStr) {
+            container.innerHTML = '';
+            return;
+        }
+        
+        let words = nameStr.split(' ').filter(w => w.length > 1);
+        let suggestions = new Set([...words]);
+        suggestions.add(nameStr.replace(/\\s+/g, ''));
+        suggestions.add('mod');
+        suggestions.add('apk');
+        suggestions.add('premium');
+        suggestions.add('free');
+        
+        let html = '<div style="font-size:11px; color:var(--text-secondary); width:100%; margin-bottom:5px;">Suggested Tags (Click to add):</div>';
+        let hasSuggestions = false;
+        
+        suggestions.forEach(tag => {
+            if(!uploadedTagsList.includes(tag)) {
+                hasSuggestions = true;
+                html += `<span class="tag-chip" style="cursor:pointer; background:rgba(0,230,184,0.1); border:1px dashed var(--primary); margin-bottom:5px;" onclick="addSuggestedTag('${tag}')">${tag} <i class="fas fa-plus"></i></span>`;
+            }
+        });
+        
+        container.innerHTML = hasSuggestions ? html : '';
+    };
+
+    window.addSuggestedTag = function(tag) {
+        if(!uploadedTagsList.includes(tag)) {
+            uploadedTagsList.push(tag);
+            renderTagsChipsInsideInputBox();
+            generateAutoTags();
+        }
     };
 
     let uploadedScreenshotsList = [];
@@ -286,7 +330,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="modal-body">
                     
                     <label class="modal-label">App Name</label>
-                    <input type="text" id="pName" class="play-input" placeholder="Enter app name">
+                    <input type="text" id="pName" class="play-input" placeholder="Enter app name" onkeyup="generateAutoTags()">
 
                     <label class="modal-label">Developer Name</label>
                     <input type="text" id="pDevName" class="play-input" placeholder="e.g. Tausif Modz V3">
@@ -387,6 +431,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
 
                     <label class="modal-label">Search Tags (Comma separated)</label>
+                    <div id="suggestedTagsContainer" style="display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px;"></div>
                     <div class="tags-container" id="tagsInputContainer" style="padding: 8px;">
                         <input type="text" id="tagInputField" class="tag-input-field" placeholder="Add tags..." style="padding: 5px;">
                     </div>
@@ -835,5 +880,104 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     };
+
+    // ==========================================================================
+    // 13. GLOBAL SEARCH LOGIC (FIXED SEARCH ENGINE)
+    // ==========================================================================
+    function initializeGlobalSearch() {
+        const searchInput = document.getElementById('storeSearchInput');
+        if(!searchInput) return;
+
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.trim().toLowerCase();
+            const grid = document.getElementById('searchResultGrid');
+            if(!grid) return;
+
+            if(query === '') {
+                grid.innerHTML = `
+                    <div style="text-align: center; padding: 40px; grid-column: 1/-1; color: var(--text-secondary);" id="lblSearchPrompt">
+                        <i class="fas fa-search-plus" style="font-size: 40px; margin-bottom: 15px; color: var(--border-color);"></i>
+                        <h3>Type any keyword to search</h3>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = `
+                <div style="text-align:center; padding: 50px; grid-column: 1/-1;">
+                    <i class="fas fa-spinner fa-spin" style="font-size:32px; color:var(--primary);"></i>
+                    <p style="margin-top:15px; color:var(--text-secondary); font-weight:500;">Searching...</p>
+                </div>
+            `;
+
+            db.ref('store_apps').orderByChild('status').equalTo('approved').once('value').then(snapshot => {
+                if(!snapshot.exists()) {
+                    grid.innerHTML = `<div style="text-align:center; padding:50px; grid-column:1/-1; color:var(--text-secondary);">No apps found.</div>`;
+                    return;
+                }
+
+                let results = [];
+                snapshot.forEach(child => {
+                    let app = { id: child.key, ...child.val() };
+                    let appName = (app.appName || "").toLowerCase();
+                    let devName = (app.developerName || app.uploaderName || "").toLowerCase();
+                    let tags = app.tags || [];
+                    
+                    let isMatch = false;
+                    
+                    // Partial string match on App Name or Dev Name
+                    if(appName.includes(query) || devName.includes(query)) {
+                        isMatch = true;
+                    } else {
+                        // Match with assigned tags
+                        for(let t of tags) {
+                            if(t.toLowerCase().includes(query)) {
+                                isMatch = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if(isMatch) {
+                        results.push(app);
+                    }
+                });
+
+                if(results.length === 0) {
+                    grid.innerHTML = `
+                        <div style="text-align:center; padding:50px; grid-column:1/-1; color:var(--text-secondary);">
+                            <i class="fas fa-box-open" style="font-size:40px; margin-bottom:15px; opacity:0.5;"></i>
+                            <p>No results found for "${query}"</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let html = '';
+                results.forEach(app => {
+                    const priceLabel = app.category === 'paid' ? `${app.coinPrice || 0} Coins` : (app.category === 'locked' ? 'LOCKED' : 'FREE');
+                    const badgeClass = app.category === 'paid' ? 'badge-paid' : (app.category === 'locked' ? 'badge-locked' : 'badge-free');
+
+                    html += `
+                        <div class="app-card" onclick="window.location.href='details.html?id=${app.id}'">
+                            <span class="badge ${badgeClass}">${priceLabel}</span>
+                            <img src="${app.logoUrl}" class="app-icon-large" loading="lazy" onerror="this.src='https://via.placeholder.com/75/121212/00e6b8?text=FILE'">
+                            <div class="app-info-list" style="width: 100%; word-wrap: break-word; white-space: normal;">
+                                <h3 class="app-title-list" style="white-space: normal; overflow: visible; text-overflow: unset; line-height: 1.3; font-size: 17px;">${app.appName} <i class="fas fa-check-circle verified-tick" style="color:var(--primary); font-size:13px; margin-left:4px;"></i></h3>
+                                <div class="app-dev-list">${app.developerName || app.uploaderName || "Developer"} • ${app.size || "0 MB"}</div>
+                                <div class="app-meta-list">
+                                    <span style="color:var(--primary); font-weight:700;"><i class="fas fa-arrow-alt-circle-down"></i> ${app.downloads || 0}</span>
+                                    <span>v${app.version || "1.0"}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                grid.innerHTML = html;
+            });
+        });
+    }
+
+    initializeGlobalSearch();
 
 });
