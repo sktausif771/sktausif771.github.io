@@ -15,8 +15,8 @@
     <style>
         .details-header { display: flex; gap: 20px; align-items: center; margin-bottom: 20px; }
         .details-logo { width: 90px; height: 90px; border-radius: 20px; object-fit: cover; border: 1px solid var(--border-color); box-shadow: var(--primary-shadow); }
-        .details-info { flex: 1; }
-        .details-title { font-family: var(--font-header); font-size: 24px; font-weight: 800; margin-bottom: 5px; color: var(--text-primary); display: flex; align-items: center; gap: 6px; }
+        .details-info { flex: 1; overflow: hidden; }
+        .details-title { font-family: var(--font-header); font-size: 24px; font-weight: 800; margin-bottom: 5px; color: var(--text-primary); display: flex; align-items: center; gap: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .details-dev { font-size: 14px; color: var(--primary); font-weight: 600; }
         
         .main-action-btn { width: 100%; padding: 16px; border-radius: 14px; border: none; font-family: var(--font-header); font-size: 18px; font-weight: 800; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 25px; }
@@ -78,24 +78,21 @@
                 </div>
             </div>
 
-            <div class="meta-stats-bar" style="display: flex; gap: 10px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 16px; border: 1px solid var(--border-color); justify-content: space-around; margin-bottom: 25px;">
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
-                    <span style="font-size:16px; color:#fff; font-family:var(--font-header); font-weight:800;" id="dRating">0.0 <i class="fas fa-star" style="font-size:12px; color:var(--warning);"></i></span>
+            <div class="meta-stats-bar" style="display: grid; grid-template-columns: repeat(4, 1fr); background: rgba(0,0,0,0.2); padding: 18px 10px; border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 25px;">
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; border-right: 1px solid rgba(255,255,255,0.05);">
+                    <span style="font-size:16px; color:#fff; font-family:var(--font-header); font-weight:800; white-space:nowrap;" id="dRating">0.0 <i class="fas fa-star" style="font-size:12px; color:var(--warning);"></i></span>
                     <span style="font-size:11px; color:var(--text-secondary); font-weight:600;">Rating</span>
                 </div>
-                <div style="width:1px; background:rgba(255,255,255,0.1);"></div>
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
-                    <span style="font-size:16px; color:#fff; font-family:var(--font-header); font-weight:800;"><i class="fas fa-download" style="font-size:12px; color:var(--info); margin-right:2px;"></i> <span id="dDowns">0</span></span>
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; border-right: 1px solid rgba(255,255,255,0.05);">
+                    <span style="font-size:16px; color:#fff; font-family:var(--font-header); font-weight:800; white-space:nowrap;"><i class="fas fa-download" style="font-size:12px; color:var(--info); margin-right:2px;"></i> <span id="dDowns">0</span></span>
                     <span style="font-size:11px; color:var(--text-secondary); font-weight:600;">Downloads</span>
                 </div>
-                <div style="width:1px; background:rgba(255,255,255,0.1);"></div>
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
-                    <span style="font-size:16px; color:#fff; font-family:var(--font-header); font-weight:800;"><i class="fas fa-hdd" style="font-size:12px; color:var(--success); margin-right:2px;"></i> <span id="dSize">0 MB</span></span>
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; border-right: 1px solid rgba(255,255,255,0.05);">
+                    <span style="font-size:16px; color:#fff; font-family:var(--font-header); font-weight:800; white-space:nowrap;"><i class="fas fa-hdd" style="font-size:12px; color:var(--success); margin-right:2px;"></i> <span id="dSize">0 MB</span></span>
                     <span style="font-size:11px; color:var(--text-secondary); font-weight:600;">Size</span>
                 </div>
-                <div style="width:1px; background:rgba(255,255,255,0.1);"></div>
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
-                    <span style="font-size:13px; color:var(--primary); font-family:monospace; font-weight:800; background: rgba(0,230,184,0.1); padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(0,230,184,0.3);" id="dVerBadge">v1.0</span>
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 5px;">
+                    <span style="font-size:13px; color:var(--primary); font-family:monospace; font-weight:800; background: rgba(0,230,184,0.1); padding: 2px 6px; border-radius: 6px; border: 1px solid rgba(0,230,184,0.3); white-space:nowrap;" id="dVerBadge">v1.0</span>
                     <span style="font-size:11px; color:var(--text-secondary); font-weight:600;">Version</span>
                 </div>
             </div>
@@ -114,6 +111,20 @@
             </div>
 
             <div class="tags-display" id="dTags" style="display:none;"></div>
+
+            <div class="user-rating-input-zone" id="ratingInputZone" style="display:none;">
+                <h4><i class="fas fa-star" style="color:var(--warning);"></i> Rate this App</h4>
+                <p style="font-size:12px; color:var(--text-secondary); margin-bottom:15px;">Share your experience with others</p>
+                <div class="rating-stars-input-container" id="starContainer">
+                    <i class="far fa-star" data-val="1"></i>
+                    <i class="far fa-star" data-val="2"></i>
+                    <i class="far fa-star" data-val="3"></i>
+                    <i class="far fa-star" data-val="4"></i>
+                    <i class="far fa-star" data-val="5"></i>
+                </div>
+                <button class="rating-confirm-btn" id="submitRatingBtn" onclick="submitAppRating()" style="margin: 20px auto 0 auto;">Submit Rating</button>
+                <p id="ratingStatusMsg" style="font-size:12px; margin-top:10px; font-weight:600;"></p>
+            </div>
             
         </div>
     </main>
@@ -201,6 +212,7 @@
         let userProfileData = null;
         let userHasAccess = false;
         let isZoomed = false;
+        let selectedRating = 0;
 
         document.addEventListener('DOMContentLoaded', () => {
             if (!targetAppId) {
@@ -219,10 +231,14 @@
                             evaluateApplicationStateLicenseOwnershipMatrix();
                         }
                     });
+                    if (targetApplicationObject) {
+                        checkUserRatingStatus();
+                    }
                 } else {
                     activeUserIdToken = null;
                     userProfileData = null;
                     evaluateApplicationStateLicenseOwnershipMatrix();
+                    document.getElementById('ratingInputZone').style.display = 'none';
                 }
             });
 
@@ -256,7 +272,7 @@
 
                 document.getElementById('dDesc').innerText = targetApplicationObject.description || "No description provided.";
 
-                // Gallery Render (আপডেট করা হয়েছে জুম অপশনের জন্য)
+                // Gallery Render
                 if (targetApplicationObject.screenshots && targetApplicationObject.screenshots.length > 0) {
                     const galBox = document.getElementById('dGallery');
                     galBox.style.display = 'flex';
@@ -278,20 +294,96 @@
                     eBox.innerHTML = eHtml;
                 }
 
-                // Tags Render
-                if (targetApplicationObject.tags && targetApplicationObject.tags.length > 0) {
-                    const tBox = document.getElementById('dTags');
-                    tBox.style.display = 'flex';
-                    let tHtml = '';
-                    targetApplicationObject.tags.forEach(tg => {
-                        tHtml += `<span class="tag-pill">#${tg}</span>`;
-                    });
-                    tBox.innerHTML = tHtml;
-                }
+                // Tags Render Disabled as per your instruction
+                /*
+                if (targetApplicationObject.tags && targetApplicationObject.tags.length > 0) { ... }
+                */
 
                 evaluateApplicationStateLicenseOwnershipMatrix();
+                
+                if (activeUserIdToken) {
+                    checkUserRatingStatus();
+                }
             });
         }
+
+        // ================= NEW RATING SYSTEM LOGIC =================
+        function checkUserRatingStatus() {
+            if (!activeUserIdToken || !targetAppId) return;
+            
+            database.ref(`store_apps/${targetAppId}/ratedUsers/${activeUserIdToken}`).once('value').then(snap => {
+                const ratingZone = document.getElementById('ratingInputZone');
+                ratingZone.style.display = 'block';
+                
+                if (snap.exists()) {
+                    const userGivenRating = snap.val();
+                    ratingZone.innerHTML = `<h4 style="color:var(--success);"><i class="fas fa-check-circle"></i> Thanks for rating!</h4><p style="font-size:13px; color:var(--text-secondary); margin-top:5px;">You rated this app ${userGivenRating} stars.</p>`;
+                } else {
+                    setupStarRatingUI();
+                }
+            });
+        }
+
+        function setupStarRatingUI() {
+            const stars = document.querySelectorAll('#starContainer i');
+            stars.forEach(star => {
+                star.addEventListener('click', (e) => {
+                    selectedRating = parseInt(e.target.getAttribute('data-val'));
+                    stars.forEach(s => {
+                        if (parseInt(s.getAttribute('data-val')) <= selectedRating) {
+                            s.classList.remove('far');
+                            s.classList.add('fas', 'active');
+                        } else {
+                            s.classList.remove('fas', 'active');
+                            s.classList.add('far');
+                        }
+                    });
+                    document.getElementById('submitRatingBtn').style.display = 'block';
+                });
+            });
+        }
+
+        window.submitAppRating = function() {
+            if (!activeUserIdToken || selectedRating === 0) return;
+            const btn = document.getElementById('submitRatingBtn');
+            btn.innerText = "Submitting...";
+            btn.disabled = true;
+
+            const appRef = database.ref(`store_apps/${targetAppId}`);
+            appRef.transaction((appData) => {
+                if (appData) {
+                    if (appData.ratedUsers && appData.ratedUsers[activeUserIdToken]) {
+                        return; 
+                    }
+                    if (!appData.ratedUsers) appData.ratedUsers = {};
+                    appData.ratedUsers[activeUserIdToken] = selectedRating;
+
+                    let currentCount = appData.totalRatingsCount || 0;
+                    let currentAvg = parseFloat(appData.rating) || 0;
+
+                    let totalScore = currentAvg * currentCount;
+                    totalScore += selectedRating;
+                    currentCount += 1;
+
+                    appData.totalRatingsCount = currentCount;
+                    appData.rating = (totalScore / currentCount).toFixed(1);
+                }
+                return appData;
+            }, (error, committed, snapshot) => {
+                if (error) {
+                    document.getElementById('ratingStatusMsg').innerText = "Error submitting rating.";
+                    document.getElementById('ratingStatusMsg').style.color = "var(--danger)";
+                    btn.innerText = "Submit Rating";
+                    btn.disabled = false;
+                } else if (committed) {
+                    document.getElementById('ratingInputZone').innerHTML = `<h4 style="color:var(--success);"><i class="fas fa-check-circle"></i> Thanks for rating!</h4><p style="font-size:13px; color:var(--text-secondary); margin-top:5px;">You rated this app ${selectedRating} stars.</p>`;
+                    const updatedData = snapshot.val();
+                    let ratingVal = parseFloat(updatedData.rating || 0).toFixed(1);
+                    document.getElementById('dRating').innerHTML = `${ratingVal} <i class="fas fa-star" style="font-size:12px; color:var(--warning);"></i>`;
+                }
+            });
+        };
+        // ==========================================================
 
         function evaluateApplicationStateLicenseOwnershipMatrix() {
             if (!targetApplicationObject) return;
@@ -343,7 +435,6 @@
                 if (targetApplicationObject.category === 'paid') {
                     document.getElementById('premiumPurchaseConfirmModal').classList.add('active');
                 } else if (targetApplicationObject.category === 'locked') {
-                    // লক অ্যাপের লজিক (টোস্ট মেসেজ শো করানো)
                     if (targetApplicationObject.videoLink && targetApplicationObject.videoLink.trim() !== "") {
                         document.getElementById('lockedAppGateModal').classList.add('active');
                     } else {
@@ -474,7 +565,6 @@
             });
         };
 
-        // ফুলস্ক্রিন জুম অপশন কন্ট্রোল করার ফাংশন
         window.openScreenshotLightbox = function(url) {
             const lb = document.getElementById('screenshotLightbox');
             const img = document.getElementById('lightboxImg');
@@ -503,7 +593,6 @@
             }
         };
 
-        // টোস্ট মেসেজ শো করানোর ফাংশন
         window.showToast = function(message) {
             const toast = document.getElementById('toastNotification');
             document.getElementById('toastMessage').innerText = message;
