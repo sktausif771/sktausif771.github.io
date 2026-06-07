@@ -45,6 +45,20 @@
         .dropdown-item { padding: 12px 15px; font-size: 13px; color: var(--text-primary); cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: 600; }
         .dropdown-item:hover { background: rgba(0,0,0,0.05); }
         .dropdown-item.report-btn { color: var(--danger); border-top: 1px solid var(--border-color); }
+
+        /* Rating Details Specific Styles */
+        .rating-details-wrapper {
+            background: rgba(0,0,0,0.2);
+            border: 1px solid var(--border-color);
+            padding: 15px 20px;
+            border-radius: 16px;
+            margin-top: -15px; 
+            margin-bottom: 25px;
+            display: none; 
+            animation: fadeIn 0.3s ease-out;
+        }
+        .rating-interactive { cursor: pointer; transition: color 0.2s; }
+        .rating-interactive:hover { color: var(--primary); }
     </style>
 </head>
 <body>
@@ -75,27 +89,32 @@
                 <div class="details-info">
                     <h1 class="details-title" id="dTitle">Loading...</h1>
                     <div class="details-dev" id="dDev">Developer</div>
+                    <div style="font-size: 13px; color: var(--text-secondary); margin-top: 6px; font-weight: 600; display: flex; align-items: center; gap: 6px;">
+                        <i class="fas fa-hdd" style="color:var(--success);"></i> <span id="dHeaderSize">0 MB</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="meta-stats-bar" style="display: grid; grid-template-columns: repeat(4, 1fr); background: rgba(0,0,0,0.2); padding: 18px 10px; border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 25px;">
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; border-right: 1px solid rgba(255,255,255,0.05);">
+            <div class="meta-stats-bar" style="display: grid; grid-template-columns: repeat(3, 1fr); background: rgba(0,0,0,0.2); padding: 18px 10px; border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 25px; position: relative; z-index: 2;">
+                
+                <div class="rating-interactive" style="display: flex; flex-direction: column; align-items: center; gap: 5px; border-right: 1px solid rgba(255,255,255,0.05);" onclick="toggleRatingDetails()">
                     <span style="font-size:16px; color:#fff; font-family:var(--font-header); font-weight:800; white-space:nowrap;" id="dRating">0.0 <i class="fas fa-star" style="font-size:12px; color:var(--warning);"></i></span>
-                    <span style="font-size:11px; color:var(--text-secondary); font-weight:600;">Rating</span>
+                    <span style="font-size:11px; color:var(--text-secondary); font-weight:600; display:flex; align-items:center; gap:4px;">Rating <i class="fas fa-chevron-down" style="font-size:9px;"></i></span>
                 </div>
+                
                 <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; border-right: 1px solid rgba(255,255,255,0.05);">
                     <span style="font-size:16px; color:#fff; font-family:var(--font-header); font-weight:800; white-space:nowrap;"><i class="fas fa-download" style="font-size:12px; color:var(--info); margin-right:2px;"></i> <span id="dDowns">0</span></span>
                     <span style="font-size:11px; color:var(--text-secondary); font-weight:600;">Downloads</span>
                 </div>
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; border-right: 1px solid rgba(255,255,255,0.05);">
-                    <span style="font-size:16px; color:#fff; font-family:var(--font-header); font-weight:800; white-space:nowrap;"><i class="fas fa-hdd" style="font-size:12px; color:var(--success); margin-right:2px;"></i> <span id="dSize">0 MB</span></span>
-                    <span style="font-size:11px; color:var(--text-secondary); font-weight:600;">Size</span>
-                </div>
+
                 <div style="display: flex; flex-direction: column; align-items: center; gap: 5px;">
                     <span style="font-size:13px; color:var(--primary); font-family:monospace; font-weight:800; background: rgba(0,230,184,0.1); padding: 2px 6px; border-radius: 6px; border: 1px solid rgba(0,230,184,0.3); white-space:nowrap;" id="dVerBadge">v1.0</span>
                     <span style="font-size:11px; color:var(--text-secondary); font-weight:600;">Version</span>
                 </div>
             </div>
+
+            <div class="rating-details-wrapper" id="ratingDetailsBox">
+                </div>
 
             <div class="screenshot-gallery" id="dGallery" style="display:none;"></div>
 
@@ -177,7 +196,6 @@
                 <i class="fas fa-play-circle" style="font-size:50px; color:var(--danger); margin-bottom:15px;"></i>
                 <h2 style="font-family:var(--font-header); font-size:22px; color:#fff; margin-bottom:10px;">Watch Tutorial</h2>
                 <p style="font-size:13px; color:var(--text-secondary); margin-bottom:20px; line-height:1.5;">This app is locked. Please watch the tutorial video to get the redeem code. Once you have the code, go to the Profile section of the store to redeem it.</p>
-                
                 <button class="play-btn" style="background:var(--danger); color:#fff;" onclick="openTutorialVideoLink()">
                     <i class="fab fa-youtube"></i> Watch Video
                 </button>
@@ -199,7 +217,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    
     <script src="firebase-config.js"></script>
 
     <script>
@@ -245,6 +262,38 @@
             fetchAndRenderTargetApplicationData();
         });
 
+        // Function to toggle the Rating Distribution Breakdown
+        window.toggleRatingDetails = function() {
+            const box = document.getElementById('ratingDetailsBox');
+            if (box.style.display === 'none' || box.style.display === '') {
+                box.style.display = 'block';
+            } else {
+                box.style.display = 'none';
+            }
+        };
+
+        // Function to Generate and Render Percentage Bars
+        function renderRatingDistribution(appData) {
+            const dist = appData.ratingDistribution || {1:0, 2:0, 3:0, 4:0, 5:0};
+            const total = appData.totalRatingsCount || 0;
+            let html = '';
+            
+            for(let i = 5; i >= 1; i--) {
+                const count = dist[i] || 0;
+                const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+                
+                html += `
+                <div class="rating-row" style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                    <span style="font-size: 12px; color: var(--text-secondary); width: 35px; display: flex; align-items: center; gap: 4px; font-weight: 700;">${i} <i class="fas fa-star" style="font-size:10px; color:var(--warning);"></i></span>
+                    <div style="flex: 1; height: 8px; background: rgba(255, 255, 255, 0.05); border-radius: 10px; overflow: hidden;">
+                        <div style="height: 100%; background: var(--primary); border-radius: 10px; width: ${pct}%; transition: width 0.5s ease-out;"></div>
+                    </div>
+                    <span style="font-size: 11px; color: var(--text-secondary); width: 30px; text-align: right;">${pct}%</span>
+                </div>`;
+            }
+            document.getElementById('ratingDetailsBox').innerHTML = html;
+        }
+
         function fetchAndRenderTargetApplicationData() {
             database.ref(`store_apps/${targetAppId}`).once('value').then((snapshot) => {
                 if (!snapshot.exists()) {
@@ -260,17 +309,21 @@
                 document.getElementById('dLogo').src = targetApplicationObject.logoUrl || "https://via.placeholder.com/90";
                 
                 document.getElementById('dTitle').innerHTML = `${targetApplicationObject.appName} <i class="fas fa-check-circle verified-tick" style="color:var(--primary); font-size:18px; margin-left:5px;"></i>`;
-                
                 document.getElementById('dDev').innerText = targetApplicationObject.developerName || targetApplicationObject.uploaderName || "Unknown Developer";
                 
+                // Size is now inside the header instead of stats bar
+                document.getElementById('dHeaderSize').innerText = targetApplicationObject.size || "Unknown";
+                
                 document.getElementById('dDowns').innerText = targetApplicationObject.downloads || 0;
-                document.getElementById('dSize').innerText = targetApplicationObject.size || "Unknown";
                 document.getElementById('dVerBadge').innerText = `v${targetApplicationObject.version || "1.0"}`;
                 
                 let ratingVal = parseFloat(targetApplicationObject.rating || 0).toFixed(1);
                 document.getElementById('dRating').innerHTML = `${ratingVal} <i class="fas fa-star" style="font-size:12px; color:var(--warning);"></i>`;
 
                 document.getElementById('dDesc').innerText = targetApplicationObject.description || "No description provided.";
+
+                // Render the Rating Distribution
+                renderRatingDistribution(targetApplicationObject);
 
                 // Gallery Render
                 if (targetApplicationObject.screenshots && targetApplicationObject.screenshots.length > 0) {
@@ -294,11 +347,6 @@
                     eBox.innerHTML = eHtml;
                 }
 
-                // Tags Render Disabled as per your instruction
-                /*
-                if (targetApplicationObject.tags && targetApplicationObject.tags.length > 0) { ... }
-                */
-
                 evaluateApplicationStateLicenseOwnershipMatrix();
                 
                 if (activeUserIdToken) {
@@ -307,7 +355,7 @@
             });
         }
 
-        // ================= NEW RATING SYSTEM LOGIC =================
+        // ================= RATING SYSTEM LOGIC =================
         function checkUserRatingStatus() {
             if (!activeUserIdToken || !targetAppId) return;
             
@@ -353,7 +401,7 @@
             appRef.transaction((appData) => {
                 if (appData) {
                     if (appData.ratedUsers && appData.ratedUsers[activeUserIdToken]) {
-                        return; 
+                        return; // Abort transaction if already rated
                     }
                     if (!appData.ratedUsers) appData.ratedUsers = {};
                     appData.ratedUsers[activeUserIdToken] = selectedRating;
@@ -367,6 +415,10 @@
 
                     appData.totalRatingsCount = currentCount;
                     appData.rating = (totalScore / currentCount).toFixed(1);
+
+                    // Update the Rating Distribution Array Object dynamically
+                    if (!appData.ratingDistribution) appData.ratingDistribution = {1:0, 2:0, 3:0, 4:0, 5:0};
+                    appData.ratingDistribution[selectedRating] = (appData.ratingDistribution[selectedRating] || 0) + 1;
                 }
                 return appData;
             }, (error, committed, snapshot) => {
@@ -377,9 +429,13 @@
                     btn.disabled = false;
                 } else if (committed) {
                     document.getElementById('ratingInputZone').innerHTML = `<h4 style="color:var(--success);"><i class="fas fa-check-circle"></i> Thanks for rating!</h4><p style="font-size:13px; color:var(--text-secondary); margin-top:5px;">You rated this app ${selectedRating} stars.</p>`;
+                    
                     const updatedData = snapshot.val();
                     let ratingVal = parseFloat(updatedData.rating || 0).toFixed(1);
                     document.getElementById('dRating').innerHTML = `${ratingVal} <i class="fas fa-star" style="font-size:12px; color:var(--warning);"></i>`;
+                    
+                    // Instantly re-render the distribution bars with the new percentage
+                    renderRatingDistribution(updatedData);
                 }
             });
         };
