@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const IMGBB_API_KEY = "820eb9aa6a57f863045a52c1929efc9c"; 
 
     // ==========================================================================
-    // 1. DYNAMIC UI INJECTION FOR "MY UPLOADS" (Only for Admins)
+    // 1. DYNAMIC UI INJECTION FOR "MY UPLOADS" 
     // ==========================================================================
     const menuList = document.querySelector('.you-menu-list');
     if (menuList && !document.getElementById('menuMyUploadsItem')) {
@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================================================
-    // 5. PLAY STORE DATA RENDERING GRID
+    // 5. PLAY STORE DATA RENDERING GRID (OLD APPS FIX INCLUDED)
     // ==========================================================================
     window.loadStoreFeed = function(filter, contentType) {
         activeFilterType = filter || activeFilterType;
@@ -134,16 +134,20 @@ document.addEventListener('DOMContentLoaded', () => {
             appsList.reverse();
 
             appsList.forEach((app) => {
-                let matchType = (app.appType === activeContentType);
+                // FIXED: Default to 'mod_app' if appType is missing in older apps
+                let appType = app.appType || 'mod_app';
+                let appCategory = app.category || 'free';
+                
+                let matchType = (appType === activeContentType);
                 let matchFilter = false;
 
                 if (activeFilterType === 'all') matchFilter = true;
-                if (activeFilterType === 'premium' && app.category === 'paid') matchFilter = true;
+                if (activeFilterType === 'premium' && appCategory === 'paid') matchFilter = true;
                 if (activeFilterType === 'trending' && app.isTrending === true) matchFilter = true;
 
                 if (matchType && matchFilter) {
-                    const priceLabel = app.category === 'paid' ? `${app.coinPrice || 0} Coins` : (app.category === 'locked' ? 'LOCKED' : 'FREE');
-                    const badgeClass = app.category === 'paid' ? 'badge-paid' : (app.category === 'locked' ? 'badge-locked' : 'badge-free');
+                    const priceLabel = appCategory === 'paid' ? `${app.coinPrice || 0} Coins` : (appCategory === 'locked' ? 'LOCKED' : 'FREE');
+                    const badgeClass = appCategory === 'paid' ? 'badge-paid' : (appCategory === 'locked' ? 'badge-locked' : 'badge-free');
 
                     html += `
                         <div class="app-card" onclick="window.location.href='details.html?id=${app.id}'">
@@ -212,7 +216,8 @@ document.addEventListener('DOMContentLoaded', () => {
         uploadedTagsList.forEach((tag, index) => {
             let chip = document.createElement('span');
             chip.className = 'tag-chip';
-            chip.innerHTML = `${tag} <i class="fas fa-times" onclick="removeSelectedTagChip(${index})"></i>`;
+            chip.style.cssText = 'background:rgba(0,230,184,0.1); color:var(--primary); border:1px solid var(--primary); padding:4px 10px; border-radius:6px; font-size:11px; display:flex; align-items:center; gap:5px;';
+            chip.innerHTML = `${tag} <i class="fas fa-times" style="cursor:pointer;" onclick="removeSelectedTagChip(${index})"></i>`;
             container.insertBefore(chip, input);
         });
     }
@@ -240,7 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
         suggestions.forEach(tag => {
             if(!uploadedTagsList.includes(tag)) {
                 hasSuggestions = true;
-                html += `<span class="tag-chip" style="cursor:pointer; background:rgba(0,230,184,0.1); border:1px dashed var(--primary); margin-bottom:5px;" onclick="addSuggestedTag('${tag}')">${tag} <i class="fas fa-plus"></i></span>`;
+                html += `<span style="cursor:pointer; background:rgba(0,230,184,0.1); border:1px dashed var(--primary); margin-bottom:5px; padding:4px 10px; border-radius:6px; font-size:11px; color:var(--primary); display:inline-flex; align-items:center; gap:5px;" onclick="addSuggestedTag('${tag}')">${tag} <i class="fas fa-plus"></i></span>&nbsp;`;
             }
         });
         container.innerHTML = hasSuggestions ? html : '';
@@ -255,7 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // ==========================================================================
-    // 7. UNIFIED APP FORM GENERATOR (UPLOAD & EDIT WITH CUSTOM UIs)
+    // 7. UNIFIED ADMIN-STYLE APP FORM GENERATOR (UPLOAD & EDIT)
     // ==========================================================================
     let uploadedScreenshotsList = [];
     let currentEditingAppId = null;
@@ -283,7 +288,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const isMasterOwner = (userProfile && userProfile.role === 'owner');
         const isEdit = (mode === 'edit');
 
-        // Initialize state arrays based on mode
         uploadedScreenshotsList = isEdit && appData.screenshots ? [...appData.screenshots] : [];
         uploadedTagsList = isEdit && appData.tags ? [...appData.tags] : [];
         currentEditingAppId = isEdit ? appData.id : null;
@@ -296,151 +300,137 @@ document.addEventListener('DOMContentLoaded', () => {
             categoryOptionsHTML += `<option value="locked" ${aCat==='locked'?'selected':''}>Locked</option>`;
         }
 
-        let exLinksHTML = '';
-        for(let i=0; i<3; i++) {
-            let tTitle = '', tUrl = '';
-            if(appData.extraLinks && appData.extraLinks[i]) {
-                tTitle = appData.extraLinks[i].title || '';
-                tUrl = appData.extraLinks[i].url || '';
-            }
-            exLinksHTML += `
-                <div style="display:flex; gap:10px;">
-                    <input type="text" class="play-input ex-link-title" placeholder="Title ${i+1}" value="${tTitle}" style="margin-bottom:0; flex:1;">
-                    <input type="text" class="play-input ex-link-url" placeholder="URL ${i+1}" value="${tUrl}" style="margin-bottom:0; flex:2;">
-                </div>
-            `;
-        }
-
         const modalHTML = `
-            <div id="dynamicAppFormModal" class="modal-overlay active">
-                <div class="play-modal" style="max-width: 550px;">
-                    <div class="modal-header">
-                        <h3><i class="${isEdit ? 'fas fa-edit' : 'fas fa-upload'}" style="color:var(--primary);"></i> ${isEdit ? 'Edit Application' : 'Upload New App'}</h3>
-                        <i class="fas fa-times close-modal" onclick="document.getElementById('dynamicAppFormModal').remove()"></i>
+            <div id="dynamicAppFormModal" class="modal-overlay active" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(5px); display:flex; justify-content:center; align-items:center; z-index:2000;">
+                <div class="play-modal" style="width:95%; max-width:650px; background:var(--bg-surface); border:1px solid var(--border-color); border-radius:16px; max-height:90vh; display:flex; flex-direction:column; box-shadow:0 10px 40px rgba(0,0,0,0.7);">
+                    <div class="modal-header" style="padding:20px; background:rgba(255,255,255,0.02); border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+                        <h3 style="color:#fff; font-family:'Orbitron', sans-serif; font-size:16px; margin:0;"><i class="${isEdit ? 'fas fa-edit' : 'fas fa-upload'}" style="color:var(--primary); margin-right:8px;"></i> ${isEdit ? 'Edit Application' : 'Upload New App'}</h3>
+                        <i class="fas fa-times close-modal" onclick="document.getElementById('dynamicAppFormModal').remove()" style="color:var(--text-secondary); cursor:pointer; font-size:20px;"></i>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body" style="padding:25px; overflow-y:auto;">
                         
-                        <label class="modal-label">App Name</label>
-                        <input type="text" id="pName" class="play-input" placeholder="Enter app name" value="${appData.appName || ''}" onkeyup="generateAutoTags()">
-
-                        <label class="modal-label">Developer Name</label>
-                        <input type="text" id="pDevName" class="play-input" placeholder="e.g. Tausif Modz V3" value="${appData.developerName || ''}">
-
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom: 15px;">
                             <div>
-                                <label class="modal-label">Version</label>
-                                <input type="text" id="pVer" class="play-input" placeholder="e.g. 1.0" value="${appData.version || ''}">
+                                <label style="font-size:11px; color:var(--text-secondary); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">App Title</label>
+                                <input type="text" id="pName" placeholder="Enter app name" value="${appData.appName || ''}" onkeyup="generateAutoTags()" style="width:100%; padding:12px 15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; font-size:14px; outline:none;">
                             </div>
                             <div>
-                                <label class="modal-label">Size</label>
-                                <input type="text" id="pSize" class="play-input" placeholder="e.g. 45 MB" value="${appData.size || ''}">
+                                <label style="font-size:11px; color:var(--text-secondary); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">Developer</label>
+                                <input type="text" id="pDevName" placeholder="e.g. MVX Dev" value="${appData.developerName || ''}" style="width:100%; padding:12px 15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; font-size:14px; outline:none;">
                             </div>
                         </div>
 
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom: 15px;">
                             <div>
-                                <label class="modal-label">Select Tab</label>
-                                <select id="pType" class="play-input">
-                                    <option value="mod_app" ${(appData.appType==='mod_app')?'selected':''}>Mod App Tab</option>
+                                <label style="font-size:11px; color:var(--text-secondary); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">Version</label>
+                                <input type="text" id="pVer" placeholder="e.g. 1.0" value="${appData.version || ''}" style="width:100%; padding:12px 15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; font-size:14px; outline:none;">
+                            </div>
+                            <div>
+                                <label style="font-size:11px; color:var(--text-secondary); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">Size</label>
+                                <input type="text" id="pSize" placeholder="e.g. 45 MB" value="${appData.size || ''}" style="width:100%; padding:12px 15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; font-size:14px; outline:none;">
+                            </div>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom: 15px;">
+                            <div>
+                                <label style="font-size:11px; color:var(--text-secondary); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">Select Tab</label>
+                                <select id="pType" style="width:100%; padding:12px 15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; font-size:14px; outline:none;">
+                                    <option value="mod_app" ${(appData.appType==='mod_app'||!appData.appType)?'selected':''}>Mod App Tab</option>
                                     <option value="files" ${(appData.appType==='files')?'selected':''}>Files Tab</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="modal-label">Access Type</label>
-                                <select id="pCat" class="play-input" onchange="toggleAccessTypeInputs(this.value)">
+                                <label style="font-size:11px; color:var(--text-secondary); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">Access Type</label>
+                                <select id="pCat" onchange="toggleAccessTypeInputs(this.value)" style="width:100%; padding:12px 15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; font-size:14px; outline:none;">
                                     ${categoryOptionsHTML}
                                 </select>
                             </div>
                         </div>
 
-                        <div id="coinPriceWrapper" style="display:${aCat==='paid'?'block':'none'};">
-                            <label class="modal-label" style="color:var(--warning);">Coin Price</label>
-                            <input type="number" id="pCoinPrice" class="play-input" placeholder="0" value="${appData.coinPrice || 0}">
+                        <div id="coinPriceWrapper" style="display:${aCat==='paid'?'block':'none'}; margin-bottom: 15px;">
+                            <label style="font-size:11px; color:var(--warning); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">Coin Price</label>
+                            <input type="number" id="pCoinPrice" placeholder="0" value="${appData.coinPrice || 0}" style="width:100%; padding:12px 15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; font-size:14px; outline:none;">
                         </div>
 
                         <div id="videoLinkWrapper" style="display:${aCat==='locked'?'block':'none'}; margin-bottom: 15px;">
-                            <label class="modal-label" style="color:var(--danger);">Unlock Video Link</label>
-                            <input type="text" id="pVideoLink" class="play-input" placeholder="Paste YouTube/Tutorial link here" value="${appData.videoLink || ''}" style="margin-bottom: 0;">
+                            <label style="font-size:11px; color:var(--danger); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">Unlock Video Link</label>
+                            <input type="text" id="pVideoLink" placeholder="Paste YouTube/Tutorial link here" value="${appData.videoLink || ''}" style="width:100%; padding:12px 15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; font-size:14px; outline:none;">
                         </div>
 
-                        <div style="display:flex; gap:20px; margin-bottom:20px; background: rgba(255,255,255,0.02); padding: 15px; border-radius: 10px; border: 1px solid var(--border-color);">
-                            <div style="display: flex; align-items: center; gap: 8px;">
-                                <input type="checkbox" id="pTrendingCheck" style="width: 16px; height: 16px; cursor: pointer;" ${appData.isTrending?'checked':''}>
-                                <span style="font-size: 13px; color: var(--text-primary);">Trending Status</span>
+                        <div style="display:flex; align-items: center; gap: 20px; margin-bottom: 20px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; border: 1px dashed var(--border-color);">
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <input type="checkbox" id="pTrendingCheck" style="width:16px; height:16px; accent-color:var(--primary); cursor:pointer;" ${appData.isTrending?'checked':''}>
+                                <label for="pTrendingCheck" style="color:#fff; font-size:13px; cursor:pointer;">Trending Status</label>
                             </div>
-                            <div style="display: flex; align-items: center; gap: 8px;">
-                                <input type="checkbox" id="pPushNotificationCheck" style="width: 16px; height: 16px; cursor: pointer;" ${appData.sendNotification?'checked':''}>
-                                <span style="font-size: 13px; color: var(--success);">Send Notification</span>
-                            </div>
-                        </div>
-
-                        <hr style="border:0; border-top:1px solid var(--border-color); margin:15px 0;">
-
-                        <div style="display:grid; grid-template-columns: 1fr; gap:15px;">
-                            <div>
-                                <label class="modal-label" style="color:var(--primary);">App Logo</label>
-                                <div class="logo-upload-wrapper">
-                                    <label id="logoUploadLabel" class="logo-plus-btn" for="logoFile"><i class="fas fa-plus"></i></label>
-                                    <div id="logoPreviewBox" class="logo-preview-box">
-                                        <img id="logoPreviewImg" src="">
-                                        <label class="mini-change-btn" for="logoFile"><i class="fas fa-plus"></i></label>
-                                    </div>
-                                    <input type="file" id="logoFile" class="hidden-file-input" accept="image/*">
-                                    <input type="hidden" id="logoUrlOutput">
-                                </div>
-                                <p id="logoProcessStatus" style="font-size:11px; color:var(--warning); margin-bottom:10px;"></p>
-                            </div>
-                            
-                            <div>
-                                <label class="modal-label" style="color:var(--primary);">Screenshots (Max 5)</label>
-                                <div style="background: rgba(255,255,255,0.02); padding: 10px; border-radius: 10px; border: 1px solid var(--border-color);">
-                                    <div class="screenshot-upload-wrapper" id="screenshotPreviewWrapper">
-                                        <label id="scUploadLabel" class="sc-plus-btn" for="screenshotFileBtn"><i class="fas fa-plus"></i></label>
-                                    </div>
-                                    <input type="file" id="screenshotFileBtn" class="hidden-file-input" accept="image/*">
-                                    <p id="screenshotProcessStatus" style="font-size:11px; color:var(--warning); margin-top:5px;"></p>
-                                </div>
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <input type="checkbox" id="pPushNotificationCheck" style="width:16px; height:16px; accent-color:var(--primary); cursor:pointer;" ${appData.sendNotification?'checked':''}>
+                                <label for="pPushNotificationCheck" style="color:var(--success); font-size:13px; cursor:pointer;">Send Notification</label>
                             </div>
                         </div>
 
-                        <hr style="border:0; border-top:1px solid var(--border-color); margin:15px 0;">
-
-                        <label class="modal-label">Main Download Link</label>
-                        <input type="text" id="pMainLink" class="play-input" placeholder="Paste URL here" value="${appData.downloadUrl || ''}">
-
-                        <label class="modal-label" style="color: var(--warning);">Extra Links (Up to 3)</label>
-                        <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 20px; display: flex; flex-direction: column; gap: 12px;">
-                            ${exLinksHTML}
+                        <div style="margin-bottom: 20px; text-align: center; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color);">
+                            <label style="font-size:11px; color:var(--primary); text-transform:uppercase; font-weight:600; margin-bottom:10px; display:block; text-align:left;">App Logo</label>
+                            <div style="position:relative; display:inline-block;">
+                                <img id="logoPreviewImg" src="${appData.logoUrl || ''}" style="width:80px; height:80px; border-radius:12px; object-fit:cover; border:2px solid var(--border-color); background:rgba(0,0,0,0.4); display: ${appData.logoUrl ? 'block' : 'none'};">
+                                <div id="logoPlaceholder" style="width:80px; height:80px; border-radius:12px; border:2px dashed var(--primary); background:rgba(0,230,184,0.05); display:${appData.logoUrl ? 'none' : 'flex'}; align-items:center; justify-content:center; color:var(--primary); font-size:24px;"><i class="fas fa-plus"></i></div>
+                                
+                                <label for="logoFile" style="position:absolute; bottom:-5px; right:-5px; background:var(--primary); width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#000; box-shadow:0 2px 10px rgba(0,0,0,0.5); transition:0.2s;">
+                                    <i class="fas fa-plus" style="font-size:12px;"></i>
+                                </label>
+                                <input type="file" id="logoFile" accept="image/*" style="display:none;">
+                                <input type="hidden" id="logoUrlOutput" value="${appData.logoUrl || ''}">
+                            </div>
+                            <p id="logoProcessStatus" style="font-size:11px; color:var(--warning); margin-top:10px; font-family:monospace;"></p>
                         </div>
 
-                        <label class="modal-label">Search Tags (Comma separated)</label>
+                        <label style="font-size:11px; color:var(--primary); text-transform:uppercase; font-weight:600; margin-bottom:8px; display:block;">Screenshots (Max 5)</label>
+                        <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom:20px;">
+                            <div id="screenshotPreviewWrapper" style="display:flex; gap:12px; overflow-x:auto; padding-bottom:8px; align-items:center;">
+                                <label id="scUploadLabel" for="screenshotFileBtn" style="width:70px; height:110px; border-radius:12px; border:2px dashed var(--primary); background:rgba(0,230,184,0.05); display:flex; justify-content:center; align-items:center; cursor:pointer; color:var(--primary); font-size:24px; flex-shrink:0;">
+                                    <i class="fas fa-plus"></i>
+                                </label>
+                            </div>
+                            <input type="file" id="screenshotFileBtn" accept="image/*" style="display:none;">
+                            <p id="screenshotProcessStatus" style="font-size:11px; color:var(--warning); margin-top:5px; font-family:monospace;"></p>
+                        </div>
+
+                        <label style="font-size:11px; color:var(--primary); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">Download Links</label>
+                        <div id="dynamicLinksContainer" style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 10px; display: flex; flex-direction: column;">
+                            </div>
+                        <button id="addMoreLinkBtn" style="background:transparent; border:1px dashed var(--primary); color:var(--primary); padding:10px; font-size:13px; margin-bottom:20px; border-radius:8px; cursor:pointer; width:100%; transition:0.2s;" onclick="addNewLinkRow()"><i class="fas fa-plus"></i> Add Link</button>
+
+                        <label style="font-size:11px; color:var(--text-secondary); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">Search Tags (Comma separated)</label>
                         <div id="suggestedTagsContainer" style="display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px;"></div>
-                        <div class="tags-container" id="tagsInputContainer" style="padding: 8px;">
-                            <input type="text" id="tagInputField" class="tag-input-field" placeholder="Add tags..." style="padding: 5px;">
+                        <div id="tagsInputContainer" style="display:flex; flex-wrap:wrap; gap:8px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); padding:10px; border-radius:8px; margin-bottom:15px; min-height:45px;">
+                            <input type="text" id="tagInputField" style="border:none; background:transparent; color:#fff; outline:none; flex:1; min-width:100px; font-size:13px;" placeholder="Add tags...">
                         </div>
 
-                        <label class="modal-label">Description</label>
-                        <textarea id="pDescription" class="play-input" placeholder="App description & details..." style="min-height:80px; resize:vertical;">${appData.description || ''}</textarea>
+                        <label style="font-size:11px; color:var(--text-secondary); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">Description</label>
+                        <textarea id="pDescription" placeholder="App description & details..." style="width:100%; padding:15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; font-size:14px; outline:none; min-height:90px; resize:vertical; line-height:1.5; margin-bottom:20px;">${appData.description || ''}</textarea>
 
-                        <button class="play-btn" id="executePublishBtn" onclick="submitAppFormData('${mode}')">${isEdit ? 'SAVE CHANGES' : 'UPLOAD APP'}</button>
+                        <button id="executePublishBtn" onclick="submitAppFormData('${mode}')" style="background:linear-gradient(135deg, var(--warning), #FF8F00); color:#000; padding:15px; font-size:16px; border-radius:12px; font-family:'Orbitron', sans-serif; font-weight:800; letter-spacing:1px; width:100%; cursor:pointer; border:none; transition:0.2s;">
+                            <i class="${isEdit ? 'fas fa-save' : 'fas fa-cloud-upload-alt'}"></i> ${isEdit ? 'SAVE CHANGES' : 'UPLOAD APP'}
+                        </button>
                     </div>
                 </div>
             </div>
         `;
         document.body.insertAdjacentHTML('beforeend', modalHTML);
 
-        // Pre-fill logo if exists
-        if (appData.logoUrl && appData.logoUrl.trim() !== "" && !appData.logoUrl.includes('via.placeholder.com')) {
-            document.getElementById('logoUrlOutput').value = appData.logoUrl;
-            document.getElementById('logoUploadLabel').style.display = 'none';
-            document.getElementById('logoPreviewBox').style.display = 'block';
-            document.getElementById('logoPreviewImg').src = appData.logoUrl;
-        }
-
         initializeTagsInputEngine();
         renderScreenshotsUI();
 
-        // Image upload triggers
+        const linkContainer = document.getElementById('dynamicLinksContainer');
+        linkContainer.innerHTML = '';
+        if (appData.downloadUrl) { addNewLinkRow('Main Link', appData.downloadUrl); } 
+        else { addNewLinkRow('', ''); }
+        
+        if (appData.extraLinks && Array.isArray(appData.extraLinks)) {
+            appData.extraLinks.forEach(link => { 
+                if(link.url !== appData.downloadUrl) { addNewLinkRow(link.title, link.url); }
+            });
+        }
+
         document.getElementById('logoFile').addEventListener('change', (e) => processLogoUploadAction(e.target.files[0]));
         document.getElementById('screenshotFileBtn').addEventListener('change', (e) => processScreenshotUploadAction(e.target.files[0]));
     }
@@ -452,8 +442,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if(vidWrap) vidWrap.style.display = (value === 'locked') ? 'block' : 'none';
     };
 
+    window.addNewLinkRow = function(title = '', url = '') {
+        const container = document.getElementById('dynamicLinksContainer');
+        const rows = container.querySelectorAll('.dynamic-link-row').length;
+        if (rows >= 5) { alert("Maximum 5 links allowed."); return; }
+        
+        const newRow = document.createElement('div');
+        newRow.className = 'dynamic-link-row';
+        newRow.style.cssText = 'display:flex; gap:10px; margin-top:12px;';
+        newRow.innerHTML = `
+            <input type="text" class="ex-link-title" placeholder="Title (e.g. Server 1)" value="${title}" style="flex:1; padding:12px 15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; outline:none; font-size:13px;">
+            <input type="text" class="ex-link-url" placeholder="Download Link URL" value="${url}" style="flex:2; padding:12px 15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; outline:none; font-size:13px;">
+        `;
+        container.appendChild(newRow);
+        if (rows + 1 >= 5) { document.getElementById('addMoreLinkBtn').style.display = 'none'; }
+    };
+
     // ==========================================================================
-    // 8. CUSTOM UI IMAGE UPLOAD HANDLERS (IMGBB API)
+    // 8. CUSTOM UI IMAGE UPLOAD HANDLERS
     // ==========================================================================
     window.processLogoUploadAction = function(file) {
         if(!file) return;
@@ -468,11 +474,13 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(res => res.json()).then(json => {
             if (json.success) {
                 document.getElementById('logoUrlOutput').value = json.data.url;
-                document.getElementById('logoUploadLabel').style.display = 'none';
-                document.getElementById('logoPreviewBox').style.display = 'block';
-                document.getElementById('logoPreviewImg').src = json.data.url;
+                document.getElementById('logoPlaceholder').style.display = 'none';
+                const previewImg = document.getElementById('logoPreviewImg');
+                previewImg.src = json.data.url;
+                previewImg.style.display = 'block';
                 status.innerText = "Logo Added Successfully!";
                 status.style.color = "var(--success)";
+                setTimeout(()=> status.innerText='', 3000);
             } else { status.innerText = "Logo Upload failed."; status.style.color = "var(--danger)"; }
             document.getElementById('logoFile').value = '';
         }).catch(() => { status.innerText = "Network error."; status.style.color = "var(--danger)"; });
@@ -480,9 +488,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.processScreenshotUploadAction = function(file) {
         if(!file) return;
-        if (uploadedScreenshotsList.length >= 5) {
-            alert("Maximum 5 screenshots allowed."); return;
-        }
+        if (uploadedScreenshotsList.length >= 5) { alert("Maximum 5 screenshots allowed."); return; }
         
         const status = document.getElementById('screenshotProcessStatus');
         status.innerText = "Uploading Screenshot...";
@@ -498,6 +504,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 renderScreenshotsUI();
                 status.innerText = "Screenshot Uploaded!";
                 status.style.color = "var(--success)";
+                setTimeout(()=> status.innerText='', 3000);
             } else { status.innerText = "Upload failed."; status.style.color = "var(--danger)"; }
             document.getElementById('screenshotFileBtn').value = '';
         }).catch(() => { status.innerText = "Network error."; status.style.color = "var(--danger)"; });
@@ -513,9 +520,10 @@ document.addEventListener('DOMContentLoaded', () => {
         uploadedScreenshotsList.forEach((url, index) => {
             const box = document.createElement('div');
             box.className = 'sc-preview-box';
+            box.style.cssText = 'position:relative; width:70px; height:110px; flex-shrink:0;';
             box.innerHTML = `
-                <img src="${url}">
-                <div class="mini-delete-btn" onclick="removeScreenshotItem(${index})"><i class="fas fa-times"></i></div>
+                <img src="${url}" style="width:100%; height:100%; border-radius:12px; object-fit:cover; border:1px solid var(--border-color);">
+                <div onclick="removeScreenshotItem(${index})" style="position:absolute; top:-6px; right:-6px; width:22px; height:22px; background:var(--danger); color:#fff; border-radius:50%; display:flex; justify-content:center; align-items:center; cursor:pointer; font-size:10px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:2px solid var(--bg-surface);"><i class="fas fa-times"></i></div>
             `;
             wrapper.insertBefore(box, addLabel);
         });
@@ -534,19 +542,23 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================================================
     window.submitAppFormData = function(mode) {
         const name = document.getElementById('pName').value.trim();
-        const mainLink = document.getElementById('pMainLink').value.trim();
+        let collectedLinks = [];
+        const container = document.getElementById('dynamicLinksContainer');
+        const titles = container.querySelectorAll('.ex-link-title');
+        const urls = container.querySelectorAll('.ex-link-url');
+        let mainLink = "";
 
-        if (!name || !mainLink) {
-            alert("App Name and Download Link are required."); return;
+        for(let i = 0; i < urls.length; i++) {
+            let tVal = titles[i].value.trim();
+            let uVal = urls[i].value.trim();
+            if(uVal !== "") {
+                if(mainLink === "") mainLink = uVal; 
+                collectedLinks.push({ title: tVal || `Link ${i + 1}`, url: uVal });
+            }
         }
 
-        let collectedExtraLinks = [];
-        const titles = document.querySelectorAll('.ex-link-title');
-        const urls = document.querySelectorAll('.ex-link-url');
-        for(let i = 0; i < urls.length; i++) {
-            if(urls[i].value.trim() !== "") {
-                collectedExtraLinks.push({ title: titles[i].value.trim() || `Link ${i + 1}`, url: urls[i].value.trim() });
-            }
+        if (!name || mainLink === "") {
+            alert("App Name and at least one Download Link are required."); return;
         }
 
         const btn = document.getElementById('executePublishBtn');
@@ -566,7 +578,7 @@ document.addEventListener('DOMContentLoaded', () => {
             logoUrl: document.getElementById('logoUrlOutput').value.trim() || "https://via.placeholder.com/150/121212/00e6b8?text=APP",
             screenshots: uploadedScreenshotsList, 
             downloadUrl: mainLink,
-            extraLinks: collectedExtraLinks, 
+            extraLinks: collectedLinks, 
             tags: uploadedTagsList, 
             description: document.getElementById('pDescription').value.trim() || "No description provided."
         };
@@ -687,11 +699,11 @@ document.addEventListener('DOMContentLoaded', () => {
             userApps.reverse().forEach(app => {
                 const statusBadge = app.node === 'store_apps' ? `<span style="color:var(--success); font-size:10px; font-weight:bold; background:rgba(46,213,115,0.1); padding:2px 6px; border-radius:4px; border:1px solid rgba(46,213,115,0.2);">Live</span>` : `<span style="color:var(--warning); font-size:10px; font-weight:bold; background:rgba(255,165,0,0.1); padding:2px 6px; border-radius:4px; border:1px solid rgba(255,165,0,0.2);">Pending</span>`;
                 html += `
-                    <div style="display:flex; align-items:center; gap:12px; background:rgba(0,0,0,0.2); margin-bottom:12px; padding:12px; border-radius:12px; border:1px solid var(--border-glass);">
-                        <img src="${app.logoUrl}" style="width:48px; height:48px; border-radius:10px; object-fit:cover; border:1px solid var(--border-glass);">
+                    <div style="display:flex; align-items:center; gap:12px; background:rgba(0,0,0,0.2); margin-bottom:12px; padding:12px; border-radius:12px; border:1px solid var(--border-color);">
+                        <img src="${app.logoUrl}" style="width:48px; height:48px; border-radius:10px; object-fit:cover; border:1px solid var(--border-color);">
                         <div style="flex:1; overflow:hidden;">
                             <h4 style="font-size:14px; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:4px;">${app.appName}</h4>
-                            <p style="font-size:12px; color:var(--text-dim); display:flex; align-items:center; gap:8px;">v${app.version} • ${statusBadge}</p>
+                            <p style="font-size:12px; color:var(--text-secondary); display:flex; align-items:center; gap:8px;">v${app.version} • ${statusBadge}</p>
                         </div>
                         <div style="display:flex; gap:8px;">
                             <button style="background:rgba(0,168,255,0.1); color:var(--info); border:none; width:35px; height:35px; border-radius:8px; cursor:pointer;" onclick="window.openUserAppEdit('${app.id}', '${app.node}')"><i class="fas fa-edit"></i></button>

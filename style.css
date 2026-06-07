@@ -1,5 +1,5 @@
 /* ==========================================================================
-   MVX STORE V5.6 - MASTER STYLESHEET (NO DESIGN OVERRIDES, ONLY ADDITIONS)
+   MVX STORE V5.6 - MASTER STYLESHEET (100% FULL CODE)
    ========================================================================== */
 
 :root {
@@ -270,26 +270,30 @@ body {
 .nav-item.active { color: var(--primary); }
 .nav-item.active i { text-shadow: var(--primary-shadow); }
 
-/* ==================== 5. FORMS, INPUTS & BUTTONS ==================== */
+/* ==================== 5. FORMS, INPUTS & MODALS ==================== */
 .play-input {
     width: 100%;
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.3);
     border: 1px solid var(--border-color);
     color: var(--text-primary);
     padding: 14px 15px;
     border-radius: 12px;
     font-size: 14px;
     outline: none;
-    transition: border-color 0.3s;
+    transition: border-color 0.3s, box-shadow 0.3s;
     margin-bottom: 15px;
 }
-.play-input:focus { border-color: var(--primary); }
+.play-input:focus { 
+    border-color: var(--primary); 
+    box-shadow: 0 0 8px rgba(0,230,184,0.15); 
+}
 .modal-label {
     display: block;
-    font-size: 12px;
+    font-size: 11px;
     color: var(--text-secondary);
     margin-bottom: 6px;
     font-weight: 600;
+    text-transform: uppercase;
 }
 .play-btn {
     width: 100%;
@@ -305,16 +309,22 @@ body {
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
 }
+.play-btn:hover { box-shadow: 0 6px 20px rgba(0,230,184,0.3); transform: translateY(-1px); }
 .play-btn:active { transform: scale(0.98); }
 
-/* ==================== 6. MODALS & POPUPS ==================== */
+/* Dynamic Link Inputs Hover Focus */
+.ex-link-title:focus, .ex-link-url:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 8px rgba(0, 230, 184, 0.2) !important;
+}
+
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.85);
     backdrop-filter: blur(5px);
     display: flex;
     justify-content: center;
@@ -354,7 +364,7 @@ body {
 .close-modal:hover { color: var(--danger); }
 .modal-body { padding: 20px; }
 
-/* ==================== 7. TAGS SYSTEM ==================== */
+/* ==================== 6. TAGS SYSTEM ==================== */
 .tags-container {
     display: flex;
     flex-wrap: wrap;
@@ -377,7 +387,8 @@ body {
     align-items: center;
     gap: 5px;
 }
-.tag-chip i { cursor: pointer; }
+.tag-chip i { cursor: pointer; transition: 0.2s; }
+.tag-chip i:hover { color: var(--danger); transform: scale(1.2); }
 .tag-input-field {
     border: none;
     background: transparent;
@@ -388,7 +399,7 @@ body {
     font-size: 13px;
 }
 
-/* ==================== 8. PROFILE & SETTINGS TAB ==================== */
+/* ==================== 7. PROFILE & SETTINGS TAB ==================== */
 .you-header {
     display: flex;
     align-items: center;
@@ -408,7 +419,6 @@ body {
 }
 .you-info h2 { font-family: var(--font-header); font-size: 22px; margin-bottom: 2px; }
 .you-info p { font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; }
-.follow-stats { display: flex; gap: 15px; font-size: 12px; color: var(--primary); font-weight: 600; }
 
 .you-menu-list {
     background: var(--bg-surface);
@@ -431,7 +441,7 @@ body {
 .you-menu-item i:first-child { width: 30px; font-size: 18px; text-align: center; margin-right: 10px; }
 .you-menu-item .arrow { margin-left: auto; color: var(--text-secondary); font-size: 12px; }
 
-/* ==================== 9. NOTIFICATIONS ==================== */
+/* ==================== 8. NOTIFICATIONS ==================== */
 .noti-container { display: flex; flex-direction: column; gap: 12px; }
 .noti-card {
     background: var(--bg-surface);
@@ -448,7 +458,12 @@ body {
 .noti-time { font-size: 10px; color: var(--text-secondary); }
 .noti-msg { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
 
-/* ==================== 10. GALLERY & SCREENSHOTS ==================== */
+/* ==================== 9. GALLERY & SCREENSHOTS ==================== */
+.screenshot-preview-container {
+    display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; margin-bottom: 10px;
+}
+.sc-preview-thumb { width: 60px; height: 100px; object-fit: cover; border-radius: 8px; border: 1px solid var(--primary); }
+
 .screenshot-gallery { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 15px; margin-bottom: 25px; }
 .screenshot-gallery::-webkit-scrollbar { display: none; }
 .screenshot-img {
@@ -457,7 +472,7 @@ body {
 }
 .screenshot-img:hover { transform: scale(1.02); border-color: var(--primary); }
 
-/* ==================== 11. DETAILS PAGE DROPDOWN ==================== */
+/* ==================== 10. DETAILS PAGE DROPDOWN ==================== */
 .three-dot-container { position: relative; }
 .three-dot-btn { background: none; border: none; color: var(--text-primary); font-size: 20px; cursor: pointer; padding: 10px; }
 .dropdown-menu {
@@ -473,7 +488,7 @@ body {
 .dropdown-item:hover { background: rgba(255,255,255,0.05); }
 .dropdown-item.report-btn { color: var(--danger); border-top: 1px solid var(--border-color); }
 
-/* ==================== 12. RATING & INTERACTIVE STARS ==================== */
+/* ==================== 11. RATING DISTRIBUTION & INTERACTIVE STARS ==================== */
 .rating-interactive { cursor: pointer; transition: color 0.2s; }
 .rating-interactive:hover { color: var(--primary); }
 
@@ -534,7 +549,7 @@ body {
 }
 .rating-confirm-btn:active { transform: scale(0.95); }
 
-/* ==================== 13. V5.6 PROFILE ENHANCEMENTS ==================== */
+/* ==================== 12. V5.6 PROFILE ENHANCEMENTS ==================== */
 .profile-edit-name {
     cursor: pointer;
     display: flex;
@@ -568,125 +583,69 @@ body {
     transform: scale(1.1);
 }
 
-/* ==================== 14. CUSTOM UPLOAD UI (NEW LOGO & SCREENSHOTS V5.6) ==================== */
-.hidden-file-input {
-    display: none !important;
-}
+/* ==================== 13. CUSTOM UPLOAD UI & HOVER EFFECTS ==================== */
+.hidden-file-input { display: none !important; }
 
-/* Logo Upload Custom Design */
-.logo-upload-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 15px;
-}
-.logo-plus-btn {
-    width: 80px;
-    height: 80px;
-    border-radius: 16px;
-    border: 2px dashed var(--primary);
-    background: rgba(0, 230, 184, 0.05);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    color: var(--primary);
-    font-size: 24px;
-}
+.logo-upload-wrapper { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+.logo-plus-btn { width: 80px; height: 80px; border-radius: 16px; border: 2px dashed var(--primary); background: rgba(0, 230, 184, 0.05); display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.3s ease; color: var(--primary); font-size: 24px; }
 .logo-plus-btn:hover { background: var(--primary-dim); transform: scale(1.05); }
 
-.logo-preview-box {
-    position: relative;
-    width: 80px;
-    height: 80px;
-    border-radius: 16px;
-    border: 2px solid var(--border-color);
-    display: none; /* Shows when image is uploaded */
-}
-.logo-preview-box img {
-    width: 100%;
-    height: 100%;
-    border-radius: 14px;
-    object-fit: cover;
-}
-.mini-change-btn {
-    position: absolute;
-    bottom: -6px;
-    right: -6px;
-    width: 26px;
-    height: 26px;
-    background: var(--primary);
-    color: #000;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    font-size: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.6);
-    border: 2px solid var(--bg-surface);
-    transition: 0.2s;
-}
+.logo-preview-box { position: relative; width: 80px; height: 80px; border-radius: 16px; border: 2px solid var(--border-color); display: none; }
+.logo-preview-box img { width: 100%; height: 100%; border-radius: 14px; object-fit: cover; }
+.mini-change-btn { position: absolute; bottom: -6px; right: -6px; width: 26px; height: 26px; background: var(--primary); color: #000; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.6); border: 2px solid var(--bg-surface); transition: 0.2s; }
 .mini-change-btn:hover { transform: scale(1.1); }
 
-/* Screenshots Upload Custom Design */
-.screenshot-upload-wrapper {
-    display: flex;
-    gap: 12px;
-    overflow-x: auto;
-    padding-bottom: 8px;
-    align-items: center;
-}
+.screenshot-upload-wrapper { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; align-items: center; }
 .screenshot-upload-wrapper::-webkit-scrollbar { height: 6px; }
 .screenshot-upload-wrapper::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
 
-.sc-plus-btn {
-    width: 70px;
-    height: 110px;
-    border-radius: 12px;
-    border: 2px dashed var(--primary);
-    background: rgba(0, 230, 184, 0.05);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    color: var(--primary);
-    font-size: 24px;
-    flex-shrink: 0;
-}
+.sc-plus-btn { width: 70px; height: 110px; border-radius: 12px; border: 2px dashed var(--primary); background: rgba(0, 230, 184, 0.05); display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.3s ease; color: var(--primary); font-size: 24px; flex-shrink: 0; }
 .sc-plus-btn:hover { background: var(--primary-dim); transform: scale(1.05); }
 
-.sc-preview-box {
-    position: relative;
-    width: 70px;
-    height: 110px;
-    flex-shrink: 0;
-}
-.sc-preview-box img {
+.sc-preview-box { position: relative; width: 70px; height: 110px; flex-shrink: 0; }
+.sc-preview-box img { width: 100%; height: 100%; border-radius: 12px; object-fit: cover; border: 1px solid var(--border-color); }
+.mini-delete-btn { position: absolute; top: -6px; right: -6px; width: 22px; height: 22px; background: var(--danger); color: #fff; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.6); border: 2px solid var(--bg-surface); transition: 0.2s; }
+.mini-delete-btn:hover { transform: scale(1.1); background: #ff1744; }
+
+/* Upload Details & Action Hover States */
+#screenshotPreviewWrapper::-webkit-scrollbar { height: 6px; }
+#screenshotPreviewWrapper::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+#scUploadLabel:hover { background: rgba(0, 230, 184, 0.15) !important; transform: scale(1.05); }
+.mini-delete-btn:hover { transform: scale(1.1) !important; background: #ff1744 !important; }
+label[for="logoFile"]:hover { transform: scale(1.1) !important; background: #00c853 !important; }
+#logoPlaceholder:hover { background: rgba(0, 230, 184, 0.15) !important; transform: scale(1.02); cursor: pointer; transition: 0.3s; }
+#addMoreLinkBtn:hover { background: rgba(0, 230, 184, 0.1) !important; transform: translateY(-1px); }
+
+/* Admin File Upload Details (Lightbox Additions) */
+.lightbox-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    border-radius: 12px;
-    object-fit: cover;
-    border: 1px solid var(--border-color);
-}
-.mini-delete-btn {
-    position: absolute;
-    top: -6px;
-    right: -6px;
-    width: 22px;
-    height: 22px;
-    background: var(--danger);
-    color: #fff;
-    border-radius: 50%;
-    display: flex;
+    background: rgba(0,0,0,0.9);
+    z-index: 9999;
+    display: none;
     justify-content: center;
     align-items: center;
-    cursor: pointer;
-    font-size: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.6);
-    border: 2px solid var(--bg-surface);
-    transition: 0.2s;
 }
-.mini-delete-btn:hover { transform: scale(1.1); background: #ff1744; }
+.lightbox-overlay.active { display: flex; }
+.lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    font-size: 30px;
+    color: #fff;
+    cursor: pointer;
+    z-index: 10000;
+    text-shadow: 0 0 10px rgba(0,0,0,0.8);
+    transition: 0.3s;
+}
+.lightbox-img {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
