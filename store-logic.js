@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const IMGBB_API_KEY = "820eb9aa6a57f863045a52c1929efc9c"; 
 
     // ==========================================================================
-    // 1. DYNAMIC UI INJECTION FOR "MY UPLOADS" 
+    // 1. DYNAMIC UI INJECTION FOR "MY UPLOADS" (Only for Admins)
     // ==========================================================================
     const menuList = document.querySelector('.you-menu-list');
     if (menuList && !document.getElementById('menuMyUploadsItem')) {
@@ -28,8 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
         myUpBtn.id = 'menuMyUploadsItem';
         myUpBtn.style.display = 'none'; 
         myUpBtn.onclick = function() { 
-            if(typeof window.fetchMyUploadedApps === 'function') window.fetchMyUploadedApps();
-            document.getElementById('myUploadsModal').classList.add('active'); 
+            if(typeof openMyUploadsModal === 'function') openMyUploadsModal(); 
         };
         myUpBtn.innerHTML = `
             <i class="fas fa-folder-open" style="color: var(--info);"></i>
@@ -39,7 +38,9 @@ document.addEventListener('DOMContentLoaded', () => {
         menuList.insertBefore(myUpBtn, menuList.children[2] || menuList.firstChild);
     }
 
-    window.openMyUploadsIfAdmin = function() { return false; };
+    window.openMyUploadsIfAdmin = function() {
+        return false;
+    };
 
     // ==========================================================================
     // 2. GLOBAL STORE BRAND LOGO SYNCHRONIZER
@@ -69,6 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
             currentUser = null;
             userProfile = null;
             listenForLiveSystemNotifications();
+            
             const myUpBtn = document.getElementById('menuMyUploadsItem');
             if(myUpBtn) myUpBtn.style.display = 'none';
         }
@@ -79,11 +81,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================================================
     function executeSystemInterfacePipelineUpdates() {
         if (!userProfile || !currentUser) return;
+
         const isAdmin = (userProfile.role === 'owner' || sessionStorage.getItem('mvx_role') === 'owner');
         const myUpBtn = document.getElementById('menuMyUploadsItem');
-        if(myUpBtn) myUpBtn.style.display = isAdmin ? 'flex' : 'none';
+        if(myUpBtn) {
+            myUpBtn.style.display = isAdmin ? 'flex' : 'none';
+        }
 
-        let realName = userProfile.name || currentUser.displayName || "MVX User";
+        let realName = userProfile.name;
+        if (!realName || realName === "MVX User") {
+            realName = currentUser.displayName || "MVX User";
+        }
+
         let realAvatar = userProfile.avatarUrl;
         if (!realAvatar || realAvatar.includes("dicebear")) {
             realAvatar = currentUser.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${realName}`;
@@ -97,7 +106,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (tabName) tabName.innerText = realName;
         if (tabEmail) tabEmail.innerText = userProfile.email || currentUser.email || "";
-        if (coinDisplay) coinDisplay.innerText = userProfile.coins !== undefined ? userProfile.coins : 0;
+        
+        if (coinDisplay) {
+            coinDisplay.innerText = userProfile.coins !== undefined ? userProfile.coins : 0;
+        }
+
         if (tabAvatar) tabAvatar.src = realAvatar;
         if (topProfilePic) topProfilePic.src = realAvatar;
     }
@@ -113,7 +126,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!grid) return;
 
         let activeLang = localStorage.getItem('mvx_lang') || 'en';
-        let loadingMsg = activeLang === 'bn' ? "ডাটাবেজ কানেকশন চেক করা হচ্ছে..." : "Scanning Database Infrastructure...";
+        let loadingMsg = "Scanning Database Infrastructure...";
+        if(activeLang === 'bn') loadingMsg = "ডাটাবেজ কানেকশন চেক করা হচ্ছে...";
 
         grid.innerHTML = `
             <div style="text-align:center; padding: 50px; grid-column: 1/-1;">
@@ -122,7 +136,8 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `;
 
-        db.ref('store_apps').orderByChild('status').equalTo('approved').once('value').then((snapshot) => {
+        // FIXED: Removed the strict .equalTo('approved') filter so old apps show up too
+        db.ref('store_apps').once('value').then((snapshot) => {
             if (!snapshot.exists()) {
                 grid.innerHTML = `<div style="text-align:center; padding:50px; grid-column:1/-1; color:var(--text-secondary);">No applications live in database catalog.</div>`;
                 return;
@@ -130,11 +145,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let html = '';
             let appsList = [];
-            snapshot.forEach((child) => appsList.push({ id: child.key, ...child.val() }));
+            
+            snapshot.forEach((child) => {
+                appsList.push({ id: child.key, ...child.val() });
+            });
+            
             appsList.reverse();
 
             appsList.forEach((app) => {
-                // FIXED: Default to 'mod_app' if appType is missing in older apps
                 let appType = app.appType || 'mod_app';
                 let appCategory = app.category || 'free';
                 
@@ -179,7 +197,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     setTimeout(() => {
-        if(typeof window.loadStoreFeed === 'function') window.loadStoreFeed('all', 'mod_app');
+        if(typeof window.loadStoreFeed === 'function') {
+            window.loadStoreFeed('all', 'mod_app');
+        }
     }, 200);
 
     // ==========================================================================
@@ -225,7 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.removeSelectedTagChip = function(index) {
         uploadedTagsList.splice(index, 1);
         renderTagsChipsInsideInputBox();
-        generateAutoTags();
+        if (typeof generateAutoTags === 'function') generateAutoTags(); 
     };
 
     window.generateAutoTags = function() {
@@ -316,7 +336,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             </div>
                             <div>
                                 <label style="font-size:11px; color:var(--text-secondary); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">Developer</label>
-                                <input type="text" id="pDevName" placeholder="e.g. MVX Dev" value="${appData.developerName || ''}" style="width:100%; padding:12px 15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; font-size:14px; outline:none;">
+                                <input type="text" id="pDevName" placeholder="e.g. MVX Dev" value="${appData.developerName || appData.uploaderName || ''}" style="width:100%; padding:12px 15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; font-size:14px; outline:none;">
                             </div>
                         </div>
 
@@ -372,7 +392,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <label style="font-size:11px; color:var(--primary); text-transform:uppercase; font-weight:600; margin-bottom:10px; display:block; text-align:left;">App Logo</label>
                             <div style="position:relative; display:inline-block;">
                                 <img id="logoPreviewImg" src="${appData.logoUrl || ''}" style="width:80px; height:80px; border-radius:12px; object-fit:cover; border:2px solid var(--border-color); background:rgba(0,0,0,0.4); display: ${appData.logoUrl ? 'block' : 'none'};">
-                                <div id="logoPlaceholder" style="width:80px; height:80px; border-radius:12px; border:2px dashed var(--primary); background:rgba(0,230,184,0.05); display:${appData.logoUrl ? 'none' : 'flex'}; align-items:center; justify-content:center; color:var(--primary); font-size:24px;"><i class="fas fa-plus"></i></div>
+                                <div id="logoPlaceholder" style="width:80px; height:80px; border-radius:12px; border:2px dashed var(--primary); background:rgba(0,230,184,0.05); display:${appData.logoUrl ? 'none' : 'flex'}; align-items:center; justify-content:center; color:var(--primary); font-size:24px; cursor:pointer;"><i class="fas fa-plus"></i></div>
                                 
                                 <label for="logoFile" style="position:absolute; bottom:-5px; right:-5px; background:var(--primary); width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#000; box-shadow:0 2px 10px rgba(0,0,0,0.5); transition:0.2s;">
                                     <i class="fas fa-plus" style="font-size:12px;"></i>
@@ -433,6 +453,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.getElementById('logoFile').addEventListener('change', (e) => processLogoUploadAction(e.target.files[0]));
         document.getElementById('screenshotFileBtn').addEventListener('change', (e) => processScreenshotUploadAction(e.target.files[0]));
+        
+        // Make the placeholder clickable directly to file input
+        const placeholder = document.getElementById('logoPlaceholder');
+        if(placeholder) {
+            placeholder.addEventListener('click', () => {
+                document.getElementById('logoFile').click();
+            });
+        }
     }
 
     window.toggleAccessTypeInputs = function(value) {
@@ -745,7 +773,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             grid.innerHTML = `<div style="text-align:center; padding: 50px; grid-column: 1/-1;"><i class="fas fa-spinner fa-spin" style="font-size:32px; color:var(--primary);"></i><p style="margin-top:15px; color:var(--text-secondary); font-weight:500;">Searching...</p></div>`;
 
-            db.ref('store_apps').orderByChild('status').equalTo('approved').once('value').then(snapshot => {
+            // FIXED: Removed strict .equalTo('approved') filter for global search
+            db.ref('store_apps').once('value').then(snapshot => {
                 if(!snapshot.exists()) { grid.innerHTML = `<div style="text-align:center; padding:50px; grid-column:1/-1; color:var(--text-secondary);">No apps found.</div>`; return; }
 
                 let results = [];
