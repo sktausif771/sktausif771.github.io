@@ -197,7 +197,7 @@
                 <h2 style="font-family:var(--font-header); font-size:22px; color:#fff; margin-bottom:10px;">Watch Tutorial</h2>
                 <p style="font-size:13px; color:var(--text-secondary); margin-bottom:20px; line-height:1.5;">This app is locked. Please watch the tutorial video to get the redeem code. Once you have the code, go to the Profile section of the store to redeem it.</p>
                 <button class="play-btn" style="background:var(--danger); color:#fff;" onclick="openTutorialVideoLink()">
-                    <i class="fab fa-youtube"></i> Watch Video
+                    <i class="fab fa-youtube"></i> Get Redeem Code
                 </button>
             </div>
         </div>
@@ -210,7 +210,7 @@
         <img src="" id="lightboxImg" style="max-width: 95%; max-height: 90%; border-radius: 12px; transition: transform 0.3s ease; transform: scale(1); cursor: zoom-in;" onclick="toggleZoom(event)">
     </div>
 
-    <div id="toastNotification" style="visibility: hidden; min-width: 250px; background-color: var(--danger); color: #fff; text-align: center; border-radius: 8px; padding: 12px; position: fixed; z-index: 10000; left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 14px; font-weight: 600; box-shadow: 0 4px 15px rgba(0,0,0,0.4); opacity: 0; transition: opacity 0.3s, visibility 0.3s;">
+    <div id="toastNotification" style="visibility: hidden; min-width: 250px; background-color: var(--danger); color: #fff; text-align: center; border-radius: 8px; padding: 12px; position: fixed; z-index: 10000; left: 50%; top: 80px; transform: translateX(-50%); font-size: 14px; font-weight: 600; box-shadow: 0 4px 15px rgba(0,0,0,0.4); opacity: 0; transition: opacity 0.3s, visibility 0.3s;">
         <i class="fas fa-lock" style="margin-right: 8px;"></i> <span id="toastMessage">This app is locked.</span>
     </div>
 
@@ -454,7 +454,8 @@
                 userHasAccess = true;
             } else {
                 if (userProfileData) {
-                    if (userProfileData.role === 'owner') userHasAccess = true;
+                    // ফিক্স করা হয়েছে: Admin হলেও Locked অ্যাপ সরাসরি আনলক হবে না (টেস্ট করার সুবিধার জন্য)
+                    if (userProfileData.role === 'owner' && cat !== 'locked') userHasAccess = true; 
                     if (userProfileData.premium_all_access === true) userHasAccess = true;
                     if (userProfileData.unlocked_apps && userProfileData.unlocked_apps[targetAppId] === true) userHasAccess = true;
                 }
@@ -494,7 +495,7 @@
                     if (targetApplicationObject.videoLink && targetApplicationObject.videoLink.trim() !== "") {
                         document.getElementById('lockedAppGateModal').classList.add('active');
                     } else {
-                        showToast("This app is locked by the developer.");
+                        showToast("This app is locked");
                     }
                 }
             }
