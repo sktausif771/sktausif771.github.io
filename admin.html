@@ -605,15 +605,20 @@
                     <p id="meScreenshotProcessStatus" style="font-size:11px; color:var(--warning); margin-top:5px; font-family:monospace;"></p>
                 </div>
 
+                <label class="input-label" style="color:var(--primary); font-size:11px; font-weight:700; text-transform:uppercase;">Main Download Link</label>
+                <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; border: 1px solid var(--border-glass); margin-bottom: 15px;">
+                    <input type="text" id="meMainLinkUrl" class="glass-input" placeholder="Paste main download URL here..." style="margin-bottom:0; width:100%;">
+                </div>
+
+                <label class="input-label" style="color:var(--primary); font-size:11px; font-weight:700; text-transform:uppercase;">Extra Links (Max 5)</label>
+                <div id="meDynamicLinksContainer" style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; border: 1px solid var(--border-glass); margin-bottom: 10px; display: flex; flex-direction: column;">
+                </div>
+                <button id="addMoreEditLinkBtn" class="btn-primary" style="background:transparent; border:1px dashed var(--primary); color:var(--primary); margin-bottom:15px; padding:12px; border-radius:8px;" onclick="addNewEditLinkRow()"><i class="fas fa-plus"></i> Add Link</button>
+
                 <label class="input-label">Search Tags (Comma separated)</label>
                 <div class="tags-container" id="meTagsInputContainer">
                     <input type="text" id="meTagInputField" class="tag-input-field" placeholder="Add tags...">
                 </div>
-
-                <label class="input-label" style="color:var(--primary);">Download Links (Max 5)</label>
-                <div id="meDynamicLinksContainer" style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; border: 1px solid var(--border-glass); margin-bottom: 10px; display: flex; flex-direction: column;">
-                </div>
-                <button id="addMoreEditLinkBtn" class="btn-primary" style="background:transparent; border:1px dashed var(--primary); color:var(--primary); margin-bottom:15px;" onclick="addNewEditLinkRow()"><i class="fas fa-plus"></i> Add Link</button>
 
                 <label class="input-label">App Description</label>
                 <textarea id="meDescription" class="glass-input" style="min-height:90px; resize:vertical; line-height: 1.5; font-size: 13px;"></textarea>
@@ -1050,7 +1055,7 @@
             newRow.style.cssText = 'display:flex; gap:10px; margin-top:12px;';
             newRow.innerHTML = `
                 <input type="text" class="glass-input ex-link-title" placeholder="Title (e.g. Server 1)" value="${title}" style="margin-bottom:0; flex:1;">
-                <input type="text" class="glass-input ex-link-url" placeholder="Download Link" value="${url}" style="margin-bottom:0; flex:2;">
+                <input type="text" class="glass-input ex-link-url" placeholder="Download Link URL" value="${url}" style="margin-bottom:0; flex:2;">
             `;
             container.appendChild(newRow);
             if (rows + 1 >= 5) { document.getElementById('addMoreEditLinkBtn').style.display = 'none'; }
@@ -1187,15 +1192,20 @@
                 adminUploadedTagsList = app.tags ? [...app.tags] : [];
                 renderAdminTagsUI();
 
+                // Set Main Link specifically
+                document.getElementById('meMainLinkUrl').value = app.downloadUrl || "";
+
+                // Reset and set Extra Links
                 const linkContainer = document.getElementById('meDynamicLinksContainer');
                 linkContainer.innerHTML = '';
                 document.getElementById('addMoreEditLinkBtn').style.display = 'inline-block';
                 
-                if (app.downloadUrl) { addNewEditLinkRow('Main Link', app.downloadUrl); } 
-                else { addNewEditLinkRow('', ''); }
-                
                 if (app.extraLinks && Array.isArray(app.extraLinks)) {
-                    app.extraLinks.forEach(link => { addNewEditLinkRow(link.title, link.url); });
+                    app.extraLinks.forEach(link => { 
+                        if(link.url !== app.downloadUrl) {
+                            addNewEditLinkRow(link.title, link.url); 
+                        }
+                    });
                 }
                 
                 document.getElementById('meDescription').value = app.description || "";
@@ -1207,22 +1217,21 @@
             let appId = document.getElementById('meAppId').value;
             let name = document.getElementById('meName').value.trim();
             
+            let mainLink = document.getElementById('meMainLinkUrl').value.trim();
             let collectedLinks = [];
             const container = document.getElementById('meDynamicLinksContainer');
             const titles = container.querySelectorAll('.ex-link-title');
             const urls = container.querySelectorAll('.ex-link-url');
-            let mainLink = "";
 
             for(let i = 0; i < urls.length; i++) {
                 let tVal = titles[i].value.trim();
                 let uVal = urls[i].value.trim();
                 if(uVal !== "") {
-                    if(mainLink === "") mainLink = uVal; 
                     collectedLinks.push({ title: tVal || `Link ${i + 1}`, url: uVal });
                 }
             }
             
-            if(!name || mainLink === "") { alert("App Title and at least one Download Link are required."); return; }
+            if(!name || mainLink === "") { alert("App Title and Main Download Link are required."); return; }
             
             let updates = {
                 appName: name,

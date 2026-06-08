@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================================================
-    // 5. PLAY STORE DATA RENDERING GRID
+    // 5. PLAY STORE DATA RENDERING GRID (OLD APPS FIX INCLUDED)
     // ==========================================================================
     window.loadStoreFeed = function(filter, contentType) {
         activeFilterType = filter || activeFilterType;
@@ -136,6 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `;
 
+        // FIXED: Removed the strict .equalTo('approved') filter so old apps show up too
         db.ref('store_apps').once('value').then((snapshot) => {
             if (!snapshot.exists()) {
                 grid.innerHTML = `<div style="text-align:center; padding:50px; grid-column:1/-1; color:var(--text-secondary);">No applications live in database catalog.</div>`;
@@ -235,7 +236,8 @@ document.addEventListener('DOMContentLoaded', () => {
         uploadedTagsList.forEach((tag, index) => {
             let chip = document.createElement('span');
             chip.className = 'tag-chip';
-            chip.innerHTML = `${tag} <i class="fas fa-times" onclick="removeSelectedTagChip(${index})"></i>`;
+            chip.style.cssText = 'background:rgba(0,230,184,0.1); color:var(--primary); border:1px solid var(--primary); padding:4px 10px; border-radius:6px; font-size:11px; display:flex; align-items:center; gap:5px;';
+            chip.innerHTML = `${tag} <i class="fas fa-times" style="cursor:pointer;" onclick="removeSelectedTagChip(${index})"></i>`;
             container.insertBefore(chip, input);
         });
     }
@@ -278,8 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // ==========================================================================
-    // 7. UNIFIED ADMIN-STYLE APP FORM GENERATOR (UPLOAD & EDIT) 
-    //    100% IDENTICAL TO ADMIN PANEL DESIGN WITH DEDICATED MAIN LINK
+    // 7. UNIFIED ADMIN-STYLE APP FORM GENERATOR (UPLOAD & EDIT)
     // ==========================================================================
     let uploadedScreenshotsList = [];
     let currentEditingAppId = null;
@@ -313,89 +314,88 @@ document.addEventListener('DOMContentLoaded', () => {
         currentEditingNode = isEdit ? appData.node : null;
 
         const aCat = appData.category || 'free';
-        let categoryOptionsHTML = `<option value="free" ${aCat==='free'?'selected':''}>Free App</option>`;
+        let categoryOptionsHTML = `<option value="free" ${aCat==='free'?'selected':''}>Free</option>`;
         if (isMasterOwner) {
             categoryOptionsHTML += `<option value="paid" ${aCat==='paid'?'selected':''}>Premium</option>`;
             categoryOptionsHTML += `<option value="locked" ${aCat==='locked'?'selected':''}>Locked</option>`;
         }
 
         const modalHTML = `
-            <div class="modal-overlay active" id="dynamicAppFormModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 2000;">
-                <div class="play-modal" style="max-width: 650px; width: 95%; background: var(--bg-surface); border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 20px 50px rgba(0,0,0,0.7); max-height: 90vh; display: flex; flex-direction: column; overflow: hidden;">
-                    
-                    <div class="modal-header" style="padding: 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02);">
-                        <h3 style="font-family: 'Orbitron', sans-serif; font-size: 16px; color: #fff; display:flex; align-items:center; gap:8px;">
-                            <i class="${isEdit ? 'fas fa-edit' : 'fas fa-upload'}" style="color:var(--warning);"></i> ${isEdit ? 'Edit App' : 'Upload App'}
-                        </h3>
-                        <i class="fas fa-times close-modal" onclick="document.getElementById('dynamicAppFormModal').remove()" style="font-size: 20px; color: var(--text-secondary); cursor: pointer; transition: 0.3s;" onmouseover="this.style.color='var(--danger)'" onmouseout="this.style.color='var(--text-secondary)'"></i>
+            <div id="dynamicAppFormModal" class="modal-overlay active" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(5px); display:flex; justify-content:center; align-items:center; z-index:2000;">
+                <div class="play-modal" style="width:95%; max-width:650px; background:var(--bg-surface); border:1px solid var(--border-color); border-radius:16px; max-height:90vh; display:flex; flex-direction:column; box-shadow:0 10px 40px rgba(0,0,0,0.7);">
+                    <div class="modal-header" style="padding:20px; background:rgba(255,255,255,0.02); border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+                        <h3 style="color:#fff; font-family:'Orbitron', sans-serif; font-size:16px; margin:0;"><i class="${isEdit ? 'fas fa-edit' : 'fas fa-upload'}" style="color:var(--primary); margin-right:8px;"></i> ${isEdit ? 'Edit Application' : 'Upload New App'}</h3>
+                        <i class="fas fa-times close-modal" onclick="document.getElementById('dynamicAppFormModal').remove()" style="color:var(--text-secondary); cursor:pointer; font-size:20px;"></i>
                     </div>
-                    
-                    <div class="modal-body" style="padding: 20px; overflow-y: auto;">
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
-                            <div>
-                                <label class="input-label">App Title</label>
-                                <input type="text" id="pName" class="glass-input" value="${appData.appName || ''}" onkeyup="generateAutoTags()" style="margin-bottom: 10px;">
-                            </div>
-                            <div>
-                                <label class="input-label" style="color:var(--info);">Developer</label>
-                                <input type="text" id="pDevName" class="glass-input" value="${appData.developerName || appData.uploaderName || ''}" style="margin-bottom: 10px;">
-                            </div>
-                        </div>
+                    <div class="modal-body" style="padding:25px; overflow-y:auto;">
                         
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom: 10px;">
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom: 15px;">
                             <div>
-                                <label class="input-label">Version</label>
-                                <input type="text" id="pVer" class="glass-input" value="${appData.version || ''}" style="margin-bottom: 0;">
+                                <label style="font-size:11px; color:var(--text-secondary); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">App Title</label>
+                                <input type="text" id="pName" placeholder="Enter app name" value="${appData.appName || ''}" onkeyup="generateAutoTags()" style="width:100%; padding:12px 15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; font-size:14px; outline:none;">
                             </div>
                             <div>
-                                <label class="input-label">Size</label>
-                                <input type="text" id="pSize" class="glass-input" value="${appData.size || ''}" style="margin-bottom: 0;">
+                                <label style="font-size:11px; color:var(--text-secondary); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">Developer</label>
+                                <input type="text" id="pDevName" placeholder="e.g. MVX Dev" value="${appData.developerName || appData.uploaderName || ''}" style="width:100%; padding:12px 15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; font-size:14px; outline:none;">
                             </div>
                         </div>
 
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom: 10px;">
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom: 15px;">
                             <div>
-                                <label class="input-label">App Tab</label>
-                                <select id="pType" class="glass-input" style="margin-bottom: 0;">
+                                <label style="font-size:11px; color:var(--text-secondary); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">Version</label>
+                                <input type="text" id="pVer" placeholder="e.g. 1.0" value="${appData.version || ''}" style="width:100%; padding:12px 15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; font-size:14px; outline:none;">
+                            </div>
+                            <div>
+                                <label style="font-size:11px; color:var(--text-secondary); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">Size</label>
+                                <input type="text" id="pSize" placeholder="e.g. 45 MB" value="${appData.size || ''}" style="width:100%; padding:12px 15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; font-size:14px; outline:none;">
+                            </div>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom: 15px;">
+                            <div>
+                                <label style="font-size:11px; color:var(--text-secondary); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">Select Tab</label>
+                                <select id="pType" style="width:100%; padding:12px 15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; font-size:14px; outline:none;">
                                     <option value="mod_app" ${(appData.appType==='mod_app'||!appData.appType)?'selected':''}>Mod App Tab</option>
                                     <option value="files" ${(appData.appType==='files')?'selected':''}>Files Tab</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="input-label">Access Type</label>
-                                <select id="pCat" class="glass-input" style="margin-bottom: 0;" onchange="toggleAccessTypeInputs(this.value)">
+                                <label style="font-size:11px; color:var(--text-secondary); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">Access Type</label>
+                                <select id="pCat" onchange="toggleAccessTypeInputs(this.value)" style="width:100%; padding:12px 15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; font-size:14px; outline:none;">
                                     ${categoryOptionsHTML}
                                 </select>
                             </div>
                         </div>
 
-                        <div id="coinPriceWrapper" style="display:${aCat==='paid'?'block':'none'}; margin-bottom: 10px;">
-                            <label class="input-label" style="color:var(--warning);">Coin Price</label>
-                            <input type="number" id="pCoinPrice" class="glass-input" placeholder="0" value="${appData.coinPrice || 0}" style="margin-bottom: 0;">
-                        </div>
-                        
-                        <div id="videoLinkWrapper" style="display:${aCat==='locked'?'block':'none'}; margin-bottom: 10px;">
-                            <label class="input-label" style="color:var(--danger);">Video Link</label>
-                            <input type="text" id="pVideoLink" class="glass-input" placeholder="YouTube/Video URL" value="${appData.videoLink || ''}" style="margin-bottom: 0;">
+                        <div id="coinPriceWrapper" style="display:${aCat==='paid'?'block':'none'}; margin-bottom: 15px;">
+                            <label style="font-size:11px; color:var(--warning); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">Coin Price</label>
+                            <input type="number" id="pCoinPrice" placeholder="0" value="${appData.coinPrice || 0}" style="width:100%; padding:12px 15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; font-size:14px; outline:none;">
                         </div>
 
-                        <div style="display:flex; align-items: center; gap: 10px; margin-bottom: 15px; background: rgba(255,255,255,0.02); padding: 10px; border-radius: 8px; border: 1px dashed var(--border-color);">
-                            <input type="checkbox" id="pTrendingCheck" style="width: 16px; height: 16px; accent-color: var(--primary);" ${appData.isTrending?'checked':''}>
-                            <label for="pTrendingCheck" style="color: #fff; font-size: 13px; cursor: pointer;">Trending App</label>
-                            
-                            <input type="checkbox" id="pPushNotificationCheck" style="width: 16px; height: 16px; accent-color: var(--primary); margin-left: 15px;" ${appData.sendNotification?'checked':''}>
-                            <label for="pPushNotificationCheck" style="color: var(--success); font-size: 13px; cursor: pointer;">Send Notification</label>
+                        <div id="videoLinkWrapper" style="display:${aCat==='locked'?'block':'none'}; margin-bottom: 15px;">
+                            <label style="font-size:11px; color:var(--danger); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">Unlock Video Link</label>
+                            <input type="text" id="pVideoLink" placeholder="Paste YouTube/Tutorial link here" value="${appData.videoLink || ''}" style="width:100%; padding:12px 15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; font-size:14px; outline:none;">
                         </div>
 
-                        <div style="margin-bottom: 15px; text-align: center; background:rgba(0,0,0,0.2); padding:15px; border-radius:8px; border:1px solid var(--border-color);">
-                            <label class="input-label" style="color:var(--primary); text-align:left;">App Logo</label>
+                        <div style="display:flex; align-items: center; gap: 20px; margin-bottom: 20px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; border: 1px dashed var(--border-color);">
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <input type="checkbox" id="pTrendingCheck" style="width:16px; height:16px; accent-color:var(--primary); cursor:pointer;" ${appData.isTrending?'checked':''}>
+                                <label for="pTrendingCheck" style="color:#fff; font-size:13px; cursor:pointer;">Trending Status</label>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <input type="checkbox" id="pPushNotificationCheck" style="width:16px; height:16px; accent-color:var(--primary); cursor:pointer;" ${appData.sendNotification?'checked':''}>
+                                <label for="pPushNotificationCheck" style="color:var(--success); font-size:13px; cursor:pointer;">Send Notification</label>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 20px; text-align: center; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color);">
+                            <label style="font-size:11px; color:var(--primary); text-transform:uppercase; font-weight:600; margin-bottom:10px; display:block; text-align:left;">App Logo</label>
                             <div style="position:relative; display:inline-block;">
-                                <img id="logoPreviewImg" src="${appData.logoUrl || ''}" style="width:80px; height:80px; border-radius:12px; object-fit:cover; border:2px solid var(--border-color); background:rgba(0,0,0,0.5); display: ${appData.logoUrl ? 'block' : 'none'};">
+                                <img id="logoPreviewImg" src="${appData.logoUrl || ''}" style="width:80px; height:80px; border-radius:12px; object-fit:cover; border:2px solid var(--border-color); background:rgba(0,0,0,0.4); display: ${appData.logoUrl ? 'block' : 'none'};">
+                                <div id="logoPlaceholder" style="width:80px; height:80px; border-radius:12px; border:2px dashed var(--primary); background:rgba(0,230,184,0.05); display:${appData.logoUrl ? 'none' : 'flex'}; align-items:center; justify-content:center; color:var(--primary); font-size:24px; cursor:pointer;"><i class="fas fa-plus"></i></div>
                                 
-                                <div id="logoPlaceholder" style="width:80px; height:80px; border-radius:12px; border:2px dashed var(--primary); background:rgba(0,230,184,0.05); display:${appData.logoUrl ? 'none' : 'flex'}; align-items:center; justify-content:center; color:var(--primary); font-size:24px; cursor:pointer; transition:0.3s;"><i class="fas fa-plus"></i></div>
-
                                 <label for="logoFile" style="position:absolute; bottom:-5px; right:-5px; background:var(--primary); width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#000; box-shadow:0 2px 10px rgba(0,0,0,0.5); transition:0.2s;">
-                                    <i class="fas fa-plus"></i>
+                                    <i class="fas fa-plus" style="font-size:12px;"></i>
                                 </label>
                                 <input type="file" id="logoFile" accept="image/*" style="display:none;">
                                 <input type="hidden" id="logoUrlOutput" value="${appData.logoUrl || ''}">
@@ -403,33 +403,37 @@ document.addEventListener('DOMContentLoaded', () => {
                             <p id="logoProcessStatus" style="font-size:11px; color:var(--warning); margin-top:10px; font-family:monospace;"></p>
                         </div>
 
-                        <label class="input-label" style="color:var(--primary);">Screenshots (Max 5)</label>
-                        <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom:15px;">
-                            <div class="screenshot-upload-wrapper" id="screenshotPreviewWrapper">
-                                <label id="scUploadLabel" class="sc-plus-btn" for="screenshotFileBtn"><i class="fas fa-plus"></i></label>
+                        <label style="font-size:11px; color:var(--primary); text-transform:uppercase; font-weight:600; margin-bottom:8px; display:block;">Screenshots (Max 5)</label>
+                        <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom:20px;">
+                            <div id="screenshotPreviewWrapper" style="display:flex; gap:12px; overflow-x:auto; padding-bottom:8px; align-items:center;">
+                                <label id="scUploadLabel" for="screenshotFileBtn" style="width:70px; height:110px; border-radius:12px; border:2px dashed var(--primary); background:rgba(0,230,184,0.05); display:flex; justify-content:center; align-items:center; cursor:pointer; color:var(--primary); font-size:24px; flex-shrink:0;">
+                                    <i class="fas fa-plus"></i>
+                                </label>
                             </div>
                             <input type="file" id="screenshotFileBtn" accept="image/*" style="display:none;">
                             <p id="screenshotProcessStatus" style="font-size:11px; color:var(--warning); margin-top:5px; font-family:monospace;"></p>
                         </div>
 
-                        <label class="input-label">Search Tags (Comma separated)</label>
-                        <div id="suggestedTagsContainer" style="display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px;"></div>
-                        <div class="tags-container" id="tagsInputContainer">
-                            <input type="text" id="tagInputField" class="tag-input-field" placeholder="Add tags...">
+                        <label style="font-size:11px; color:var(--primary); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">Main Download Link</label>
+                        <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 15px;">
+                            <input type="text" id="pMainLinkUrl" placeholder="Paste main download URL here..." value="${appData.downloadUrl || ''}" style="width:100%; padding:12px 15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; font-size:14px; outline:none; margin-bottom:0;">
                         </div>
 
-                        <label class="input-label" style="color:var(--primary);">Main Download Link</label>
-                        <input type="text" id="pMainLink" class="glass-input" placeholder="Direct Download URL" value="${appData.downloadUrl || ''}" style="margin-bottom: 15px;">
-
-                        <label class="input-label" style="color:var(--info);">Extra Links (Max 5)</label>
+                        <label style="font-size:11px; color:var(--primary); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">Extra Links (Max 5)</label>
                         <div id="dynamicLinksContainer" style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 10px; display: flex; flex-direction: column;">
-                        </div>
-                        <button id="addMoreLinkBtn" class="btn-primary" style="background:transparent; border:1px dashed var(--info); color:var(--info); margin-bottom:15px;" onclick="addNewLinkRow()"><i class="fas fa-plus"></i> Add Extra Link</button>
+                            </div>
+                        <button id="addMoreLinkBtn" style="background:transparent; border:1px dashed var(--primary); color:var(--primary); padding:10px; font-size:13px; margin-bottom:20px; border-radius:8px; cursor:pointer; width:100%; transition:0.2s;" onclick="addNewLinkRow()"><i class="fas fa-plus"></i> Add Link</button>
 
-                        <label class="input-label">App Description</label>
-                        <textarea id="pDescription" class="glass-input" style="min-height:90px; resize:vertical; line-height: 1.5; font-size: 13px;">${appData.description || ''}</textarea>
-                        
-                        <button id="executePublishBtn" class="btn-primary" style="background:linear-gradient(135deg, var(--warning), #FF8F00); color:#000; margin-top: 5px;" onclick="submitAppFormData('${mode}')">
+                        <label style="font-size:11px; color:var(--text-secondary); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">Search Tags (Comma separated)</label>
+                        <div id="suggestedTagsContainer" style="display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px;"></div>
+                        <div id="tagsInputContainer" style="display:flex; flex-wrap:wrap; gap:8px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); padding:10px; border-radius:8px; margin-bottom:15px; min-height:45px;">
+                            <input type="text" id="tagInputField" style="border:none; background:transparent; color:#fff; outline:none; flex:1; min-width:100px; font-size:13px;" placeholder="Add tags...">
+                        </div>
+
+                        <label style="font-size:11px; color:var(--text-secondary); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">Description</label>
+                        <textarea id="pDescription" placeholder="App description & details..." style="width:100%; padding:15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; font-size:14px; outline:none; min-height:90px; resize:vertical; line-height:1.5; margin-bottom:20px;">${appData.description || ''}</textarea>
+
+                        <button id="executePublishBtn" onclick="submitAppFormData('${mode}')" style="background:linear-gradient(135deg, var(--warning), #FF8F00); color:#000; padding:15px; font-size:16px; border-radius:12px; font-family:'Orbitron', sans-serif; font-weight:800; letter-spacing:1px; width:100%; cursor:pointer; border:none; transition:0.2s;">
                             <i class="${isEdit ? 'fas fa-save' : 'fas fa-cloud-upload-alt'}"></i> ${isEdit ? 'SAVE CHANGES' : 'UPLOAD APP'}
                         </button>
                     </div>
@@ -444,10 +448,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const linkContainer = document.getElementById('dynamicLinksContainer');
         linkContainer.innerHTML = '';
         
-        // Populate Extra Links Only
         if (appData.extraLinks && Array.isArray(appData.extraLinks)) {
             appData.extraLinks.forEach(link => { 
-                addNewLinkRow(link.title, link.url); 
+                if(link.url !== appData.downloadUrl) { addNewLinkRow(link.title, link.url); }
             });
         }
 
@@ -469,18 +472,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if(vidWrap) vidWrap.style.display = (value === 'locked') ? 'block' : 'none';
     };
 
-    // Modified to handle only Extra Links
     window.addNewLinkRow = function(title = '', url = '') {
         const container = document.getElementById('dynamicLinksContainer');
         const rows = container.querySelectorAll('.dynamic-link-row').length;
-        if (rows >= 5) { alert("Maximum 5 extra links allowed."); return; }
+        if (rows >= 5) { alert("Maximum 5 links allowed."); return; }
         
         const newRow = document.createElement('div');
         newRow.className = 'dynamic-link-row';
         newRow.style.cssText = 'display:flex; gap:10px; margin-top:12px;';
         newRow.innerHTML = `
-            <input type="text" class="glass-input ex-link-title" placeholder="Title (e.g. Server 1)" value="${title}" style="margin-bottom:0; flex:1;">
-            <input type="text" class="glass-input ex-link-url" placeholder="Extra Link URL" value="${url}" style="margin-bottom:0; flex:2;">
+            <input type="text" class="ex-link-title" placeholder="Title (e.g. Server 1)" value="${title}" style="flex:1; padding:12px 15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; outline:none; font-size:13px;">
+            <input type="text" class="ex-link-url" placeholder="Download Link URL" value="${url}" style="flex:2; padding:12px 15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; outline:none; font-size:13px;">
         `;
         container.appendChild(newRow);
         if (rows + 1 >= 5) { document.getElementById('addMoreLinkBtn').style.display = 'none'; }
@@ -551,7 +553,7 @@ document.addEventListener('DOMContentLoaded', () => {
             box.style.cssText = 'position:relative; width:70px; height:110px; flex-shrink:0;';
             box.innerHTML = `
                 <img src="${url}" style="width:100%; height:100%; border-radius:12px; object-fit:cover; border:1px solid var(--border-color);">
-                <div class="mini-delete-btn" onclick="removeScreenshotItem(${index})"><i class="fas fa-times"></i></div>
+                <div onclick="removeScreenshotItem(${index})" style="position:absolute; top:-6px; right:-6px; width:22px; height:22px; background:var(--danger); color:#fff; border-radius:50%; display:flex; justify-content:center; align-items:center; cursor:pointer; font-size:10px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:2px solid var(--bg-surface);"><i class="fas fa-times"></i></div>
             `;
             wrapper.insertBefore(box, addLabel);
         });
@@ -570,23 +572,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================================================
     window.submitAppFormData = function(mode) {
         const name = document.getElementById('pName').value.trim();
-        const mainLink = document.getElementById('pMainLink').value.trim();
-        
+        const mainLinkUrl = document.getElementById('pMainLinkUrl').value.trim();
         let collectedLinks = [];
+        
         const container = document.getElementById('dynamicLinksContainer');
         const titles = container.querySelectorAll('.ex-link-title');
         const urls = container.querySelectorAll('.ex-link-url');
 
-        // Loop for extra links ONLY
         for(let i = 0; i < urls.length; i++) {
             let tVal = titles[i].value.trim();
             let uVal = urls[i].value.trim();
             if(uVal !== "") {
-                collectedLinks.push({ title: tVal || `Extra Link ${i + 1}`, url: uVal });
+                collectedLinks.push({ title: tVal || `Link ${i + 1}`, url: uVal });
             }
         }
 
-        if (!name || mainLink === "") {
+        if (!name || mainLinkUrl === "") {
             alert("App Name and Main Download Link are required."); return;
         }
 
@@ -606,8 +607,8 @@ document.addEventListener('DOMContentLoaded', () => {
             sendNotification: document.getElementById('pPushNotificationCheck').checked, 
             logoUrl: document.getElementById('logoUrlOutput').value.trim() || "https://via.placeholder.com/150/121212/00e6b8?text=APP",
             screenshots: uploadedScreenshotsList, 
-            downloadUrl: mainLink, // Assigned from dedicated input
-            extraLinks: collectedLinks, // Assigned from extra links dynamic array
+            downloadUrl: mainLinkUrl,
+            extraLinks: collectedLinks, 
             tags: uploadedTagsList, 
             description: document.getElementById('pDescription').value.trim() || "No description provided."
         };
@@ -756,7 +757,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // ==========================================================================
-    // 12. GLOBAL SEARCH
+    // 12. GLOBAL SEARCH (FIXED)
     // ==========================================================================
     function initializeGlobalSearch() {
         const searchInput = document.getElementById('storeSearchInput');
@@ -774,6 +775,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             grid.innerHTML = `<div style="text-align:center; padding: 50px; grid-column: 1/-1;"><i class="fas fa-spinner fa-spin" style="font-size:32px; color:var(--primary);"></i><p style="margin-top:15px; color:var(--text-secondary); font-weight:500;">Searching...</p></div>`;
 
+            // FIXED: Removed strict .equalTo('approved') filter for global search
             db.ref('store_apps').once('value').then(snapshot => {
                 if(!snapshot.exists()) { grid.innerHTML = `<div style="text-align:center; padding:50px; grid-column:1/-1; color:var(--text-secondary);">No apps found.</div>`; return; }
 
