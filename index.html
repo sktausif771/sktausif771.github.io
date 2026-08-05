@@ -233,13 +233,77 @@
         .login-redirect-btn { width: 100%; padding: 15px; background: var(--primary); color: #000; border: none; border-radius: 8px; font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; cursor: pointer; margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s;}
         .login-redirect-btn:hover { box-shadow: 0 0 15px var(--primary-dim); }
 
-        /* Main Nav Tabs - সরিয়ে ফেলা হয়েছে */
-        .main-tabs { display: none; }
-        .sub-categories { display: none; }
+        /* ================================================================
+           ফিল্টার বার (ব্যান, ক্যাটাগরি, সার্ভার)
+           ================================================================ */
+        .filter-bar {
+            padding: 15px 20px;
+            background: var(--bg-card);
+            border-bottom: 1px solid #333;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            position: sticky;
+            top: 70px;
+            z-index: 90;
+        }
+        .filter-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+        }
+        .filter-group-label {
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-right: 4px;
+        }
+        .filter-btn {
+            padding: 5px 14px;
+            border-radius: 20px;
+            border: 1px solid #333;
+            background: var(--bg-input);
+            color: var(--text-muted);
+            font-family: var(--font-body);
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+        .filter-btn:hover {
+            border-color: var(--text-muted);
+        }
+        .filter-btn.active {
+            border-color: var(--primary);
+            background: var(--primary-dim);
+            color: var(--primary);
+        }
+        .filter-btn.active-ban {
+            border-color: var(--danger);
+            background: var(--danger-dim);
+            color: var(--danger);
+        }
+        .filter-btn.active-noban {
+            border-color: var(--primary);
+            background: var(--primary-dim);
+            color: var(--primary);
+        }
+        .filter-divider {
+            width: 1px;
+            height: 28px;
+            background: #333;
+            margin: 0 4px;
+        }
 
         /* Search Bar */
-        .search-container { padding: 15px 20px; display: none; }
+        .search-container { padding: 12px 20px; background: var(--bg-void); border-bottom: 1px solid #222; display: none; }
         .search-box { width: 100%; background: var(--bg-input); border: var(--glass-border); border-radius: 8px; padding: 12px 15px; color: #fff; font-size: 1rem; outline: none; }
+        .search-box:focus { border-color: var(--primary); }
 
         /* Feed System (App Cards) */
         .feed-container { max-width: 800px; margin: 0 auto; padding: 20px; padding-bottom: 100px; display: flex; flex-direction: column; gap: 30px; }
@@ -249,7 +313,7 @@
         .yt-banner { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
         .yt-card:hover .yt-banner { transform: scale(1.05); }
         
-        /* ========== BAN BADGE (লাল) ========== */
+        /* ========== BAN BADGE ========== */
         .ban-badge {
             position: absolute;
             top: 10px;
@@ -289,7 +353,6 @@
             z-index: 2;
         }
 
-        /* সার্ভার ব্যাজ - ছোট করে */
         .server-badge {
             position: absolute;
             bottom: 10px;
@@ -307,34 +370,15 @@
             z-index: 2;
         }
 
-        .type-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            padding: 5px 12px;
-            border-radius: 5px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            z-index: 2;
-        }
-        .type-badge.Free { background: var(--primary); color: #000; }
-        .type-badge.Premium { background: var(--gold); color: #000; }
-        .type-badge.Paid { background: var(--danger); color: #fff; }
-
-        .badge-update { position: absolute; top: 10px; left: 10px; background: var(--danger); color: #fff; padding: 5px 12px; border-radius: 5px; font-size: 0.8rem; font-family: var(--font-head); font-weight: bold; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 0 10px var(--danger-dim); z-index: 2; }
-
         .yt-info { display: flex; gap: 15px; margin-top: 15px; align-items: flex-start; }
-        .yt-logo { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; background: var(--bg-input); border: 1px solid #333; }
         .yt-text { flex: 1; }
         .yt-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 5px; color: var(--text-primary); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .yt-meta { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
+        .yt-meta .highlight { color: var(--primary); }
 
         .empty-state { text-align: center; padding: 50px 20px; color: var(--text-muted); }
         .empty-state i { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; }
 
-        /* Load More */
         .load-more-container { text-align: center; margin: 20px 0 50px; width: 100%; display: none; }
         .btn-load-more { background: var(--bg-input); border: 1px solid var(--primary); color: var(--primary); padding: 12px 30px; border-radius: 8px; font-family: var(--font-head); font-size: 1.1rem; cursor: pointer; transition: 0.3s; }
         .btn-load-more:hover { background: var(--primary-dim); box-shadow: 0 0 15px var(--primary-dim); }
@@ -486,10 +530,6 @@
         .upload-form-group textarea:focus {
             border-color: var(--primary);
         }
-        .upload-form-group textarea {
-            min-height: 60px;
-            resize: vertical;
-        }
 
         /* BAN অপশন */
         .ban-options {
@@ -526,9 +566,6 @@
             color: var(--danger);
             box-shadow: 0 0 20px var(--danger-dim);
         }
-        .ban-option-btn .ban-icon {
-            margin-right: 8px;
-        }
 
         /* সার্ভার সিলেক্ট */
         .server-options {
@@ -558,14 +595,8 @@
             background: var(--primary-dim);
             color: var(--primary);
         }
-
-        .server-other-box {
-            display: none;
-            margin-top: 10px;
-        }
-        .server-other-box.show {
-            display: block;
-        }
+        .server-other-box { display: none; margin-top: 10px; }
+        .server-other-box.show { display: block; }
 
         /* কাস্টম ইমেজ আপলোড */
         .custom-file-upload {
@@ -573,9 +604,7 @@
             gap: 10px;
             align-items: center;
         }
-        .custom-file-upload input[type="file"] {
-            display: none;
-        }
+        .custom-file-upload input[type="file"] { display: none; }
         .custom-file-label {
             flex: 1;
             padding: 12px 15px;
@@ -588,13 +617,8 @@
             transition: 0.3s;
             font-size: 0.9rem;
         }
-        .custom-file-label:hover {
-            border-color: var(--primary);
-        }
-        .custom-file-label.has-image {
-            border-color: var(--primary);
-            color: var(--primary);
-        }
+        .custom-file-label:hover { border-color: var(--primary); }
+        .custom-file-label.has-image { border-color: var(--primary); color: var(--primary); }
         .upload-preview-img {
             width: 60px;
             height: 60px;
@@ -603,17 +627,10 @@
             border: 1px solid var(--primary);
             display: none;
         }
-        .upload-preview-img.show {
-            display: block;
-        }
+        .upload-preview-img.show { display: block; }
 
-        .other-game-box {
-            display: none;
-            margin-top: 10px;
-        }
-        .other-game-box.show {
-            display: block;
-        }
+        .other-game-box { display: none; margin-top: 10px; }
+        .other-game-box.show { display: block; }
 
         .contact-type-grid {
             display: grid;
@@ -634,9 +651,7 @@
             transition: 0.3s;
             text-align: center;
         }
-        .contact-type-btn:hover {
-            border-color: var(--text-muted);
-        }
+        .contact-type-btn:hover { border-color: var(--text-muted); }
         .contact-type-btn.active-contact {
             border-color: var(--primary);
             background: var(--primary-dim);
@@ -734,8 +749,47 @@
             </div>
         </header>
 
+        <!-- ============================================================
+        ফিল্টার বার
+        ============================================================ -->
+        <div class="filter-bar" id="filterBar">
+            <!-- ব্যান ফিল্টার -->
+            <div class="filter-group">
+                <span class="filter-group-label"><i class="fas fa-shield-alt"></i></span>
+                <button class="filter-btn active" data-filter="ban" data-value="all" onclick="setFilter('ban','all')">All</button>
+                <button class="filter-btn" data-filter="ban" data-value="noban" onclick="setFilter('ban','noban')">✅ No Ban</button>
+                <button class="filter-btn" data-filter="ban" data-value="banned" onclick="setFilter('ban','banned')">🚫 Banned</button>
+            </div>
+
+            <div class="filter-divider"></div>
+
+            <!-- ক্যাটাগরি ফিল্টার -->
+            <div class="filter-group">
+                <span class="filter-group-label"><i class="fas fa-tag"></i></span>
+                <button class="filter-btn active" data-filter="category" data-value="all" onclick="setFilter('category','all')">All</button>
+                <button class="filter-btn" data-filter="category" data-value="Free Fire" onclick="setFilter('category','Free Fire')">Free Fire</button>
+                <button class="filter-btn" data-filter="category" data-value="PUBG" onclick="setFilter('category','PUBG')">PUBG</button>
+                <button class="filter-btn" data-filter="category" data-value="Blood Strike" onclick="setFilter('category','Blood Strike')">Blood Strike</button>
+            </div>
+
+            <div class="filter-divider"></div>
+
+            <!-- সার্ভার ফিল্টার -->
+            <div class="filter-group">
+                <span class="filter-group-label"><i class="fas fa-globe"></i></span>
+                <button class="filter-btn active" data-filter="server" data-value="all" onclick="setFilter('server','all')">All</button>
+                <button class="filter-btn" data-filter="server" data-value="Bangladesh" onclick="setFilter('server','Bangladesh')">🇧🇩 BD</button>
+                <button class="filter-btn" data-filter="server" data-value="India" onclick="setFilter('server','India')">🇮🇳 IN</button>
+                <button class="filter-btn" data-filter="server" data-value="Nepal" onclick="setFilter('server','Nepal')">🇳🇵 NP</button>
+                <button class="filter-btn" data-filter="server" data-value="Pakistan" onclick="setFilter('server','Pakistan')">🇵🇰 PK</button>
+                <button class="filter-btn" data-filter="server" data-value="Singapore" onclick="setFilter('server','Singapore')">🇸🇬 SG</button>
+                <button class="filter-btn" data-filter="server" data-value="Indonesia" onclick="setFilter('server','Indonesia')">🇮🇩 ID</button>
+            </div>
+        </div>
+
+        <!-- সার্চ বার -->
         <div class="search-container" id="searchContainer">
-            <input type="text" id="searchInput" class="search-box" placeholder="Search posts..." onkeyup="handleSearch()">
+            <input type="text" id="searchInput" class="search-box" placeholder="Search by title, email, phone, category, server..." oninput="handleSearch()">
         </div>
 
         <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
@@ -794,7 +848,7 @@
         </div>
 
         <!-- ============================================================
-        আপলোড মোডাল (সার্ভার সহ)
+        আপলোড মোডাল
         ============================================================ -->
         <div class="upload-modal-overlay" id="uploadModal">
             <div class="upload-modal-box">
@@ -859,7 +913,7 @@
                         </div>
                     </div>
 
-                    <!-- ====== সার্ভার সিলেক্ট ====== -->
+                    <!-- সার্ভার -->
                     <div class="upload-form-group">
                         <label>Server *</label>
                         <div class="server-options">
@@ -878,12 +932,6 @@
                         </div>
                         <input type="hidden" id="homeServer" value="Bangladesh">
                         <button type="button" class="server-option-btn" style="width:100%; margin-top:5px;" onclick="toggleServerOther()">➕ Others</button>
-                    </div>
-
-                    <!-- ইমেইল -->
-                    <div class="upload-form-group">
-                        <label>Email Address *</label>
-                        <input type="email" id="homeEmail" placeholder="Enter email address..." required>
                     </div>
 
                     <!-- কন্টাক্ট টাইপ -->
@@ -906,10 +954,22 @@
                         <input type="hidden" id="homeContactType" value="facebook">
                     </div>
 
-                    <!-- ফোন/ইমেইল -->
+                    <!-- মেইন ফোন/ইমেইল (একটাও দিতেই হবে) -->
                     <div class="upload-form-group">
-                        <label>Phone Number or Email (at least one) *</label>
-                        <input type="text" id="homeContactValue" placeholder="Enter phone number or email..." required>
+                        <label>Main Phone or Email (at least one) *</label>
+                        <input type="text" id="homeMainContact" placeholder="Enter phone number or email..." required>
+                    </div>
+
+                    <!-- রিকভারি ফোন -->
+                    <div class="upload-form-group">
+                        <label>Recovery Phone (optional)</label>
+                        <input type="text" id="homeRecoveryPhone" placeholder="Enter recovery phone...">
+                    </div>
+
+                    <!-- রিকভারি ইমেইল -->
+                    <div class="upload-form-group">
+                        <label>Recovery Email (optional)</label>
+                        <input type="email" id="homeRecoveryEmail" placeholder="Enter recovery email...">
                     </div>
 
                     <button type="submit" class="upload-btn-submit">
@@ -945,13 +1005,172 @@
         const DB_PATH = "MVX_VIP_SERVER_V5";
 
         let allApps = [];
-        let searchQuery = "";
-        let targetAdminUrl = ""; 
+        let filteredApps = [];
         let currentLoggedUser = null;
         let displayLimit = 10;
 
+        // ফিল্টার স্টেট
+        let filters = {
+            ban: 'all',
+            category: 'all',
+            server: 'all'
+        };
+        let searchQuery = '';
+
         const ADMIN_EMAIL = "sktausif771@gmail.com";
         const IMGBB_API_KEY = "820eb9aa6a57f863045a52c1929efc9c";
+
+        // ================================================================
+        // ফিল্টার ফাংশন
+        // ================================================================
+        function setFilter(type, value) {
+            filters[type] = value;
+            
+            // আপডেট UI
+            document.querySelectorAll(`.filter-btn[data-filter="${type}"]`).forEach(btn => {
+                btn.classList.remove('active', 'active-ban', 'active-noban');
+                if (btn.dataset.value === value) {
+                    if (type === 'ban' && value === 'banned') {
+                        btn.classList.add('active-ban');
+                    } else if (type === 'ban' && value === 'noban') {
+                        btn.classList.add('active-noban');
+                    } else {
+                        btn.classList.add('active');
+                    }
+                }
+            });
+            
+            filterAndRender();
+        }
+
+        // ================================================================
+        // সার্চ ফাংশন (টাইটেল, ইমেইল, ফোন, ক্যাটাগরি, সার্ভার)
+        // ================================================================
+        function handleSearch() {
+            searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
+            displayLimit = 10;
+            filterAndRender();
+        }
+
+        // ================================================================
+        // ফিল্টার + সার্চ একসাথে
+        // ================================================================
+        function filterAndRender() {
+            const feed = document.getElementById('feedContainer');
+            const loadMoreBtn = document.getElementById('loadMoreContainer');
+            
+            // ফিল্টার
+            let result = allApps.filter(app => {
+                // ব্যান ফিল্টার
+                if (filters.ban === 'banned' && app.isBanned !== true) return false;
+                if (filters.ban === 'noban' && app.isBanned === true) return false;
+                
+                // ক্যাটাগরি ফিল্টার
+                if (filters.category !== 'all' && app.gameCategory !== filters.category) return false;
+                
+                // সার্ভার ফিল্টার
+                if (filters.server !== 'all' && app.server !== filters.server) return false;
+                
+                return true;
+            });
+
+            // সার্চ (টাইটেল, ইমেইল, ফোন, ক্যাটাগরি, সার্ভার, কন্টাক্ট টাইপ)
+            if (searchQuery) {
+                result = result.filter(app => {
+                    const searchFields = [
+                        app.title || '',
+                        app.email || '',
+                        app.mainContact || '',
+                        app.contactValue || '',
+                        app.gameCategory || '',
+                        app.server || '',
+                        app.contactType || '',
+                        app.recoveryPhone || '',
+                        app.recoveryEmail || ''
+                    ];
+                    return searchFields.some(field => 
+                        field.toString().toLowerCase().includes(searchQuery)
+                    );
+                });
+            }
+
+            filteredApps = result;
+
+            if (filteredApps.length === 0) {
+                feed.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><h3>No Results Found</h3></div>`;
+                loadMoreBtn.style.display = 'none';
+                return;
+            }
+
+            const appsToShow = filteredApps.slice(0, displayLimit);
+            renderPosts(appsToShow);
+
+            if (filteredApps.length > displayLimit) {
+                loadMoreBtn.style.display = 'block';
+            } else {
+                loadMoreBtn.style.display = 'none';
+            }
+        }
+
+        // ================================================================
+        // পোস্ট রেন্ডার (ডিলিট/এডিট বাটন ছাড়া)
+        // ================================================================
+        function renderPosts(posts) {
+            const feed = document.getElementById('feedContainer');
+            feed.innerHTML = '';
+
+            posts.forEach(app => {
+                const imageSrc = app.imageUrl || 'https://via.placeholder.com/800x450/1a1f2c/00e6b8?text=NO+IMAGE';
+                
+                let banBadge = '';
+                if (app.isBanned === true) {
+                    banBadge = `<div class="ban-badge"><i class="fas fa-ban"></i> BANNED</div>`;
+                } else {
+                    banBadge = `<div class="noban-badge"><i class="fas fa-check-circle"></i> NO BAN</div>`;
+                }
+
+                const timeString = app.timestamp ? ` • ${timeAgo(app.timestamp)}` : '';
+                const serverText = app.server || 'N/A';
+
+                // কন্টাক্ট টাইপ লেবেল
+                const contactLabels = {
+                    'facebook': 'FB',
+                    'gmail': 'Gmail',
+                    'twitter': 'Twitter',
+                    'phone': 'Phone'
+                };
+                const contactLabel = contactLabels[app.contactType] || app.contactType || 'N/A';
+
+                // মেইন কন্টাক্ট (যেটা দিয়েছে)
+                const mainContact = app.mainContact || app.contactValue || 'N/A';
+
+                feed.innerHTML += `
+                    <div class="yt-card" onclick="goToDetails('${app.id}')">
+                        <div class="yt-banner-wrapper">
+                            ${banBadge}
+                            <div class="server-badge"><i class="fas fa-globe"></i> ${serverText}</div>
+                            <img src="${imageSrc}" class="yt-banner" loading="lazy">
+                        </div>
+                        <div class="yt-info">
+                            <div class="yt-text">
+                                <h3 class="yt-title">${app.title || 'Untitled'}</h3>
+                                <div class="yt-meta">
+                                    ${app.gameCategory || 'N/A'} 
+                                    ${timeString}
+                                    <br>
+                                    <i class="fas fa-envelope" style="font-size:0.8rem;"></i> ${app.email || 'N/A'}
+                                    <br>
+                                    <i class="fas fa-phone" style="font-size:0.8rem;"></i> ${mainContact} 
+                                    <span style="font-size:0.7rem;color:var(--text-muted);">(${contactLabel})</span>
+                                    ${app.recoveryPhone ? `<br><i class="fas fa-sync" style="font-size:0.7rem;"></i> Recovery: ${app.recoveryPhone}` : ''}
+                                    ${app.recoveryEmail ? `<br><i class="fas fa-sync" style="font-size:0.7rem;"></i> Recovery: ${app.recoveryEmail}` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
 
         // ================================================================
         // BAN সিলেক্ট
@@ -979,17 +1198,12 @@
         function selectServer(server) {
             const btns = document.querySelectorAll('.server-option-btn');
             btns.forEach(btn => btn.classList.remove('active-server'));
-            
-            // Find the button with matching text
             btns.forEach(btn => {
                 if (btn.textContent.trim() === server || btn.textContent.trim().includes(server)) {
                     btn.classList.add('active-server');
                 }
             });
-            
             document.getElementById('homeServer').value = server;
-            
-            // Hide others box if a predefined server is selected
             if (server !== 'Others') {
                 document.getElementById('serverOtherBox').classList.remove('show');
             }
@@ -1000,7 +1214,6 @@
             box.classList.toggle('show');
             if (box.classList.contains('show')) {
                 document.getElementById('homeServer').value = 'Others';
-                // Remove active from all server buttons
                 document.querySelectorAll('.server-option-btn').forEach(btn => btn.classList.remove('active-server'));
             }
         }
@@ -1011,14 +1224,12 @@
         function selectContact(type) {
             const btns = document.querySelectorAll('.contact-type-btn');
             btns.forEach(btn => btn.classList.remove('active-contact'));
-            
             const map = {
                 'facebook': 'contactFacebook',
                 'gmail': 'contactGmail',
                 'twitter': 'contactTwitter',
                 'phone': 'contactPhone'
             };
-            
             document.getElementById(map[type]).classList.add('active-contact');
             document.getElementById('homeContactType').value = type;
         }
@@ -1110,7 +1321,7 @@
         });
 
         // ================================================================
-        // আপলোড (ইউজারের UID সহ)
+        // আপলোড
         // ================================================================
         function submitAppFromHome(e) {
             e.preventDefault();
@@ -1130,7 +1341,6 @@
                 gameCategory = document.getElementById('homeOtherGame').value.trim() || 'Others';
             }
 
-            // সার্ভার
             let server = document.getElementById('homeServer').value;
             if (server === 'Others') {
                 server = document.getElementById('homeOtherServer').value.trim() || 'Others';
@@ -1142,23 +1352,32 @@
                 return;
             }
 
+            const mainContact = document.getElementById('homeMainContact').value.trim();
+            if (!mainContact) {
+                showMessage('মেইন ফোন বা ইমেইল দিন!', 'error');
+                return;
+            }
+
             const data = {
                 title: document.getElementById('homeTitle').value.trim(),
                 gameCategory: gameCategory,
                 imageUrl: imageUrl,
-                email: document.getElementById('homeEmail').value.trim(),
                 contactType: document.getElementById('homeContactType').value,
-                contactValue: document.getElementById('homeContactValue').value.trim(),
+                mainContact: mainContact,
+                contactValue: mainContact, // ব্যাকওয়ার্ড কম্প্যাটিবিলিটি
+                recoveryPhone: document.getElementById('homeRecoveryPhone').value.trim(),
+                recoveryEmail: document.getElementById('homeRecoveryEmail').value.trim(),
                 isBanned: banStatus === 'yes' ? true : false,
                 server: server,
                 timestamp: Date.now(),
                 isUpdated: true,
                 uid: currentLoggedUser.uid,
-                userEmail: currentLoggedUser.email
+                userEmail: currentLoggedUser.email,
+                email: currentLoggedUser.email // ব্যাকওয়ার্ড কম্প্যাটিবিলিটি
             };
 
-            if (!data.title || !data.email || !data.contactValue) {
-                showMessage('সব প্রয়োজনীয় ফিল্ড পূরণ করুন!', 'error');
+            if (!data.title) {
+                showMessage('টাইটেল দিন!', 'error');
                 return;
             }
 
@@ -1190,7 +1409,7 @@
         }
 
         // ================================================================
-        // 🔐 লগইন
+        // লগইন
         // ================================================================
         function loginFromOverlay() {
             const email = document.getElementById('loginEmailOverlay').value.trim();
@@ -1362,12 +1581,6 @@
             if (e.key === 'Enter') verifyAdminPass();
         });
 
-        function handleSearch() {
-            searchQuery = document.getElementById('searchInput').value.toLowerCase();
-            displayLimit = 10;
-            filterAndRender();
-        }
-
         function goToDetails(appId) {
             window.location.href = `details.html?id=${appId}`;
         }
@@ -1378,7 +1591,7 @@
         }
 
         // ================================================================
-        // ডেটা লোড - শুধু লগইন করা ইউজারের পোস্ট দেখাবে
+        // ডেটা লোড - শুধু লগইন করা ইউজারের পোস্ট
         // ================================================================
         function loadFirebaseData() {
             database.ref(DB_PATH).on('value', (snap) => {
@@ -1400,81 +1613,6 @@
                 
                 filterAndRender();
             });
-        }
-
-        // ================================================================
-        // রেন্ডার - ডিলিট বাটন ছাড়া (শুধু টাইটেল + সময় + সার্ভার)
-        // ================================================================
-        function filterAndRender() {
-            const feed = document.getElementById('feedContainer');
-            const loadMoreBtn = document.getElementById('loadMoreContainer');
-            feed.innerHTML = '';
-
-            let filtered = allApps;
-            if(searchQuery) filtered = filtered.filter(app => 
-                (app.title || '').toLowerCase().includes(searchQuery) ||
-                (app.gameCategory || '').toLowerCase().includes(searchQuery) ||
-                (app.email || '').toLowerCase().includes(searchQuery)
-            );
-
-            if(filtered.length === 0) {
-                feed.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><h3>No Results Found</h3></div>`;
-                loadMoreBtn.style.display = 'none';
-                return;
-            }
-
-            const appsToShow = filtered.slice(0, displayLimit);
-
-            let htmlContent = '';
-            appsToShow.forEach(app => {
-                const imageSrc = app.imageUrl || 'https://via.placeholder.com/800x450/1a1f2c/00e6b8?text=NO+IMAGE';
-                
-                let banBadge = '';
-                if (app.isBanned === true) {
-                    banBadge = `<div class="ban-badge"><i class="fas fa-ban"></i> BANNED</div>`;
-                } else {
-                    banBadge = `<div class="noban-badge"><i class="fas fa-check-circle"></i> NO BAN</div>`;
-                }
-
-                const timeString = app.timestamp ? ` • ${timeAgo(app.timestamp)}` : '';
-
-                // সার্ভার ব্যাজ
-                const serverText = app.server || 'N/A';
-                const serverBadge = `<div class="server-badge"><i class="fas fa-globe"></i> ${serverText}</div>`;
-
-                htmlContent += `
-                    <div class="yt-card" onclick="goToDetails('${app.id}')">
-                        <div class="yt-banner-wrapper">
-                            ${banBadge}
-                            ${serverBadge}
-                            <img src="${imageSrc}" class="yt-banner" loading="lazy">
-                        </div>
-                        <div class="yt-info">
-                            <div class="yt-text">
-                                <h3 class="yt-title">${app.title || 'Untitled'}</h3>
-                                <div class="yt-meta">
-                                    ${app.gameCategory || 'N/A'} 
-                                    <span class="badge-type ${app.accessType ? app.accessType.toLowerCase() : 'free'}">${app.accessType || 'Free'}</span>
-                                    ${timeString}
-                                    <br>
-                                    <i class="fas fa-envelope" style="font-size:0.8rem;"></i> ${app.email || 'N/A'}
-                                    <br>
-                                    <i class="fas fa-phone" style="font-size:0.8rem;"></i> ${app.contactValue || 'N/A'} 
-                                    <span style="font-size:0.7rem;color:var(--text-muted);">(${app.contactType || 'N/A'})</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-            
-            feed.innerHTML = htmlContent;
-
-            if (filtered.length > displayLimit) {
-                loadMoreBtn.style.display = 'block';
-            } else {
-                loadMoreBtn.style.display = 'none';
-            }
         }
     </script>
 </body>

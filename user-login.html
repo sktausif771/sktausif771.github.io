@@ -174,7 +174,7 @@
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
         /* ================================================================
-           এডিট মোডাল (সার্ভার সহ)
+           এডিট মোডাল (সার্ভার + রিকভারি সহ)
            ================================================================ */
         .edit-modal-overlay {
             position: fixed;
@@ -257,10 +257,6 @@
         .edit-form-group textarea:focus {
             border-color: var(--primary);
         }
-        .edit-form-group textarea {
-            min-height: 60px;
-            resize: vertical;
-        }
 
         .edit-ban-options {
             display: flex;
@@ -292,7 +288,6 @@
             color: var(--danger);
         }
 
-        /* এডিট সার্ভার */
         .edit-server-options {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
@@ -353,6 +348,14 @@
             color: var(--primary);
         }
 
+        .edit-other-game-box {
+            display: none;
+            margin-top: 10px;
+        }
+        .edit-other-game-box.show {
+            display: block;
+        }
+
         .edit-submit-btn {
             width: 100%;
             padding: 15px;
@@ -370,14 +373,6 @@
         .edit-submit-btn:hover {
             box-shadow: 0 0 20px var(--primary-dim);
             transform: translateY(-2px);
-        }
-
-        .edit-other-game-box {
-            display: none;
-            margin-top: 10px;
-        }
-        .edit-other-game-box.show {
-            display: block;
         }
     </style>
 </head>
@@ -534,7 +529,7 @@
                     </div>
                 </div>
 
-                <!-- ====== সার্ভার এডিট ====== -->
+                <!-- সার্ভার -->
                 <div class="edit-form-group">
                     <label>Server *</label>
                     <div class="edit-server-options">
@@ -555,13 +550,9 @@
                     <button type="button" class="edit-server-option-btn" style="width:100%; margin-top:5px;" onclick="toggleEditServerOther()">➕ Others</button>
                 </div>
 
+                <!-- কন্টাক্ট টাইপ -->
                 <div class="edit-form-group">
-                    <label>Email Address *</label>
-                    <input type="email" id="editEmail" required>
-                </div>
-
-                <div class="edit-form-group">
-                    <label>Contact Type</label>
+                    <label>Contact Type *</label>
                     <div class="edit-contact-grid">
                         <button type="button" class="edit-contact-btn active-contact" id="editContactFacebook" onclick="selectEditContact('facebook')">
                             <i class="fab fa-facebook"></i> Facebook
@@ -579,9 +570,22 @@
                     <input type="hidden" id="editContactType" value="facebook">
                 </div>
 
+                <!-- মেইন কন্টাক্ট -->
                 <div class="edit-form-group">
-                    <label>Phone/Email *</label>
-                    <input type="text" id="editContactValue" required>
+                    <label>Main Phone or Email (at least one) *</label>
+                    <input type="text" id="editMainContact" required>
+                </div>
+
+                <!-- রিকভারি ফোন -->
+                <div class="edit-form-group">
+                    <label>Recovery Phone (optional)</label>
+                    <input type="text" id="editRecoveryPhone" placeholder="Enter recovery phone...">
+                </div>
+
+                <!-- রিকভারি ইমেইল -->
+                <div class="edit-form-group">
+                    <label>Recovery Email (optional)</label>
+                    <input type="email" id="editRecoveryEmail" placeholder="Enter recovery email...">
                 </div>
 
                 <button type="submit" class="edit-submit-btn">
@@ -648,15 +652,12 @@
         function selectEditServer(server) {
             const btns = document.querySelectorAll('.edit-server-option-btn');
             btns.forEach(btn => btn.classList.remove('active-server'));
-            
             btns.forEach(btn => {
                 if (btn.textContent.trim() === server || btn.textContent.trim().includes(server)) {
                     btn.classList.add('active-server');
                 }
             });
-            
             document.getElementById('editServer').value = server;
-            
             if (server !== 'Others') {
                 document.getElementById('editServerOtherBox').classList.remove('show');
             }
@@ -714,7 +715,7 @@
         });
 
         // ================================================================
-        // MY UPLOADS লোড (সার্ভার সহ)
+        // MY UPLOADS লোড (সার্ভার + রিকভারি সহ)
         // ================================================================
         function loadMyUploads(uid) {
             const listEl = document.getElementById('myUploadsList');
@@ -737,6 +738,7 @@
                     const banText = val.isBanned ? '🚫 Banned' : '✅ No Ban';
                     const banColor = val.isBanned ? 'var(--danger)' : 'var(--primary)';
                     const serverText = val.server || 'N/A';
+                    const mainContact = val.mainContact || val.contactValue || 'N/A';
 
                     item.innerHTML = `
                         <div class="upload-item-info">
@@ -746,6 +748,10 @@
                                 <span style="color:${banColor};">${banText}</span> • 
                                 <span class="server-tag"><i class="fas fa-globe"></i> ${serverText}</span>
                                 ${val.timestamp ? ' • ' + timeAgo(val.timestamp) : ''}
+                                <br>
+                                <i class="fas fa-phone" style="font-size:0.7rem;"></i> ${mainContact}
+                                ${val.recoveryPhone ? ` • <i class="fas fa-sync" style="font-size:0.7rem;"></i> ${val.recoveryPhone}` : ''}
+                                ${val.recoveryEmail ? ` • <i class="fas fa-sync" style="font-size:0.7rem;"></i> ${val.recoveryEmail}` : ''}
                             </div>
                         </div>
                         <div class="upload-item-actions">
@@ -786,7 +792,7 @@
         }
 
         // ================================================================
-        // এডিট মোডাল (সার্ভার সহ)
+        // এডিট মোডাল (সার্ভার + রিকভারি সহ)
         // ================================================================
         function openEditModal(postId) {
             if (!currentUserData) return;
@@ -801,8 +807,9 @@
                 document.getElementById('editPostId').value = postId;
                 document.getElementById('editTitle').value = data.title || '';
                 document.getElementById('editCategory').value = data.gameCategory || 'Free Fire';
-                document.getElementById('editEmail').value = data.email || '';
-                document.getElementById('editContactValue').value = data.contactValue || '';
+                document.getElementById('editMainContact').value = data.mainContact || data.contactValue || '';
+                document.getElementById('editRecoveryPhone').value = data.recoveryPhone || '';
+                document.getElementById('editRecoveryEmail').value = data.recoveryEmail || '';
 
                 // Ban status
                 const isBanned = data.isBanned === true;
@@ -883,7 +890,7 @@
         }
 
         // ================================================================
-        // এডিট সাবমিট (সার্ভার সহ)
+        // এডিট সাবমিট (সার্ভার + রিকভারি সহ)
         // ================================================================
         function submitEdit(e) {
             e.preventDefault();
@@ -896,26 +903,33 @@
                 gameCategory = document.getElementById('editOtherGame').value.trim() || 'Others';
             }
 
-            // সার্ভার
             let server = document.getElementById('editServer').value;
             if (server === 'Others') {
                 server = document.getElementById('editOtherServer').value.trim() || 'Others';
             }
 
+            const mainContact = document.getElementById('editMainContact').value.trim();
+            if (!mainContact) {
+                showToast('মেইন ফোন বা ইমেইল দিন!', 'error');
+                return;
+            }
+
             const data = {
                 title: document.getElementById('editTitle').value.trim(),
                 gameCategory: gameCategory,
-                email: document.getElementById('editEmail').value.trim(),
                 contactType: document.getElementById('editContactType').value,
-                contactValue: document.getElementById('editContactValue').value.trim(),
+                mainContact: mainContact,
+                contactValue: mainContact, // ব্যাকওয়ার্ড কম্প্যাটিবিলিটি
+                recoveryPhone: document.getElementById('editRecoveryPhone').value.trim(),
+                recoveryEmail: document.getElementById('editRecoveryEmail').value.trim(),
                 isBanned: document.getElementById('editBanStatus').value === 'yes' ? true : false,
                 server: server,
                 isUpdated: true,
                 timestamp: Date.now()
             };
 
-            if (!data.title || !data.email || !data.contactValue) {
-                showToast('Please fill all required fields!', 'error');
+            if (!data.title) {
+                showToast('টাইটেল দিন!', 'error');
                 return;
             }
 
