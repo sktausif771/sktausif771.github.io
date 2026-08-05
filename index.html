@@ -234,7 +234,7 @@
         .login-redirect-btn:hover { box-shadow: 0 0 15px var(--primary-dim); }
 
         /* ================================================================
-           ফিল্টার বার (নতুন ডিজাইন - বড় বড় বাটন)
+           ড্রপডাউন ফিল্টার বার (৩টি বড় বাটন)
            ================================================================ */
         .filter-bar {
             padding: 12px 20px;
@@ -243,87 +243,137 @@
             position: sticky;
             top: 70px;
             z-index: 90;
-        }
-        .filter-row {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            align-items: center;
-            margin-bottom: 8px;
+            gap: 10px;
+            align-items: flex-start;
         }
-        .filter-row:last-child { margin-bottom: 0; }
-        .filter-row-label {
-            color: var(--text-muted);
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-right: 4px;
-            min-width: 40px;
+
+        /* প্রতিটি ড্রপডাউন গ্রুপ */
+        .dropdown-group {
+            flex: 1;
+            min-width: 120px;
+            position: relative;
         }
-        /* বড় বাটন (ব্যান/নোবেন) */
-        .filter-btn-large {
-            padding: 8px 20px;
-            border-radius: 25px;
-            border: 2px solid #333;
+
+        /* মূল বাটন - লম্বা ও বড় */
+        .dropdown-main-btn {
+            width: 100%;
+            padding: 12px 16px;
             background: var(--bg-input);
-            color: var(--text-muted);
+            border: 2px solid #333;
+            border-radius: 12px;
+            color: var(--text-primary);
             font-family: var(--font-head);
-            font-size: 0.9rem;
+            font-size: 1.1rem;
             font-weight: 700;
             cursor: pointer;
             transition: 0.3s;
-            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            text-align: left;
         }
-        .filter-btn-large:hover {
+        .dropdown-main-btn:hover {
             border-color: var(--text-muted);
         }
-        .filter-btn-large.active {
-            border-color: var(--primary);
-            background: var(--primary-dim);
-            color: var(--primary);
+        .dropdown-main-btn .arrow {
+            transition: transform 0.3s ease;
+            font-size: 0.9rem;
+            color: var(--text-muted);
         }
-        .filter-btn-large.active-ban {
+        .dropdown-main-btn.open .arrow {
+            transform: rotate(180deg);
+        }
+
+        /* সক্রিয় অবস্থায় রং */
+        .dropdown-main-btn.active-ban {
             border-color: var(--danger);
             background: var(--danger-dim);
             color: var(--danger);
         }
-        .filter-btn-large.active-noban {
+        .dropdown-main-btn.active-noban {
             border-color: var(--primary);
             background: var(--primary-dim);
             color: var(--primary);
+        }
+        .dropdown-main-btn.active-category {
+            border-color: var(--gold);
+            background: var(--gold-dim);
+            color: var(--gold);
+        }
+        .dropdown-main-btn.active-server {
+            border-color: #00ccff;
+            background: rgba(0, 204, 255, 0.1);
+            color: #00ccff;
         }
 
-        /* ছোট বাটন (ক্যাটাগরি, সার্ভার) */
-        .filter-btn-sm {
-            padding: 5px 14px;
-            border-radius: 20px;
+        /* ড্রপডাউন মেনু */
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            width: 100%;
+            background: var(--bg-card);
             border: 1px solid #333;
-            background: var(--bg-input);
+            border-radius: 12px;
+            padding: 8px;
+            z-index: 100;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            max-height: 250px;
+            overflow-y: auto;
+            animation: dropDown 0.2s ease;
+        }
+        .dropdown-menu.open {
+            display: block;
+        }
+
+        @keyframes dropDown {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dropdown-menu::-webkit-scrollbar {
+            width: 4px;
+        }
+        .dropdown-menu::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .dropdown-item {
+            padding: 10px 14px;
+            border-radius: 8px;
             color: var(--text-muted);
             font-family: var(--font-body);
-            font-size: 0.75rem;
+            font-size: 0.9rem;
             font-weight: 600;
             cursor: pointer;
-            transition: 0.3s;
-            white-space: nowrap;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        .filter-btn-sm:hover {
-            border-color: var(--text-muted);
+        .dropdown-item:hover {
+            background: var(--bg-input);
+            color: var(--text-primary);
         }
-        .filter-btn-sm.active {
-            border-color: var(--primary);
+        .dropdown-item.active {
             background: var(--primary-dim);
             color: var(--primary);
         }
-        .filter-btn-sm .flag {
-            margin-right: 4px;
+        .dropdown-item .flag {
+            font-size: 1.1rem;
         }
-        .filter-divider {
-            width: 1px;
-            height: 24px;
-            background: #333;
-            margin: 0 6px;
+        .dropdown-item .check {
+            margin-left: auto;
+            color: var(--primary);
+            display: none;
+        }
+        .dropdown-item.active .check {
+            display: inline;
         }
 
         /* Search Bar */
@@ -400,7 +450,6 @@
         .yt-text { flex: 1; }
         .yt-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 5px; color: var(--text-primary); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .yt-meta { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
-        .yt-meta .highlight { color: var(--primary); }
 
         .empty-state { text-align: center; padding: 50px 20px; color: var(--text-muted); }
         .empty-state i { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; }
@@ -472,7 +521,7 @@
         }
 
         /* ================================================================
-           আপলোড মোডাল (ইমেইল + ফোন আলাদা বক্স)
+           আপলোড মোডাল
            ================================================================ */
         .upload-modal-overlay {
             position: fixed;
@@ -684,7 +733,6 @@
             color: var(--primary);
         }
 
-        /* ====== ইমেইল ও ফোন আলাদা বক্স ====== */
         .contact-input-group {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -791,37 +839,82 @@
         </header>
 
         <!-- ============================================================
-        ফিল্টার বার (নতুন ডিজাইন)
+        ড্রপডাউন ফিল্টার বার (৩টি বড় বাটন)
         ============================================================ -->
         <div class="filter-bar" id="filterBar">
-            <!-- সারি ১: ব্যান ফিল্টার (বড় বাটন) -->
-            <div class="filter-row">
-                <span class="filter-row-label"><i class="fas fa-shield-alt"></i></span>
-                <button class="filter-btn-large active" data-filter="ban" data-value="all" onclick="setFilter('ban','all')">🔓 All</button>
-                <button class="filter-btn-large" data-filter="ban" data-value="noban" onclick="setFilter('ban','noban')">✅ No Ban</button>
-                <button class="filter-btn-large" data-filter="ban" data-value="banned" onclick="setFilter('ban','banned')">🚫 Banned</button>
+            
+            <!-- ১. ব্যান ড্রপডাউন -->
+            <div class="dropdown-group">
+                <button class="dropdown-main-btn active" id="banMainBtn" onclick="toggleDropdown('banDropdown')">
+                    <span><i class="fas fa-shield-alt"></i> <span id="banLabel">All</span></span>
+                    <span class="arrow"><i class="fas fa-chevron-down"></i></span>
+                </button>
+                <div class="dropdown-menu" id="banDropdown">
+                    <div class="dropdown-item active" data-value="all" onclick="selectFilter('ban','all','banLabel','All')">
+                        🔓 All <span class="check"><i class="fas fa-check"></i></span>
+                    </div>
+                    <div class="dropdown-item" data-value="noban" onclick="selectFilter('ban','noban','banLabel','✅ No Ban')">
+                        ✅ No Ban <span class="check"><i class="fas fa-check"></i></span>
+                    </div>
+                    <div class="dropdown-item" data-value="banned" onclick="selectFilter('ban','banned','banLabel','🚫 Banned')">
+                        🚫 Banned <span class="check"><i class="fas fa-check"></i></span>
+                    </div>
+                </div>
             </div>
 
-            <!-- সারি ২: ক্যাটাগরি (ছোট বাটন) -->
-            <div class="filter-row">
-                <span class="filter-row-label"><i class="fas fa-tag"></i></span>
-                <button class="filter-btn-sm active" data-filter="category" data-value="all" onclick="setFilter('category','all')">All</button>
-                <button class="filter-btn-sm" data-filter="category" data-value="Free Fire" onclick="setFilter('category','Free Fire')">Free Fire</button>
-                <button class="filter-btn-sm" data-filter="category" data-value="PUBG" onclick="setFilter('category','PUBG')">PUBG</button>
-                <button class="filter-btn-sm" data-filter="category" data-value="Blood Strike" onclick="setFilter('category','Blood Strike')">Blood Strike</button>
+            <!-- ২. ক্যাটাগরি ড্রপডাউন -->
+            <div class="dropdown-group">
+                <button class="dropdown-main-btn active-category" id="catMainBtn" onclick="toggleDropdown('catDropdown')">
+                    <span><i class="fas fa-tag"></i> <span id="catLabel">All</span></span>
+                    <span class="arrow"><i class="fas fa-chevron-down"></i></span>
+                </button>
+                <div class="dropdown-menu" id="catDropdown">
+                    <div class="dropdown-item active" data-value="all" onclick="selectFilter('category','all','catLabel','All')">
+                        🎮 All <span class="check"><i class="fas fa-check"></i></span>
+                    </div>
+                    <div class="dropdown-item" data-value="Free Fire" onclick="selectFilter('category','Free Fire','catLabel','Free Fire')">
+                        🔥 Free Fire <span class="check"><i class="fas fa-check"></i></span>
+                    </div>
+                    <div class="dropdown-item" data-value="PUBG" onclick="selectFilter('category','PUBG','catLabel','PUBG')">
+                        🪂 PUBG <span class="check"><i class="fas fa-check"></i></span>
+                    </div>
+                    <div class="dropdown-item" data-value="Blood Strike" onclick="selectFilter('category','Blood Strike','catLabel','Blood Strike')">
+                        💀 Blood Strike <span class="check"><i class="fas fa-check"></i></span>
+                    </div>
+                </div>
             </div>
 
-            <!-- সারি ৩: সার্ভার (ফ্ল্যাগ সহ) -->
-            <div class="filter-row">
-                <span class="filter-row-label"><i class="fas fa-globe"></i></span>
-                <button class="filter-btn-sm active" data-filter="server" data-value="all" onclick="setFilter('server','all')">🌍 All</button>
-                <button class="filter-btn-sm" data-filter="server" data-value="Bangladesh" onclick="setFilter('server','Bangladesh')">🇧🇩 BD</button>
-                <button class="filter-btn-sm" data-filter="server" data-value="India" onclick="setFilter('server','India')">🇮🇳 IN</button>
-                <button class="filter-btn-sm" data-filter="server" data-value="Nepal" onclick="setFilter('server','Nepal')">🇳🇵 NP</button>
-                <button class="filter-btn-sm" data-filter="server" data-value="Pakistan" onclick="setFilter('server','Pakistan')">🇵🇰 PK</button>
-                <button class="filter-btn-sm" data-filter="server" data-value="Singapore" onclick="setFilter('server','Singapore')">🇸🇬 SG</button>
-                <button class="filter-btn-sm" data-filter="server" data-value="Indonesia" onclick="setFilter('server','Indonesia')">🇮🇩 ID</button>
+            <!-- ৩. সার্ভার ড্রপডাউন -->
+            <div class="dropdown-group">
+                <button class="dropdown-main-btn active-server" id="serverMainBtn" onclick="toggleDropdown('serverDropdown')">
+                    <span><i class="fas fa-globe"></i> <span id="serverLabel">All</span></span>
+                    <span class="arrow"><i class="fas fa-chevron-down"></i></span>
+                </button>
+                <div class="dropdown-menu" id="serverDropdown">
+                    <div class="dropdown-item active" data-value="all" onclick="selectFilter('server','all','serverLabel','🌍 All')">
+                        🌍 All <span class="check"><i class="fas fa-check"></i></span>
+                    </div>
+                    <div class="dropdown-item" data-value="Bangladesh" onclick="selectFilter('server','Bangladesh','serverLabel','🇧🇩 Bangladesh')">
+                        🇧🇩 Bangladesh <span class="check"><i class="fas fa-check"></i></span>
+                    </div>
+                    <div class="dropdown-item" data-value="India" onclick="selectFilter('server','India','serverLabel','🇮🇳 India')">
+                        🇮🇳 India <span class="check"><i class="fas fa-check"></i></span>
+                    </div>
+                    <div class="dropdown-item" data-value="Nepal" onclick="selectFilter('server','Nepal','serverLabel','🇳🇵 Nepal')">
+                        🇳🇵 Nepal <span class="check"><i class="fas fa-check"></i></span>
+                    </div>
+                    <div class="dropdown-item" data-value="Pakistan" onclick="selectFilter('server','Pakistan','serverLabel','🇵🇰 Pakistan')">
+                        🇵🇰 Pakistan <span class="check"><i class="fas fa-check"></i></span>
+                    </div>
+                    <div class="dropdown-item" data-value="Singapore" onclick="selectFilter('server','Singapore','serverLabel','🇸🇬 Singapore')">
+                        🇸🇬 Singapore <span class="check"><i class="fas fa-check"></i></span>
+                    </div>
+                    <div class="dropdown-item" data-value="Indonesia" onclick="selectFilter('server','Indonesia','serverLabel','🇮🇩 Indonesia')">
+                        🇮🇩 Indonesia <span class="check"><i class="fas fa-check"></i></span>
+                    </div>
+                </div>
             </div>
+
         </div>
 
         <!-- সার্চ বার -->
@@ -885,7 +978,7 @@
         </div>
 
         <!-- ============================================================
-        আপলোড মোডাল (ইমেইল + ফোন আলাদা বক্স)
+        আপলোড মোডাল
         ============================================================ -->
         <div class="upload-modal-overlay" id="uploadModal">
             <div class="upload-modal-box">
@@ -971,7 +1064,7 @@
                         <button type="button" class="server-option-btn" style="width:100%; margin-top:5px;" onclick="toggleServerOther()">➕ Others</button>
                     </div>
 
-                    <!-- ====== কন্টাক্ট টাইপ ====== -->
+                    <!-- কন্টাক্ট টাইপ -->
                     <div class="upload-form-group">
                         <label>Contact Type *</label>
                         <div class="contact-type-grid">
@@ -991,7 +1084,7 @@
                         <input type="hidden" id="homeContactType" value="facebook">
                     </div>
 
-                    <!-- ====== ইমেইল ও ফোন আলাদা বক্স ====== -->
+                    <!-- ইমেইল ও ফোন আলাদা বক্স -->
                     <div class="contact-input-group">
                         <div class="upload-form-group">
                             <label>Email Address</label>
@@ -1065,24 +1158,77 @@
         const IMGBB_API_KEY = "820eb9aa6a57f863045a52c1929efc9c";
 
         // ================================================================
-        // ফিল্টার ফাংশন
+        // ড্রপডাউন টগল
         // ================================================================
-        function setFilter(type, value) {
+        function toggleDropdown(id) {
+            const menu = document.getElementById(id);
+            const mainBtn = menu.parentElement.querySelector('.dropdown-main-btn');
+            
+            // সব ড্রপডাউন বন্ধ
+            document.querySelectorAll('.dropdown-menu').forEach(m => {
+                if (m.id !== id) m.classList.remove('open');
+            });
+            document.querySelectorAll('.dropdown-main-btn').forEach(b => {
+                if (b !== mainBtn) b.classList.remove('open');
+            });
+
+            menu.classList.toggle('open');
+            mainBtn.classList.toggle('open');
+        }
+
+        // বাইরে ক্লিক করলে ড্রপডাউন বন্ধ
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown-group')) {
+                document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('open'));
+                document.querySelectorAll('.dropdown-main-btn').forEach(b => b.classList.remove('open'));
+            }
+        });
+
+        // ================================================================
+        // ফিল্টার সিলেক্ট
+        // ================================================================
+        function selectFilter(type, value, labelId, labelText) {
+            // আপডেট ফিল্টার
             filters[type] = value;
             
-            document.querySelectorAll(`.filter-btn-large[data-filter="${type}"], .filter-btn-sm[data-filter="${type}"]`).forEach(btn => {
-                btn.classList.remove('active', 'active-ban', 'active-noban');
-                if (btn.dataset.value === value) {
-                    if (type === 'ban' && value === 'banned') {
-                        btn.classList.add('active-ban');
-                    } else if (type === 'ban' && value === 'noban') {
-                        btn.classList.add('active-noban');
-                    } else {
-                        btn.classList.add('active');
-                    }
-                }
-            });
+            // লেবেল আপডেট
+            document.getElementById(labelId).textContent = labelText;
             
+            // ড্রপডাউন আইটেম আপডেট
+            const menu = document.getElementById(labelId.replace('Label', 'Dropdown'));
+            if (menu) {
+                menu.querySelectorAll('.dropdown-item').forEach(item => {
+                    item.classList.remove('active');
+                    if (item.dataset.value === value) {
+                        item.classList.add('active');
+                    }
+                });
+            }
+
+            // মেইন বাটন ক্লাস আপডেট
+            const mainBtn = document.getElementById(labelId.replace('Label', 'MainBtn'));
+            if (mainBtn) {
+                // সব ক্লাস রিমুভ
+                mainBtn.classList.remove('active-ban', 'active-noban', 'active-category', 'active-server');
+                if (type === 'ban') {
+                    if (value === 'banned') mainBtn.classList.add('active-ban');
+                    else if (value === 'noban') mainBtn.classList.add('active-noban');
+                } else if (type === 'category') {
+                    mainBtn.classList.add('active-category');
+                } else if (type === 'server') {
+                    mainBtn.classList.add('active-server');
+                }
+            }
+
+            // ড্রপডাউন বন্ধ
+            const menu2 = document.getElementById(labelId.replace('Label', 'Dropdown'));
+            if (menu2) {
+                menu2.classList.remove('open');
+                const mainBtn2 = menu2.parentElement.querySelector('.dropdown-main-btn');
+                if (mainBtn2) mainBtn2.classList.remove('open');
+            }
+
+            // রি-রেন্ডার
             filterAndRender();
         }
 
@@ -1176,7 +1322,6 @@
                 };
                 const contactLabel = contactLabels[app.contactType] || app.contactType || 'N/A';
 
-                // ইমেইল ও ফোন দেখানো
                 const emailDisplay = app.email ? `✉️ ${app.email}` : '';
                 const phoneDisplay = app.phone ? `📞 ${app.phone}` : app.mainContact ? `📞 ${app.mainContact}` : '';
                 const contactDisplay = [emailDisplay, phoneDisplay].filter(Boolean).join(' • ');
@@ -1356,7 +1501,7 @@
         });
 
         // ================================================================
-        // আপলোড (ইমেইল + ফোন আলাদা)
+        // আপলোড
         // ================================================================
         function submitAppFromHome(e) {
             e.preventDefault();
