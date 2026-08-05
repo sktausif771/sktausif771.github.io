@@ -174,7 +174,7 @@
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
         /* ================================================================
-           এডিট মোডাল (সার্ভার + রিকভারি সহ)
+           এডিট মোডাল (ইমেইল + ফোন আলাদা বক্স + রিকভারি)
            ================================================================ */
         .edit-modal-overlay {
             position: fixed;
@@ -348,6 +348,21 @@
             color: var(--primary);
         }
 
+        /* ইমেইল + ফোন আলাদা বক্স (এডিট) */
+        .edit-contact-input-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .edit-contact-input-group .edit-form-group {
+            margin-bottom: 0;
+        }
+        @media (max-width: 480px) {
+            .edit-contact-input-group {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .edit-other-game-box {
             display: none;
             margin-top: 10px;
@@ -480,7 +495,7 @@
     </div>
 
     <!-- ============================================================
-    এডিট মোডাল
+    এডিট মোডাল (ইমেইল + ফোন আলাদা বক্স + রিকভারি)
     ============================================================ -->
     <div class="edit-modal-overlay" id="editModal">
         <div class="edit-modal-box">
@@ -570,11 +585,18 @@
                     <input type="hidden" id="editContactType" value="facebook">
                 </div>
 
-                <!-- মেইন কন্টাক্ট -->
-                <div class="edit-form-group">
-                    <label>Main Phone or Email (at least one) *</label>
-                    <input type="text" id="editMainContact" required>
+                <!-- ====== ইমেইল + ফোন আলাদা বক্স (এডিট) ====== -->
+                <div class="edit-contact-input-group">
+                    <div class="edit-form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="editEmail" placeholder="Enter email address...">
+                    </div>
+                    <div class="edit-form-group">
+                        <label>Phone Number</label>
+                        <input type="text" id="editPhone" placeholder="Enter phone number...">
+                    </div>
                 </div>
+                <small style="color: var(--text-muted); font-size: 0.75rem; display: block; margin-top: -8px; margin-bottom: 12px;">* At least one of Email or Phone is required</small>
 
                 <!-- রিকভারি ফোন -->
                 <div class="edit-form-group">
@@ -715,7 +737,7 @@
         });
 
         // ================================================================
-        // MY UPLOADS লোড (সার্ভার + রিকভারি সহ)
+        // MY UPLOADS লোড (ইমেইল + ফোন সহ)
         // ================================================================
         function loadMyUploads(uid) {
             const listEl = document.getElementById('myUploadsList');
@@ -738,7 +760,11 @@
                     const banText = val.isBanned ? '🚫 Banned' : '✅ No Ban';
                     const banColor = val.isBanned ? 'var(--danger)' : 'var(--primary)';
                     const serverText = val.server || 'N/A';
-                    const mainContact = val.mainContact || val.contactValue || 'N/A';
+                    
+                    // ইমেইল ও ফোন দেখানো
+                    const emailDisplay = val.email ? `✉️ ${val.email}` : '';
+                    const phoneDisplay = val.phone ? `📞 ${val.phone}` : val.mainContact ? `📞 ${val.mainContact}` : '';
+                    const contactDisplay = [emailDisplay, phoneDisplay].filter(Boolean).join(' • ');
 
                     item.innerHTML = `
                         <div class="upload-item-info">
@@ -749,7 +775,7 @@
                                 <span class="server-tag"><i class="fas fa-globe"></i> ${serverText}</span>
                                 ${val.timestamp ? ' • ' + timeAgo(val.timestamp) : ''}
                                 <br>
-                                <i class="fas fa-phone" style="font-size:0.7rem;"></i> ${mainContact}
+                                ${contactDisplay}
                                 ${val.recoveryPhone ? ` • <i class="fas fa-sync" style="font-size:0.7rem;"></i> ${val.recoveryPhone}` : ''}
                                 ${val.recoveryEmail ? ` • <i class="fas fa-sync" style="font-size:0.7rem;"></i> ${val.recoveryEmail}` : ''}
                             </div>
@@ -792,7 +818,7 @@
         }
 
         // ================================================================
-        // এডিট মোডাল (সার্ভার + রিকভারি সহ)
+        // এডিট মোডাল (ইমেইল + ফোন আলাদা বক্স + রিকভারি)
         // ================================================================
         function openEditModal(postId) {
             if (!currentUserData) return;
@@ -807,7 +833,8 @@
                 document.getElementById('editPostId').value = postId;
                 document.getElementById('editTitle').value = data.title || '';
                 document.getElementById('editCategory').value = data.gameCategory || 'Free Fire';
-                document.getElementById('editMainContact').value = data.mainContact || data.contactValue || '';
+                document.getElementById('editEmail').value = data.email || '';
+                document.getElementById('editPhone').value = data.phone || '';
                 document.getElementById('editRecoveryPhone').value = data.recoveryPhone || '';
                 document.getElementById('editRecoveryEmail').value = data.recoveryEmail || '';
 
@@ -890,7 +917,7 @@
         }
 
         // ================================================================
-        // এডিট সাবমিট (সার্ভার + রিকভারি সহ)
+        // এডিট সাবমিট (ইমেইল + ফোন আলাদা)
         // ================================================================
         function submitEdit(e) {
             e.preventDefault();
@@ -908,18 +935,24 @@
                 server = document.getElementById('editOtherServer').value.trim() || 'Others';
             }
 
-            const mainContact = document.getElementById('editMainContact').value.trim();
-            if (!mainContact) {
-                showToast('মেইন ফোন বা ইমেইল দিন!', 'error');
+            const email = document.getElementById('editEmail').value.trim();
+            const phone = document.getElementById('editPhone').value.trim();
+
+            if (!email && !phone) {
+                showToast('ইমেইল বা ফোন নাম্বার যেকোনো একটি দিন!', 'error');
                 return;
             }
+
+            const mainContact = email || phone;
 
             const data = {
                 title: document.getElementById('editTitle').value.trim(),
                 gameCategory: gameCategory,
                 contactType: document.getElementById('editContactType').value,
+                email: email,
+                phone: phone,
                 mainContact: mainContact,
-                contactValue: mainContact, // ব্যাকওয়ার্ড কম্প্যাটিবিলিটি
+                contactValue: mainContact,
                 recoveryPhone: document.getElementById('editRecoveryPhone').value.trim(),
                 recoveryEmail: document.getElementById('editRecoveryEmail').value.trim(),
                 isBanned: document.getElementById('editBanStatus').value === 'yes' ? true : false,

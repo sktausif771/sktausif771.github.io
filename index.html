@@ -234,35 +234,68 @@
         .login-redirect-btn:hover { box-shadow: 0 0 15px var(--primary-dim); }
 
         /* ================================================================
-           ফিল্টার বার (ব্যান, ক্যাটাগরি, সার্ভার)
+           ফিল্টার বার (নতুন ডিজাইন - বড় বড় বাটন)
            ================================================================ */
         .filter-bar {
-            padding: 15px 20px;
+            padding: 12px 20px;
             background: var(--bg-card);
             border-bottom: 1px solid #333;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            align-items: center;
             position: sticky;
             top: 70px;
             z-index: 90;
         }
-        .filter-group {
+        .filter-row {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
+            gap: 8px;
             align-items: center;
+            margin-bottom: 8px;
         }
-        .filter-group-label {
+        .filter-row:last-child { margin-bottom: 0; }
+        .filter-row-label {
             color: var(--text-muted);
             font-size: 0.7rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-right: 4px;
+            min-width: 40px;
         }
-        .filter-btn {
+        /* বড় বাটন (ব্যান/নোবেন) */
+        .filter-btn-large {
+            padding: 8px 20px;
+            border-radius: 25px;
+            border: 2px solid #333;
+            background: var(--bg-input);
+            color: var(--text-muted);
+            font-family: var(--font-head);
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+        .filter-btn-large:hover {
+            border-color: var(--text-muted);
+        }
+        .filter-btn-large.active {
+            border-color: var(--primary);
+            background: var(--primary-dim);
+            color: var(--primary);
+        }
+        .filter-btn-large.active-ban {
+            border-color: var(--danger);
+            background: var(--danger-dim);
+            color: var(--danger);
+        }
+        .filter-btn-large.active-noban {
+            border-color: var(--primary);
+            background: var(--primary-dim);
+            color: var(--primary);
+        }
+
+        /* ছোট বাটন (ক্যাটাগরি, সার্ভার) */
+        .filter-btn-sm {
             padding: 5px 14px;
             border-radius: 20px;
             border: 1px solid #333;
@@ -275,29 +308,22 @@
             transition: 0.3s;
             white-space: nowrap;
         }
-        .filter-btn:hover {
+        .filter-btn-sm:hover {
             border-color: var(--text-muted);
         }
-        .filter-btn.active {
+        .filter-btn-sm.active {
             border-color: var(--primary);
             background: var(--primary-dim);
             color: var(--primary);
         }
-        .filter-btn.active-ban {
-            border-color: var(--danger);
-            background: var(--danger-dim);
-            color: var(--danger);
-        }
-        .filter-btn.active-noban {
-            border-color: var(--primary);
-            background: var(--primary-dim);
-            color: var(--primary);
+        .filter-btn-sm .flag {
+            margin-right: 4px;
         }
         .filter-divider {
             width: 1px;
-            height: 28px;
+            height: 24px;
             background: #333;
-            margin: 0 4px;
+            margin: 0 6px;
         }
 
         /* Search Bar */
@@ -313,7 +339,7 @@
         .yt-banner { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
         .yt-card:hover .yt-banner { transform: scale(1.05); }
         
-        /* ========== BAN BADGE ========== */
+        /* BAN BADGE */
         .ban-badge {
             position: absolute;
             top: 10px;
@@ -446,7 +472,7 @@
         }
 
         /* ================================================================
-           আপলোড মোডাল
+           আপলোড মোডাল (ইমেইল + ফোন আলাদা বক্স)
            ================================================================ */
         .upload-modal-overlay {
             position: fixed;
@@ -658,6 +684,21 @@
             color: var(--primary);
         }
 
+        /* ====== ইমেইল ও ফোন আলাদা বক্স ====== */
+        .contact-input-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .contact-input-group .upload-form-group {
+            margin-bottom: 0;
+        }
+        @media (max-width: 480px) {
+            .contact-input-group {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .upload-btn-submit {
             width: 100%;
             padding: 15px;
@@ -750,40 +791,36 @@
         </header>
 
         <!-- ============================================================
-        ফিল্টার বার
+        ফিল্টার বার (নতুন ডিজাইন)
         ============================================================ -->
         <div class="filter-bar" id="filterBar">
-            <!-- ব্যান ফিল্টার -->
-            <div class="filter-group">
-                <span class="filter-group-label"><i class="fas fa-shield-alt"></i></span>
-                <button class="filter-btn active" data-filter="ban" data-value="all" onclick="setFilter('ban','all')">All</button>
-                <button class="filter-btn" data-filter="ban" data-value="noban" onclick="setFilter('ban','noban')">✅ No Ban</button>
-                <button class="filter-btn" data-filter="ban" data-value="banned" onclick="setFilter('ban','banned')">🚫 Banned</button>
+            <!-- সারি ১: ব্যান ফিল্টার (বড় বাটন) -->
+            <div class="filter-row">
+                <span class="filter-row-label"><i class="fas fa-shield-alt"></i></span>
+                <button class="filter-btn-large active" data-filter="ban" data-value="all" onclick="setFilter('ban','all')">🔓 All</button>
+                <button class="filter-btn-large" data-filter="ban" data-value="noban" onclick="setFilter('ban','noban')">✅ No Ban</button>
+                <button class="filter-btn-large" data-filter="ban" data-value="banned" onclick="setFilter('ban','banned')">🚫 Banned</button>
             </div>
 
-            <div class="filter-divider"></div>
-
-            <!-- ক্যাটাগরি ফিল্টার -->
-            <div class="filter-group">
-                <span class="filter-group-label"><i class="fas fa-tag"></i></span>
-                <button class="filter-btn active" data-filter="category" data-value="all" onclick="setFilter('category','all')">All</button>
-                <button class="filter-btn" data-filter="category" data-value="Free Fire" onclick="setFilter('category','Free Fire')">Free Fire</button>
-                <button class="filter-btn" data-filter="category" data-value="PUBG" onclick="setFilter('category','PUBG')">PUBG</button>
-                <button class="filter-btn" data-filter="category" data-value="Blood Strike" onclick="setFilter('category','Blood Strike')">Blood Strike</button>
+            <!-- সারি ২: ক্যাটাগরি (ছোট বাটন) -->
+            <div class="filter-row">
+                <span class="filter-row-label"><i class="fas fa-tag"></i></span>
+                <button class="filter-btn-sm active" data-filter="category" data-value="all" onclick="setFilter('category','all')">All</button>
+                <button class="filter-btn-sm" data-filter="category" data-value="Free Fire" onclick="setFilter('category','Free Fire')">Free Fire</button>
+                <button class="filter-btn-sm" data-filter="category" data-value="PUBG" onclick="setFilter('category','PUBG')">PUBG</button>
+                <button class="filter-btn-sm" data-filter="category" data-value="Blood Strike" onclick="setFilter('category','Blood Strike')">Blood Strike</button>
             </div>
 
-            <div class="filter-divider"></div>
-
-            <!-- সার্ভার ফিল্টার -->
-            <div class="filter-group">
-                <span class="filter-group-label"><i class="fas fa-globe"></i></span>
-                <button class="filter-btn active" data-filter="server" data-value="all" onclick="setFilter('server','all')">All</button>
-                <button class="filter-btn" data-filter="server" data-value="Bangladesh" onclick="setFilter('server','Bangladesh')">🇧🇩 BD</button>
-                <button class="filter-btn" data-filter="server" data-value="India" onclick="setFilter('server','India')">🇮🇳 IN</button>
-                <button class="filter-btn" data-filter="server" data-value="Nepal" onclick="setFilter('server','Nepal')">🇳🇵 NP</button>
-                <button class="filter-btn" data-filter="server" data-value="Pakistan" onclick="setFilter('server','Pakistan')">🇵🇰 PK</button>
-                <button class="filter-btn" data-filter="server" data-value="Singapore" onclick="setFilter('server','Singapore')">🇸🇬 SG</button>
-                <button class="filter-btn" data-filter="server" data-value="Indonesia" onclick="setFilter('server','Indonesia')">🇮🇩 ID</button>
+            <!-- সারি ৩: সার্ভার (ফ্ল্যাগ সহ) -->
+            <div class="filter-row">
+                <span class="filter-row-label"><i class="fas fa-globe"></i></span>
+                <button class="filter-btn-sm active" data-filter="server" data-value="all" onclick="setFilter('server','all')">🌍 All</button>
+                <button class="filter-btn-sm" data-filter="server" data-value="Bangladesh" onclick="setFilter('server','Bangladesh')">🇧🇩 BD</button>
+                <button class="filter-btn-sm" data-filter="server" data-value="India" onclick="setFilter('server','India')">🇮🇳 IN</button>
+                <button class="filter-btn-sm" data-filter="server" data-value="Nepal" onclick="setFilter('server','Nepal')">🇳🇵 NP</button>
+                <button class="filter-btn-sm" data-filter="server" data-value="Pakistan" onclick="setFilter('server','Pakistan')">🇵🇰 PK</button>
+                <button class="filter-btn-sm" data-filter="server" data-value="Singapore" onclick="setFilter('server','Singapore')">🇸🇬 SG</button>
+                <button class="filter-btn-sm" data-filter="server" data-value="Indonesia" onclick="setFilter('server','Indonesia')">🇮🇩 ID</button>
             </div>
         </div>
 
@@ -848,7 +885,7 @@
         </div>
 
         <!-- ============================================================
-        আপলোড মোডাল
+        আপলোড মোডাল (ইমেইল + ফোন আলাদা বক্স)
         ============================================================ -->
         <div class="upload-modal-overlay" id="uploadModal">
             <div class="upload-modal-box">
@@ -934,7 +971,7 @@
                         <button type="button" class="server-option-btn" style="width:100%; margin-top:5px;" onclick="toggleServerOther()">➕ Others</button>
                     </div>
 
-                    <!-- কন্টাক্ট টাইপ -->
+                    <!-- ====== কন্টাক্ট টাইপ ====== -->
                     <div class="upload-form-group">
                         <label>Contact Type *</label>
                         <div class="contact-type-grid">
@@ -954,11 +991,18 @@
                         <input type="hidden" id="homeContactType" value="facebook">
                     </div>
 
-                    <!-- মেইন ফোন/ইমেইল (একটাও দিতেই হবে) -->
-                    <div class="upload-form-group">
-                        <label>Main Phone or Email (at least one) *</label>
-                        <input type="text" id="homeMainContact" placeholder="Enter phone number or email..." required>
+                    <!-- ====== ইমেইল ও ফোন আলাদা বক্স ====== -->
+                    <div class="contact-input-group">
+                        <div class="upload-form-group">
+                            <label>Email Address</label>
+                            <input type="email" id="homeEmail" placeholder="Enter email address...">
+                        </div>
+                        <div class="upload-form-group">
+                            <label>Phone Number</label>
+                            <input type="text" id="homePhone" placeholder="Enter phone number...">
+                        </div>
                     </div>
+                    <small style="color: var(--text-muted); font-size: 0.75rem; display: block; margin-top: -8px; margin-bottom: 12px;">* At least one of Email or Phone is required</small>
 
                     <!-- রিকভারি ফোন -->
                     <div class="upload-form-group">
@@ -1026,8 +1070,7 @@
         function setFilter(type, value) {
             filters[type] = value;
             
-            // আপডেট UI
-            document.querySelectorAll(`.filter-btn[data-filter="${type}"]`).forEach(btn => {
+            document.querySelectorAll(`.filter-btn-large[data-filter="${type}"], .filter-btn-sm[data-filter="${type}"]`).forEach(btn => {
                 btn.classList.remove('active', 'active-ban', 'active-noban');
                 if (btn.dataset.value === value) {
                     if (type === 'ban' && value === 'banned') {
@@ -1044,7 +1087,7 @@
         }
 
         // ================================================================
-        // সার্চ ফাংশন (টাইটেল, ইমেইল, ফোন, ক্যাটাগরি, সার্ভার)
+        // সার্চ ফাংশন
         // ================================================================
         function handleSearch() {
             searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
@@ -1053,33 +1096,26 @@
         }
 
         // ================================================================
-        // ফিল্টার + সার্চ একসাথে
+        // ফিল্টার + সার্চ
         // ================================================================
         function filterAndRender() {
             const feed = document.getElementById('feedContainer');
             const loadMoreBtn = document.getElementById('loadMoreContainer');
             
-            // ফিল্টার
             let result = allApps.filter(app => {
-                // ব্যান ফিল্টার
                 if (filters.ban === 'banned' && app.isBanned !== true) return false;
                 if (filters.ban === 'noban' && app.isBanned === true) return false;
-                
-                // ক্যাটাগরি ফিল্টার
                 if (filters.category !== 'all' && app.gameCategory !== filters.category) return false;
-                
-                // সার্ভার ফিল্টার
                 if (filters.server !== 'all' && app.server !== filters.server) return false;
-                
                 return true;
             });
 
-            // সার্চ (টাইটেল, ইমেইল, ফোন, ক্যাটাগরি, সার্ভার, কন্টাক্ট টাইপ)
             if (searchQuery) {
                 result = result.filter(app => {
                     const searchFields = [
                         app.title || '',
                         app.email || '',
+                        app.phone || '',
                         app.mainContact || '',
                         app.contactValue || '',
                         app.gameCategory || '',
@@ -1113,7 +1149,7 @@
         }
 
         // ================================================================
-        // পোস্ট রেন্ডার (ডিলিট/এডিট বাটন ছাড়া)
+        // পোস্ট রেন্ডার
         // ================================================================
         function renderPosts(posts) {
             const feed = document.getElementById('feedContainer');
@@ -1132,7 +1168,6 @@
                 const timeString = app.timestamp ? ` • ${timeAgo(app.timestamp)}` : '';
                 const serverText = app.server || 'N/A';
 
-                // কন্টাক্ট টাইপ লেবেল
                 const contactLabels = {
                     'facebook': 'FB',
                     'gmail': 'Gmail',
@@ -1141,8 +1176,10 @@
                 };
                 const contactLabel = contactLabels[app.contactType] || app.contactType || 'N/A';
 
-                // মেইন কন্টাক্ট (যেটা দিয়েছে)
-                const mainContact = app.mainContact || app.contactValue || 'N/A';
+                // ইমেইল ও ফোন দেখানো
+                const emailDisplay = app.email ? `✉️ ${app.email}` : '';
+                const phoneDisplay = app.phone ? `📞 ${app.phone}` : app.mainContact ? `📞 ${app.mainContact}` : '';
+                const contactDisplay = [emailDisplay, phoneDisplay].filter(Boolean).join(' • ');
 
                 feed.innerHTML += `
                     <div class="yt-card" onclick="goToDetails('${app.id}')">
@@ -1158,10 +1195,8 @@
                                     ${app.gameCategory || 'N/A'} 
                                     ${timeString}
                                     <br>
-                                    <i class="fas fa-envelope" style="font-size:0.8rem;"></i> ${app.email || 'N/A'}
-                                    <br>
-                                    <i class="fas fa-phone" style="font-size:0.8rem;"></i> ${mainContact} 
-                                    <span style="font-size:0.7rem;color:var(--text-muted);">(${contactLabel})</span>
+                                    ${contactDisplay}
+                                    ${app.contactType ? ` <span style="font-size:0.7rem;color:var(--text-muted);">(${contactLabel})</span>` : ''}
                                     ${app.recoveryPhone ? `<br><i class="fas fa-sync" style="font-size:0.7rem;"></i> Recovery: ${app.recoveryPhone}` : ''}
                                     ${app.recoveryEmail ? `<br><i class="fas fa-sync" style="font-size:0.7rem;"></i> Recovery: ${app.recoveryEmail}` : ''}
                                 </div>
@@ -1321,7 +1356,7 @@
         });
 
         // ================================================================
-        // আপলোড
+        // আপলোড (ইমেইল + ফোন আলাদা)
         // ================================================================
         function submitAppFromHome(e) {
             e.preventDefault();
@@ -1352,19 +1387,25 @@
                 return;
             }
 
-            const mainContact = document.getElementById('homeMainContact').value.trim();
-            if (!mainContact) {
-                showMessage('মেইন ফোন বা ইমেইল দিন!', 'error');
+            const email = document.getElementById('homeEmail').value.trim();
+            const phone = document.getElementById('homePhone').value.trim();
+
+            if (!email && !phone) {
+                showMessage('ইমেইল বা ফোন নাম্বার যেকোনো একটি দিন!', 'error');
                 return;
             }
+
+            const mainContact = email || phone;
 
             const data = {
                 title: document.getElementById('homeTitle').value.trim(),
                 gameCategory: gameCategory,
                 imageUrl: imageUrl,
                 contactType: document.getElementById('homeContactType').value,
+                email: email,
+                phone: phone,
                 mainContact: mainContact,
-                contactValue: mainContact, // ব্যাকওয়ার্ড কম্প্যাটিবিলিটি
+                contactValue: mainContact,
                 recoveryPhone: document.getElementById('homeRecoveryPhone').value.trim(),
                 recoveryEmail: document.getElementById('homeRecoveryEmail').value.trim(),
                 isBanned: banStatus === 'yes' ? true : false,
@@ -1372,8 +1413,7 @@
                 timestamp: Date.now(),
                 isUpdated: true,
                 uid: currentLoggedUser.uid,
-                userEmail: currentLoggedUser.email,
-                email: currentLoggedUser.email // ব্যাকওয়ার্ড কম্প্যাটিবিলিটি
+                userEmail: currentLoggedUser.email
             };
 
             if (!data.title) {
@@ -1591,7 +1631,7 @@
         }
 
         // ================================================================
-        // ডেটা লোড - শুধু লগইন করা ইউজারের পোস্ট
+        // ডেটা লোড
         // ================================================================
         function loadFirebaseData() {
             database.ref(DB_PATH).on('value', (snap) => {
