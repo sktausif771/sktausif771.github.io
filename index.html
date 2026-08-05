@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#00e6b8">
-    <title>MVX STORE | Premium Mods & VIP Game Hacks</title>
+    <title>ACCOUNT SAVING | MVX STORE</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -289,6 +289,24 @@
             z-index: 2;
         }
 
+        /* সার্ভার ব্যাজ - ছোট করে */
+        .server-badge {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-family: var(--font-head);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(255,255,255,0.1);
+            z-index: 2;
+        }
+
         .type-badge {
             position: absolute;
             top: 10px;
@@ -512,6 +530,43 @@
             margin-right: 8px;
         }
 
+        /* সার্ভার সিলেক্ট */
+        .server-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin: 5px 0 10px 0;
+        }
+        .server-option-btn {
+            padding: 8px 5px;
+            border-radius: 8px;
+            border: 2px solid #333;
+            background: var(--bg-input);
+            color: var(--text-muted);
+            font-family: var(--font-body);
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: center;
+        }
+        .server-option-btn:hover {
+            border-color: var(--text-muted);
+        }
+        .server-option-btn.active-server {
+            border-color: var(--primary);
+            background: var(--primary-dim);
+            color: var(--primary);
+        }
+
+        .server-other-box {
+            display: none;
+            margin-top: 10px;
+        }
+        .server-other-box.show {
+            display: block;
+        }
+
         /* কাস্টম ইমেজ আপলোড */
         .custom-file-upload {
             display: flex;
@@ -618,26 +673,6 @@
         .badge-type.free { background: var(--primary); color: #000; }
         .badge-type.premium { background: var(--gold); color: #000; }
         .badge-type.paid { background: var(--danger); color: #fff; }
-
-        /* ================================================================
-           ডিলিট বাটন (শুধু নিজের পোস্টে দেখাবে)
-           ================================================================ */
-        .delete-btn {
-            background: var(--danger);
-            color: #fff;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 8px;
-        }
-        .delete-btn:hover {
-            box-shadow: 0 0 15px var(--danger-dim);
-            transform: scale(1.05);
-        }
     </style>
 </head>
 <body>
@@ -647,8 +682,8 @@
     <div id="loginOverlay">
         <div class="login-overlay-box">
             <i class="fas fa-shield-alt login-overlay-icon"></i>
-            <div class="login-overlay-logo">MVX STORE</div>
-            <div class="login-overlay-sub">Premium Mods &amp; VIP Game Hacks</div>
+            <div class="login-overlay-logo">ACCOUNT SAVING</div>
+            <div class="login-overlay-sub">Secure Account Management</div>
             
             <div class="login-input-group">
                 <i class="fas fa-envelope"></i>
@@ -692,7 +727,7 @@
         <header class="header">
             <div class="header-left">
                 <button class="menu-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-                <span class="brand">MVX STORE</span>
+                <span class="brand">ACCOUNT SAVING</span>
             </div>
             <div class="header-right">
                 <button class="search-btn" onclick="toggleSearch()"><i class="fas fa-search"></i></button>
@@ -759,7 +794,7 @@
         </div>
 
         <!-- ============================================================
-        আপলোড মোডাল
+        আপলোড মোডাল (সার্ভার সহ)
         ============================================================ -->
         <div class="upload-modal-overlay" id="uploadModal">
             <div class="upload-modal-box">
@@ -822,6 +857,27 @@
                             <label>Other Game Name *</label>
                             <input type="text" id="homeOtherGame" placeholder="Enter game name...">
                         </div>
+                    </div>
+
+                    <!-- ====== সার্ভার সিলেক্ট ====== -->
+                    <div class="upload-form-group">
+                        <label>Server *</label>
+                        <div class="server-options">
+                            <button type="button" class="server-option-btn active-server" id="serverBD" onclick="selectServer('Bangladesh')">🇧🇩 BD</button>
+                            <button type="button" class="server-option-btn" id="serverIN" onclick="selectServer('India')">🇮🇳 IN</button>
+                            <button type="button" class="server-option-btn" id="serverNP" onclick="selectServer('Nepal')">🇳🇵 NP</button>
+                            <button type="button" class="server-option-btn" id="serverPK" onclick="selectServer('Pakistan')">🇵🇰 PK</button>
+                            <button type="button" class="server-option-btn" id="serverSG" onclick="selectServer('Singapore')">🇸🇬 SG</button>
+                            <button type="button" class="server-option-btn" id="serverID" onclick="selectServer('Indonesia')">🇮🇩 ID</button>
+                        </div>
+                        <div class="server-other-box" id="serverOtherBox">
+                            <div class="upload-form-group">
+                                <label>Other Server Name</label>
+                                <input type="text" id="homeOtherServer" placeholder="Enter server name...">
+                            </div>
+                        </div>
+                        <input type="hidden" id="homeServer" value="Bangladesh">
+                        <button type="button" class="server-option-btn" style="width:100%; margin-top:5px;" onclick="toggleServerOther()">➕ Others</button>
                     </div>
 
                     <!-- ইমেইল -->
@@ -918,6 +974,38 @@
         }
 
         // ================================================================
+        // সার্ভার সিলেক্ট
+        // ================================================================
+        function selectServer(server) {
+            const btns = document.querySelectorAll('.server-option-btn');
+            btns.forEach(btn => btn.classList.remove('active-server'));
+            
+            // Find the button with matching text
+            btns.forEach(btn => {
+                if (btn.textContent.trim() === server || btn.textContent.trim().includes(server)) {
+                    btn.classList.add('active-server');
+                }
+            });
+            
+            document.getElementById('homeServer').value = server;
+            
+            // Hide others box if a predefined server is selected
+            if (server !== 'Others') {
+                document.getElementById('serverOtherBox').classList.remove('show');
+            }
+        }
+
+        function toggleServerOther() {
+            const box = document.getElementById('serverOtherBox');
+            box.classList.toggle('show');
+            if (box.classList.contains('show')) {
+                document.getElementById('homeServer').value = 'Others';
+                // Remove active from all server buttons
+                document.querySelectorAll('.server-option-btn').forEach(btn => btn.classList.remove('active-server'));
+            }
+        }
+
+        // ================================================================
         // কন্টাক্ট টাইপ সিলেক্ট
         // ================================================================
         function selectContact(type) {
@@ -1008,8 +1096,10 @@
                 document.getElementById('fileLabel').classList.remove('has-image');
                 document.getElementById('homeImageUrl').value = '';
                 document.getElementById('otherGameBox').classList.remove('show');
+                document.getElementById('serverOtherBox').classList.remove('show');
                 selectBanOption('no');
                 selectContact('facebook');
+                selectServer('Bangladesh');
             }
         }
 
@@ -1040,6 +1130,12 @@
                 gameCategory = document.getElementById('homeOtherGame').value.trim() || 'Others';
             }
 
+            // সার্ভার
+            let server = document.getElementById('homeServer').value;
+            if (server === 'Others') {
+                server = document.getElementById('homeOtherServer').value.trim() || 'Others';
+            }
+
             const imageUrl = document.getElementById('homeImageUrl').value.trim();
             if (!imageUrl) {
                 showMessage('দয়া করে একটি ছবি আপলোড করুন!', 'error');
@@ -1054,10 +1150,11 @@
                 contactType: document.getElementById('homeContactType').value,
                 contactValue: document.getElementById('homeContactValue').value.trim(),
                 isBanned: banStatus === 'yes' ? true : false,
+                server: server,
                 timestamp: Date.now(),
                 isUpdated: true,
-                uid: currentLoggedUser.uid,        // ← ইউজারের UID সংরক্ষণ
-                userEmail: currentLoggedUser.email  // ← ইউজারের ইমেইল সংরক্ষণ
+                uid: currentLoggedUser.uid,
+                userEmail: currentLoggedUser.email
             };
 
             if (!data.title || !data.email || !data.contactValue) {
@@ -1080,8 +1177,10 @@
                     document.getElementById('fileLabel').classList.remove('has-image');
                     document.getElementById('homeImageUrl').value = '';
                     document.getElementById('otherGameBox').classList.remove('show');
+                    document.getElementById('serverOtherBox').classList.remove('show');
                     selectBanOption('no');
                     selectContact('facebook');
+                    selectServer('Bangladesh');
                 })
                 .catch((error) => {
                     showMessage('Error: ' + error.message, 'error');
@@ -1194,29 +1293,6 @@
         });
 
         // ================================================================
-        // ডিলিট ফাংশন (শুধু নিজের পোস্ট)
-        // ================================================================
-        function deletePost(postId) {
-            if (!currentLoggedUser) {
-                showMessage('লগইন করুন প্রথমে!', 'error');
-                return;
-            }
-
-            if (confirm('আপনি কি এই পোস্টটি ডিলিট করতে চান?')) {
-                database.ref(DB_PATH + '/' + postId).once('value').then(snap => {
-                    const data = snap.val();
-                    if (data && data.uid === currentLoggedUser.uid) {
-                        database.ref(DB_PATH + '/' + postId).remove()
-                            .then(() => showMessage('✅ পোস্ট ডিলিট করা হয়েছে!'))
-                            .catch(err => showMessage('Error: ' + err.message, 'error'));
-                    } else {
-                        showMessage('আপনি এই পোস্ট ডিলিট করতে পারবেন না!', 'error');
-                    }
-                });
-            }
-        }
-
-        // ================================================================
         // বাকি ফাংশন
         // ================================================================
         function showMessage(msg, type='success') {
@@ -1312,15 +1388,12 @@
                     return;
                 }
 
-                // শুধু লগইন করা ইউজারের পোস্ট নিবো
                 const currentUid = currentLoggedUser ? currentLoggedUser.uid : null;
                 
                 allApps = Object.entries(data)
                     .map(([key, val]) => ({ id: key, ...val, isHidden: val.isHidden || false }))
                     .filter(app => {
-                        // যদি ইউজার লগইন না থাকে → কিছু দেখাবে না
                         if (!currentUid) return false;
-                        // শুধু ঐ ইউজারের পোস্ট দেখাবে
                         return app.uid === currentUid && !app.isHidden;
                     })
                     .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
@@ -1330,7 +1403,7 @@
         }
 
         // ================================================================
-        // রেন্ডার - ডিলিট বাটন সহ
+        // রেন্ডার - ডিলিট বাটন ছাড়া (শুধু টাইটেল + সময় + সার্ভার)
         // ================================================================
         function filterAndRender() {
             const feed = document.getElementById('feedContainer');
@@ -1365,16 +1438,15 @@
 
                 const timeString = app.timestamp ? ` • ${timeAgo(app.timestamp)}` : '';
 
-                // ডিলিট বাটন (শুধু নিজের পোস্টে)
-                const deleteBtn = (app.uid === currentLoggedUser?.uid) ? 
-                    `<button class="delete-btn" onclick="event.stopPropagation(); deletePost('${app.id}')">
-                        <i class="fas fa-trash"></i> Delete
-                    </button>` : '';
+                // সার্ভার ব্যাজ
+                const serverText = app.server || 'N/A';
+                const serverBadge = `<div class="server-badge"><i class="fas fa-globe"></i> ${serverText}</div>`;
 
                 htmlContent += `
                     <div class="yt-card" onclick="goToDetails('${app.id}')">
                         <div class="yt-banner-wrapper">
                             ${banBadge}
+                            ${serverBadge}
                             <img src="${imageSrc}" class="yt-banner" loading="lazy">
                         </div>
                         <div class="yt-info">
@@ -1389,7 +1461,6 @@
                                     <br>
                                     <i class="fas fa-phone" style="font-size:0.8rem;"></i> ${app.contactValue || 'N/A'} 
                                     <span style="font-size:0.7rem;color:var(--text-muted);">(${app.contactType || 'N/A'})</span>
-                                    ${deleteBtn}
                                 </div>
                             </div>
                         </div>

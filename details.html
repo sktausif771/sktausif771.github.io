@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#00e6b8">
-    <title>Post Details | MVX STORE v4.0</title>
+    <title>Post Details | ACCOUNT SAVING</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
     <style>
         /* ==========================================================================
-           MVX STORE V4.0 - POST DETAILS PAGE (UPDATED)
+           ACCOUNT SAVING - POST DETAILS PAGE
            ========================================================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
@@ -40,24 +40,49 @@
         /* Main Container */
         .container { max-width: 800px; margin: 0 auto; padding: 20px; }
         
-        /* Post Header Info */
-        .post-header { display: flex; gap: 20px; align-items: center; margin-bottom: 30px; background: var(--bg-card); padding: 20px; border-radius: 16px; border: var(--glass-border); }
-        .post-image { width: 90px; height: 90px; border-radius: 20px; object-fit: cover; border: 2px solid var(--primary-dim); background: var(--bg-input); }
-        .post-info { flex: 1; }
-        .post-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 5px; color: var(--primary); }
-        .post-meta { display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.9rem; color: var(--text-muted); font-family: 'Share Tech Mono', monospace; }
-        .meta-tag { background: var(--bg-input); padding: 5px 10px; border-radius: 8px; border: 1px solid #333; display: flex; align-items: center; gap: 5px; }
+        /* Post Header Info - লোগো ছাড়া */
+        .post-header { 
+            background: var(--bg-card); 
+            padding: 20px; 
+            border-radius: 16px; 
+            border: var(--glass-border); 
+            margin-bottom: 25px;
+        }
+        .post-title { 
+            font-size: 1.8rem; 
+            font-weight: 700; 
+            color: var(--primary); 
+            margin-bottom: 8px;
+            word-break: break-word;
+        }
+        .post-meta { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 10px; 
+            font-size: 0.9rem; 
+            color: var(--text-muted); 
+            font-family: 'Share Tech Mono', monospace; 
+        }
+        .meta-tag { 
+            background: var(--bg-input); 
+            padding: 5px 12px; 
+            border-radius: 8px; 
+            border: 1px solid #333; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 5px; 
+        }
+        .meta-tag i { color: var(--primary); }
 
         /* Ban Badge */
         .ban-badge-detail {
             display: inline-block;
             padding: 6px 16px;
             border-radius: 6px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-top: 5px;
         }
         .ban-badge-detail.banned {
             background: var(--danger);
@@ -72,19 +97,93 @@
 
         /* Image Section */
         .image-section { margin-bottom: 30px; }
-        .section-title { font-family: var(--font-head); font-size: 1.2rem; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; color: var(--text-muted); }
-        .main-image { width: 100%; border-radius: 12px; border: var(--glass-border); background: var(--bg-card); }
+        .section-title { 
+            font-family: var(--font-head); 
+            font-size: 1.1rem; 
+            margin-bottom: 12px; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            color: var(--text-muted); 
+        }
+        .section-title i { color: var(--primary); }
+        .main-image { 
+            width: 100%; 
+            border-radius: 12px; 
+            border: var(--glass-border); 
+            background: var(--bg-card); 
+        }
 
-        /* Info Section */
-        .info-section { background: var(--bg-card); padding: 25px 20px; border-radius: 16px; border: var(--glass-border); margin-bottom: 30px; }
-        .info-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #222; }
+        /* Info Section - পরিষ্কার ফরম্যাট */
+        .info-section { 
+            background: var(--bg-card); 
+            padding: 25px 20px; 
+            border-radius: 16px; 
+            border: var(--glass-border); 
+            margin-bottom: 25px; 
+        }
+        .info-row { 
+            display: flex; 
+            justify-content: space-between; 
+            padding: 12px 0; 
+            border-bottom: 1px solid #222; 
+            align-items: center;
+        }
         .info-row:last-child { border-bottom: none; }
-        .info-label { color: var(--text-muted); font-weight: 500; }
-        .info-value { color: var(--text-primary); font-weight: 600; }
+        .info-label { 
+            color: var(--text-muted); 
+            font-weight: 500; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px;
+        }
+        .info-label i { 
+            color: var(--primary); 
+            width: 20px;
+            text-align: center;
+        }
+        .info-value { 
+            color: var(--text-primary); 
+            font-weight: 600; 
+            text-align: right;
+            word-break: break-word;
+            max-width: 60%;
+        }
+        .info-value .contact-type-badge {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            background: var(--bg-input);
+            padding: 2px 10px;
+            border-radius: 12px;
+            border: 1px solid #333;
+            display: inline-block;
+            margin-left: 5px;
+        }
+        .info-value .server-tag {
+            color: var(--primary);
+            font-weight: 700;
+        }
 
-        /* Action Buttons */
-        .action-section { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 20px; }
-        .action-btn { padding: 12px 25px; border-radius: 10px; border: none; font-family: var(--font-head); font-size: 1rem; font-weight: 700; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        /* Action Buttons - শুধু মালিক দেখতে পাবে */
+        .action-section { 
+            display: flex; 
+            gap: 15px; 
+            flex-wrap: wrap; 
+            margin-top: 10px; 
+        }
+        .action-btn { 
+            padding: 12px 25px; 
+            border-radius: 10px; 
+            border: none; 
+            font-family: var(--font-head); 
+            font-size: 1rem; 
+            font-weight: 700; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+        }
         .action-btn.edit { background: var(--primary); color: #000; }
         .action-btn.edit:hover { box-shadow: 0 0 20px var(--primary-dim); transform: translateY(-2px); }
         .action-btn.delete { background: var(--danger); color: #fff; }
@@ -183,10 +282,6 @@
         .edit-form-group textarea:focus {
             border-color: var(--primary);
         }
-        .edit-form-group textarea {
-            min-height: 60px;
-            resize: vertical;
-        }
 
         .edit-ban-options {
             display: flex;
@@ -218,6 +313,41 @@
             color: var(--danger);
         }
 
+        .edit-server-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin: 5px 0 10px 0;
+        }
+        .edit-server-option-btn {
+            padding: 8px 5px;
+            border-radius: 8px;
+            border: 2px solid #333;
+            background: var(--bg-input);
+            color: var(--text-muted);
+            font-family: var(--font-body);
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: center;
+        }
+        .edit-server-option-btn:hover {
+            border-color: var(--text-muted);
+        }
+        .edit-server-option-btn.active-server {
+            border-color: var(--primary);
+            background: var(--primary-dim);
+            color: var(--primary);
+        }
+        .edit-server-other-box {
+            display: none;
+            margin-top: 10px;
+        }
+        .edit-server-other-box.show {
+            display: block;
+        }
+
         .edit-contact-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -243,6 +373,14 @@
             color: var(--primary);
         }
 
+        .edit-other-game-box {
+            display: none;
+            margin-top: 10px;
+        }
+        .edit-other-game-box.show {
+            display: block;
+        }
+
         .edit-submit-btn {
             width: 100%;
             padding: 15px;
@@ -260,14 +398,6 @@
         .edit-submit-btn:hover {
             box-shadow: 0 0 20px var(--primary-dim);
             transform: translateY(-2px);
-        }
-
-        .edit-other-game-box {
-            display: none;
-            margin-top: 10px;
-        }
-        .edit-other-game-box.show {
-            display: block;
         }
 
         @keyframes fadeIn {
@@ -291,7 +421,7 @@
     </div>
 
     <!-- ============================================================
-    এডিট মোডাল (details পেজে)
+    এডিট মোডাল
     ============================================================ -->
     <div class="edit-modal-overlay" id="editModal">
         <div class="edit-modal-box">
@@ -338,6 +468,27 @@
                         <label>Other Game Name</label>
                         <input type="text" id="editOtherGame" placeholder="Enter game name...">
                     </div>
+                </div>
+
+                <!-- সার্ভার -->
+                <div class="edit-form-group">
+                    <label>Server *</label>
+                    <div class="edit-server-options">
+                        <button type="button" class="edit-server-option-btn active-server" id="editServerBD" onclick="selectEditServer('Bangladesh')">🇧🇩 BD</button>
+                        <button type="button" class="edit-server-option-btn" id="editServerIN" onclick="selectEditServer('India')">🇮🇳 IN</button>
+                        <button type="button" class="edit-server-option-btn" id="editServerNP" onclick="selectEditServer('Nepal')">🇳🇵 NP</button>
+                        <button type="button" class="edit-server-option-btn" id="editServerPK" onclick="selectEditServer('Pakistan')">🇵🇰 PK</button>
+                        <button type="button" class="edit-server-option-btn" id="editServerSG" onclick="selectEditServer('Singapore')">🇸🇬 SG</button>
+                        <button type="button" class="edit-server-option-btn" id="editServerID" onclick="selectEditServer('Indonesia')">🇮🇩 ID</button>
+                    </div>
+                    <div class="edit-server-other-box" id="editServerOtherBox">
+                        <div class="edit-form-group">
+                            <label>Other Server Name</label>
+                            <input type="text" id="editOtherServer" placeholder="Enter server name...">
+                        </div>
+                    </div>
+                    <input type="hidden" id="editServer" value="Bangladesh">
+                    <button type="button" class="edit-server-option-btn" style="width:100%; margin-top:5px;" onclick="toggleEditServerOther()">➕ Others</button>
                 </div>
 
                 <div class="edit-form-group">
@@ -446,7 +597,7 @@
         }
 
         // ================================================================
-        // রেন্ডার
+        // রেন্ডার - লোগো ছাড়া, পরিষ্কার ফরম্যাট
         // ================================================================
         function renderPage() {
             const container = document.getElementById('mainContent');
@@ -482,42 +633,68 @@
             }
 
             const imageSrc = postData.imageUrl || 'https://via.placeholder.com/800x450/1a1f2c/00e6b8?text=NO+IMAGE';
-            const timeStr = postData.timestamp ? new Date(postData.timestamp).toLocaleString() : 'N/A';
+            
+            // সময় ফরম্যাট
+            const timeStr = postData.timestamp ? new Date(postData.timestamp).toLocaleString('en-US', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            }) : 'N/A';
+
+            // সার্ভার
+            const serverText = postData.server || 'N/A';
+
+            // কন্টাক্ট টাইপ লেবেল
+            const contactTypeLabels = {
+                'facebook': 'Facebook',
+                'gmail': 'Gmail',
+                'twitter': 'Twitter',
+                'phone': 'Phone'
+            };
+            const contactTypeLabel = contactTypeLabels[postData.contactType] || postData.contactType || 'N/A';
 
             container.innerHTML = `
+                <!-- Header: শুধু টাইটেল + মেটা -->
                 <div class="post-header">
-                    <img src="${imageSrc}" class="post-image" alt="Post Image">
-                    <div class="post-info">
-                        <h1 class="post-title">${postData.title || 'Untitled'}</h1>
-                        <div class="post-meta">
-                            <span class="meta-tag"><i class="fas fa-tag"></i> ${postData.gameCategory || 'N/A'}</span>
-                            <span class="meta-tag"><i class="fas fa-clock"></i> ${timeStr}</span>
-                            ${banBadgeHTML}
-                        </div>
+                    <h1 class="post-title">${postData.title || 'Untitled'}</h1>
+                    <div class="post-meta">
+                        <span class="meta-tag"><i class="fas fa-tag"></i> ${postData.gameCategory || 'N/A'}</span>
+                        <span class="meta-tag"><i class="fas fa-clock"></i> ${timeStr}</span>
+                        <span class="meta-tag"><i class="fas fa-globe"></i> ${serverText}</span>
+                        ${banBadgeHTML}
                     </div>
                 </div>
 
+                <!-- ইমেজ -->
                 <div class="image-section">
                     <div class="section-title"><i class="fas fa-image"></i> PREVIEW</div>
                     <img src="${imageSrc}" class="main-image" alt="Post Image">
                 </div>
 
+                <!-- ডিটেলস - পরিষ্কার ফরম্যাট -->
                 <div class="info-section">
                     <div class="section-title"><i class="fas fa-info-circle"></i> DETAILS</div>
+                    
                     <div class="info-row">
                         <span class="info-label"><i class="fas fa-envelope"></i> Email</span>
                         <span class="info-value">${postData.email || 'N/A'}</span>
                     </div>
+                    
                     <div class="info-row">
                         <span class="info-label"><i class="fas fa-phone"></i> Contact</span>
-                        <span class="info-value">${postData.contactValue || 'N/A'} 
-                            <span style="font-size:0.8rem;color:var(--text-muted);">(${postData.contactType || 'N/A'})</span>
+                        <span class="info-value">
+                            ${postData.contactValue || 'N/A'} 
+                            <span class="contact-type-badge">${contactTypeLabel}</span>
                         </span>
                     </div>
+                    
                     <div class="info-row">
-                        <span class="info-label"><i class="fas fa-user"></i> Posted By</span>
-                        <span class="info-value">${postData.userEmail || 'Unknown'}</span>
+                        <span class="info-label"><i class="fas fa-globe"></i> Server</span>
+                        <span class="info-value"><span class="server-tag">${serverText}</span></span>
                     </div>
+                    
                     <div class="info-row">
                         <span class="info-label"><i class="fas fa-shield-alt"></i> Status</span>
                         <span class="info-value">${postData.isBanned === true ? '🚫 BANNED' : '✅ ACTIVE'}</span>
@@ -571,6 +748,19 @@
             // Contact type
             selectEditContact(postData.contactType || 'facebook');
 
+            // Server
+            const server = postData.server || 'Bangladesh';
+            selectEditServer(server);
+            if (server === 'Others' || !['Bangladesh','India','Nepal','Pakistan','Singapore','Indonesia'].includes(server)) {
+                document.getElementById('editServerOtherBox').classList.add('show');
+                document.getElementById('editOtherServer').value = server === 'Others' ? '' : server;
+                document.getElementById('editServer').value = 'Others';
+                document.querySelectorAll('.edit-server-option-btn').forEach(btn => btn.classList.remove('active-server'));
+            } else {
+                document.getElementById('editServerOtherBox').classList.remove('show');
+                selectEditServer(server);
+            }
+
             // Other game
             if (postData.gameCategory === 'Others') {
                 document.getElementById('editOtherGameBox').classList.add('show');
@@ -618,6 +808,32 @@
             document.getElementById('editContactType').value = type;
         }
 
+        function selectEditServer(server) {
+            const btns = document.querySelectorAll('.edit-server-option-btn');
+            btns.forEach(btn => btn.classList.remove('active-server'));
+            
+            btns.forEach(btn => {
+                if (btn.textContent.trim() === server || btn.textContent.trim().includes(server)) {
+                    btn.classList.add('active-server');
+                }
+            });
+            
+            document.getElementById('editServer').value = server;
+            
+            if (server !== 'Others') {
+                document.getElementById('editServerOtherBox').classList.remove('show');
+            }
+        }
+
+        function toggleEditServerOther() {
+            const box = document.getElementById('editServerOtherBox');
+            box.classList.toggle('show');
+            if (box.classList.contains('show')) {
+                document.getElementById('editServer').value = 'Others';
+                document.querySelectorAll('.edit-server-option-btn').forEach(btn => btn.classList.remove('active-server'));
+            }
+        }
+
         function toggleEditOtherGame() {
             const val = document.getElementById('editCategory').value;
             const box = document.getElementById('editOtherGameBox');
@@ -641,6 +857,11 @@
                 gameCategory = document.getElementById('editOtherGame').value.trim() || 'Others';
             }
 
+            let server = document.getElementById('editServer').value;
+            if (server === 'Others') {
+                server = document.getElementById('editOtherServer').value.trim() || 'Others';
+            }
+
             const data = {
                 title: document.getElementById('editTitle').value.trim(),
                 gameCategory: gameCategory,
@@ -648,6 +869,7 @@
                 contactType: document.getElementById('editContactType').value,
                 contactValue: document.getElementById('editContactValue').value.trim(),
                 isBanned: document.getElementById('editBanStatus').value === 'yes' ? true : false,
+                server: server,
                 isUpdated: true,
                 timestamp: Date.now()
             };
@@ -666,7 +888,6 @@
                     closeEditModal();
                     btn.innerHTML = '<i class="fas fa-save"></i> UPDATE POST';
                     btn.disabled = false;
-                    // রিফ্রেশ
                     loadPostData();
                 })
                 .catch(err => {

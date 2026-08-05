@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#00e6b8">
-    <title>User Authentication | MVX STORE</title>
+    <title>User Authentication | ACCOUNT SAVING</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -13,7 +13,7 @@
     
     <style>
         /* ==========================================================================
-           MVX STORE - USER LOGIN & PROFILE PAGE
+           ACCOUNT SAVING - USER LOGIN & PROFILE PAGE
            ========================================================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
@@ -82,7 +82,7 @@
         .btn-danger:hover { background: var(--danger); color: #fff; box-shadow: 0 0 20px rgba(255,0,60,0.3); transform: translateY(-2px); }
 
         /* ================================================================
-           MY UPLOADS সেকশন
+           MY UPLOADS সেকশন (এডিট/ডিলিট সহ)
            ================================================================ */
         .my-uploads-section {
             margin-top: 25px;
@@ -131,6 +131,10 @@
             color: var(--text-muted);
             margin-top: 2px;
         }
+        .upload-item-meta .server-tag {
+            color: var(--primary);
+            font-weight: 600;
+        }
         .upload-item-actions {
             display: flex;
             gap: 8px;
@@ -170,7 +174,7 @@
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
         /* ================================================================
-           এডিট মোডাল
+           এডিট মোডাল (সার্ভার সহ)
            ================================================================ */
         .edit-modal-overlay {
             position: fixed;
@@ -288,6 +292,42 @@
             color: var(--danger);
         }
 
+        /* এডিট সার্ভার */
+        .edit-server-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin: 5px 0 10px 0;
+        }
+        .edit-server-option-btn {
+            padding: 8px 5px;
+            border-radius: 8px;
+            border: 2px solid #333;
+            background: var(--bg-input);
+            color: var(--text-muted);
+            font-family: var(--font-body);
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: center;
+        }
+        .edit-server-option-btn:hover {
+            border-color: var(--text-muted);
+        }
+        .edit-server-option-btn.active-server {
+            border-color: var(--primary);
+            background: var(--primary-dim);
+            color: var(--primary);
+        }
+        .edit-server-other-box {
+            display: none;
+            margin-top: 10px;
+        }
+        .edit-server-other-box.show {
+            display: block;
+        }
+
         .edit-contact-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -351,8 +391,8 @@
             <p style="font-family: var(--font-head); font-weight: bold; margin-top: 10px;">Please wait...</p>
         </div>
 
-        <div class="brand-logo">MVX SYSTEM</div>
-        <div class="subtitle">Secure Authentication Portal</div>
+        <div class="brand-logo">ACCOUNT SAVING</div>
+        <div class="subtitle">Secure Account Management</div>
 
         <div class="form-section active" id="loginForm">
             <div class="input-group">
@@ -422,7 +462,7 @@
             </button>
             
             <button class="btn btn-primary" onclick="goToStore()">
-                <i class="fas fa-store"></i> GO TO APP STORE
+                <i class="fas fa-store"></i> GO TO DASHBOARD
             </button>
             
             <button class="btn btn-danger" onclick="logout()" style="margin-top: 10px;">
@@ -430,7 +470,7 @@
             </button>
 
             <!-- ============================================================
-            MY UPLOADS সেকশন
+            MY UPLOADS সেকশন (এডিট/ডিলিট সহ)
             ============================================================ -->
             <div class="my-uploads-section" id="myUploadsSection">
                 <div class="my-uploads-title">
@@ -492,6 +532,27 @@
                         <label>Other Game Name</label>
                         <input type="text" id="editOtherGame" placeholder="Enter game name...">
                     </div>
+                </div>
+
+                <!-- ====== সার্ভার এডিট ====== -->
+                <div class="edit-form-group">
+                    <label>Server *</label>
+                    <div class="edit-server-options">
+                        <button type="button" class="edit-server-option-btn active-server" id="editServerBD" onclick="selectEditServer('Bangladesh')">🇧🇩 BD</button>
+                        <button type="button" class="edit-server-option-btn" id="editServerIN" onclick="selectEditServer('India')">🇮🇳 IN</button>
+                        <button type="button" class="edit-server-option-btn" id="editServerNP" onclick="selectEditServer('Nepal')">🇳🇵 NP</button>
+                        <button type="button" class="edit-server-option-btn" id="editServerPK" onclick="selectEditServer('Pakistan')">🇵🇰 PK</button>
+                        <button type="button" class="edit-server-option-btn" id="editServerSG" onclick="selectEditServer('Singapore')">🇸🇬 SG</button>
+                        <button type="button" class="edit-server-option-btn" id="editServerID" onclick="selectEditServer('Indonesia')">🇮🇩 ID</button>
+                    </div>
+                    <div class="edit-server-other-box" id="editServerOtherBox">
+                        <div class="edit-form-group">
+                            <label>Other Server Name</label>
+                            <input type="text" id="editOtherServer" placeholder="Enter server name...">
+                        </div>
+                    </div>
+                    <input type="hidden" id="editServer" value="Bangladesh">
+                    <button type="button" class="edit-server-option-btn" style="width:100%; margin-top:5px;" onclick="toggleEditServerOther()">➕ Others</button>
                 </div>
 
                 <div class="edit-form-group">
@@ -582,6 +643,35 @@
         }
 
         // ================================================================
+        // সার্ভার এডিট ফাংশন
+        // ================================================================
+        function selectEditServer(server) {
+            const btns = document.querySelectorAll('.edit-server-option-btn');
+            btns.forEach(btn => btn.classList.remove('active-server'));
+            
+            btns.forEach(btn => {
+                if (btn.textContent.trim() === server || btn.textContent.trim().includes(server)) {
+                    btn.classList.add('active-server');
+                }
+            });
+            
+            document.getElementById('editServer').value = server;
+            
+            if (server !== 'Others') {
+                document.getElementById('editServerOtherBox').classList.remove('show');
+            }
+        }
+
+        function toggleEditServerOther() {
+            const box = document.getElementById('editServerOtherBox');
+            box.classList.toggle('show');
+            if (box.classList.contains('show')) {
+                document.getElementById('editServer').value = 'Others';
+                document.querySelectorAll('.edit-server-option-btn').forEach(btn => btn.classList.remove('active-server'));
+            }
+        }
+
+        // ================================================================
         // Auth State Listener
         // ================================================================
         auth.onAuthStateChanged((user) => {
@@ -609,9 +699,6 @@
                     }
                 });
 
-                // ============================================================
-                // MY UPLOADS লোড করা
-                // ============================================================
                 loadMyUploads(user.uid);
 
                 const urlParams = new URLSearchParams(window.location.search);
@@ -627,7 +714,7 @@
         });
 
         // ================================================================
-        // MY UPLOADS লোড
+        // MY UPLOADS লোড (সার্ভার সহ)
         // ================================================================
         function loadMyUploads(uid) {
             const listEl = document.getElementById('myUploadsList');
@@ -649,13 +736,15 @@
 
                     const banText = val.isBanned ? '🚫 Banned' : '✅ No Ban';
                     const banColor = val.isBanned ? 'var(--danger)' : 'var(--primary)';
+                    const serverText = val.server || 'N/A';
 
                     item.innerHTML = `
                         <div class="upload-item-info">
                             <div class="upload-item-title">${val.title || 'Untitled'}</div>
                             <div class="upload-item-meta">
                                 ${val.gameCategory || 'N/A'} • 
-                                <span style="color:${banColor};">${banText}</span>
+                                <span style="color:${banColor};">${banText}</span> • 
+                                <span class="server-tag"><i class="fas fa-globe"></i> ${serverText}</span>
                                 ${val.timestamp ? ' • ' + timeAgo(val.timestamp) : ''}
                             </div>
                         </div>
@@ -674,7 +763,7 @@
         }
 
         // ================================================================
-        // ডিলিট ফাংশন (প্রোফাইল থেকে)
+        // ডিলিট ফাংশন
         // ================================================================
         function deleteMyPost(postId) {
             if (!currentUserData) {
@@ -697,7 +786,7 @@
         }
 
         // ================================================================
-        // এডিট মোডাল
+        // এডিট মোডাল (সার্ভার সহ)
         // ================================================================
         function openEditModal(postId) {
             if (!currentUserData) return;
@@ -721,6 +810,19 @@
 
                 // Contact type
                 selectEditContact(data.contactType || 'facebook');
+
+                // Server
+                const server = data.server || 'Bangladesh';
+                selectEditServer(server);
+                if (server === 'Others' || !['Bangladesh','India','Nepal','Pakistan','Singapore','Indonesia'].includes(server)) {
+                    document.getElementById('editServerOtherBox').classList.add('show');
+                    document.getElementById('editOtherServer').value = server === 'Others' ? '' : server;
+                    document.getElementById('editServer').value = 'Others';
+                    document.querySelectorAll('.edit-server-option-btn').forEach(btn => btn.classList.remove('active-server'));
+                } else {
+                    document.getElementById('editServerOtherBox').classList.remove('show');
+                    selectEditServer(server);
+                }
 
                 // Other game
                 if (data.gameCategory === 'Others') {
@@ -781,7 +883,7 @@
         }
 
         // ================================================================
-        // এডিট সাবমিট
+        // এডিট সাবমিট (সার্ভার সহ)
         // ================================================================
         function submitEdit(e) {
             e.preventDefault();
@@ -794,6 +896,12 @@
                 gameCategory = document.getElementById('editOtherGame').value.trim() || 'Others';
             }
 
+            // সার্ভার
+            let server = document.getElementById('editServer').value;
+            if (server === 'Others') {
+                server = document.getElementById('editOtherServer').value.trim() || 'Others';
+            }
+
             const data = {
                 title: document.getElementById('editTitle').value.trim(),
                 gameCategory: gameCategory,
@@ -801,6 +909,7 @@
                 contactType: document.getElementById('editContactType').value,
                 contactValue: document.getElementById('editContactValue').value.trim(),
                 isBanned: document.getElementById('editBanStatus').value === 'yes' ? true : false,
+                server: server,
                 isUpdated: true,
                 timestamp: Date.now()
             };
@@ -846,12 +955,10 @@
         // টোস্ট মেসেজ
         // ================================================================
         function showToast(msg, type = 'success') {
-            // যদি গ্লোবাল টোস্ট থাকে তাহলে সেটা ব্যবহার করবে
             if (typeof showGlobalToast === 'function') {
                 showGlobalToast(msg, type);
                 return;
             }
-            // নাহলে অ্যালার্ট দেখাবে
             alert(msg);
         }
 
