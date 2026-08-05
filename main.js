@@ -1,369 +1,187 @@
 /* ==========================================================================
-   MVX STORE V5.6 - MAIN SYSTEM ARCHITECTURE
+   MVX SYSTEM - GLOBAL JAVASCRIPT ENGINE V4.0 (UPDATED)
+   ==========================================================================
+   - Global UI Controls (Toast, Modals)
+   - Security Modules (Anti-Inspect)
+   - Low-End Device Optimization (Smooth Mode)
+   - Global Event Listeners & Network Detection
+   - NEW: Dark Loader Controls & Global Confirm Modal (Yes/Cancel)
    ========================================================================== */
 
-let userProfile = null; 
-let currentUserAuth = null;
-let currentGlobalLanguage = 'en';
-
 document.addEventListener('DOMContentLoaded', () => {
-    if (typeof firebase === 'undefined') {
-        console.error("Critical Runtime Failure: Firebase Core SDK Missing inside main.js pipeline.");
-        return;
+    // 1. Console Branding (হ্যাকার থিম কনসোল লগ)
+    console.log('%c┌──────────────────────────────────────────────────┐', 'color: #00e6b8; font-size: 12px; font-family: monospace');
+    console.log('%c│     MVX CYBER SYSTEM v4.0 - INITIALIZED...       │', 'color: #00e6b8; font-size: 12px; font-family: monospace; font-weight: bold');
+    console.log('%c└──────────────────────────────────────────────────┘', 'color: #00e6b8; font-size: 12px; font-family: monospace');
+
+    // ==========================================================================
+    // 2. GLOBAL TOAST NOTIFICATION SYSTEM
+    // ==========================================================================
+    window.showGlobalToast = function(message, type = 'success') {
+        let toastContainer = document.getElementById('toast-global-container');
+        if (!toastContainer) {
+            toastContainer = document.createElement('div');
+            toastContainer.id = 'toast-global-container';
+            toastContainer.className = 'toast-global-container';
+            document.body.appendChild(toastContainer);
+        }
+
+        const toast = document.createElement('div');
+        toast.className = `toast-global ${type}`;
+        
+        let icon = 'fa-check-circle';
+        if(type === 'error') icon = 'fa-times-circle';
+        if(type === 'warning') icon = 'fa-exclamation-triangle';
+
+        toast.innerHTML = `<i class="fas ${icon}"></i> <span>${message}</span>`;
+        toastContainer.appendChild(toast);
+
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(100%)';
+            toast.style.transition = '0.3s ease-in';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    };
+
+    // ==========================================================================
+    // 3. SECURITY MODULE (Anti-Inspect & Anti-Copy)
+    // ==========================================================================
+    // Disable Right Click
+    document.addEventListener('contextmenu', event => {
+        event.preventDefault();
+        showGlobalToast('Right-click is disabled for security reasons.', 'warning');
+    });
+
+    // Disable Inspect Element Keyboard Shortcuts
+    document.onkeydown = function(e) {
+        if(e.keyCode == 123) { // F12
+            showGlobalToast('Developer tools are blocked!', 'error');
+            return false; 
+        }
+        if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false; // Ctrl+Shift+I
+        if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) return false; // Ctrl+Shift+C
+        if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false; // Ctrl+Shift+J
+        if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { // Ctrl+U
+            showGlobalToast('Source code viewing is disabled.', 'error');
+            return false; 
+        }
+    };
+
+    // ==========================================================================
+    // 4. LOW-END DEVICE OPTIMIZATION (Smooth Mode Auto-Applier)
+    // ==========================================================================
+    if(localStorage.getItem('smoothMode') === 'true') {
+        document.body.classList.add('smooth-mode');
     }
 
-    const db = firebase.database();
-    const auth = firebase.auth();
-
-    // 1. Maintenance Mode
-    db.ref('settings/maintenanceMode').on('value', (snapshot) => {
-        const isMaintenanceActive = snapshot.val();
-        if (isMaintenanceActive === true) {
-            const currentRole = sessionStorage.getItem('mvx_role');
-            if (currentRole !== 'owner') {
-                alert("System Update: Server is undergoing maintenance.");
-                sessionStorage.clear();
-                auth.signOut().then(() => {
-                    window.location.replace('login.html?error=maintenance');
-                });
+    // ==========================================================================
+    // 5. GLOBAL KEYBOARD SHORTCUTS
+    // ==========================================================================
+    document.addEventListener('keydown', (e) => {
+        // Ctrl + K for Search
+        if (e.ctrlKey && e.key === 'k') {
+            e.preventDefault();
+            const searchInput = document.getElementById('searchInput');
+            const searchContainer = document.getElementById('searchContainer');
+            
+            if (searchContainer && searchInput) {
+                searchContainer.style.display = 'block';
+                searchInput.focus();
+            }
+        }
+        
+        // Escape key to close search, modals, or sidebars
+        if (e.key === 'Escape') {
+            const searchContainer = document.getElementById('searchContainer');
+            if (searchContainer) searchContainer.style.display = 'none';
+            
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            if (sidebar && sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+                if(overlay) overlay.classList.remove('active');
             }
         }
     });
 
-    // 2. Language Dictionary (Fixed All Languages)
-    const languageDictionary = {
-        en: {
-            storeTitle: "MVX STORE", loadingStore: "Loading Database...",
-            catAll: "All", catTrending: "Trending", catPremium: "Premium",
-            searchTitle: "Search", searchPrompt: "Type keyword to search",
-            lblUploadApp: "Upload App", lblCoinBalance: "Coin Balance", lblSignOut: "Logout",
-            navFiles: "Files", navModApp: "Mods", navSearch: "Search", navYou: "Profile",
-            lblNotiTitle: "Notifications", langName: "English (Default)"
-        },
-        bn: {
-            storeTitle: "এমভিএক্স স্টোর", loadingStore: "ডেটাবেস লোড হচ্ছে...",
-            catAll: "সব", catTrending: "ট্রেন্ডিং", catPremium: "প্রিমিয়াম",
-            searchTitle: "সার্চ করুন", searchPrompt: "খুঁজতে এখানে লিখুন",
-            lblUploadApp: "অ্যাপ আপলোড", lblCoinBalance: "কয়েন ব্যালেন্স", lblSignOut: "লগআউট",
-            navFiles: "ফাইল", navModApp: "মডস", navSearch: "সার্চ", navYou: "প্রোফাইল",
-            lblNotiTitle: "নোটিফিকেশন", langName: "বাংলা (Bengali)"
-        },
-        es: {
-            storeTitle: "TIENDA MVX", loadingStore: "Cargando Base de Datos...",
-            catAll: "Todo", catTrending: "Tendencias", catPremium: "Premium",
-            searchTitle: "Buscar", searchPrompt: "Escribe para buscar",
-            lblUploadApp: "Subir App", lblCoinBalance: "Monedas", lblSignOut: "Cerrar sesión",
-            navFiles: "Archivos", navModApp: "Mods", navSearch: "Buscar", navYou: "Perfil",
-            lblNotiTitle: "Notificaciones", langName: "Español (Spanish)"
-        },
-        hi: {
-            storeTitle: "एमवीएक्स स्टोर", loadingStore: "लोड हो रहा है...",
-            catAll: "सभी", catTrending: "ट्रेंडिंग", catPremium: "प्रीमियम",
-            searchTitle: "खोजें", searchPrompt: "खोजने के लिए टाइप करें",
-            lblUploadApp: "ऐप अपलोड", lblCoinBalance: "सिक्के", lblSignOut: "लॉग आउट",
-            navFiles: "फाइलें", navModApp: "मोड्स", navSearch: "खोज", navYou: "प्रोफ़ाइल",
-            lblNotiTitle: "सूचनाएं", langName: "हिन्दी (Hindi)"
-        },
-        ar: {
-            storeTitle: "متجر MVX", loadingStore: "جاري التحميل...",
-            catAll: "الكل", catTrending: "رائج", catPremium: "مميز",
-            searchTitle: "بحث", searchPrompt: "اكتب للبحث",
-            lblUploadApp: "رفع تطبيق", lblCoinBalance: "عملات", lblSignOut: "تسجيل الخروج",
-            navFiles: "ملفات", navModApp: "تطبيقات", navSearch: "بحث", navYou: "حسابي",
-            lblNotiTitle: "إشعارات", langName: "العربية (Arabic)"
-        }
-    };
+    // ==========================================================================
+    // 6. OFFLINE/ONLINE NETWORK DETECTION
+    // ==========================================================================
+    window.addEventListener('offline', () => {
+        showGlobalToast('You are offline! Check your internet connection.', 'error');
+    });
 
-    window.changeSystemLanguage = function(langCode) {
-        currentGlobalLanguage = langCode;
-        const dict = languageDictionary[langCode] || languageDictionary['en'];
-        
-        if(document.getElementById('lblStoreTitle')) document.getElementById('lblStoreTitle').innerText = dict.storeTitle;
-        if(document.getElementById('lblLoadingStore')) document.getElementById('lblLoadingStore').innerText = dict.loadingStore;
-        if(document.getElementById('btnCatAll')) document.getElementById('btnCatAll').innerText = dict.catAll;
-        if(document.getElementById('btnCatTrending')) document.getElementById('btnCatTrending').innerText = dict.catTrending;
-        if(document.getElementById('btnCatPremium')) document.getElementById('btnCatPremium').innerText = dict.catPremium;
-        if(document.getElementById('lblSearchTitle')) document.getElementById('lblSearchTitle').innerText = dict.searchTitle;
-        
-        const sp = document.getElementById('lblSearchPrompt'); 
-        if(sp) sp.innerHTML = `<i class="fas fa-search-plus" style="font-size: 40px; margin-bottom: 15px; color: var(--border-color);"></i><h3>${dict.searchPrompt}</h3>`;
-        
-        if(document.getElementById('lblUploadApp')) document.getElementById('lblUploadApp').innerText = dict.lblUploadApp;
-        if(document.getElementById('lblCoinBalance')) document.getElementById('lblCoinBalance').innerText = dict.lblCoinBalance;
-        if(document.getElementById('lblSignOut')) document.getElementById('lblSignOut').innerText = dict.lblSignOut;
-        if(document.getElementById('navFiles')) document.getElementById('navFiles').innerText = dict.navFiles;
-        if(document.getElementById('navModApp')) document.getElementById('navModApp').innerText = dict.navModApp;
-        if(document.getElementById('navSearch')) document.getElementById('navSearch').innerText = dict.navSearch;
-        if(document.getElementById('navYou')) document.getElementById('navYou').innerText = dict.navYou;
-        
-        if(document.getElementById('currentLanguageLabel')) document.getElementById('currentLanguageLabel').innerText = dict.langName;
+    window.addEventListener('online', () => {
+        showGlobalToast('Connection restored! You are back online.', 'success');
+    });
 
-        document.getElementById('languageSelectModal').classList.remove('active');
-    };
-
-    // Theme Toggle Logic
-    const themeBtn = document.getElementById('themeToggleBtn');
-    if (themeBtn) {
-        themeBtn.addEventListener('click', () => {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', newTheme);
-            document.getElementById('currentThemeLabel').innerText = newTheme === 'light' ? 'Light Mode' : 'Dark Mode';
-            localStorage.setItem('mvx_theme', newTheme);
-        });
-        
-        const savedTheme = localStorage.getItem('mvx_theme');
-        if (savedTheme) {
-            document.documentElement.setAttribute('data-theme', savedTheme);
-            document.getElementById('currentThemeLabel').innerText = savedTheme === 'light' ? 'Light Mode' : 'Dark Mode';
-        }
-    }
-
-    // 3. User Auth Logic
-    auth.onAuthStateChanged((user) => {
-        if (user) {
-            currentUserAuth = user;
-            db.ref(`users/${user.uid}`).on('value', (snap) => {
-                if (snap.exists()) {
-                    userProfile = snap.val();
-                    document.getElementById('topLoginBtn').style.display = 'none';
-                    const pBtn = document.getElementById('topProfileBtn');
-                    pBtn.src = userProfile.avatarUrl || 'https://via.placeholder.com/40';
-                    pBtn.style.display = 'block';
-
-                    document.getElementById('youTabAvatar').src = userProfile.avatarUrl || 'https://via.placeholder.com/75';
-                    document.getElementById('youTabName').innerText = userProfile.name || 'User';
-                    document.getElementById('youTabEmail').innerText = userProfile.email || 'No Email';
-                    
-                    document.getElementById('navCoinDisplay').innerText = userProfile.coins || 0;
-                    document.getElementById('menuCoinItem').style.display = 'flex';
-                    document.getElementById('menuSignOutItem').style.display = 'flex';
-                    document.getElementById('redeemBoxSection').style.display = 'block';
-
-                    if (userProfile.role === 'owner' || userProfile.role === 'admin') {
-                        document.getElementById('menuAdminPanelItem').style.display = 'flex';
-                        document.getElementById('menuPublishItem').style.display = 'flex';
-                    } else {
-                        document.getElementById('menuAdminPanelItem').style.display = 'none';
-                        document.getElementById('menuPublishItem').style.display = 'none';
-                    }
-                }
-            });
+    // ==========================================================================
+    // 7. NEW: DARK LOADER CONTROLS
+    // ==========================================================================
+    window.showDarkLoader = function(text = 'Loading') {
+        let loader = document.getElementById('global-dark-loader');
+        if(!loader) {
+            loader = document.createElement('div');
+            loader.id = 'global-dark-loader';
+            loader.className = 'dark-loader-overlay';
+            loader.innerHTML = `
+                <div class="dark-loader-spinner"></div>
+                <div class="dark-loader-text" id="dark-loader-msg">${text}</div>
+            `;
+            document.body.appendChild(loader);
         } else {
-            currentUserAuth = null;
-            userProfile = null;
-            document.getElementById('topLoginBtn').style.display = 'block';
-            document.getElementById('topProfileBtn').style.display = 'none';
-            document.getElementById('menuCoinItem').style.display = 'none';
-            document.getElementById('menuSignOutItem').style.display = 'none';
-            document.getElementById('menuAdminPanelItem').style.display = 'none';
-            document.getElementById('menuPublishItem').style.display = 'none';
-            document.getElementById('redeemBoxSection').style.display = 'none';
+            document.getElementById('dark-loader-msg').innerText = text;
         }
-    });
-
-    // 4. Edit Profile Logic
-    window.editUserNamePrompt = function() {
-        if (!currentUserAuth || !userProfile) return;
-        let newName = prompt("Enter your new profile name:", userProfile.name);
-        if (newName !== null && newName.trim() !== "") {
-            db.ref('users/' + currentUserAuth.uid).update({ name: newName.trim() });
-        }
+        loader.style.display = 'flex';
     };
 
-    // Direct Avatar Upload Logic
-    const avatarUploader = document.getElementById('directAvatarUpload');
-    if (avatarUploader) {
-        avatarUploader.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if(!file || !currentUserAuth) return;
-            
-            const status = document.getElementById('directAvatarStatus');
-            status.innerText = "Uploading...";
-            status.style.display = "block";
-            status.style.color = "var(--warning)";
-            
-            const formData = new FormData();
-            formData.append("image", file);
-            
-            fetch(`https://api.imgbb.com/1/upload?key=820eb9aa6a57f863045a52c1929efc9c`, {
-                method: "POST",
-                body: formData
-            }).then(res => res.json()).then(json => {
-                if(json.success) {
-                    const newUrl = json.data.url;
-                    db.ref(`users/${currentUserAuth.uid}`).update({ avatarUrl: newUrl }).then(() => {
-                        document.getElementById('youTabAvatar').src = newUrl;
-                        document.getElementById('topProfileBtn').src = newUrl;
-                        status.innerText = "Avatar Updated!";
-                        status.style.color = "var(--success)";
-                        setTimeout(() => status.style.display = "none", 3000);
-                    });
-                } else {
-                    status.innerText = "Upload Failed.";
-                    status.style.color = "var(--danger)";
-                }
-            }).catch(() => {
-                status.innerText = "Network Error.";
-                status.style.color = "var(--danger)";
-            });
-        });
-    }
-
-    window.openMyUploadsIfAdmin = function() {
-        const currentSessionRole = sessionStorage.getItem('mvx_role');
-        if (userProfile && (userProfile.role === 'owner' || currentSessionRole === 'owner')) {
-            if (typeof openMyUploadsModal === 'function') openMyUploadsModal();
-        }
+    window.hideDarkLoader = function() {
+        const loader = document.getElementById('global-dark-loader');
+        if(loader) loader.style.display = 'none';
     };
 
-    window.secureLogout = function() {
-        if (confirm("Log out from your account?")) {
-            sessionStorage.clear(); 
-            auth.signOut().then(() => window.location.reload());
-        }
-    };
-
-    // 5. Notifications Engine (With App Logo Support & Button)
-    db.ref('system_broadcasts').limitToLast(20).on('value', async (snap) => {
-        const container = document.getElementById('notificationInboxDisplay');
-        const badge = document.getElementById('notiAlert');
-        if (!container) return;
-
-        if (!snap.exists()) {
-            container.innerHTML = `<div class="noti-card"><p class="noti-msg" style="text-align:center;">No notifications.</p></div>`;
-            if(badge) badge.style.display = 'none';
-            return;
-        }
-
-        let notes = [];
-        snap.forEach(c => notes.push(c.val()));
-        notes.reverse();
-
-        if(notes.length > 0 && badge && document.getElementById('notificationTabContent').style.display === 'none') {
-            badge.style.display = 'block';
-        }
-
-        let html = '';
-        for (let note of notes) {
-            let borderCls = note.type === 'alert' ? 'system-alert' : '';
-            let actionHtml = '';
-
-            if (note.link && note.link.trim() !== "") {
-                if (note.link.includes('details.html?id=')) {
-                    const appId = note.link.split('=')[1];
-                    let logoUrl = 'https://via.placeholder.com/40/121212/00e6b8?text=APP';
-                    
-                    // Fetch real App Logo from database
-                    try {
-                        const appSnap = await db.ref(`store_apps/${appId}`).once('value');
-                        if(appSnap.exists()) logoUrl = appSnap.val().logoUrl || logoUrl;
-                    } catch(e){}
-                    
-                    actionHtml = `
-                        <div class="noti-app-preview">
-                            <img src="${logoUrl}" class="noti-app-logo">
-                            <a href="${note.link}" class="noti-action-btn"><i class="fas fa-eye"></i> View App</a>
-                        </div>
-                    `;
-                } else {
-                    // Regular Website Link
-                    actionHtml = `<a href="${note.link}" target="_blank" class="noti-action-btn" style="background:var(--info); color:#fff;"><i class="fas fa-link"></i> View Link</a>`;
-                }
-            }
-
-            html += `
-                <div class="noti-card ${borderCls}">
-                    <div class="noti-header">
-                        <span class="noti-title">${note.title}</span>
-                        <span class="noti-time">${note.timeString}</span>
+    // ==========================================================================
+    // 8. NEW: GLOBAL CONFIRMATION MODAL (Yes/Cancel for Deletions)
+    // ==========================================================================
+    window.showConfirmModal = function(message, onConfirmCallback) {
+        let modal = document.getElementById('global-confirm-modal');
+        if(!modal) {
+            modal = document.createElement('div');
+            modal.id = 'global-confirm-modal';
+            modal.className = 'confirm-overlay';
+            modal.innerHTML = `
+                <div class="confirm-box">
+                    <h3><i class="fas fa-exclamation-triangle"></i> WARNING</h3>
+                    <p id="confirm-modal-msg"></p>
+                    <div class="confirm-btns">
+                        <button class="btn-cancel-modal" id="confirm-cancel-btn">Cancel</button>
+                        <button class="btn-yes-modal" id="confirm-yes-btn">Yes, Delete</button>
                     </div>
-                    <p class="noti-msg">${note.message}</p>
-                    ${actionHtml}
                 </div>
             `;
+            document.body.appendChild(modal);
         }
-        container.innerHTML = html;
-    });
 
-    window.clearLocalNotifications = function() {
-        document.getElementById('notificationInboxDisplay').innerHTML = `<div class="noti-card"><p class="noti-msg" style="text-align:center;">Notifications cleared.</p></div>`;
-        const badge = document.getElementById('notiAlert');
-        if(badge) badge.style.display = 'none';
-    };
+        document.getElementById('confirm-modal-msg').innerText = message;
+        modal.style.display = 'flex';
 
-    // 6. Redeem Code System
-    window.executeRedeemProtocol = function() {
-        const codeInput = document.getElementById('redeemInputCode').value.trim().toUpperCase();
-        const statusLabel = document.getElementById('redeemStatusMsg');
-        
-        if (!codeInput) { statusLabel.innerText = "Please enter a code."; statusLabel.style.color = "var(--danger)"; return; }
-        if (!currentUserAuth) { statusLabel.innerText = "Login required."; statusLabel.style.color = "var(--danger)"; return; }
+        // Clear previous event listeners by cloning buttons
+        const oldYesBtn = document.getElementById('confirm-yes-btn');
+        const newYesBtn = oldYesBtn.cloneNode(true);
+        oldYesBtn.parentNode.replaceChild(newYesBtn, oldYesBtn);
 
-        document.getElementById('btnClaimCode').innerText = "Wait...";
+        const oldCancelBtn = document.getElementById('confirm-cancel-btn');
+        const newCancelBtn = oldCancelBtn.cloneNode(true);
+        oldCancelBtn.parentNode.replaceChild(newCancelBtn, oldCancelBtn);
 
-        db.ref(`redeem_codes/${codeInput}`).once('value').then(snap => {
-            if (!snap.exists()) {
-                statusLabel.innerText = "Invalid or expired code.";
-                statusLabel.style.color = "var(--danger)";
-                document.getElementById('btnClaimCode').innerText = "CLAIM";
-                return;
-            }
+        newCancelBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
 
-            let voucher = snap.val();
-
-            db.ref(`users/${currentUserAuth.uid}/redeemed_history/${codeInput}`).once('value').then(hSnap => {
-                if (hSnap.exists()) {
-                    statusLabel.innerText = "You already used this code.";
-                    statusLabel.style.color = "var(--danger)";
-                    document.getElementById('btnClaimCode').innerText = "CLAIM";
-                    return;
-                }
-
-                if (voucher.currentClaims >= voucher.maxClaims) {
-                    statusLabel.innerText = "Code limit reached.";
-                    statusLabel.style.color = "var(--danger)";
-                    document.getElementById('btnClaimCode').innerText = "CLAIM";
-                    return;
-                }
-
-                let updates = {};
-                updates[`redeem_codes/${codeInput}/currentClaims`] = voucher.currentClaims + 1;
-                updates[`users/${currentUserAuth.uid}/redeemed_history/${codeInput}`] = firebase.database.ServerValue.TIMESTAMP;
-
-                if (voucher.rewardType === 'coins') {
-                    let rewardAmt = parseInt(voucher.rewardValue);
-                    let curCoins = userProfile.coins || 0;
-                    updates[`users/${currentUserAuth.uid}/coins`] = curCoins + rewardAmt;
-                    statusLabel.innerText = `Success! ${rewardAmt} Coins Added.`;
-                } else if (voucher.rewardType === 'premium_bypass') {
-                    if (voucher.rewardValue === 'ALL_APPS') {
-                        updates[`users/${currentUserAuth.uid}/premium_all_access`] = true;
-                        statusLabel.innerText = `Success! All Premium Apps Unlocked.`;
-                    } else {
-                        let appIds = voucher.rewardValue.split(',');
-                        appIds.forEach(id => {
-                            updates[`users/${currentUserAuth.uid}/unlocked_apps/${id}`] = true;
-                        });
-                        statusLabel.innerText = `Success! Premium App(s) Unlocked.`;
-                    }
-                }
-
-                db.ref().update(updates).then(() => {
-                    statusLabel.style.color = "var(--success)";
-                    document.getElementById('redeemInputCode').value = '';
-                    document.getElementById('btnClaimCode').innerText = "CLAIM";
-                    setTimeout(() => statusLabel.innerText = "", 4000);
-                });
-            });
+        newYesBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+            if(typeof onConfirmCallback === 'function') onConfirmCallback();
         });
     };
-
-    // System Config Sync
-    db.ref('settings').on('value', (snap) => {
-        if (snap.exists() && snap.val().storeLogo) {
-            const logo = document.getElementById('mainStoreLogo');
-            if (logo) logo.src = snap.val().storeLogo;
-        }
-    });
 });

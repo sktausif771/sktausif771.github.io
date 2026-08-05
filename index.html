@@ -1,404 +1,1409 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#121212">
-    <title>MVX STORE | Play Store Edition V5.6</title>
+    <meta name="theme-color" content="#00e6b8">
+    <title>MVX STORE | Premium Mods & VIP Game Hacks</title>
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
-    <link rel="stylesheet" href="style.css">
     <style>
-        .dashboard-tab {
-            transition: all 0.3s ease;
-        }
-        .dashboard-tab:hover {
-            background: rgba(0, 230, 184, 0.05) !important;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
-        /* GMAIL STYLE LOGIN CARD */
-        .google-login-card {
+        :root {
+            --primary: #00e6b8; --primary-dim: rgba(0, 230, 184, 0.15);
+            --gold: #ffd700; --gold-dim: rgba(255, 215, 0, 0.15);
+            --danger: #ff003c; --danger-dim: rgba(255, 0, 60, 0.15);
+            --bg-void: #000000; --bg-card: #0c101a; --bg-input: #1a1f2c;
+            --text-primary: #ffffff; --text-muted: #9ca3af;
+            --glass-bg: rgba(8, 11, 18, 0.8); --glass-border: 1px solid rgba(0, 230, 184, 0.2);
+            --font-head: 'Rajdhani', sans-serif; --font-body: 'Space Grotesk', sans-serif;
+        }
+
+        body { background: var(--bg-void); color: var(--text-primary); font-family: var(--font-body); min-height: 100vh; overflow-x: hidden; }
+
+        /* Background Effects */
+        .grid-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(0, 230, 184, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 230, 184, 0.03) 1px, transparent 1px); background-size: 50px 50px; pointer-events: none; z-index: -1; animation: gridShift 15s linear infinite; }
+        .glow-orb { position: fixed; width: 60vmax; height: 60vmax; border-radius: 50%; background: radial-gradient(circle at center, rgba(0, 230, 184, 0.1) 0%, transparent 70%); filter: blur(50px); pointer-events: none; z-index: -1; top: -20vmax; left: -20vmax; animation: orbFloat 20s ease-in-out infinite alternate; }
+        @keyframes gridShift { 0% { background-position: 0 0; } 100% { background-position: 50px 50px; } }
+        @keyframes orbFloat { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(10%,10%) scale(1.2); } }
+
+        /* ================================================================
+           🔐 LOGIN OVERLAY
+           ================================================================ */
+        #loginOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-void);
+            z-index: 99999;
             display: flex;
             align-items: center;
-            gap: 20px;
-            background: var(--bg-surface);
-            border: 1px solid var(--border-color);
+            justify-content: center;
+            flex-direction: column;
             padding: 20px;
-            border-radius: 16px;
-            margin-bottom: 30px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+            transition: opacity 0.6s ease, visibility 0.6s ease;
         }
-        .google-login-card:hover {
+        #loginOverlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .login-overlay-box {
+            text-align: center;
+            max-width: 420px;
+            width: 100%;
+            padding: 40px 30px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 0 0 60px var(--primary-dim);
+            animation: fadeInUp 0.6s ease;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .login-overlay-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: var(--primary);
+            text-shadow: 0 0 30px var(--primary-dim);
+            margin-bottom: 5px;
+            letter-spacing: 2px;
+        }
+        .login-overlay-sub {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-bottom: 30px;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .login-overlay-icon {
+            font-size: 4rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: block;
+            animation: pulseGlow 2s infinite;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { text-shadow: 0 0 20px var(--primary-dim); transform: scale(1); }
+            50% { text-shadow: 0 0 50px var(--primary); transform: scale(1.05); }
+        }
+
+        .login-input-group {
+            margin-bottom: 18px;
+            text-align: left;
+            position: relative;
+        }
+        .login-input-group i {
+            position: absolute;
+            top: 50%;
+            left: 15px;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+        .login-input-group input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            background: var(--bg-input);
+            border: 1px solid #333;
+            border-radius: 12px;
+            color: #fff;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+        .login-input-group input:focus {
             border-color: var(--primary);
-            box-shadow: 0 5px 20px rgba(0, 230, 184, 0.15);
+            box-shadow: 0 0 15px var(--primary-dim);
+        }
+
+        .login-overlay-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary);
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 5px;
+        }
+        .login-overlay-btn:hover {
+            box-shadow: 0 0 30px var(--primary);
             transform: translateY(-2px);
         }
-        .g-logo-container {
+
+        .login-overlay-divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            color: #555;
+            font-size: 0.9rem;
+        }
+        .login-overlay-divider::before,
+        .login-overlay-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #333;
+            margin: 0 10px;
+        }
+
+        .login-google-btn {
+            width: 100%;
+            padding: 15px;
+            background: #ffffff;
+            color: #3c4043;
+            border: 1px solid #dadce0;
+            border-radius: 12px;
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .login-google-btn:hover {
+            background: #f8f9fa;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(255,255,255,0.1);
+        }
+        .google-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .login-overlay-footer {
+            margin-top: 25px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            opacity: 0.6;
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        .login-error-msg {
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-top: 10px;
+            display: none;
+            font-weight: 600;
+        }
+
+        /* Header */
+        .header { position: sticky; top: 0; background: var(--glass-bg); backdrop-filter: blur(10px); border-bottom: var(--glass-border); height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 100; }
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .menu-btn, .search-btn { font-size: 1.5rem; color: var(--text-primary); cursor: pointer; background: none; border: none; }
+        .brand { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--primary); }
+        
+        /* Sidebar */
+        .sidebar { position: fixed; top: 0; left: -300px; width: 300px; height: 100%; background: #080b12; border-right: var(--glass-border); z-index: 1000; transition: 0.3s; padding: 20px; overflow-y: auto; }
+        .sidebar.active { left: 0; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 999; display: none; }
+        .overlay.active { display: block; }
+        .close-btn { position: absolute; top: 20px; right: 20px; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; }
+        
+        .sidebar-logo { text-align: center; margin-bottom: 30px; margin-top: 20px; font-family: 'Orbitron', sans-serif; font-size: 1.5rem; color: var(--primary); }
+        .sidebar-menu a { display: flex; align-items: center; gap: 15px; padding: 15px; color: var(--text-primary); text-decoration: none; border-radius: 8px; margin-bottom: 10px; transition: 0.3s; cursor: pointer; font-weight: 600; font-family: var(--font-head); font-size: 1.1rem;}
+        .sidebar-menu a:hover { background: var(--bg-input); color: var(--primary); }
+        
+        .login-redirect-btn { width: 100%; padding: 15px; background: var(--primary); color: #000; border: none; border-radius: 8px; font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; cursor: pointer; margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s;}
+        .login-redirect-btn:hover { box-shadow: 0 0 15px var(--primary-dim); }
+
+        /* Main Nav Tabs - সরিয়ে ফেলা হয়েছে */
+        .main-tabs { display: none; }
+        .sub-categories { display: none; }
+
+        /* Search Bar */
+        .search-container { padding: 15px 20px; display: none; }
+        .search-box { width: 100%; background: var(--bg-input); border: var(--glass-border); border-radius: 8px; padding: 12px 15px; color: #fff; font-size: 1rem; outline: none; }
+
+        /* Feed System (App Cards) */
+        .feed-container { max-width: 800px; margin: 0 auto; padding: 20px; padding-bottom: 100px; display: flex; flex-direction: column; gap: 30px; }
+        .yt-card { display: flex; flex-direction: column; cursor: pointer; transition: 0.3s; position: relative; }
+        .yt-card:hover { transform: translateY(-5px); }
+        .yt-banner-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; border-radius: 12px; overflow: hidden; background: var(--bg-input); border: var(--glass-border); }
+        .yt-banner { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
+        .yt-card:hover .yt-banner { transform: scale(1.05); }
+        
+        /* ========== BAN BADGE (লাল) ========== */
+        .ban-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: var(--danger);
+            color: #fff;
+            padding: 5px 14px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            font-family: var(--font-head);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 0 20px var(--danger-dim);
+            z-index: 2;
+            animation: banPulse 2s infinite;
+        }
+        @keyframes banPulse {
+            0%, 100% { box-shadow: 0 0 10px var(--danger-dim); }
+            50% { box-shadow: 0 0 30px var(--danger); }
+        }
+
+        .noban-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: var(--primary);
+            color: #000;
+            padding: 5px 14px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            font-family: var(--font-head);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 0 20px var(--primary-dim);
+            z-index: 2;
+        }
+
+        .type-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            z-index: 2;
+        }
+        .type-badge.Free { background: var(--primary); color: #000; }
+        .type-badge.Premium { background: var(--gold); color: #000; }
+        .type-badge.Paid { background: var(--danger); color: #fff; }
+
+        .badge-update { position: absolute; top: 10px; left: 10px; background: var(--danger); color: #fff; padding: 5px 12px; border-radius: 5px; font-size: 0.8rem; font-family: var(--font-head); font-weight: bold; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 0 10px var(--danger-dim); z-index: 2; }
+
+        .yt-info { display: flex; gap: 15px; margin-top: 15px; align-items: flex-start; }
+        .yt-logo { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; background: var(--bg-input); border: 1px solid #333; }
+        .yt-text { flex: 1; }
+        .yt-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 5px; color: var(--text-primary); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .yt-meta { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
+
+        .empty-state { text-align: center; padding: 50px 20px; color: var(--text-muted); }
+        .empty-state i { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; }
+
+        /* Load More */
+        .load-more-container { text-align: center; margin: 20px 0 50px; width: 100%; display: none; }
+        .btn-load-more { background: var(--bg-input); border: 1px solid var(--primary); color: var(--primary); padding: 12px 30px; border-radius: 8px; font-family: var(--font-head); font-size: 1.1rem; cursor: pointer; transition: 0.3s; }
+        .btn-load-more:hover { background: var(--primary-dim); box-shadow: 0 0 15px var(--primary-dim); }
+
+        /* Custom Admin Password Modal */
+        .pass-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .pass-modal { background: var(--bg-card); padding: 25px; border-radius: 15px; border: 1px solid var(--primary); text-align: center; width: 90%; max-width: 350px; box-shadow: 0 0 30px var(--primary-dim); }
+        .pass-modal h3 { color: var(--primary); font-family: var(--font-head); margin-bottom: 15px; }
+        .pass-modal input { width: 100%; background: var(--bg-input); border: 1px solid #333; color: #fff; padding: 12px; border-radius: 8px; margin-bottom: 20px; outline: none; font-size: 1rem; text-align: center; letter-spacing: 3px; }
+        .pass-modal input:focus { border-color: var(--primary); }
+        .pass-btns { display: flex; gap: 10px; }
+        .pass-btns button { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-cancel { background: #333; color: #fff; }
+        .btn-verify { background: var(--primary); color: #000; }
+        .btn-verify:hover { box-shadow: 0 0 15px var(--primary-dim); }
+
+        /* Local Toast */
+        .local-toast { position: fixed; top: 80px; right: 20px; background: var(--bg-input); border-left: 4px solid var(--primary); padding: 15px 20px; border-radius: 8px; display: none; gap: 10px; align-items: center; color: #fff; z-index: 9999; box-shadow: 0 5px 15px rgba(0,0,0,0.5); font-weight: 500;}
+        
+        .spinner { display: none; }
+        .btn-loading .spinner { display: inline-block; animation: spin 1s linear infinite; }
+        .btn-loading .btn-text { display: none; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* ================================================================
+           অ্যাডমিন প্যানেল হাইড
+           ================================================================ */
+        .admin-panel-hidden {
+            display: none !important;
+        }
+
+        /* ================================================================
+           ফ্লোটিং প্লাস বাটন
+           ================================================================ */
+        .fab-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 999;
+        }
+        .fab-btn {
             width: 65px;
             height: 65px;
-            background: #ffffff;
             border-radius: 50%;
+            background: var(--primary);
+            color: #000;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 230, 184, 0.4);
+            transition: all 0.3s ease;
             display: flex;
-            justify-content: center;
             align-items: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            flex-shrink: 0;
+            justify-content: center;
         }
-        .g-text-container {
-            flex: 1;
+        .fab-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 30px rgba(0, 230, 184, 0.6);
         }
-        .g-text-container h2 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 24px;
-            color: #ffffff;
-            margin-bottom: 5px;
-            letter-spacing: 1px;
-            font-weight: 800;
+        .fab-btn i {
+            transition: transform 0.3s ease;
         }
-        .g-text-container p {
-            font-size: 13px;
-            color: var(--text-secondary);
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 500;
+        .fab-btn.open i {
+            transform: rotate(45deg);
         }
-        .g-arrow {
-            color: var(--text-secondary);
-            font-size: 18px;
-            transition: color 0.3s;
+
+        /* ================================================================
+           আপলোড মোডাল
+           ================================================================ */
+        .upload-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
-        .google-login-card:hover .g-arrow {
+        .upload-modal-overlay.active {
+            display: flex;
+        }
+        .upload-modal-box {
+            background: var(--bg-card);
+            border: 1px solid var(--primary);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 0 50px var(--primary-dim);
+            animation: fadeInUp 0.4s ease;
+        }
+        .upload-modal-box h2 {
             color: var(--primary);
+            font-family: var(--font-head);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        .upload-modal-box .close-modal-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            margin-left: auto;
+            transition: 0.3s;
+        }
+        .upload-modal-box .close-modal-btn:hover {
+            color: var(--danger);
+        }
+
+        .upload-form-group {
+            margin-bottom: 15px;
+        }
+        .upload-form-group label {
+            display: block;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        .upload-form-group input,
+        .upload-form-group select,
+        .upload-form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background: var(--bg-input);
+            border: 1px solid #333;
+            border-radius: 10px;
+            color: #fff;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+        .upload-form-group input:focus,
+        .upload-form-group select:focus,
+        .upload-form-group textarea:focus {
+            border-color: var(--primary);
+        }
+        .upload-form-group textarea {
+            min-height: 60px;
+            resize: vertical;
+        }
+
+        /* BAN অপশন */
+        .ban-options {
+            display: flex;
+            gap: 15px;
+            margin: 5px 0 10px 0;
+        }
+        .ban-option-btn {
+            flex: 1;
+            padding: 12px 10px;
+            border-radius: 10px;
+            border: 2px solid #333;
+            background: var(--bg-input);
+            color: var(--text-muted);
+            font-family: var(--font-head);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: center;
+        }
+        .ban-option-btn:hover {
+            border-color: var(--text-muted);
+        }
+        .ban-option-btn.active-no-ban {
+            border-color: var(--primary);
+            background: var(--primary-dim);
+            color: var(--primary);
+            box-shadow: 0 0 20px var(--primary-dim);
+        }
+        .ban-option-btn.active-ban {
+            border-color: var(--danger);
+            background: var(--danger-dim);
+            color: var(--danger);
+            box-shadow: 0 0 20px var(--danger-dim);
+        }
+        .ban-option-btn .ban-icon {
+            margin-right: 8px;
+        }
+
+        /* কাস্টম ইমেজ আপলোড */
+        .custom-file-upload {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .custom-file-upload input[type="file"] {
+            display: none;
+        }
+        .custom-file-label {
+            flex: 1;
+            padding: 12px 15px;
+            background: var(--bg-input);
+            border: 1px solid #333;
+            border-radius: 10px;
+            color: var(--text-muted);
+            cursor: pointer;
+            text-align: center;
+            transition: 0.3s;
+            font-size: 0.9rem;
+        }
+        .custom-file-label:hover {
+            border-color: var(--primary);
+        }
+        .custom-file-label.has-image {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .upload-preview-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 1px solid var(--primary);
+            display: none;
+        }
+        .upload-preview-img.show {
+            display: block;
+        }
+
+        .other-game-box {
+            display: none;
+            margin-top: 10px;
+        }
+        .other-game-box.show {
+            display: block;
+        }
+
+        .contact-type-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 5px 0 10px 0;
+        }
+        .contact-type-btn {
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid #333;
+            background: var(--bg-input);
+            color: var(--text-muted);
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: center;
+        }
+        .contact-type-btn:hover {
+            border-color: var(--text-muted);
+        }
+        .contact-type-btn.active-contact {
+            border-color: var(--primary);
+            background: var(--primary-dim);
+            color: var(--primary);
+        }
+
+        .upload-btn-submit {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary);
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            font-family: var(--font-head);
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+        .upload-btn-submit:hover {
+            box-shadow: 0 0 20px var(--primary-dim);
+            transform: translateY(-2px);
+        }
+
+        .badge-type {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+        .badge-type.free { background: var(--primary); color: #000; }
+        .badge-type.premium { background: var(--gold); color: #000; }
+        .badge-type.paid { background: var(--danger); color: #fff; }
+
+        /* ================================================================
+           ডিলিট বাটন (শুধু নিজের পোস্টে দেখাবে)
+           ================================================================ */
+        .delete-btn {
+            background: var(--danger);
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 8px;
+        }
+        .delete-btn:hover {
+            box-shadow: 0 0 15px var(--danger-dim);
+            transform: scale(1.05);
         }
     </style>
 </head>
 <body>
-
-    <header class="play-top-nav" id="globalHeader">
-        <div class="top-brand" onclick="switchTab('mod_app', document.getElementById('defaultTabBtn'))">
-            <img src="https://via.placeholder.com/40/121212/00e6b8?text=MVX" alt="Store Logo" class="nav-logo" id="mainStoreLogo">
-            <span class="brand-text" id="lblStoreTitle">MVX STORE</span>
-        </div>
-        <div class="top-actions">
-            <div class="noti-icon-box" onclick="openNotificationCenter()">
-                <i class="fas fa-bell noti-icon"></i>
-                <div class="noti-badge" id="notiAlert"></div>
+    <!-- ============================================================
+    🔐 LOGIN OVERLAY
+    ============================================================ -->
+    <div id="loginOverlay">
+        <div class="login-overlay-box">
+            <i class="fas fa-shield-alt login-overlay-icon"></i>
+            <div class="login-overlay-logo">MVX STORE</div>
+            <div class="login-overlay-sub">Premium Mods &amp; VIP Game Hacks</div>
+            
+            <div class="login-input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="loginEmailOverlay" placeholder="Email Address" autocomplete="off">
+            </div>
+            <div class="login-input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="loginPasswordOverlay" placeholder="Password" autocomplete="off">
             </div>
             
-            <div id="topAuthArea" style="display: flex; align-items: center;">
-                <div id="topLoginBtn" onclick="window.location.href='login.html'" style="color: var(--primary); font-family: 'Orbitron', sans-serif; font-size: 13px; font-weight: 800; cursor: pointer; padding: 6px 12px; border: 1px solid var(--primary); border-radius: 8px; display: none;">LOGIN</div>
+            <div id="loginErrorOverlay" class="login-error-msg">Invalid email or password!</div>
+            
+            <button class="login-overlay-btn" id="loginBtnOverlay" onclick="loginFromOverlay()">
+                <i class="fas fa-sign-in-alt"></i> SECURE LOGIN
+            </button>
+            
+            <div class="login-overlay-divider">OR</div>
+
+            <button class="login-google-btn" onclick="googleLoginOverlay()">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" class="google-icon"> LOGIN WITH GOOGLE
+            </button>
+            
+            <div class="login-overlay-footer">
+                <i class="fas fa-lock"></i> Secure 256-Bit Encrypted Connection
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    মূল কন্টেন্ট
+    ============================================================ -->
+    <div id="mainContent" style="display: none;">
+
+        <div class="grid-overlay"></div>
+        <div class="glow-orb"></div>
+
+        <div class="local-toast" id="localToast">
+            <i class="fas fa-info-circle"></i> <span id="localToastMsg">Message</span>
+        </div>
+
+        <header class="header">
+            <div class="header-left">
+                <button class="menu-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <span class="brand">MVX STORE</span>
+            </div>
+            <div class="header-right">
+                <button class="search-btn" onclick="toggleSearch()"><i class="fas fa-search"></i></button>
+            </div>
+        </header>
+
+        <div class="search-container" id="searchContainer">
+            <input type="text" id="searchInput" class="search-box" placeholder="Search posts..." onkeyup="handleSearch()">
+        </div>
+
+        <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+        <div class="sidebar" id="sidebar">
+            <i class="fas fa-times close-btn" onclick="toggleSidebar()"></i>
+            <div class="sidebar-logo">MVX SYSTEM</div>
+            
+            <button class="login-redirect-btn" onclick="window.location.href='user-login.html'">
+                <i class="fas fa-user-circle"></i> <span id="sidebarUserText">LOGIN / SETTINGS</span>
+            </button>
+
+            <div class="sidebar-menu" style="margin-top: 30px;">
+                <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 10px;">COMMUNITY</p>
+                <a href="feedback.html"><i class="fas fa-comments" style="color: #00e6b8;"></i> Community Feedback</a>
+
+                <hr style="border-color: #333; margin: 25px 0 15px;">
                 
-                <img src="" alt="User Profile" class="top-profile-pic" id="topProfileBtn" 
-                     style="display: none;"
-                     onclick="openMyUploadsIfAdmin()">
+                <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 10px;">MOD & ADMIN PANELS</p>
+                
+                <a id="freePanelLink" onclick="checkLoginAndGoFree()" class="admin-panel-hidden">
+                    <i class="fas fa-gamepad" style="color: #00ccff;"></i> FREE PANELS (Lib/Lua/TM)
+                </a>
+                
+                <a id="ownerPanelLink" onclick="openPassModal('owner-admin.html')" class="admin-panel-hidden">
+                    <i class="fas fa-crown" style="color: #ffd700;"></i> OWNER MASTER PANEL
+                </a>
             </div>
         </div>
-    </header>
 
-    <main class="play-main-content" id="mainStoreFeed">
-        
-        <div class="play-categories">
-            <button class="cat-chip active" id="btnCatAll" data-filter="all">All</button>
-            <button class="cat-chip" id="btnCatTrending" data-filter="trending">Trending</button>
-            <button class="cat-chip" id="btnCatPremium" data-filter="premium">Premium</button>
-        </div>
-
-        <h2 class="play-section-title" id="feedSectionTitle">Apps & Files <i class="fas fa-arrow-right" style="font-size:12px; color:var(--text-secondary);"></i></h2>
-        
-        <div class="play-app-grid" id="storeAppGrid">
-            <div style="text-align:center; padding: 50px; grid-column: 1/-1;">
-                <i class="fas fa-spinner fa-spin" style="font-size:32px; color:var(--primary);"></i>
-                <p style="margin-top:15px; color:var(--text-secondary); font-weight:500;" id="lblLoadingStore">Loading Database...</p>
-            </div>
-        </div>
-    </main>
-
-    <main class="play-main-content" id="searchTabContent" style="display: none;">
-        <h2 class="play-section-title" id="lblSearchTitle">Search</h2>
-        <div style="position: relative; margin-bottom: 25px;">
-            <input type="text" id="storeSearchInput" class="play-input" placeholder="Search apps, mods or tags..." style="padding-left: 50px; margin-bottom: 0;">
-            <i class="fas fa-search" style="position: absolute; top: 18px; left: 20px; color: var(--text-secondary); font-size: 18px;"></i>
-        </div>
-        
-        <div class="play-app-grid" id="searchResultGrid">
-            <div style="text-align: center; padding: 40px; grid-column: 1/-1; color: var(--text-secondary);" id="lblSearchPrompt">
-                <i class="fas fa-search-plus" style="font-size: 40px; margin-bottom: 15px; color: var(--border-color);"></i>
-                <h3>Type any keyword to search</h3>
-            </div>
-        </div>
-    </main>
-
-    <main class="play-main-content" id="notificationTabContent" style="display: none;">
-        <div class="play-section-title">
-            <h2 id="lblNotiTitle"><i class="fas fa-bell" style="color: var(--primary);"></i> Notifications</h2>
-            <button class="cat-chip" onclick="clearLocalNotifications()" style="padding: 5px 12px; font-size: 11px;" id="btnClearScreen">Clear</button>
-        </div>
-        <div class="noti-container" id="notificationInboxDisplay">
-            <div class="noti-card">
-                <div class="noti-header">
-                    <span class="noti-title">System Alert</span>
-                    <span class="noti-time">Just Now</span>
+        <div class="pass-modal-overlay" id="passModalOverlay">
+            <div class="pass-modal">
+                <h3><i class="fas fa-shield-alt"></i> ADMIN ACCESS</h3>
+                <input type="password" id="adminPassInput" placeholder="••••••" autocomplete="off">
+                <div class="pass-btns">
+                    <button class="btn-cancel" onclick="closePassModal()">Cancel</button>
+                    <button class="btn-verify" onclick="verifyAdminPass()">Authorize</button>
                 </div>
-                <p class="noti-msg">Notification box is empty.</p>
             </div>
         </div>
-    </main>
 
-    <main class="play-main-content" id="youTabContent" style="display: none;">
-        
-        <!-- LOGGED IN PROFILE VIEW -->
-        <div class="you-header" id="loggedInProfileView" style="display: none; align-items: center; gap: 20px; padding: 20px; background: var(--bg-surface); border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 30px;">
-            <div style="position: relative; display: inline-block; flex-shrink: 0;">
-                <img src="" id="youTabAvatar" alt="User Avatar Image" style="width: 75px; height: 75px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);">
-                <!-- FIXED: Changed camera icon to plus icon -->
-                <label for="directAvatarUpload" class="avatar-upload-label">
-                    <i class="fas fa-plus" style="font-size: 14px;"></i>
-                </label>
-                <input type="file" id="directAvatarUpload" accept="image/*" style="display: none;">
-            </div>
-            <div class="you-info" style="flex: 1; overflow: hidden;">
-                <h2 onclick="editUserNamePrompt()" style="cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: 'Orbitron', sans-serif; font-size: 20px; margin-bottom: 4px;" title="Click to edit name">
-                    <span id="youTabName" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Loading...</span> 
-                    <i class="fas fa-pen" style="font-size: 12px; color: var(--text-secondary);"></i>
+        <main class="feed-container" id="feedContainer">
+            <p style="text-align: center; color: gray; margin-top: 50px;"><i class="fas fa-circle-notch fa-spin"></i> Loading Data...</p>
+        </main>
+
+        <div class="load-more-container" id="loadMoreContainer">
+            <button class="btn-load-more" onclick="loadMoreApps()">Load More <i class="fas fa-angle-down"></i></button>
+        </div>
+
+        <!-- ============================================================
+        ফ্লোটিং প্লাস বাটন
+        ============================================================ -->
+        <div class="fab-container">
+            <button class="fab-btn" id="fabBtn" onclick="toggleUploadModal()">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+
+        <!-- ============================================================
+        আপলোড মোডাল
+        ============================================================ -->
+        <div class="upload-modal-overlay" id="uploadModal">
+            <div class="upload-modal-box">
+                <h2>
+                    <i class="fas fa-cloud-upload-alt"></i> UPLOAD
+                    <button class="close-modal-btn" onclick="toggleUploadModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </h2>
-                <p id="youTabEmail" style="font-size: 13px; color: var(--text-dim); font-family: monospace;"></p>
-                <p id="directAvatarStatus" style="font-size: 11px; color: var(--warning); margin-top: 4px; display: none; font-weight: bold;"></p>
-            </div>
-        </div>
 
-        <!-- GMAIL STYLE LOGGED OUT VIEW -->
-        <div class="google-login-card" id="loggedOutLoginView" onclick="window.location.href='login.html'">
-            <div class="g-logo-container">
-                <svg viewBox="0 0 24 24" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
-                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                </svg>
-            </div>
-            <div class="g-text-container">
-                <h2>LOGIN</h2>
-                <p>Sign in to access profile</p>
-            </div>
-            <i class="fas fa-chevron-right g-arrow"></i>
-        </div>
-
-        <!-- REDEEM BOX (Visible for ALL logged-in users) -->
-        <div class="redeem-box" id="redeemBoxSection" style="max-width: 350px; margin: 0 auto 25px auto; padding: 15px; border-radius: 12px; display: none;">
-            <h4 id="lblClaimTitle" style="font-size: 15px; margin-bottom: 12px;"><i class="fas fa-gift" style="color: var(--primary);"></i> Redeem Code</h4>
-            <div style="display: flex; gap: 8px;">
-                <input type="text" id="redeemInputCode" class="play-input" placeholder="Enter Code" style="margin-bottom:0; text-transform:uppercase; font-family:monospace; font-size:14px; font-weight:bold; letter-spacing:1px; padding: 10px;">
-                <button class="play-btn" style="width: 90px; padding: 10px; font-size: 13px;" onclick="executeRedeemProtocol()" id="btnClaimCode">CLAIM</button>
-            </div>
-            <p id="redeemStatusMsg" style="font-size:11px; font-weight:600; margin-top:8px; color:var(--primary);"></p>
-        </div>
-
-        <div class="you-menu-list">
-            
-            <!-- ADMIN PANEL -->
-            <div class="you-menu-item" id="menuAdminPanelItem" style="display: none;" onclick="window.location.href='admin.html'">
-                <i class="fas fa-user-shield" style="color: var(--danger);"></i>
-                <span style="color: var(--danger); font-weight: 700;">Admin Panel</span>
-                <i class="fas fa-chevron-right arrow"></i>
-            </div>
-
-            <!-- PUBLISH APP -->
-            <div class="you-menu-item" id="menuPublishItem" onclick="openUploadModal()" style="display: none;">
-                <i class="fas fa-cloud-upload-alt" style="color: var(--primary);"></i>
-                <span id="lblUploadApp">Upload App</span>
-                <i class="fas fa-chevron-right arrow"></i>
-            </div>
-            
-            <div class="you-menu-item" onclick="document.getElementById('languageSelectModal').classList.add('active')">
-                <i class="fas fa-language" style="color: #00ff88;"></i>
-                <span>Language: <strong id="currentLanguageLabel" style="color: var(--primary);">English</strong></span>
-                <i class="fas fa-chevron-right arrow"></i>
-            </div>
-
-            <div class="you-menu-item" id="themeToggleBtn">
-                <i class="fas fa-paint-brush" style="color: var(--warning);"></i>
-                <span>Theme: <strong id="currentThemeLabel" style="color: var(--primary);">Dark Mode</strong></span>
-                <i class="fas fa-exchange-alt arrow" style="font-size:14px;"></i>
-            </div>
-            
-            <!-- COIN BALANCE -->
-            <div class="you-menu-item" id="menuCoinItem" style="display: none;">
-                <i class="fas fa-wallet" style="color: #ffd700;"></i>
-                <span id="lblCoinBalance">Coin Balance</span>
-                <span style="margin-left:auto; margin-right:15px; font-weight:900; color:#ffd700; font-size:16px;" id="navCoinDisplay">0</span>
-            </div>
-            
-            <!-- SIGN OUT -->
-            <div class="you-menu-item" id="menuSignOutItem" style="color: var(--danger); display: none;" onclick="secureLogout()">
-                <i class="fas fa-sign-out-alt"></i>
-                <span id="lblSignOut">Logout</span>
-            </div>
-        </div>
-    </main>
-
-    <nav class="play-bottom-nav">
-        <div class="nav-item" onclick="switchTab('files', this)">
-            <i class="fas fa-folder-open"></i>
-            <span id="navFiles">Files</span>
-        </div>
-        <div class="nav-item active" id="defaultTabBtn" onclick="switchTab('mod_app', this)">
-            <i class="fas fa-robot"></i>
-            <span id="navModApp">Mods</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('search', this)">
-            <i class="fas fa-search"></i>
-            <span id="navSearch">Search</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('you', this)">
-            <i class="fas fa-user-circle"></i>
-            <span id="navYou">Profile</span>
-        </div>
-    </nav>
-
-    <div class="modal-overlay" id="languageSelectModal">
-        <div class="play-modal">
-            <div class="modal-header">
-                <h3><i class="fas fa-globe" style="color:var(--primary);"></i> Language</h3>
-                <i class="fas fa-times close-modal" onclick="document.getElementById('languageSelectModal').classList.remove('active')"></i>
-            </div>
-            <div class="modal-body">
-                <select id="sysLanguageSelector" class="play-input" onchange="changeSystemLanguage(this.value)">
-                    <option value="en">English (Default)</option>
-                    <option value="bn">বাংলা (Bengali)</option>
-                    <option value="es">Español (Spanish)</option>
-                    <option value="hi">हिन्दी (Hindi)</option>
-                    <option value="ar">العربية (Arabic)</option>
-                </select>
-            </div>
-        </div>
-    </div>
-
-    <!-- MY UPLOADS MODAL -->
-    <div class="modal-overlay" id="myUploadsModal">
-        <div class="play-modal" style="max-width: 600px; width: 95%;">
-            <div class="modal-header">
-                <h3><i class="fas fa-cloud-upload-alt" style="color:var(--primary);"></i> My Uploads</h3>
-                <i class="fas fa-times close-modal" onclick="document.getElementById('myUploadsModal').classList.remove('active')"></i>
-            </div>
-            <div class="modal-body" style="padding: 20px; max-height: 60vh; overflow-y: auto;">
-                <div id="myUploadsContainer">
-                    <div style="text-align:center; padding: 30px; color:var(--text-secondary);">
-                        <i class="fas fa-spinner fa-spin" style="font-size:24px; color:var(--primary);"></i>
-                        <p style="margin-top:10px;">Loading uploads...</p>
+                <form id="uploadForm" onsubmit="submitAppFromHome(event)">
+                    
+                    <!-- BAN অপশন -->
+                    <div class="upload-form-group">
+                        <label style="margin-bottom: 10px;">Ban Status *</label>
+                        <div class="ban-options">
+                            <button type="button" class="ban-option-btn active-no-ban" id="banNoBtn" onclick="selectBanOption('no')">
+                                <i class="fas fa-check-circle ban-icon" style="color: var(--primary);"></i> No Ban
+                            </button>
+                            <button type="button" class="ban-option-btn" id="banYesBtn" onclick="selectBanOption('yes')">
+                                <i class="fas fa-exclamation-triangle ban-icon" style="color: var(--danger);"></i> Ban
+                            </button>
+                        </div>
+                        <input type="hidden" id="homeBanStatus" value="no">
                     </div>
-                </div>
+
+                    <!-- টাইটেল -->
+                    <div class="upload-form-group">
+                        <label>Title *</label>
+                        <input type="text" id="homeTitle" placeholder="Enter title..." required>
+                    </div>
+
+                    <!-- ইমেজ আপলোড -->
+                    <div class="upload-form-group">
+                        <label>Image *</label>
+                        <div class="custom-file-upload">
+                            <label class="custom-file-label" id="fileLabel" for="imageUpload">
+                                <i class="fas fa-image"></i> Choose Image
+                            </label>
+                            <input type="file" id="imageUpload" accept="image/*" onchange="handleImageUpload(event)">
+                            <img id="previewImg" class="upload-preview-img" alt="Preview">
+                        </div>
+                        <input type="hidden" id="homeImageUrl">
+                    </div>
+
+                    <!-- গেম ক্যাটাগরি -->
+                    <div class="upload-form-group">
+                        <label>Game Category *</label>
+                        <select id="homeCategory" onchange="toggleOtherGame()">
+                            <option value="Free Fire">Free Fire</option>
+                            <option value="PUBG">PUBG</option>
+                            <option value="Blood Strike">Blood Strike</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+
+                    <!-- আদারস গেম -->
+                    <div class="other-game-box" id="otherGameBox">
+                        <div class="upload-form-group">
+                            <label>Other Game Name *</label>
+                            <input type="text" id="homeOtherGame" placeholder="Enter game name...">
+                        </div>
+                    </div>
+
+                    <!-- ইমেইল -->
+                    <div class="upload-form-group">
+                        <label>Email Address *</label>
+                        <input type="email" id="homeEmail" placeholder="Enter email address..." required>
+                    </div>
+
+                    <!-- কন্টাক্ট টাইপ -->
+                    <div class="upload-form-group">
+                        <label>Contact Type *</label>
+                        <div class="contact-type-grid">
+                            <button type="button" class="contact-type-btn active-contact" id="contactFacebook" onclick="selectContact('facebook')">
+                                <i class="fab fa-facebook"></i> Facebook
+                            </button>
+                            <button type="button" class="contact-type-btn" id="contactGmail" onclick="selectContact('gmail')">
+                                <i class="fas fa-envelope"></i> Gmail
+                            </button>
+                            <button type="button" class="contact-type-btn" id="contactTwitter" onclick="selectContact('twitter')">
+                                <i class="fab fa-twitter"></i> Twitter
+                            </button>
+                            <button type="button" class="contact-type-btn" id="contactPhone" onclick="selectContact('phone')">
+                                <i class="fas fa-phone"></i> Phone
+                            </button>
+                        </div>
+                        <input type="hidden" id="homeContactType" value="facebook">
+                    </div>
+
+                    <!-- ফোন/ইমেইল -->
+                    <div class="upload-form-group">
+                        <label>Phone Number or Email (at least one) *</label>
+                        <input type="text" id="homeContactValue" placeholder="Enter phone number or email..." required>
+                    </div>
+
+                    <button type="submit" class="upload-btn-submit">
+                        <i class="fas fa-cloud-upload-alt"></i> PUBLISH
+                    </button>
+                </form>
             </div>
         </div>
-    </div>
 
-    <!-- UPDATE APPLICATION MODAL -->
-    <div class="modal-overlay" id="userAppEditModal">
-        <div class="play-modal" style="max-width: 550px;">
-            <div class="modal-header">
-                <h3><i class="fas fa-edit" style="color:var(--warning);"></i> Edit App</h3>
-                <i class="fas fa-times close-modal" onclick="closeUserAppEditModal()"></i>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="euAppId">
-                <input type="hidden" id="euAppStatus">
-                
-                <label class="modal-label">App Title</label>
-                <input type="text" id="euName" class="play-input">
-                
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
-                    <div>
-                        <label class="modal-label">Version</label>
-                        <input type="text" id="euVer" class="play-input">
-                    </div>
-                    <div>
-                        <label class="modal-label">Size</label>
-                        <input type="text" id="euSize" class="play-input">
-                    </div>
-                </div>
-
-                <label class="modal-label">Download Link</label>
-                <input type="text" id="euMainLink" class="play-input">
-
-                <label class="modal-label">Description</label>
-                <textarea id="euDescription" class="play-input" style="min-height:80px; resize:vertical;"></textarea>
-                
-                <button class="play-btn" style="background:var(--warning); color:#000;" onclick="submitUserAppUpdate()">SAVE</button>
-            </div>
-        </div>
-    </div>
+    </div> <!-- #mainContent END -->
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    
-    <script src="firebase-config.js"></script>
-    <script src="main.js"></script>
-    <script src="store-logic.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            if(typeof firebase !== 'undefined') {
-                firebase.auth().onAuthStateChanged((user) => {
-                    const loggedInView = document.getElementById('loggedInProfileView');
-                    const loggedOutView = document.getElementById('loggedOutLoginView');
-                    if (user) {
-                        if(loggedInView) loggedInView.style.display = 'flex';
-                        if(loggedOutView) loggedOutView.style.display = 'none';
-                    } else {
-                        if(loggedInView) loggedInView.style.display = 'none';
-                        if(loggedOutView) loggedOutView.style.display = 'flex';
-                    }
+        // ================================================================
+        // FIREBASE CONFIG
+        // ================================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyAS3UXXrio_-c9uPbHwpDuTVrP-p8d903w",
+            authDomain: "white-2k-17-v4.firebaseapp.com",
+            databaseURL: "https://white-2k-17-v4-default-rtdb.firebaseio.com",
+            projectId: "white-2k-17-v4",
+            storageBucket: "white-2k-17-v4.firebasestorage.app",
+            messagingSenderId: "180909174928",
+            appId: "1:180909174928:android:148861a87d66c6980ca815"
+        };
+        
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+        const database = firebase.database();
+        const auth = firebase.auth();
+        const DB_PATH = "MVX_VIP_SERVER_V5";
+
+        let allApps = [];
+        let searchQuery = "";
+        let targetAdminUrl = ""; 
+        let currentLoggedUser = null;
+        let displayLimit = 10;
+
+        const ADMIN_EMAIL = "sktausif771@gmail.com";
+        const IMGBB_API_KEY = "820eb9aa6a57f863045a52c1929efc9c";
+
+        // ================================================================
+        // BAN সিলেক্ট
+        // ================================================================
+        function selectBanOption(type) {
+            const noBtn = document.getElementById('banNoBtn');
+            const yesBtn = document.getElementById('banYesBtn');
+            const hiddenInput = document.getElementById('homeBanStatus');
+
+            noBtn.classList.remove('active-no-ban', 'active-ban');
+            yesBtn.classList.remove('active-no-ban', 'active-ban');
+
+            if (type === 'no') {
+                noBtn.classList.add('active-no-ban');
+                hiddenInput.value = 'no';
+            } else {
+                yesBtn.classList.add('active-ban');
+                hiddenInput.value = 'yes';
+            }
+        }
+
+        // ================================================================
+        // কন্টাক্ট টাইপ সিলেক্ট
+        // ================================================================
+        function selectContact(type) {
+            const btns = document.querySelectorAll('.contact-type-btn');
+            btns.forEach(btn => btn.classList.remove('active-contact'));
+            
+            const map = {
+                'facebook': 'contactFacebook',
+                'gmail': 'contactGmail',
+                'twitter': 'contactTwitter',
+                'phone': 'contactPhone'
+            };
+            
+            document.getElementById(map[type]).classList.add('active-contact');
+            document.getElementById('homeContactType').value = type;
+        }
+
+        // ================================================================
+        // আদারস গেম টগল
+        // ================================================================
+        function toggleOtherGame() {
+            const val = document.getElementById('homeCategory').value;
+            const box = document.getElementById('otherGameBox');
+            if (val === 'Others') {
+                box.classList.add('show');
+            } else {
+                box.classList.remove('show');
+            }
+        }
+
+        // ================================================================
+        // ইমেজ আপলোড (ImgBB)
+        // ================================================================
+        async function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const label = document.getElementById('fileLabel');
+            const preview = document.getElementById('previewImg');
+
+            label.textContent = 'Uploading...';
+            label.style.opacity = '0.5';
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                    method: 'POST',
+                    body: formData
                 });
+                const data = await res.json();
+
+                if (data.success) {
+                    const url = data.data.url;
+                    document.getElementById('homeImageUrl').value = url;
+                    preview.src = url;
+                    preview.classList.add('show');
+                    label.textContent = '✅ Image Uploaded';
+                    label.classList.add('has-image');
+                    label.style.opacity = '1';
+                } else {
+                    alert('Image upload failed!');
+                    label.textContent = '❌ Upload Failed';
+                    label.style.opacity = '1';
+                }
+            } catch (e) {
+                alert('Error uploading image!');
+                label.textContent = '❌ Error';
+                label.style.opacity = '1';
+            }
+        }
+
+        // ================================================================
+        // ফ্লোটিং বাটন ও মোডাল
+        // ================================================================
+        function toggleUploadModal() {
+            const modal = document.getElementById('uploadModal');
+            const fabBtn = document.getElementById('fabBtn');
+            
+            modal.classList.toggle('active');
+            fabBtn.classList.toggle('open');
+            
+            if (!modal.classList.contains('active')) {
+                document.getElementById('uploadForm').reset();
+                document.getElementById('previewImg').classList.remove('show');
+                document.getElementById('fileLabel').textContent = 'Choose Image';
+                document.getElementById('fileLabel').classList.remove('has-image');
+                document.getElementById('homeImageUrl').value = '';
+                document.getElementById('otherGameBox').classList.remove('show');
+                selectBanOption('no');
+                selectContact('facebook');
+            }
+        }
+
+        document.getElementById('uploadModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                toggleUploadModal();
             }
         });
 
-        function switchTab(tabName, element) {
-            document.querySelectorAll('.play-bottom-nav .nav-item').forEach(el => el.classList.remove('active'));
-            if(element) element.classList.add('active');
+        // ================================================================
+        // আপলোড (ইউজারের UID সহ)
+        // ================================================================
+        function submitAppFromHome(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('.upload-btn-submit');
+            
+            if (!currentLoggedUser) {
+                showMessage('আপনি লগইন নাই! দয়া করে লগইন করুন।', 'error');
+                toggleUploadModal();
+                setTimeout(() => { window.location.href = 'user-login.html?redirect=index.html'; }, 1500);
+                return;
+            }
 
-            const feedSection = document.getElementById('mainStoreFeed');
-            const searchSection = document.getElementById('searchTabContent');
-            const notificationSection = document.getElementById('notificationTabContent');
-            const youSection = document.getElementById('youTabContent');
+            const banStatus = document.getElementById('homeBanStatus').value;
+            const category = document.getElementById('homeCategory').value;
+            let gameCategory = category;
+            if (category === 'Others') {
+                gameCategory = document.getElementById('homeOtherGame').value.trim() || 'Others';
+            }
 
-            feedSection.style.display = 'none';
-            searchSection.style.display = 'none';
-            notificationSection.style.display = 'none';
-            youSection.style.display = 'none';
+            const imageUrl = document.getElementById('homeImageUrl').value.trim();
+            if (!imageUrl) {
+                showMessage('দয়া করে একটি ছবি আপলোড করুন!', 'error');
+                return;
+            }
 
-            if(tabName === 'files') {
-                feedSection.style.display = 'block';
-                if(typeof window.loadStoreFeed === 'function') window.loadStoreFeed('all', 'files');
-            } else if (tabName === 'mod_app') {
-                feedSection.style.display = 'block';
-                if(typeof window.loadStoreFeed === 'function') window.loadStoreFeed('all', 'mod_app');
-            } else if (tabName === 'search') {
-                searchSection.style.display = 'block';
-            } else if (tabName === 'you') {
-                youSection.style.display = 'block';
+            const data = {
+                title: document.getElementById('homeTitle').value.trim(),
+                gameCategory: gameCategory,
+                imageUrl: imageUrl,
+                email: document.getElementById('homeEmail').value.trim(),
+                contactType: document.getElementById('homeContactType').value,
+                contactValue: document.getElementById('homeContactValue').value.trim(),
+                isBanned: banStatus === 'yes' ? true : false,
+                timestamp: Date.now(),
+                isUpdated: true,
+                uid: currentLoggedUser.uid,        // ← ইউজারের UID সংরক্ষণ
+                userEmail: currentLoggedUser.email  // ← ইউজারের ইমেইল সংরক্ষণ
+            };
+
+            if (!data.title || !data.email || !data.contactValue) {
+                showMessage('সব প্রয়োজনীয় ফিল্ড পূরণ করুন!', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> UPLOADING...';
+
+            database.ref(DB_PATH).push(data)
+                .then(() => {
+                    showMessage('✅ Uploaded Successfully!');
+                    toggleUploadModal();
+                    btn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> PUBLISH';
+                    btn.disabled = false;
+                    document.getElementById('uploadForm').reset();
+                    document.getElementById('previewImg').classList.remove('show');
+                    document.getElementById('fileLabel').textContent = 'Choose Image';
+                    document.getElementById('fileLabel').classList.remove('has-image');
+                    document.getElementById('homeImageUrl').value = '';
+                    document.getElementById('otherGameBox').classList.remove('show');
+                    selectBanOption('no');
+                    selectContact('facebook');
+                })
+                .catch((error) => {
+                    showMessage('Error: ' + error.message, 'error');
+                    btn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> PUBLISH';
+                    btn.disabled = false;
+                });
+        }
+
+        // ================================================================
+        // 🔐 লগইন
+        // ================================================================
+        function loginFromOverlay() {
+            const email = document.getElementById('loginEmailOverlay').value.trim();
+            const pass = document.getElementById('loginPasswordOverlay').value.trim();
+            const errorEl = document.getElementById('loginErrorOverlay');
+            const btn = document.getElementById('loginBtnOverlay');
+
+            if (!email || !pass) {
+                errorEl.textContent = 'Please fill in all fields!';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            errorEl.style.display = 'none';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> LOGGING IN...';
+            btn.disabled = true;
+
+            auth.signInWithEmailAndPassword(email, pass)
+                .then(() => {})
+                .catch((err) => {
+                    errorEl.textContent = err.message || 'Invalid email or password!';
+                    errorEl.style.display = 'block';
+                    btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> SECURE LOGIN';
+                    btn.disabled = false;
+                });
+        }
+
+        function googleLoginOverlay() {
+            const btn = document.querySelector('.login-google-btn');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> LOADING...';
+            btn.disabled = true;
+
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider)
+                .then((result) => {
+                    db.ref('registered_users/' + result.user.uid).once('value').then(snap => {
+                        if (!snap.exists()) {
+                            db.ref('registered_users/' + result.user.uid).set({
+                                name: result.user.displayName,
+                                email: result.user.email,
+                                joinedAt: Date.now()
+                            });
+                        }
+                    });
+                })
+                .catch((err) => {
+                    document.getElementById('loginErrorOverlay').textContent = err.message || 'Google login failed!';
+                    document.getElementById('loginErrorOverlay').style.display = 'block';
+                    btn.innerHTML = '<img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" class="google-icon"> LOGIN WITH GOOGLE';
+                    btn.disabled = false;
+                });
+        }
+
+        document.getElementById('loginPasswordOverlay').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') loginFromOverlay();
+        });
+        document.getElementById('loginEmailOverlay').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') loginFromOverlay();
+        });
+
+        // ================================================================
+        // অ্যাডমিন প্যানেল
+        // ================================================================
+        function updateAdminPanelVisibility(user) {
+            const freePanel = document.getElementById('freePanelLink');
+            const ownerPanel = document.getElementById('ownerPanelLink');
+
+            if (user && user.email === ADMIN_EMAIL) {
+                freePanel.classList.remove('admin-panel-hidden');
+                ownerPanel.classList.remove('admin-panel-hidden');
+            } else {
+                freePanel.classList.add('admin-panel-hidden');
+                ownerPanel.classList.add('admin-panel-hidden');
             }
         }
 
-        function openNotificationCenter() {
-            switchTab('none', null);
-            document.querySelectorAll('.play-bottom-nav .nav-item').forEach(el => el.classList.remove('active'));
-            document.getElementById('notificationTabContent').style.display = 'block';
-            const badge = document.getElementById('notiAlert');
-            if(badge) badge.style.display = 'none';
+        // ================================================================
+        // Auth State
+        // ================================================================
+        auth.onAuthStateChanged((user) => {
+            currentLoggedUser = user;
+            const overlay = document.getElementById('loginOverlay');
+            const mainContent = document.getElementById('mainContent');
+
+            updateAdminPanelVisibility(user);
+
+            if (user) {
+                overlay.classList.add('hidden');
+                mainContent.style.display = 'block';
+                document.getElementById('sidebarUserText').innerText = "MY PROFILE";
+                loadFirebaseData();
+            } else {
+                overlay.classList.remove('hidden');
+                mainContent.style.display = 'none';
+                document.getElementById('sidebarUserText').innerText = "LOGIN / SETTINGS";
+                const btn = document.getElementById('loginBtnOverlay');
+                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> SECURE LOGIN';
+                btn.disabled = false;
+            }
+        });
+
+        // ================================================================
+        // ডিলিট ফাংশন (শুধু নিজের পোস্ট)
+        // ================================================================
+        function deletePost(postId) {
+            if (!currentLoggedUser) {
+                showMessage('লগইন করুন প্রথমে!', 'error');
+                return;
+            }
+
+            if (confirm('আপনি কি এই পোস্টটি ডিলিট করতে চান?')) {
+                database.ref(DB_PATH + '/' + postId).once('value').then(snap => {
+                    const data = snap.val();
+                    if (data && data.uid === currentLoggedUser.uid) {
+                        database.ref(DB_PATH + '/' + postId).remove()
+                            .then(() => showMessage('✅ পোস্ট ডিলিট করা হয়েছে!'))
+                            .catch(err => showMessage('Error: ' + err.message, 'error'));
+                    } else {
+                        showMessage('আপনি এই পোস্ট ডিলিট করতে পারবেন না!', 'error');
+                    }
+                });
+            }
         }
 
-        function openMyUploadsModal() {
-            document.getElementById('myUploadsModal').classList.add('active');
-            if(typeof window.fetchMyUploadedApps === 'function') window.fetchMyUploadedApps();
+        // ================================================================
+        // বাকি ফাংশন
+        // ================================================================
+        function showMessage(msg, type='success') {
+            const toast = document.getElementById('localToast');
+            document.getElementById('localToastMsg').innerText = msg;
+            toast.style.borderLeftColor = type === 'error' ? 'var(--danger)' : 'var(--primary)';
+            toast.style.display = 'flex';
+            setTimeout(() => { toast.style.display = 'none'; }, 3000);
         }
 
-        function closeUserAppEditModal() {
-            document.getElementById('userAppEditModal').classList.remove('active');
+        function timeAgo(timestamp) {
+            if (!timestamp) return "";
+            const seconds = Math.floor((Date.now() - timestamp) / 1000);
+            let interval = seconds / 86400;
+            if (interval >= 1) return Math.floor(interval) + " days ago";
+            interval = seconds / 3600;
+            if (interval >= 1) return Math.floor(interval) + " hours ago";
+            interval = seconds / 60;
+            if (interval >= 1) return Math.floor(interval) + " mins ago";
+            return "Just now";
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
+        function toggleSearch() {
+            const box = document.getElementById('searchContainer');
+            box.style.display = box.style.display === 'block' ? 'none' : 'block';
+            if(box.style.display === 'block') document.getElementById('searchInput').focus();
+        }
+
+        function checkLoginAndGoFree() {
+            if(currentLoggedUser) {
+                window.location.href = 'free-admin.html';
+            } else {
+                showMessage('লগইন ছাড়া ফ্রি এডমিনে ঢোকা নিষেধ!', 'error');
+                setTimeout(() => { window.location.href = 'user-login.html?redirect=free-admin.html'; }, 2000);
+            }
+        }
+
+        function openPassModal(url) {
+            targetAdminUrl = url;
+            document.getElementById('passModalOverlay').style.display = 'flex';
+            document.getElementById('adminPassInput').value = '';
+            document.getElementById('adminPassInput').focus();
+            toggleSidebar(); 
+        }
+
+        function closePassModal() {
+            document.getElementById('passModalOverlay').style.display = 'none';
+        }
+
+        function verifyAdminPass() {
+            const pass = document.getElementById('adminPassInput').value;
+            if (pass === "121345") {
+                sessionStorage.setItem('mvx_admin_token', 'SECURE_AUTHORIZED');
+                window.location.href = targetAdminUrl;
+            } else {
+                showMessage("Incorrect Access Code!", "error");
+                document.getElementById('adminPassInput').value = '';
+            }
+        }
+
+        document.getElementById('adminPassInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') verifyAdminPass();
+        });
+
+        function handleSearch() {
+            searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            displayLimit = 10;
+            filterAndRender();
+        }
+
+        function goToDetails(appId) {
+            window.location.href = `details.html?id=${appId}`;
+        }
+
+        function loadMoreApps() {
+            displayLimit += 10;
+            filterAndRender();
+        }
+
+        // ================================================================
+        // ডেটা লোড - শুধু লগইন করা ইউজারের পোস্ট দেখাবে
+        // ================================================================
+        function loadFirebaseData() {
+            database.ref(DB_PATH).on('value', (snap) => {
+                const data = snap.val();
+                if(!data) {
+                    document.getElementById('feedContainer').innerHTML = `<div class="empty-state"><i class="fas fa-box-open"></i><h3>No Data Available</h3></div>`;
+                    return;
+                }
+
+                // শুধু লগইন করা ইউজারের পোস্ট নিবো
+                const currentUid = currentLoggedUser ? currentLoggedUser.uid : null;
+                
+                allApps = Object.entries(data)
+                    .map(([key, val]) => ({ id: key, ...val, isHidden: val.isHidden || false }))
+                    .filter(app => {
+                        // যদি ইউজার লগইন না থাকে → কিছু দেখাবে না
+                        if (!currentUid) return false;
+                        // শুধু ঐ ইউজারের পোস্ট দেখাবে
+                        return app.uid === currentUid && !app.isHidden;
+                    })
+                    .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+                
+                filterAndRender();
+            });
+        }
+
+        // ================================================================
+        // রেন্ডার - ডিলিট বাটন সহ
+        // ================================================================
+        function filterAndRender() {
+            const feed = document.getElementById('feedContainer');
+            const loadMoreBtn = document.getElementById('loadMoreContainer');
+            feed.innerHTML = '';
+
+            let filtered = allApps;
+            if(searchQuery) filtered = filtered.filter(app => 
+                (app.title || '').toLowerCase().includes(searchQuery) ||
+                (app.gameCategory || '').toLowerCase().includes(searchQuery) ||
+                (app.email || '').toLowerCase().includes(searchQuery)
+            );
+
+            if(filtered.length === 0) {
+                feed.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><h3>No Results Found</h3></div>`;
+                loadMoreBtn.style.display = 'none';
+                return;
+            }
+
+            const appsToShow = filtered.slice(0, displayLimit);
+
+            let htmlContent = '';
+            appsToShow.forEach(app => {
+                const imageSrc = app.imageUrl || 'https://via.placeholder.com/800x450/1a1f2c/00e6b8?text=NO+IMAGE';
+                
+                let banBadge = '';
+                if (app.isBanned === true) {
+                    banBadge = `<div class="ban-badge"><i class="fas fa-ban"></i> BANNED</div>`;
+                } else {
+                    banBadge = `<div class="noban-badge"><i class="fas fa-check-circle"></i> NO BAN</div>`;
+                }
+
+                const timeString = app.timestamp ? ` • ${timeAgo(app.timestamp)}` : '';
+
+                // ডিলিট বাটন (শুধু নিজের পোস্টে)
+                const deleteBtn = (app.uid === currentLoggedUser?.uid) ? 
+                    `<button class="delete-btn" onclick="event.stopPropagation(); deletePost('${app.id}')">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>` : '';
+
+                htmlContent += `
+                    <div class="yt-card" onclick="goToDetails('${app.id}')">
+                        <div class="yt-banner-wrapper">
+                            ${banBadge}
+                            <img src="${imageSrc}" class="yt-banner" loading="lazy">
+                        </div>
+                        <div class="yt-info">
+                            <div class="yt-text">
+                                <h3 class="yt-title">${app.title || 'Untitled'}</h3>
+                                <div class="yt-meta">
+                                    ${app.gameCategory || 'N/A'} 
+                                    <span class="badge-type ${app.accessType ? app.accessType.toLowerCase() : 'free'}">${app.accessType || 'Free'}</span>
+                                    ${timeString}
+                                    <br>
+                                    <i class="fas fa-envelope" style="font-size:0.8rem;"></i> ${app.email || 'N/A'}
+                                    <br>
+                                    <i class="fas fa-phone" style="font-size:0.8rem;"></i> ${app.contactValue || 'N/A'} 
+                                    <span style="font-size:0.7rem;color:var(--text-muted);">(${app.contactType || 'N/A'})</span>
+                                    ${deleteBtn}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            feed.innerHTML = htmlContent;
+
+            if (filtered.length > displayLimit) {
+                loadMoreBtn.style.display = 'block';
+            } else {
+                loadMoreBtn.style.display = 'none';
+            }
         }
     </script>
 </body>

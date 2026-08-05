@@ -1,666 +1,689 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#121212">
-    <title>Application Details | MVX STORE</title>
+    <meta name="theme-color" content="#00e6b8">
+    <title>Post Details | MVX STORE v4.0</title>
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-
+    
     <style>
-        .details-header { display: flex; gap: 20px; align-items: center; margin-bottom: 20px; }
-        .details-logo { width: 90px; height: 90px; border-radius: 20px; object-fit: cover; border: 1px solid var(--border-color); box-shadow: var(--primary-shadow); }
-        .details-info { flex: 1; overflow: hidden; }
-        .details-title { font-family: var(--font-header); font-size: 24px; font-weight: 800; margin-bottom: 5px; color: var(--text-primary); display: flex; align-items: center; gap: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .details-dev { font-size: 14px; color: var(--primary); font-weight: 600; }
+        /* ==========================================================================
+           MVX STORE V4.0 - POST DETAILS PAGE (UPDATED)
+           ========================================================================== */
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
-        .main-action-btn { width: 100%; padding: 16px; border-radius: 14px; border: none; font-family: var(--font-header); font-size: 18px; font-weight: 800; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 25px; }
-        .main-action-btn.free { background: var(--primary); color: #000; box-shadow: var(--primary-shadow); }
-        .main-action-btn.paid { background: var(--warning); color: #000; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3); }
-        .main-action-btn.locked { background: var(--danger); color: #fff; box-shadow: 0 4px 15px rgba(255, 82, 82, 0.3); }
-        .main-action-btn:active { transform: scale(0.98); }
-
-        .about-section { margin-bottom: 30px; line-height: 1.6; font-size: 14px; color: var(--text-secondary); }
-        .about-title { font-family: var(--font-header); font-size: 18px; color: var(--text-primary); margin-bottom: 10px; font-weight: 700; }
-        
-        .extra-links-container { display: flex; flex-direction: column; gap: 10px; margin-bottom: 30px; }
-        .extra-link-btn { background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); color: var(--text-primary); padding: 12px 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; text-decoration: none; font-size: 13px; font-weight: 600; transition: 0.2s; }
-        .extra-link-btn:hover { border-color: var(--primary); color: var(--primary); transform: translateX(5px); }
-
-        .tags-display { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 30px; }
-        .tag-pill { background: var(--primary-dim); color: var(--primary); padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; border: 1px solid rgba(0,230,184,0.2); }
-
-        .back-nav { display: inline-flex; align-items: center; gap: 8px; color: var(--text-secondary); font-weight: 600; font-size: 14px; cursor: pointer; margin-bottom: 20px; text-decoration: none; transition: 0.2s; }
-        .back-nav:hover { color: var(--primary); }
-        
-        .three-dot-container { position: relative; }
-        .three-dot-btn { background: none; border: none; color: var(--text-primary); font-size: 20px; cursor: pointer; padding: 10px; }
-        .dropdown-menu { position: absolute; right: 0; top: 100%; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 10px; width: 160px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); display: none; z-index: 50; overflow: hidden; }
-        .dropdown-menu.show { display: block; animation: fadeIn 0.2s; }
-        .dropdown-item { padding: 12px 15px; font-size: 13px; color: var(--text-primary); cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: 600; }
-        .dropdown-item:hover { background: rgba(0,0,0,0.05); }
-        .dropdown-item.report-btn { color: var(--danger); border-top: 1px solid var(--border-color); }
-
-        /* Rating Details Specific Styles */
-        .rating-details-wrapper {
-            background: rgba(0,0,0,0.2);
-            border: 1px solid var(--border-color);
-            padding: 15px 20px;
-            border-radius: 16px;
-            margin-top: -15px; 
-            margin-bottom: 25px;
-            display: none; 
-            animation: fadeIn 0.3s ease-out;
+        :root {
+            --primary: #00e6b8; --primary-dim: rgba(0, 230, 184, 0.15);
+            --gold: #ffd700; --gold-dim: rgba(255, 215, 0, 0.15);
+            --danger: #ff003c; --danger-dim: rgba(255, 0, 60, 0.15);
+            --bg-void: #000000; --bg-card: #0c101a; --bg-input: #1a1f2c;
+            --text-primary: #ffffff; --text-muted: #9ca3af;
+            --glass-bg: rgba(8, 11, 18, 0.8); --glass-border: 1px solid rgba(0, 230, 184, 0.2);
+            --font-head: 'Rajdhani', sans-serif; --font-body: 'Space Grotesk', sans-serif;
         }
-        .rating-interactive { cursor: pointer; transition: color 0.2s; }
-        .rating-interactive:hover { color: var(--primary); }
+
+        body { background: var(--bg-void); color: var(--text-primary); font-family: var(--font-body); min-height: 100vh; overflow-x: hidden; }
+
+        /* Background Effects */
+        .grid-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(0, 230, 184, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 230, 184, 0.03) 1px, transparent 1px); background-size: 50px 50px; pointer-events: none; z-index: -1; }
+        .glow-orb { position: fixed; width: 50vmax; height: 50vmax; border-radius: 50%; background: radial-gradient(circle at center, rgba(0, 230, 184, 0.1) 0%, transparent 70%); filter: blur(50px); pointer-events: none; z-index: -1; top: -10vmax; right: -10vmax; }
+
+        /* Navigation Bar */
+        .navbar { position: sticky; top: 0; background: var(--glass-bg); backdrop-filter: blur(10px); border-bottom: var(--glass-border); height: 60px; display: flex; align-items: center; padding: 0 20px; z-index: 100; gap: 15px; }
+        .back-btn { background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; transition: 0.3s; }
+        .back-btn:hover { color: var(--primary); }
+        .nav-title { font-family: var(--font-head); font-size: 1.2rem; font-weight: 700; letter-spacing: 1px; }
+
+        /* Main Container */
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        
+        /* Post Header Info */
+        .post-header { display: flex; gap: 20px; align-items: center; margin-bottom: 30px; background: var(--bg-card); padding: 20px; border-radius: 16px; border: var(--glass-border); }
+        .post-image { width: 90px; height: 90px; border-radius: 20px; object-fit: cover; border: 2px solid var(--primary-dim); background: var(--bg-input); }
+        .post-info { flex: 1; }
+        .post-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 5px; color: var(--primary); }
+        .post-meta { display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.9rem; color: var(--text-muted); font-family: 'Share Tech Mono', monospace; }
+        .meta-tag { background: var(--bg-input); padding: 5px 10px; border-radius: 8px; border: 1px solid #333; display: flex; align-items: center; gap: 5px; }
+
+        /* Ban Badge */
+        .ban-badge-detail {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+        .ban-badge-detail.banned {
+            background: var(--danger);
+            color: #fff;
+            box-shadow: 0 0 20px var(--danger-dim);
+        }
+        .ban-badge-detail.noban {
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 0 20px var(--primary-dim);
+        }
+
+        /* Image Section */
+        .image-section { margin-bottom: 30px; }
+        .section-title { font-family: var(--font-head); font-size: 1.2rem; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; color: var(--text-muted); }
+        .main-image { width: 100%; border-radius: 12px; border: var(--glass-border); background: var(--bg-card); }
+
+        /* Info Section */
+        .info-section { background: var(--bg-card); padding: 25px 20px; border-radius: 16px; border: var(--glass-border); margin-bottom: 30px; }
+        .info-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #222; }
+        .info-row:last-child { border-bottom: none; }
+        .info-label { color: var(--text-muted); font-weight: 500; }
+        .info-value { color: var(--text-primary); font-weight: 600; }
+
+        /* Action Buttons */
+        .action-section { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 20px; }
+        .action-btn { padding: 12px 25px; border-radius: 10px; border: none; font-family: var(--font-head); font-size: 1rem; font-weight: 700; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .action-btn.edit { background: var(--primary); color: #000; }
+        .action-btn.edit:hover { box-shadow: 0 0 20px var(--primary-dim); transform: translateY(-2px); }
+        .action-btn.delete { background: var(--danger); color: #fff; }
+        .action-btn.delete:hover { box-shadow: 0 0 20px var(--danger-dim); transform: translateY(-2px); }
+
+        /* Toast */
+        .toast-container { position: fixed; top: 80px; right: 20px; z-index: 9999; }
+        .toast { background: var(--bg-input); border-left: 4px solid var(--primary); padding: 15px 20px; margin-bottom: 10px; border-radius: 8px; display: flex; gap: 10px; align-items: center; animation: slideIn 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.5); font-weight: 500; }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+        
+        /* Loader */
+        .loader { text-align: center; padding: 50px; color: var(--primary); font-family: var(--font-head); font-size: 1.5rem; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+
+        /* ================================================================
+           এডিট মোডাল (details পেজে)
+           ================================================================ */
+        .edit-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .edit-modal-overlay.active {
+            display: flex;
+        }
+        .edit-modal-box {
+            background: var(--bg-card);
+            border: 1px solid var(--primary);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 0 50px var(--primary-dim);
+            animation: fadeIn 0.4s ease;
+        }
+        .edit-modal-box h2 {
+            color: var(--primary);
+            font-family: var(--font-head);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        .edit-modal-box .close-edit-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            margin-left: auto;
+            transition: 0.3s;
+        }
+        .edit-modal-box .close-edit-btn:hover {
+            color: var(--danger);
+        }
+        .edit-form-group {
+            margin-bottom: 15px;
+        }
+        .edit-form-group label {
+            display: block;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        .edit-form-group input,
+        .edit-form-group select,
+        .edit-form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background: var(--bg-input);
+            border: 1px solid #333;
+            border-radius: 10px;
+            color: #fff;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+        .edit-form-group input:focus,
+        .edit-form-group select:focus,
+        .edit-form-group textarea:focus {
+            border-color: var(--primary);
+        }
+        .edit-form-group textarea {
+            min-height: 60px;
+            resize: vertical;
+        }
+
+        .edit-ban-options {
+            display: flex;
+            gap: 15px;
+            margin: 5px 0 10px 0;
+        }
+        .edit-ban-option-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 10px;
+            border: 2px solid #333;
+            background: var(--bg-input);
+            color: var(--text-muted);
+            font-family: var(--font-head);
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: center;
+        }
+        .edit-ban-option-btn.active-no-ban {
+            border-color: var(--primary);
+            background: var(--primary-dim);
+            color: var(--primary);
+        }
+        .edit-ban-option-btn.active-ban {
+            border-color: var(--danger);
+            background: var(--danger-dim);
+            color: var(--danger);
+        }
+
+        .edit-contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 5px 0 10px 0;
+        }
+        .edit-contact-btn {
+            padding: 8px;
+            border-radius: 8px;
+            border: 2px solid #333;
+            background: var(--bg-input);
+            color: var(--text-muted);
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: center;
+        }
+        .edit-contact-btn.active-contact {
+            border-color: var(--primary);
+            background: var(--primary-dim);
+            color: var(--primary);
+        }
+
+        .edit-submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary);
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            font-family: var(--font-head);
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+        .edit-submit-btn:hover {
+            box-shadow: 0 0 20px var(--primary-dim);
+            transform: translateY(-2px);
+        }
+
+        .edit-other-game-box {
+            display: none;
+            margin-top: 10px;
+        }
+        .edit-other-game-box.show {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
+    <div class="grid-overlay"></div>
+    <div class="glow-orb"></div>
+    <div class="toast-container" id="toastContainer"></div>
 
-    <header class="play-top-nav">
-        <a href="index.html" class="back-nav" style="margin-bottom:0;"><i class="fas fa-arrow-left"></i> Back to Store</a>
-        <div class="top-actions">
-            <div class="three-dot-container">
-                <button class="three-dot-btn" onclick="toggleDetailsDropdown()"><i class="fas fa-ellipsis-v"></i></button>
-                <div class="dropdown-menu" id="detailsDropdownMenu">
-                    <div class="dropdown-item" onclick="shareCurrentApp()"><i class="fas fa-share-alt"></i> Share App</div>
-                    <div class="dropdown-item report-btn" onclick="openReportModal()"><i class="fas fa-flag"></i> Report App</div>
+    <nav class="navbar">
+        <button class="back-btn" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
+        <span class="nav-title">POST DETAILS</span>
+    </nav>
+
+    <div class="container" id="mainContent">
+        <div class="loader"><i class="fas fa-circle-notch fa-spin"></i> LOADING DATA...</div>
+    </div>
+
+    <!-- ============================================================
+    এডিট মোডাল (details পেজে)
+    ============================================================ -->
+    <div class="edit-modal-overlay" id="editModal">
+        <div class="edit-modal-box">
+            <h2>
+                <i class="fas fa-edit"></i> EDIT POST
+                <button class="close-edit-btn" onclick="closeEditModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </h2>
+
+            <form id="editForm" onsubmit="submitEdit(event)">
+                <input type="hidden" id="editPostId">
+
+                <div class="edit-form-group">
+                    <label>Ban Status</label>
+                    <div class="edit-ban-options">
+                        <button type="button" class="edit-ban-option-btn active-no-ban" id="editBanNo" onclick="selectEditBan('no')">
+                            <i class="fas fa-check-circle" style="color: var(--primary);"></i> No Ban
+                        </button>
+                        <button type="button" class="edit-ban-option-btn" id="editBanYes" onclick="selectEditBan('yes')">
+                            <i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i> Ban
+                        </button>
+                    </div>
+                    <input type="hidden" id="editBanStatus" value="no">
                 </div>
-            </div>
-        </div>
-    </header>
 
-    <main class="play-main-content">
-        <div id="detailsLoader" style="text-align:center; padding:50px;">
-            <i class="fas fa-spinner fa-spin" style="font-size:35px; color:var(--primary);"></i>
-            <p style="margin-top:15px; font-weight:600; color:var(--text-secondary);">Loading Details...</p>
-        </div>
+                <div class="edit-form-group">
+                    <label>Title *</label>
+                    <input type="text" id="editTitle" required>
+                </div>
 
-        <div id="detailsContentWrapper" style="display:none; animation: fadeIn 0.4s ease-out;">
-            
-            <div class="details-header">
-                <img src="" id="dLogo" class="details-logo">
-                <div class="details-info">
-                    <h1 class="details-title" id="dTitle">Loading...</h1>
-                    <div class="details-dev" id="dDev">Developer</div>
-                    <div style="font-size: 13px; color: var(--text-secondary); margin-top: 6px; font-weight: 600; display: flex; align-items: center; gap: 6px;">
-                        <i class="fas fa-hdd" style="color:var(--success);"></i> <span id="dHeaderSize">0 MB</span>
+                <div class="edit-form-group">
+                    <label>Game Category *</label>
+                    <select id="editCategory" onchange="toggleEditOtherGame()">
+                        <option value="Free Fire">Free Fire</option>
+                        <option value="PUBG">PUBG</option>
+                        <option value="Blood Strike">Blood Strike</option>
+                        <option value="Others">Others</option>
+                    </select>
+                </div>
+
+                <div class="edit-other-game-box" id="editOtherGameBox">
+                    <div class="edit-form-group">
+                        <label>Other Game Name</label>
+                        <input type="text" id="editOtherGame" placeholder="Enter game name...">
                     </div>
                 </div>
-            </div>
 
-            <div class="meta-stats-bar" style="display: grid; grid-template-columns: repeat(3, 1fr); background: rgba(0,0,0,0.2); padding: 18px 10px; border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 25px; position: relative; z-index: 2;">
-                
-                <div class="rating-interactive" style="display: flex; flex-direction: column; align-items: center; gap: 5px; border-right: 1px solid rgba(255,255,255,0.05);" onclick="toggleRatingDetails()">
-                    <span style="font-size:16px; color:#fff; font-family:var(--font-header); font-weight:800; white-space:nowrap;" id="dRating">0.0 <i class="fas fa-star" style="font-size:12px; color:var(--warning);"></i></span>
-                    <span style="font-size:11px; color:var(--text-secondary); font-weight:600; display:flex; align-items:center; gap:4px;">Rating <i class="fas fa-chevron-down" style="font-size:9px;"></i></span>
-                </div>
-                
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; border-right: 1px solid rgba(255,255,255,0.05);">
-                    <span style="font-size:16px; color:#fff; font-family:var(--font-header); font-weight:800; white-space:nowrap;"><i class="fas fa-download" style="font-size:12px; color:var(--info); margin-right:2px;"></i> <span id="dDowns">0</span></span>
-                    <span style="font-size:11px; color:var(--text-secondary); font-weight:600;">Downloads</span>
+                <div class="edit-form-group">
+                    <label>Email Address *</label>
+                    <input type="email" id="editEmail" required>
                 </div>
 
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 5px;">
-                    <span style="font-size:13px; color:var(--primary); font-family:monospace; font-weight:800; background: rgba(0,230,184,0.1); padding: 2px 6px; border-radius: 6px; border: 1px solid rgba(0,230,184,0.3); white-space:nowrap;" id="dVerBadge">v1.0</span>
-                    <span style="font-size:11px; color:var(--text-secondary); font-weight:600;">Version</span>
+                <div class="edit-form-group">
+                    <label>Contact Type</label>
+                    <div class="edit-contact-grid">
+                        <button type="button" class="edit-contact-btn active-contact" id="editContactFacebook" onclick="selectEditContact('facebook')">
+                            <i class="fab fa-facebook"></i> Facebook
+                        </button>
+                        <button type="button" class="edit-contact-btn" id="editContactGmail" onclick="selectEditContact('gmail')">
+                            <i class="fas fa-envelope"></i> Gmail
+                        </button>
+                        <button type="button" class="edit-contact-btn" id="editContactTwitter" onclick="selectEditContact('twitter')">
+                            <i class="fab fa-twitter"></i> Twitter
+                        </button>
+                        <button type="button" class="edit-contact-btn" id="editContactPhone" onclick="selectEditContact('phone')">
+                            <i class="fas fa-phone"></i> Phone
+                        </button>
+                    </div>
+                    <input type="hidden" id="editContactType" value="facebook">
                 </div>
-            </div>
 
-            <div class="rating-details-wrapper" id="ratingDetailsBox">
+                <div class="edit-form-group">
+                    <label>Phone/Email *</label>
+                    <input type="text" id="editContactValue" required>
                 </div>
 
-            <div class="screenshot-gallery" id="dGallery" style="display:none;"></div>
-
-            <button id="mainDownloadBtn" class="main-action-btn free" onclick="handlePrimaryAppAction()">
-                <i class="fas fa-download"></i> Loading...
-            </button>
-
-            <div class="extra-links-container" id="dExtraLinks" style="display:none;"></div>
-
-            <div class="about-section">
-                <div class="about-title">About this App</div>
-                <div id="dDesc" style="white-space: pre-wrap;"></div>
-            </div>
-
-            <div class="tags-display" id="dTags" style="display:none;"></div>
-
-            <div class="user-rating-input-zone" id="ratingInputZone" style="display:none;">
-                <h4><i class="fas fa-star" style="color:var(--warning);"></i> Rate this App</h4>
-                <p style="font-size:12px; color:var(--text-secondary); margin-bottom:15px;">Share your experience with others</p>
-                <div class="rating-stars-input-container" id="starContainer">
-                    <i class="far fa-star" data-val="1"></i>
-                    <i class="far fa-star" data-val="2"></i>
-                    <i class="far fa-star" data-val="3"></i>
-                    <i class="far fa-star" data-val="4"></i>
-                    <i class="far fa-star" data-val="5"></i>
-                </div>
-                <button class="rating-confirm-btn" id="submitRatingBtn" onclick="submitAppRating()" style="margin: 20px auto 0 auto;">Submit Rating</button>
-                <p id="ratingStatusMsg" style="font-size:12px; margin-top:10px; font-weight:600;"></p>
-            </div>
-            
-        </div>
-    </main>
-
-    <div class="modal-overlay" id="reportIssueModal">
-        <div class="play-modal">
-            <div class="modal-header">
-                <h3><i class="fas fa-flag" style="color:var(--danger);"></i> Report App</h3>
-                <i class="fas fa-times close-modal" onclick="closeDetailsSystemModals('reportIssueModal')"></i>
-            </div>
-            <div class="modal-body">
-                <p style="font-size:13px; color:var(--text-secondary); margin-bottom:15px; line-height:1.5;">Please tell us why you are reporting this app.</p>
-                <select id="reportReasonSelect" class="play-input">
-                    <option value="Fake or Scam App">Fake or Scam App</option>
-                    <option value="Contains Virus/Malware">Contains Virus/Malware</option>
-                    <option value="Does Not Work">Does Not Work</option>
-                    <option value="Other Issue">Other Issue</option>
-                </select>
-                <button class="play-btn" style="background:var(--danger); color:#fff; margin-top:10px;" onclick="submitAppReportToAdmin()">Submit Report</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="premiumPurchaseConfirmModal">
-        <div class="play-modal">
-            <div class="modal-header">
-                <h3><i class="fas fa-gem" style="color:var(--warning);"></i> Premium App</h3>
-                <i class="fas fa-times close-modal" onclick="closeDetailsSystemModals('premiumPurchaseConfirmModal')"></i>
-            </div>
-            <div class="modal-body" style="text-align:center;">
-                <i class="fas fa-coins" style="font-size:50px; color:var(--warning); margin-bottom:15px;"></i>
-                <h2 style="font-family:var(--font-header); font-size:22px; color:#fff; margin-bottom:10px;" id="premiumUnlockPriceLabel">0 Coins</h2>
-                <p style="font-size:13px; color:var(--text-secondary); margin-bottom:20px; line-height:1.5;">You need to spend coins to unlock this premium app.</p>
-                <div style="display:flex; justify-content:space-between; background:rgba(0,0,0,0.2); padding:15px; border-radius:12px; border:1px solid var(--border-color); margin-bottom:20px;">
-                    <span style="font-weight:600; font-size:13px; color:var(--text-secondary);">Your Balance:</span>
-                    <span style="font-weight:800; font-size:14px; color:var(--warning);" id="userCurrentCoinBalanceLabel">0 Coins</span>
-                </div>
-                <button class="play-btn" style="background:var(--warning); color:#000;" onclick="executePremiumPurchaseTransaction()">Unlock Now</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="lockedAppGateModal">
-        <div class="play-modal">
-            <div class="modal-header">
-                <h3><i class="fas fa-lock" style="color:var(--danger);"></i> App is Locked</h3>
-                <i class="fas fa-times close-modal" onclick="closeDetailsSystemModals('lockedAppGateModal')"></i>
-            </div>
-            <div class="modal-body" style="text-align:center;">
-                <i class="fas fa-play-circle" style="font-size:50px; color:var(--danger); margin-bottom:15px;"></i>
-                <h2 style="font-family:var(--font-header); font-size:22px; color:#fff; margin-bottom:10px;">Watch Tutorial</h2>
-                <p style="font-size:13px; color:var(--text-secondary); margin-bottom:20px; line-height:1.5;">This app is locked. Please watch the tutorial video to get the redeem code. Once you have the code, go to the Profile section of the store to redeem it.</p>
-                <button class="play-btn" style="background:var(--danger); color:#fff;" onclick="openTutorialVideoLink()">
-                    <i class="fab fa-youtube"></i> Get Redeem Code
+                <button type="submit" class="edit-submit-btn">
+                    <i class="fas fa-save"></i> UPDATE POST
                 </button>
-            </div>
+            </form>
         </div>
-    </div>
-
-    <div class="lightbox-overlay" id="screenshotLightbox" onclick="closeScreenshotLightbox()" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9999; justify-content: center; align-items: center; flex-direction: column;">
-        <div style="position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 10000; transition: 0.3s;" onclick="closeScreenshotLightbox()" onmouseover="this.style.background='var(--danger)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
-            <i class="fas fa-times" style="font-size: 20px; color: #fff;"></i>
-        </div>
-        <img src="" id="lightboxImg" style="max-width: 95%; max-height: 90%; border-radius: 12px; transition: transform 0.3s ease; transform: scale(1); cursor: zoom-in;" onclick="toggleZoom(event)">
-    </div>
-
-    <div id="toastNotification" style="visibility: hidden; min-width: 250px; background-color: var(--danger); color: #fff; text-align: center; border-radius: 8px; padding: 12px; position: fixed; z-index: 10000; left: 50%; top: 80px; transform: translateX(-50%); font-size: 14px; font-weight: 600; box-shadow: 0 4px 15px rgba(0,0,0,0.4); opacity: 0; transition: opacity 0.3s, visibility 0.3s;">
-        <i class="fas fa-lock" style="margin-right: 8px;"></i> <span id="toastMessage">This app is locked.</span>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <script src="firebase-config.js"></script>
 
     <script>
+        // ================================================================
+        // FIREBASE CONFIG
+        // ================================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyAS3UXXrio_-c9uPbHwpDuTVrP-p8d903w",
+            authDomain: "white-2k-17-v4.firebaseapp.com",
+            databaseURL: "https://white-2k-17-v4-default-rtdb.firebaseio.com",
+            projectId: "white-2k-17-v4",
+            storageBucket: "white-2k-17-v4.firebasestorage.app",
+            messagingSenderId: "180909174928",
+            appId: "1:180909174928:android:148861a87d66c6980ca815"
+        };
+        
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const database = firebase.database();
         const auth = firebase.auth();
-        
-        let targetAppId = new URLSearchParams(window.location.search).get('id');
-        let targetApplicationObject = null;
-        let activeUserIdToken = null;
-        let userProfileData = null;
-        let userHasAccess = false;
-        let isZoomed = false;
-        let selectedRating = 0;
+        const DB_PATH = "MVX_VIP_SERVER_V5";
 
-        document.addEventListener('DOMContentLoaded', () => {
-            if (!targetAppId) {
-                alert("Invalid App Link.");
-                window.location.replace('index.html');
-                return;
-            }
+        const urlParams = new URLSearchParams(window.location.search);
+        const postId = urlParams.get('id');
+        let postData = null;
+        let currentUser = null;
 
-            auth.onAuthStateChanged((user) => {
-                if (user) {
-                    activeUserIdToken = user.uid;
-                    database.ref(`users/${user.uid}`).on('value', (snap) => {
-                        if(snap.exists()) {
-                            userProfileData = snap.val();
-                            document.getElementById('userCurrentCoinBalanceLabel').innerText = `${userProfileData.coins || 0} Coins`;
-                            evaluateApplicationStateLicenseOwnershipMatrix();
-                        }
-                    });
-                    if (targetApplicationObject) {
-                        checkUserRatingStatus();
-                    }
-                } else {
-                    activeUserIdToken = null;
-                    userProfileData = null;
-                    evaluateApplicationStateLicenseOwnershipMatrix();
-                    document.getElementById('ratingInputZone').style.display = 'none';
-                }
-            });
-
-            fetchAndRenderTargetApplicationData();
-        });
-
-        // Function to toggle the Rating Distribution Breakdown
-        window.toggleRatingDetails = function() {
-            const box = document.getElementById('ratingDetailsBox');
-            if (box.style.display === 'none' || box.style.display === '') {
-                box.style.display = 'block';
-            } else {
-                box.style.display = 'none';
-            }
-        };
-
-        // Function to Generate and Render Percentage Bars
-        function renderRatingDistribution(appData) {
-            const dist = appData.ratingDistribution || {1:0, 2:0, 3:0, 4:0, 5:0};
-            const total = appData.totalRatingsCount || 0;
-            let html = '';
-            
-            for(let i = 5; i >= 1; i--) {
-                const count = dist[i] || 0;
-                const pct = total > 0 ? Math.round((count / total) * 100) : 0;
-                
-                html += `
-                <div class="rating-row" style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-                    <span style="font-size: 12px; color: var(--text-secondary); width: 35px; display: flex; align-items: center; gap: 4px; font-weight: 700;">${i} <i class="fas fa-star" style="font-size:10px; color:var(--warning);"></i></span>
-                    <div style="flex: 1; height: 8px; background: rgba(255, 255, 255, 0.05); border-radius: 10px; overflow: hidden;">
-                        <div style="height: 100%; background: var(--primary); border-radius: 10px; width: ${pct}%; transition: width 0.5s ease-out;"></div>
-                    </div>
-                    <span style="font-size: 11px; color: var(--text-secondary); width: 30px; text-align: right;">${pct}%</span>
-                </div>`;
-            }
-            document.getElementById('ratingDetailsBox').innerHTML = html;
+        // ================================================================
+        // টোস্ট
+        // ================================================================
+        function showToast(msg, type='success') {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast`;
+            toast.style.borderLeftColor = type === 'error' ? 'var(--danger)' : 'var(--primary)';
+            toast.innerHTML = `<i class="fas fa-${type==='error'?'times':'check'}-circle" style="color:${type==='error'?'var(--danger)':'var(--primary)'}"></i> <span>${msg}</span>`;
+            toastContainer.appendChild(toast);
+            setTimeout(() => { toast.style.opacity = '0'; setTimeout(()=>toast.remove(), 300); }, 3000);
         }
 
-        function fetchAndRenderTargetApplicationData() {
-            database.ref(`store_apps/${targetAppId}`).once('value').then((snapshot) => {
-                if (!snapshot.exists()) {
-                    document.getElementById('detailsLoader').innerHTML = `<i class="fas fa-exclamation-triangle" style="font-size:35px; color:var(--danger);"></i><p style="margin-top:15px; font-weight:600; color:var(--text-secondary);">App not found or deleted.</p>`;
+        // ================================================================
+        // Auth State
+        // ================================================================
+        auth.onAuthStateChanged((user) => {
+            currentUser = user;
+            if (!postId) {
+                document.getElementById('mainContent').innerHTML = `<div class="loader" style="color:var(--danger)"><i class="fas fa-exclamation-triangle"></i> ERROR: POST ID NOT FOUND</div>`;
+                return;
+            }
+            loadPostData();
+        });
+
+        // ================================================================
+        // ডেটা লোড
+        // ================================================================
+        function loadPostData() {
+            database.ref(`${DB_PATH}/${postId}`).once('value').then(snapshot => {
+                if(!snapshot.exists()) {
+                    document.getElementById('mainContent').innerHTML = `<div class="loader" style="color:var(--danger)"><i class="fas fa-search-minus"></i> ERROR: POST NOT FOUND</div>`;
                     return;
                 }
-
-                targetApplicationObject = snapshot.val();
-                
-                document.getElementById('detailsLoader').style.display = 'none';
-                document.getElementById('detailsContentWrapper').style.display = 'block';
-
-                document.getElementById('dLogo').src = targetApplicationObject.logoUrl || "https://via.placeholder.com/90";
-                
-                document.getElementById('dTitle').innerHTML = `${targetApplicationObject.appName} <i class="fas fa-check-circle verified-tick" style="color:var(--primary); font-size:18px; margin-left:5px;"></i>`;
-                document.getElementById('dDev').innerText = targetApplicationObject.developerName || targetApplicationObject.uploaderName || "Unknown Developer";
-                
-                // Size is now inside the header instead of stats bar
-                document.getElementById('dHeaderSize').innerText = targetApplicationObject.size || "Unknown";
-                
-                document.getElementById('dDowns').innerText = targetApplicationObject.downloads || 0;
-                document.getElementById('dVerBadge').innerText = `v${targetApplicationObject.version || "1.0"}`;
-                
-                let ratingVal = parseFloat(targetApplicationObject.rating || 0).toFixed(1);
-                document.getElementById('dRating').innerHTML = `${ratingVal} <i class="fas fa-star" style="font-size:12px; color:var(--warning);"></i>`;
-
-                document.getElementById('dDesc').innerText = targetApplicationObject.description || "No description provided.";
-
-                // Render the Rating Distribution
-                renderRatingDistribution(targetApplicationObject);
-
-                // Gallery Render
-                if (targetApplicationObject.screenshots && targetApplicationObject.screenshots.length > 0) {
-                    const galBox = document.getElementById('dGallery');
-                    galBox.style.display = 'flex';
-                    let gHtml = '';
-                    targetApplicationObject.screenshots.forEach(sc => {
-                        gHtml += `<img src="${sc}" class="screenshot-img" onclick="openScreenshotLightbox('${sc}')">`;
-                    });
-                    galBox.innerHTML = gHtml;
-                }
-
-                // Extra Links Render
-                if (targetApplicationObject.extraLinks && targetApplicationObject.extraLinks.length > 0) {
-                    const eBox = document.getElementById('dExtraLinks');
-                    eBox.style.display = 'flex';
-                    let eHtml = '<div class="about-title" style="margin-bottom:10px;">Extra Links</div>';
-                    targetApplicationObject.extraLinks.forEach(ex => {
-                        eHtml += `<a href="${ex.url}" target="_blank" class="extra-link-btn"><span><i class="fas fa-link" style="color:var(--primary); margin-right:8px;"></i> ${ex.title}</span> <i class="fas fa-external-link-alt" style="font-size:10px; color:var(--text-secondary);"></i></a>`;
-                    });
-                    eBox.innerHTML = eHtml;
-                }
-
-                evaluateApplicationStateLicenseOwnershipMatrix();
-                
-                if (activeUserIdToken) {
-                    checkUserRatingStatus();
-                }
+                postData = snapshot.val();
+                renderPage();
+            }).catch(err => {
+                document.getElementById('mainContent').innerHTML = `<div class="loader" style="color:var(--danger)"><i class="fas fa-wifi"></i> DATABASE ERROR</div>`;
             });
         }
 
-        // ================= RATING SYSTEM LOGIC =================
-        function checkUserRatingStatus() {
-            if (!activeUserIdToken || !targetAppId) return;
+        // ================================================================
+        // রেন্ডার
+        // ================================================================
+        function renderPage() {
+            const container = document.getElementById('mainContent');
             
-            database.ref(`store_apps/${targetAppId}/ratedUsers/${activeUserIdToken}`).once('value').then(snap => {
-                const ratingZone = document.getElementById('ratingInputZone');
-                ratingZone.style.display = 'block';
-                
-                if (snap.exists()) {
-                    const userGivenRating = snap.val();
-                    ratingZone.innerHTML = `<h4 style="color:var(--success);"><i class="fas fa-check-circle"></i> Thanks for rating!</h4><p style="font-size:13px; color:var(--text-secondary); margin-top:5px;">You rated this app ${userGivenRating} stars.</p>`;
-                } else {
-                    setupStarRatingUI();
-                }
-            });
-        }
-
-        function setupStarRatingUI() {
-            const stars = document.querySelectorAll('#starContainer i');
-            stars.forEach(star => {
-                star.addEventListener('click', (e) => {
-                    selectedRating = parseInt(e.target.getAttribute('data-val'));
-                    stars.forEach(s => {
-                        if (parseInt(s.getAttribute('data-val')) <= selectedRating) {
-                            s.classList.remove('far');
-                            s.classList.add('fas', 'active');
-                        } else {
-                            s.classList.remove('fas', 'active');
-                            s.classList.add('far');
-                        }
-                    });
-                    document.getElementById('submitRatingBtn').style.display = 'block';
-                });
-            });
-        }
-
-        window.submitAppRating = function() {
-            if (!activeUserIdToken || selectedRating === 0) return;
-            const btn = document.getElementById('submitRatingBtn');
-            btn.innerText = "Submitting...";
-            btn.disabled = true;
-
-            const appRef = database.ref(`store_apps/${targetAppId}`);
-            appRef.transaction((appData) => {
-                if (appData) {
-                    if (appData.ratedUsers && appData.ratedUsers[activeUserIdToken]) {
-                        return; // Abort transaction if already rated
-                    }
-                    if (!appData.ratedUsers) appData.ratedUsers = {};
-                    appData.ratedUsers[activeUserIdToken] = selectedRating;
-
-                    let currentCount = appData.totalRatingsCount || 0;
-                    let currentAvg = parseFloat(appData.rating) || 0;
-
-                    let totalScore = currentAvg * currentCount;
-                    totalScore += selectedRating;
-                    currentCount += 1;
-
-                    appData.totalRatingsCount = currentCount;
-                    appData.rating = (totalScore / currentCount).toFixed(1);
-
-                    // Update the Rating Distribution Array Object dynamically
-                    if (!appData.ratingDistribution) appData.ratingDistribution = {1:0, 2:0, 3:0, 4:0, 5:0};
-                    appData.ratingDistribution[selectedRating] = (appData.ratingDistribution[selectedRating] || 0) + 1;
-                }
-                return appData;
-            }, (error, committed, snapshot) => {
-                if (error) {
-                    document.getElementById('ratingStatusMsg').innerText = "Error submitting rating.";
-                    document.getElementById('ratingStatusMsg').style.color = "var(--danger)";
-                    btn.innerText = "Submit Rating";
-                    btn.disabled = false;
-                } else if (committed) {
-                    document.getElementById('ratingInputZone').innerHTML = `<h4 style="color:var(--success);"><i class="fas fa-check-circle"></i> Thanks for rating!</h4><p style="font-size:13px; color:var(--text-secondary); margin-top:5px;">You rated this app ${selectedRating} stars.</p>`;
-                    
-                    const updatedData = snapshot.val();
-                    let ratingVal = parseFloat(updatedData.rating || 0).toFixed(1);
-                    document.getElementById('dRating').innerHTML = `${ratingVal} <i class="fas fa-star" style="font-size:12px; color:var(--warning);"></i>`;
-                    
-                    // Instantly re-render the distribution bars with the new percentage
-                    renderRatingDistribution(updatedData);
-                }
-            });
-        };
-        // ==========================================================
-
-        function evaluateApplicationStateLicenseOwnershipMatrix() {
-            if (!targetApplicationObject) return;
-
-            const btn = document.getElementById('mainDownloadBtn');
-            const cat = targetApplicationObject.category || 'free';
-            const price = parseInt(targetApplicationObject.coinPrice) || 0;
-
-            userHasAccess = false;
-
-            if (cat === 'free') {
-                userHasAccess = true;
-            } else {
-                if (userProfileData) {
-                    // ফিক্স করা হয়েছে: Admin হলেও Locked অ্যাপ সরাসরি আনলক হবে না (টেস্ট করার সুবিধার জন্য)
-                    if (userProfileData.role === 'owner' && cat !== 'locked') userHasAccess = true; 
-                    if (userProfileData.premium_all_access === true) userHasAccess = true;
-                    if (userProfileData.unlocked_apps && userProfileData.unlocked_apps[targetAppId] === true) userHasAccess = true;
-                }
-            }
-
-            btn.className = 'main-action-btn';
-
-            if (userHasAccess) {
-                btn.classList.add('free');
-                btn.innerHTML = `<i class="fas fa-download"></i> Download Now`;
-            } else {
-                if (cat === 'paid') {
-                    btn.classList.add('paid');
-                    btn.innerHTML = `<i class="fas fa-lock"></i> Unlock (${price} Coins)`;
-                    document.getElementById('premiumUnlockPriceLabel').innerText = `${price} Coins`;
-                } else if (cat === 'locked') {
-                    btn.classList.add('locked');
-                    btn.innerHTML = `<i class="fas fa-lock"></i> Locked`;
-                }
-            }
-        }
-
-        window.handlePrimaryAppAction = function() {
-            if (!targetApplicationObject) return;
-
-            if (!activeUserIdToken) {
-                window.location.href = 'login.html';
+            if (!postData) {
+                container.innerHTML = `<div class="loader" style="color:var(--danger)">NO DATA</div>`;
                 return;
             }
 
-            if (userHasAccess) {
-                executeSecureDownloadRegistryNodeTransaction();
+            const isOwner = currentUser && postData.uid === currentUser.uid;
+
+            // Ban Badge
+            let banBadgeHTML = '';
+            if (postData.isBanned === true) {
+                banBadgeHTML = `<span class="ban-badge-detail banned"><i class="fas fa-ban"></i> BANNED</span>`;
             } else {
-                if (targetApplicationObject.category === 'paid') {
-                    document.getElementById('premiumPurchaseConfirmModal').classList.add('active');
-                } else if (targetApplicationObject.category === 'locked') {
-                    if (targetApplicationObject.videoLink && targetApplicationObject.videoLink.trim() !== "") {
-                        document.getElementById('lockedAppGateModal').classList.add('active');
-                    } else {
-                        showToast("This app is locked");
-                    }
-                }
+                banBadgeHTML = `<span class="ban-badge-detail noban"><i class="fas fa-check-circle"></i> NO BAN</span>`;
             }
-        };
 
-        window.closeDetailsSystemModals = function(id) {
-            document.getElementById(id).classList.remove('active');
-        };
-
-        window.executePremiumPurchaseTransaction = function() {
-            const price = parseInt(targetApplicationObject.coinPrice) || 0;
-            const currentBalance = parseInt(userProfileData.coins) || 0;
-
-            if (currentBalance >= price) {
-                let updates = {};
-                updates[`users/${activeUserIdToken}/coins`] = currentBalance - price;
-                updates[`users/${activeUserIdToken}/unlocked_apps/${targetAppId}`] = true;
-
-                database.ref().update(updates).then(() => {
-                    alert("App Unlocked Successfully!");
-                    closeDetailsSystemModals('premiumPurchaseConfirmModal');
-                    evaluateApplicationStateLicenseOwnershipMatrix();
-                });
-            } else {
-                alert("Insufficient Coins! You need " + (price - currentBalance) + " more coins.");
+            // Action Buttons (শুধু মালিক দেখতে পাবে)
+            let actionHTML = '';
+            if (isOwner) {
+                actionHTML = `
+                    <div class="action-section">
+                        <button class="action-btn edit" onclick="openEditModal()">
+                            <i class="fas fa-edit"></i> EDIT POST
+                        </button>
+                        <button class="action-btn delete" onclick="deletePost()">
+                            <i class="fas fa-trash"></i> DELETE POST
+                        </button>
+                    </div>
+                `;
             }
-        };
 
-        window.openTutorialVideoLink = function() {
-            if (targetApplicationObject && targetApplicationObject.videoLink) {
-                let vLink = targetApplicationObject.videoLink.trim();
-                if (!/^https?:\/\//i.test(vLink)) vLink = 'https://' + vLink;
-                window.open(vLink, '_blank');
-            } else {
-                showToast("No video link provided by the developer.");
-            }
-        };
+            const imageSrc = postData.imageUrl || 'https://via.placeholder.com/800x450/1a1f2c/00e6b8?text=NO+IMAGE';
+            const timeStr = postData.timestamp ? new Date(postData.timestamp).toLocaleString() : 'N/A';
 
-        function executeSecureDownloadRegistryNodeTransaction() {
-            if (!activeUserIdToken) return;
-            const app = targetApplicationObject;
+            container.innerHTML = `
+                <div class="post-header">
+                    <img src="${imageSrc}" class="post-image" alt="Post Image">
+                    <div class="post-info">
+                        <h1 class="post-title">${postData.title || 'Untitled'}</h1>
+                        <div class="post-meta">
+                            <span class="meta-tag"><i class="fas fa-tag"></i> ${postData.gameCategory || 'N/A'}</span>
+                            <span class="meta-tag"><i class="fas fa-clock"></i> ${timeStr}</span>
+                            ${banBadgeHTML}
+                        </div>
+                    </div>
+                </div>
 
-            database.ref(`downloads_tracker/${targetAppId}/${activeUserIdToken}`).once('value').then((snapshot) => {
-                if (!snapshot.exists()) {
-                    let multiBatchWrite = {};
-                    multiBatchWrite[`downloads_tracker/${targetAppId}/${activeUserIdToken}`] = true;
-                    
-                    database.ref().update(multiBatchWrite).then(() => {
-                        database.ref(`store_apps/${targetAppId}/downloads`).transaction((currentDL) => {
-                            return (currentDL || 0) + 1;
-                        }).then(() => {
-                            triggerSafeExternalRedirection(app.downloadUrl);
-                        });
-                    });
-                } else {
-                    triggerSafeExternalRedirection(app.downloadUrl);
-                }
-            });
+                <div class="image-section">
+                    <div class="section-title"><i class="fas fa-image"></i> PREVIEW</div>
+                    <img src="${imageSrc}" class="main-image" alt="Post Image">
+                </div>
+
+                <div class="info-section">
+                    <div class="section-title"><i class="fas fa-info-circle"></i> DETAILS</div>
+                    <div class="info-row">
+                        <span class="info-label"><i class="fas fa-envelope"></i> Email</span>
+                        <span class="info-value">${postData.email || 'N/A'}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label"><i class="fas fa-phone"></i> Contact</span>
+                        <span class="info-value">${postData.contactValue || 'N/A'} 
+                            <span style="font-size:0.8rem;color:var(--text-muted);">(${postData.contactType || 'N/A'})</span>
+                        </span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label"><i class="fas fa-user"></i> Posted By</span>
+                        <span class="info-value">${postData.userEmail || 'Unknown'}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label"><i class="fas fa-shield-alt"></i> Status</span>
+                        <span class="info-value">${postData.isBanned === true ? '🚫 BANNED' : '✅ ACTIVE'}</span>
+                    </div>
+                </div>
+
+                ${actionHTML}
+            `;
         }
 
-        function triggerSafeExternalRedirection(url) {
-            if (!url) return;
-            let targetUrl = url.trim();
-            if (!/^https?:\/\//i.test(targetUrl)) targetUrl = 'https://' + targetUrl;
-            window.location.href = targetUrl;
-        }
-
-        window.toggleDetailsDropdown = function() {
-            document.getElementById('detailsDropdownMenu').classList.toggle('show');
-        };
-
-        document.addEventListener('click', function(event) {
-            const isClickInside = event.target.closest('.three-dot-container');
-            if (!isClickInside) {
-                const dropdowns = document.getElementsByClassName("dropdown-menu");
-                for (let i = 0; i < dropdowns.length; i++) {
-                    let openDropdown = dropdowns[i];
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
-                    }
-                }
-            }
-        });
-
-        window.shareCurrentApp = function() {
-            const url = window.location.href;
-            if (navigator.share) {
-                navigator.share({
-                    title: targetApplicationObject ? targetApplicationObject.appName : 'App Store',
-                    url: url
-                });
-            } else {
-                navigator.clipboard.writeText(url).then(() => {
-                    alert("Link copied to clipboard!");
-                });
-            }
-        };
-
-        window.openReportModal = function() {
-            if(!activeUserIdToken) {
-                window.location.href = 'login.html';
+        // ================================================================
+        // ডিলিট ফাংশন
+        // ================================================================
+        function deletePost() {
+            if (!currentUser || !postData || postData.uid !== currentUser.uid) {
+                showToast('You cannot delete this post!', 'error');
                 return;
             }
-            document.getElementById('reportIssueModal').classList.add('active');
-            document.getElementById('detailsDropdownMenu').classList.remove('show');
-        };
 
-        window.submitAppReportToAdmin = function() {
-            const reason = document.getElementById('reportReasonSelect').value;
-            if (!targetAppId || !activeUserIdToken) return;
+            if (confirm('Are you sure you want to delete this post?')) {
+                database.ref(`${DB_PATH}/${postId}`).remove()
+                    .then(() => {
+                        showToast('✅ Post deleted successfully!');
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 1000);
+                    })
+                    .catch(err => showToast('Error: ' + err.message, 'error'));
+            }
+        }
 
-            const reportPayload = {
-                appId: targetAppId,
-                appName: targetApplicationObject.appName || "Unknown",
-                reportedByUid: activeUserIdToken,
-                reportedByName: userProfileData ? userProfileData.name : "User",
-                violationReason: reason,
-                timestamp: firebase.database.ServerValue.TIMESTAMP
+        // ================================================================
+        // এডিট মোডাল
+        // ================================================================
+        function openEditModal() {
+            if (!currentUser || !postData || postData.uid !== currentUser.uid) {
+                showToast('You cannot edit this post!', 'error');
+                return;
+            }
+
+            document.getElementById('editPostId').value = postId;
+            document.getElementById('editTitle').value = postData.title || '';
+            document.getElementById('editCategory').value = postData.gameCategory || 'Free Fire';
+            document.getElementById('editEmail').value = postData.email || '';
+            document.getElementById('editContactValue').value = postData.contactValue || '';
+
+            // Ban status
+            const isBanned = postData.isBanned === true;
+            selectEditBan(isBanned ? 'yes' : 'no');
+
+            // Contact type
+            selectEditContact(postData.contactType || 'facebook');
+
+            // Other game
+            if (postData.gameCategory === 'Others') {
+                document.getElementById('editOtherGameBox').classList.add('show');
+                document.getElementById('editOtherGame').value = postData.gameCategory || '';
+            } else {
+                document.getElementById('editOtherGameBox').classList.remove('show');
+            }
+
+            document.getElementById('editModal').classList.add('active');
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').classList.remove('active');
+        }
+
+        function selectEditBan(type) {
+            const noBtn = document.getElementById('editBanNo');
+            const yesBtn = document.getElementById('editBanYes');
+            const hiddenInput = document.getElementById('editBanStatus');
+
+            noBtn.classList.remove('active-no-ban', 'active-ban');
+            yesBtn.classList.remove('active-no-ban', 'active-ban');
+
+            if (type === 'no') {
+                noBtn.classList.add('active-no-ban');
+                hiddenInput.value = 'no';
+            } else {
+                yesBtn.classList.add('active-ban');
+                hiddenInput.value = 'yes';
+            }
+        }
+
+        function selectEditContact(type) {
+            const btns = document.querySelectorAll('.edit-contact-btn');
+            btns.forEach(btn => btn.classList.remove('active-contact'));
+            
+            const map = {
+                'facebook': 'editContactFacebook',
+                'gmail': 'editContactGmail',
+                'twitter': 'editContactTwitter',
+                'phone': 'editContactPhone'
+            };
+            
+            document.getElementById(map[type]).classList.add('active-contact');
+            document.getElementById('editContactType').value = type;
+        }
+
+        function toggleEditOtherGame() {
+            const val = document.getElementById('editCategory').value;
+            const box = document.getElementById('editOtherGameBox');
+            if (val === 'Others') {
+                box.classList.add('show');
+            } else {
+                box.classList.remove('show');
+            }
+        }
+
+        // ================================================================
+        // এডিট সাবমিট
+        // ================================================================
+        function submitEdit(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('.edit-submit-btn');
+
+            const category = document.getElementById('editCategory').value;
+            let gameCategory = category;
+            if (category === 'Others') {
+                gameCategory = document.getElementById('editOtherGame').value.trim() || 'Others';
+            }
+
+            const data = {
+                title: document.getElementById('editTitle').value.trim(),
+                gameCategory: gameCategory,
+                email: document.getElementById('editEmail').value.trim(),
+                contactType: document.getElementById('editContactType').value,
+                contactValue: document.getElementById('editContactValue').value.trim(),
+                isBanned: document.getElementById('editBanStatus').value === 'yes' ? true : false,
+                isUpdated: true,
+                timestamp: Date.now()
             };
 
-            database.ref('reports').push(reportPayload).then(() => {
-                alert("Report submitted successfully. Thank you for your feedback.");
-                closeDetailsSystemModals('reportIssueModal');
-            });
-        };
-
-        window.openScreenshotLightbox = function(url) {
-            const lb = document.getElementById('screenshotLightbox');
-            const img = document.getElementById('lightboxImg');
-            img.src = url;
-            isZoomed = false;
-            img.style.transform = 'scale(1)';
-            img.style.cursor = 'zoom-in';
-            lb.style.display = 'flex';
-        };
-
-        window.closeScreenshotLightbox = function() {
-            document.getElementById('screenshotLightbox').style.display = 'none';
-        };
-
-        window.toggleZoom = function(e) {
-            e.stopPropagation(); 
-            const img = document.getElementById('lightboxImg');
-            if(isZoomed) {
-                img.style.transform = 'scale(1)';
-                img.style.cursor = 'zoom-in';
-                isZoomed = false;
-            } else {
-                img.style.transform = 'scale(2)';
-                img.style.cursor = 'zoom-out';
-                isZoomed = true;
+            if (!data.title || !data.email || !data.contactValue) {
+                showToast('Please fill all required fields!', 'error');
+                return;
             }
-        };
 
-        window.showToast = function(message) {
-            const toast = document.getElementById('toastNotification');
-            document.getElementById('toastMessage').innerText = message;
-            toast.style.visibility = 'visible';
-            toast.style.opacity = '1';
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                setTimeout(() => { toast.style.visibility = 'hidden'; }, 300);
-            }, 3000);
-        };
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> UPDATING...';
 
+            database.ref(`${DB_PATH}/${postId}`).update(data)
+                .then(() => {
+                    showToast('✅ Post updated successfully!');
+                    closeEditModal();
+                    btn.innerHTML = '<i class="fas fa-save"></i> UPDATE POST';
+                    btn.disabled = false;
+                    // রিফ্রেশ
+                    loadPostData();
+                })
+                .catch(err => {
+                    showToast('Error: ' + err.message, 'error');
+                    btn.innerHTML = '<i class="fas fa-save"></i> UPDATE POST';
+                    btn.disabled = false;
+                });
+        }
+
+        // ================================================================
+        // মোডালের বাইরে ক্লিক করলে বন্ধ
+        // ================================================================
+        document.getElementById('editModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeEditModal();
+            }
+        });
     </script>
 </body>
 </html>
