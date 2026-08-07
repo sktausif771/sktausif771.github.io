@@ -23,7 +23,7 @@ window.database = firebase.database();
 window.auth = firebase.auth();
 
 /* ==========================================================================
-   DIRECT GOOGLE LOGIN FUNCTION (PROFILE OVERWRITE BUG FIXED)
+   DIRECT GOOGLE LOGIN FUNCTION FOR LOGIN.HTML (With Coin Bonus Fix)
    ========================================================================== */
 window.startGoogleLogin = function() {
     var provider = new firebase.auth.GoogleAuthProvider();
@@ -40,42 +40,32 @@ window.startGoogleLogin = function() {
             let settings = snap.exists() ? snap.val() : {};
             let signupBonus = settings.signupBonus ? parseInt(settings.signupBonus) : 0; 
             
+            // Check database to see if user is actually new to our system
             window.database.ref(`users/${user.uid}`).once('value').then(userSnap => {
-                // Check if user already exists to prevent overwriting custom avatar/name
+                let profileUpdates = {
+                    name: user.displayName || "MVX User",
+                    email: user.email || "No Email",
+                    avatarUrl: user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.displayName || 'User'}`,
+                    lastLogin: firebase.database.ServerValue.TIMESTAMP
+                };
+
+                // If completely new user in database, grant setup fields and Coin Bonus
                 if (!userSnap.exists()) {
-                    // Completely New User
-                    let newProfile = {
-                        name: user.displayName || "MVX User",
-                        email: user.email || "No Email",
-                        avatarUrl: user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.displayName || 'User'}`,
-                        lastLogin: firebase.database.ServerValue.TIMESTAMP,
-                        coins: signupBonus,
-                        role: 'user',
-                        joinedAt: firebase.database.ServerValue.TIMESTAMP,
-                        followers: 0,
-                        following: 0
-                    };
-                    window.database.ref(`users/${user.uid}`).set(newProfile);
+                    profileUpdates.coins = signupBonus;
+                    profileUpdates.role = 'user';
+                    profileUpdates.joinedAt = firebase.database.ServerValue.TIMESTAMP;
+                    profileUpdates.followers = 0;
+                    profileUpdates.following = 0;
                 } else {
-                    // Existing User: Update login time but DO NOT overwrite name and avatarUrl
+                    // Fallback: If user exists but somehow didn't get coins initialized
                     let existingData = userSnap.val();
-                    let profileUpdates = {
-                        lastLogin: firebase.database.ServerValue.TIMESTAMP
-                    };
-                    
-                    // Only add email if it was completely missing
-                    if (!existingData.email || existingData.email === "No Email") {
-                        profileUpdates.email = user.email || "No Email";
-                    }
-                    
-                    // Fallback for coins
                     if (existingData.coins === undefined || existingData.coins === null) {
                         profileUpdates.coins = signupBonus;
                     }
-                    
-                    // Update only specific fields securely
-                    window.database.ref(`users/${user.uid}`).update(profileUpdates);
                 }
+                
+                // Update final profile data
+                window.database.ref(`users/${user.uid}`).update(profileUpdates);
             });
         });
     }).catch((error) => {
@@ -101,14 +91,10 @@ window.auth.onAuthStateChanged((user) => {
                 let userData = userSnap.val();
                 let updates = {};
 
-                // Strictly sync missing details without touching user's customized data
-                if (!userData.name || userData.name === "MVX User") {
+                // Auto-sync real name and email if it was missing previously
+                if (userData.name === "MVX User" || !userData.email || userData.email === "No Email") {
                     if (user.displayName) updates['name'] = user.displayName;
-                }
-                if (!userData.email || userData.email === "No Email") {
                     if (user.email) updates['email'] = user.email;
-                }
-                if (!userData.avatarUrl || userData.avatarUrl.includes("dicebear")) {
                     if (user.photoURL) updates['avatarUrl'] = user.photoURL;
                 }
 

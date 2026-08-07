@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const myUpBtn = document.createElement('div');
         myUpBtn.className = 'you-menu-item';
         myUpBtn.id = 'menuMyUploadsItem';
-        myUpBtn.style.display = 'none'; 
+        myUpBtn.style.display = 'none'; // Hidden by default
         myUpBtn.onclick = function() { 
             if(typeof openMyUploadsModal === 'function') openMyUploadsModal(); 
         };
@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
         menuList.insertBefore(myUpBtn, menuList.children[2] || menuList.firstChild);
     }
 
+    // Disable Top Profile Icon Click Action completely
     window.openMyUploadsIfAdmin = function() {
         return false;
     };
@@ -82,12 +83,14 @@ document.addEventListener('DOMContentLoaded', () => {
     function executeSystemInterfacePipelineUpdates() {
         if (!userProfile || !currentUser) return;
 
+        // Admin Access Checks
         const isAdmin = (userProfile.role === 'owner' || sessionStorage.getItem('mvx_role') === 'owner');
         const myUpBtn = document.getElementById('menuMyUploadsItem');
         if(myUpBtn) {
             myUpBtn.style.display = isAdmin ? 'flex' : 'none';
         }
 
+        // Fetching Real Google Account Details
         let realName = userProfile.name;
         if (!realName || realName === "MVX User") {
             realName = currentUser.displayName || "MVX User";
@@ -98,6 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
             realAvatar = currentUser.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${realName}`;
         }
 
+        // Updating UI Elements
         const tabName = document.getElementById('youTabName');
         const tabEmail = document.getElementById('youTabEmail');
         const tabAvatar = document.getElementById('youTabAvatar');
@@ -107,6 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (tabName) tabName.innerText = realName;
         if (tabEmail) tabEmail.innerText = userProfile.email || currentUser.email || "";
         
+        // Exact Coin Balance Fix
         if (coinDisplay) {
             coinDisplay.innerText = userProfile.coins !== undefined ? userProfile.coins : 0;
         }
@@ -116,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================================================
-    // 5. PLAY STORE DATA RENDERING GRID (OLD APPS FIX INCLUDED)
+    // 5. PLAY STORE DATA RENDERING GRID (LOAD BUG FIXED)
     // ==========================================================================
     window.loadStoreFeed = function(filter, contentType) {
         activeFilterType = filter || activeFilterType;
@@ -136,8 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `;
 
-        // FIXED: Removed the strict .equalTo('approved') filter so old apps show up too
-        db.ref('store_apps').once('value').then((snapshot) => {
+        db.ref('store_apps').orderByChild('status').equalTo('approved').once('value').then((snapshot) => {
             if (!snapshot.exists()) {
                 grid.innerHTML = `<div style="text-align:center; padding:50px; grid-column:1/-1; color:var(--text-secondary);">No applications live in database catalog.</div>`;
                 return;
@@ -153,19 +157,16 @@ document.addEventListener('DOMContentLoaded', () => {
             appsList.reverse();
 
             appsList.forEach((app) => {
-                let appType = app.appType || 'mod_app';
-                let appCategory = app.category || 'free';
-                
-                let matchType = (appType === activeContentType);
+                let matchType = (app.appType === activeContentType);
                 let matchFilter = false;
 
                 if (activeFilterType === 'all') matchFilter = true;
-                if (activeFilterType === 'premium' && appCategory === 'paid') matchFilter = true;
+                if (activeFilterType === 'premium' && app.category === 'paid') matchFilter = true;
                 if (activeFilterType === 'trending' && app.isTrending === true) matchFilter = true;
 
                 if (matchType && matchFilter) {
-                    const priceLabel = appCategory === 'paid' ? `${app.coinPrice || 0} Coins` : (appCategory === 'locked' ? 'LOCKED' : 'FREE');
-                    const badgeClass = appCategory === 'paid' ? 'badge-paid' : (appCategory === 'locked' ? 'badge-locked' : 'badge-free');
+                    const priceLabel = app.category === 'paid' ? `${app.coinPrice || 0} Coins` : (app.category === 'locked' ? 'LOCKED' : 'FREE');
+                    const badgeClass = app.category === 'paid' ? 'badge-paid' : (app.category === 'locked' ? 'badge-locked' : 'badge-free');
 
                     html += `
                         <div class="app-card" onclick="window.location.href='details.html?id=${app.id}'">
@@ -196,6 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // AUTO LOAD APPS ON START
     setTimeout(() => {
         if(typeof window.loadStoreFeed === 'function') {
             window.loadStoreFeed('all', 'mod_app');
@@ -203,13 +205,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 200);
 
     // ==========================================================================
-    // 6. SMART TAGS ENGINE
+    // 6. SMART TAGS FIELD ARRAY CONTROLLER CONTEXT
     // ==========================================================================
     let uploadedTagsList = [];
     
-    window.initializeTagsInputEngine = function() {
+    function initializeTagsInputEngine() {
         const input = document.getElementById('tagInputField');
-        if(!input) return;
+        const container = document.getElementById('tagsInputContainer');
+        if(!input || !container) return;
+
+        uploadedTagsList = []; 
 
         input.addEventListener('keydown', (e) => {
             if (e.key === ',' || e.key === 'Enter') {
@@ -218,26 +223,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (tag && !uploadedTagsList.includes(tag)) {
                     uploadedTagsList.push(tag);
                     renderTagsChipsInsideInputBox();
-                    if (typeof generateAutoTags === 'function') generateAutoTags(); 
                 }
                 input.value = '';
             }
         });
-        renderTagsChipsInsideInputBox();
     }
 
     function renderTagsChipsInsideInputBox() {
         const container = document.getElementById('tagsInputContainer');
         const input = document.getElementById('tagInputField');
-        if(!container || !input) return;
+        if(!container) return;
 
         container.querySelectorAll('.tag-chip').forEach(chip => chip.remove());
 
         uploadedTagsList.forEach((tag, index) => {
             let chip = document.createElement('span');
             chip.className = 'tag-chip';
-            chip.style.cssText = 'background:rgba(0,230,184,0.1); color:var(--primary); border:1px solid var(--primary); padding:4px 10px; border-radius:6px; font-size:11px; display:flex; align-items:center; gap:5px;';
-            chip.innerHTML = `${tag} <i class="fas fa-times" style="cursor:pointer;" onclick="removeSelectedTagChip(${index})"></i>`;
+            chip.innerHTML = `${tag} <i class="fas fa-times" onclick="removeSelectedTagChip(${index})"></i>`;
             container.insertBefore(chip, input);
         });
     }
@@ -245,225 +247,174 @@ document.addEventListener('DOMContentLoaded', () => {
     window.removeSelectedTagChip = function(index) {
         uploadedTagsList.splice(index, 1);
         renderTagsChipsInsideInputBox();
-        if (typeof generateAutoTags === 'function') generateAutoTags(); 
     };
 
-    window.generateAutoTags = function() {
-        const nameInput = document.getElementById('pName');
-        const container = document.getElementById('suggestedTagsContainer');
-        if(!container || !nameInput) return;
-        
-        const nameStr = nameInput.value.trim().toLowerCase();
-        if(!nameStr) { container.innerHTML = ''; return; }
-        
-        let words = nameStr.split(' ').filter(w => w.length > 1);
-        let suggestions = new Set([...words, nameStr.replace(/\s+/g, ''), 'mod', 'apk', 'premium', 'free']);
-        
-        let html = '<div style="font-size:11px; color:var(--text-secondary); width:100%; margin-bottom:5px;">Suggested Tags:</div>';
-        let hasSuggestions = false;
-        
-        suggestions.forEach(tag => {
-            if(!uploadedTagsList.includes(tag)) {
-                hasSuggestions = true;
-                html += `<span style="cursor:pointer; background:rgba(0,230,184,0.1); border:1px dashed var(--primary); margin-bottom:5px; padding:4px 10px; border-radius:6px; font-size:11px; color:var(--primary); display:inline-flex; align-items:center; gap:5px;" onclick="addSuggestedTag('${tag}')">${tag} <i class="fas fa-plus"></i></span>&nbsp;`;
-            }
-        });
-        container.innerHTML = hasSuggestions ? html : '';
-    };
-
-    window.addSuggestedTag = function(tag) {
-        if(!uploadedTagsList.includes(tag)) {
-            uploadedTagsList.push(tag);
-            renderTagsChipsInsideInputBox();
-            generateAutoTags();
-        }
-    };
-
-    // ==========================================================================
-    // 7. UNIFIED ADMIN-STYLE APP FORM GENERATOR (UPLOAD & EDIT)
-    // ==========================================================================
     let uploadedScreenshotsList = [];
-    let currentEditingAppId = null;
-    let currentEditingNode = null;
 
+    // ==========================================================================
+    // 7. MASTER PLAY STORE APPLICATION PUBLISH MODAL FORM LAYOUT
+    // ==========================================================================
     window.openUploadModal = function() {
-        if (!currentUser) { window.location.href = 'login.html'; return; }
-        openAppFormModal('upload', {});
-    };
-
-    window.openUserAppEdit = function(appId, node) {
-        db.ref(`${node}/${appId}`).once('value').then(snap => {
-            if (!snap.exists()) return;
-            const app = snap.val();
-            app.id = appId;
-            app.node = node;
-            openAppFormModal('edit', app);
-        });
-    };
-
-    function openAppFormModal(mode, appData = {}) {
-        const oldModal = document.getElementById('dynamicAppFormModal');
-        if(oldModal) oldModal.remove();
+        if (!currentUser) {
+            window.location.href = 'login.html';
+            return;
+        }
 
         const isMasterOwner = (userProfile && userProfile.role === 'owner');
-        const isEdit = (mode === 'edit');
+        uploadedScreenshotsList = []; 
 
-        uploadedScreenshotsList = isEdit && appData.screenshots ? [...appData.screenshots] : [];
-        uploadedTagsList = isEdit && appData.tags ? [...appData.tags] : [];
-        currentEditingAppId = isEdit ? appData.id : null;
-        currentEditingNode = isEdit ? appData.node : null;
-
-        const aCat = appData.category || 'free';
-        let categoryOptionsHTML = `<option value="free" ${aCat==='free'?'selected':''}>Free</option>`;
+        let categoryOptionsHTML = `<option value="free">Free</option>`;
         if (isMasterOwner) {
-            categoryOptionsHTML += `<option value="paid" ${aCat==='paid'?'selected':''}>Premium</option>`;
-            categoryOptionsHTML += `<option value="locked" ${aCat==='locked'?'selected':''}>Locked</option>`;
+            categoryOptionsHTML += `<option value="paid">Premium</option>`;
+            categoryOptionsHTML += `<option value="locked">Locked</option>`;
         }
 
-        const modalHTML = `
-            <div id="dynamicAppFormModal" class="modal-overlay active" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(5px); display:flex; justify-content:center; align-items:center; z-index:2000;">
-                <div class="play-modal" style="width:95%; max-width:650px; background:var(--bg-surface); border:1px solid var(--border-color); border-radius:16px; max-height:90vh; display:flex; flex-direction:column; box-shadow:0 10px 40px rgba(0,0,0,0.7);">
-                    <div class="modal-header" style="padding:20px; background:rgba(255,255,255,0.02); border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
-                        <h3 style="color:#fff; font-family:'Orbitron', sans-serif; font-size:16px; margin:0;"><i class="${isEdit ? 'fas fa-edit' : 'fas fa-upload'}" style="color:var(--primary); margin-right:8px;"></i> ${isEdit ? 'Edit Application' : 'Upload New App'}</h3>
-                        <i class="fas fa-times close-modal" onclick="document.getElementById('dynamicAppFormModal').remove()" style="color:var(--text-secondary); cursor:pointer; font-size:20px;"></i>
+        let encodingMethodsHTML = `<option value="imgbb">ImgBB Upload</option>`;
+        if (isMasterOwner) {
+            encodingMethodsHTML += `<option value="base64">Base64 Code</option>`;
+        }
+
+        let uploadModal = document.createElement('div');
+        uploadModal.id = 'dynamicUploadModal';
+        uploadModal.className = 'modal-overlay active';
+        uploadModal.innerHTML = `
+            <div class="play-modal" style="max-width: 550px;">
+                <div class="modal-header">
+                    <h3><i class="fas fa-upload" style="color:var(--primary);"></i> Upload New App</h3>
+                    <i class="fas fa-times close-modal" onclick="document.getElementById('dynamicUploadModal').remove()"></i>
+                </div>
+                <div class="modal-body">
+                    
+                    <label class="modal-label">App Name</label>
+                    <input type="text" id="pName" class="play-input" placeholder="Enter app name">
+
+                    <label class="modal-label">Developer Name</label>
+                    <input type="text" id="pDevName" class="play-input" placeholder="e.g. Tausif Modz V3">
+
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                        <div>
+                            <label class="modal-label">Version</label>
+                            <input type="text" id="pVer" class="play-input" placeholder="e.g. 1.0">
+                        </div>
+                        <div>
+                            <label class="modal-label">Size</label>
+                            <input type="text" id="pSize" class="play-input" placeholder="e.g. 45 MB">
+                        </div>
                     </div>
-                    <div class="modal-body" style="padding:25px; overflow-y:auto;">
+
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                        <div>
+                            <label class="modal-label">Select Tab</label>
+                            <select id="pType" class="play-input">
+                                <option value="mod_app">Mod App Tab</option>
+                                <option value="files">Files Tab</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="modal-label">Access Type</label>
+                            <select id="pCat" class="play-input" onchange="toggleAccessTypeInputs(this.value)">
+                                ${categoryOptionsHTML}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="coinPriceWrapper" style="display:none;">
+                        <label class="modal-label" style="color:var(--warning);">Coin Price</label>
+                        <input type="number" id="pCoinPrice" class="play-input" placeholder="0" value="0">
+                    </div>
+
+                    <div id="videoLinkWrapper" style="display:none; margin-bottom: 15px;">
+                        <label class="modal-label" style="color:var(--danger);">Unlock Video Link</label>
+                        <input type="text" id="pVideoLink" class="play-input" placeholder="Paste YouTube/Tutorial link here" style="margin-bottom: 0;">
+                    </div>
+
+                    <div style="display:flex; gap:20px; margin-bottom:20px; background: rgba(255,255,255,0.02); padding: 15px; border-radius: 10px; border: 1px solid var(--border-color);">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" id="pTrendingCheck" style="width: 16px; height: 16px; cursor: pointer;">
+                            <span style="font-size: 13px; color: var(--text-primary);">Trending Status</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" id="pPushNotificationCheck" style="width: 16px; height: 16px; cursor: pointer;">
+                            <span style="font-size: 13px; color: var(--success);">Send Notification</span>
+                        </div>
+                    </div>
+
+                    <hr style="border:0; border-top:1px solid var(--border-color); margin:15px 0;">
+
+                    <div style="display:grid; grid-template-columns: 1fr; gap:15px;">
+                        <div>
+                            <label class="modal-label" style="color:var(--primary);">App Logo</label>
+                            <select id="logoMethod" class="play-input" onchange="toggleUploadMethodInputsStructure('logo', this.value)" style="margin-bottom:10px;">
+                                ${encodingMethodsHTML}
+                            </select>
+                            <div id="logoFileBox">
+                                <input type="file" id="logoFile" class="play-input" accept="image/*" style="padding:10px; margin-bottom:5px;">
+                            </div>
+                            <img id="logoPreviewImg" class="preview-thumbnail" alt="Preview" style="max-width:60px; border-radius:8px; display:none; margin-bottom:10px;">
+                            <input type="hidden" id="logoUrlOutput">
+                            <p id="logoProcessStatus" style="font-size:11px; color:var(--warning); margin-bottom:10px;"></p>
+                        </div>
                         
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom: 15px;">
-                            <div>
-                                <label style="font-size:11px; color:var(--text-secondary); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">App Title</label>
-                                <input type="text" id="pName" placeholder="Enter app name" value="${appData.appName || ''}" onkeyup="generateAutoTags()" style="width:100%; padding:12px 15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; font-size:14px; outline:none;">
-                            </div>
-                            <div>
-                                <label style="font-size:11px; color:var(--text-secondary); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">Developer</label>
-                                <input type="text" id="pDevName" placeholder="e.g. MVX Dev" value="${appData.developerName || appData.uploaderName || ''}" style="width:100%; padding:12px 15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; font-size:14px; outline:none;">
+                        <div>
+                            <label class="modal-label" style="color:var(--primary);">Screenshots (Max 5)</label>
+                            <div style="background: rgba(255,255,255,0.02); padding: 10px; border-radius: 10px; border: 1px solid var(--border-color);">
+                                <input type="file" id="screenshotFileBtn" class="play-input" accept="image/*" style="padding:10px; margin-bottom:5px;">
+                                <div class="screenshot-preview-container" id="screenshotPreviewWrapper"></div>
+                                <p id="screenshotProcessStatus" style="font-size:11px; color:var(--warning);"></p>
                             </div>
                         </div>
-
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom: 15px;">
-                            <div>
-                                <label style="font-size:11px; color:var(--text-secondary); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">Version</label>
-                                <input type="text" id="pVer" placeholder="e.g. 1.0" value="${appData.version || ''}" style="width:100%; padding:12px 15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; font-size:14px; outline:none;">
-                            </div>
-                            <div>
-                                <label style="font-size:11px; color:var(--text-secondary); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">Size</label>
-                                <input type="text" id="pSize" placeholder="e.g. 45 MB" value="${appData.size || ''}" style="width:100%; padding:12px 15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; font-size:14px; outline:none;">
-                            </div>
-                        </div>
-
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom: 15px;">
-                            <div>
-                                <label style="font-size:11px; color:var(--text-secondary); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">Select Tab</label>
-                                <select id="pType" style="width:100%; padding:12px 15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; font-size:14px; outline:none;">
-                                    <option value="mod_app" ${(appData.appType==='mod_app'||!appData.appType)?'selected':''}>Mod App Tab</option>
-                                    <option value="files" ${(appData.appType==='files')?'selected':''}>Files Tab</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label style="font-size:11px; color:var(--text-secondary); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">Access Type</label>
-                                <select id="pCat" onchange="toggleAccessTypeInputs(this.value)" style="width:100%; padding:12px 15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; font-size:14px; outline:none;">
-                                    ${categoryOptionsHTML}
-                                </select>
-                            </div>
-                        </div>
-
-                        <div id="coinPriceWrapper" style="display:${aCat==='paid'?'block':'none'}; margin-bottom: 15px;">
-                            <label style="font-size:11px; color:var(--warning); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">Coin Price</label>
-                            <input type="number" id="pCoinPrice" placeholder="0" value="${appData.coinPrice || 0}" style="width:100%; padding:12px 15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; font-size:14px; outline:none;">
-                        </div>
-
-                        <div id="videoLinkWrapper" style="display:${aCat==='locked'?'block':'none'}; margin-bottom: 15px;">
-                            <label style="font-size:11px; color:var(--danger); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">Unlock Video Link</label>
-                            <input type="text" id="pVideoLink" placeholder="Paste YouTube/Tutorial link here" value="${appData.videoLink || ''}" style="width:100%; padding:12px 15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; font-size:14px; outline:none;">
-                        </div>
-
-                        <div style="display:flex; align-items: center; gap: 20px; margin-bottom: 20px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; border: 1px dashed var(--border-color);">
-                            <div style="display:flex; align-items:center; gap:8px;">
-                                <input type="checkbox" id="pTrendingCheck" style="width:16px; height:16px; accent-color:var(--primary); cursor:pointer;" ${appData.isTrending?'checked':''}>
-                                <label for="pTrendingCheck" style="color:#fff; font-size:13px; cursor:pointer;">Trending Status</label>
-                            </div>
-                            <div style="display:flex; align-items:center; gap:8px;">
-                                <input type="checkbox" id="pPushNotificationCheck" style="width:16px; height:16px; accent-color:var(--primary); cursor:pointer;" ${appData.sendNotification?'checked':''}>
-                                <label for="pPushNotificationCheck" style="color:var(--success); font-size:13px; cursor:pointer;">Send Notification</label>
-                            </div>
-                        </div>
-
-                        <div style="margin-bottom: 20px; text-align: center; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color);">
-                            <label style="font-size:11px; color:var(--primary); text-transform:uppercase; font-weight:600; margin-bottom:10px; display:block; text-align:left;">App Logo</label>
-                            <div style="position:relative; display:inline-block;">
-                                <img id="logoPreviewImg" src="${appData.logoUrl || ''}" style="width:80px; height:80px; border-radius:12px; object-fit:cover; border:2px solid var(--border-color); background:rgba(0,0,0,0.4); display: ${appData.logoUrl ? 'block' : 'none'};">
-                                <div id="logoPlaceholder" style="width:80px; height:80px; border-radius:12px; border:2px dashed var(--primary); background:rgba(0,230,184,0.05); display:${appData.logoUrl ? 'none' : 'flex'}; align-items:center; justify-content:center; color:var(--primary); font-size:24px; cursor:pointer;"><i class="fas fa-plus"></i></div>
-                                
-                                <label for="logoFile" style="position:absolute; bottom:-5px; right:-5px; background:var(--primary); width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#000; box-shadow:0 2px 10px rgba(0,0,0,0.5); transition:0.2s;">
-                                    <i class="fas fa-plus" style="font-size:12px;"></i>
-                                </label>
-                                <input type="file" id="logoFile" accept="image/*" style="display:none;">
-                                <input type="hidden" id="logoUrlOutput" value="${appData.logoUrl || ''}">
-                            </div>
-                            <p id="logoProcessStatus" style="font-size:11px; color:var(--warning); margin-top:10px; font-family:monospace;"></p>
-                        </div>
-
-                        <label style="font-size:11px; color:var(--primary); text-transform:uppercase; font-weight:600; margin-bottom:8px; display:block;">Screenshots (Max 5)</label>
-                        <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom:20px;">
-                            <div id="screenshotPreviewWrapper" style="display:flex; gap:12px; overflow-x:auto; padding-bottom:8px; align-items:center;">
-                                <label id="scUploadLabel" for="screenshotFileBtn" style="width:70px; height:110px; border-radius:12px; border:2px dashed var(--primary); background:rgba(0,230,184,0.05); display:flex; justify-content:center; align-items:center; cursor:pointer; color:var(--primary); font-size:24px; flex-shrink:0;">
-                                    <i class="fas fa-plus"></i>
-                                </label>
-                            </div>
-                            <input type="file" id="screenshotFileBtn" accept="image/*" style="display:none;">
-                            <p id="screenshotProcessStatus" style="font-size:11px; color:var(--warning); margin-top:5px; font-family:monospace;"></p>
-                        </div>
-
-                        <label style="font-size:11px; color:var(--primary); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">Main Download Link</label>
-                        <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 15px;">
-                            <input type="text" id="pMainLinkUrl" placeholder="Paste main download URL here..." value="${appData.downloadUrl || ''}" style="width:100%; padding:12px 15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; font-size:14px; outline:none; margin-bottom:0;">
-                        </div>
-
-                        <label style="font-size:11px; color:var(--primary); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">Extra Links (Max 5)</label>
-                        <div id="dynamicLinksContainer" style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 10px; display: flex; flex-direction: column;">
-                            </div>
-                        <button id="addMoreLinkBtn" style="background:transparent; border:1px dashed var(--primary); color:var(--primary); padding:10px; font-size:13px; margin-bottom:20px; border-radius:8px; cursor:pointer; width:100%; transition:0.2s;" onclick="addNewLinkRow()"><i class="fas fa-plus"></i> Add Link</button>
-
-                        <label style="font-size:11px; color:var(--text-secondary); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">Search Tags (Comma separated)</label>
-                        <div id="suggestedTagsContainer" style="display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px;"></div>
-                        <div id="tagsInputContainer" style="display:flex; flex-wrap:wrap; gap:8px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); padding:10px; border-radius:8px; margin-bottom:15px; min-height:45px;">
-                            <input type="text" id="tagInputField" style="border:none; background:transparent; color:#fff; outline:none; flex:1; min-width:100px; font-size:13px;" placeholder="Add tags...">
-                        </div>
-
-                        <label style="font-size:11px; color:var(--text-secondary); text-transform:uppercase; font-weight:600; margin-bottom:6px; display:block;">Description</label>
-                        <textarea id="pDescription" placeholder="App description & details..." style="width:100%; padding:15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; font-size:14px; outline:none; min-height:90px; resize:vertical; line-height:1.5; margin-bottom:20px;">${appData.description || ''}</textarea>
-
-                        <button id="executePublishBtn" onclick="submitAppFormData('${mode}')" style="background:linear-gradient(135deg, var(--warning), #FF8F00); color:#000; padding:15px; font-size:16px; border-radius:12px; font-family:'Orbitron', sans-serif; font-weight:800; letter-spacing:1px; width:100%; cursor:pointer; border:none; transition:0.2s;">
-                            <i class="${isEdit ? 'fas fa-save' : 'fas fa-cloud-upload-alt'}"></i> ${isEdit ? 'SAVE CHANGES' : 'UPLOAD APP'}
-                        </button>
                     </div>
+
+                    <hr style="border:0; border-top:1px solid var(--border-color); margin:15px 0;">
+
+                    <label class="modal-label">Main Download Link</label>
+                    <input type="text" id="pMainLink" class="play-input" placeholder="Paste URL here">
+
+                    <label class="modal-label" style="color: var(--warning);">Extra Links (Up to 3)</label>
+                    <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 20px; display: flex; flex-direction: column; gap: 12px;" id="extraLinksInputContainer">
+                        <div style="display:flex; gap:10px;">
+                            <input type="text" class="play-input ex-link-title" placeholder="Title 1" style="margin-bottom:0; flex:1;">
+                            <input type="text" class="play-input ex-link-url" placeholder="URL 1" style="margin-bottom:0; flex:2;">
+                        </div>
+                        <div style="display:flex; gap:10px;">
+                            <input type="text" class="play-input ex-link-title" placeholder="Title 2" style="margin-bottom:0; flex:1;">
+                            <input type="text" class="play-input ex-link-url" placeholder="URL 2" style="margin-bottom:0; flex:2;">
+                        </div>
+                        <div style="display:flex; gap:10px;">
+                            <input type="text" class="play-input ex-link-title" placeholder="Title 3" style="margin-bottom:0; flex:1;">
+                            <input type="text" class="play-input ex-link-url" placeholder="URL 3" style="margin-bottom:0; flex:2;">
+                        </div>
+                    </div>
+
+                    <label class="modal-label">Search Tags (Comma separated)</label>
+                    <div class="tags-container" id="tagsInputContainer" style="padding: 8px;">
+                        <input type="text" id="tagInputField" class="tag-input-field" placeholder="Add tags..." style="padding: 5px;">
+                    </div>
+
+                    <label class="modal-label">Description</label>
+                    <textarea id="pDescription" class="play-input" placeholder="App description & details..." style="min-height:80px; resize:vertical;"></textarea>
+
+                    <button class="play-btn" id="executePublishBtn" onclick="commitPackageToPendingDatabaseNode()">UPLOAD APP</button>
                 </div>
             </div>
         `;
-        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        document.body.appendChild(uploadModal);
 
         initializeTagsInputEngine();
-        renderScreenshotsUI();
 
-        const linkContainer = document.getElementById('dynamicLinksContainer');
-        linkContainer.innerHTML = '';
-        
-        if (appData.extraLinks && Array.isArray(appData.extraLinks)) {
-            appData.extraLinks.forEach(link => { 
-                if(link.url !== appData.downloadUrl) { addNewLinkRow(link.title, link.url); }
-            });
-        }
+        document.getElementById('logoFile').addEventListener('change', (e) => {
+            executeBinaryAssetProcessingStream(e.target.files[0], 'logoMethod', 'logoUrlOutput', 'logoProcessStatus', 'logoPreviewImg');
+        });
 
-        document.getElementById('logoFile').addEventListener('change', (e) => processLogoUploadAction(e.target.files[0]));
-        document.getElementById('screenshotFileBtn').addEventListener('change', (e) => processScreenshotUploadAction(e.target.files[0]));
-        
-        const placeholder = document.getElementById('logoPlaceholder');
-        if(placeholder) {
-            placeholder.addEventListener('click', () => {
-                document.getElementById('logoFile').click();
-            });
-        }
-    }
+        document.getElementById('screenshotFileBtn').addEventListener('change', (e) => {
+            if (uploadedScreenshotsList.length >= 5) {
+                alert("Upload Limit Reached: Maximum of 5 gallery screenshots allocated.");
+                e.target.value = '';
+                return;
+            }
+            executeGalleryScreenshotUploadProcessingStream(e.target.files[0]);
+        });
+    };
 
     window.toggleAccessTypeInputs = function(value) {
         const coinWrap = document.getElementById('coinPriceWrapper');
@@ -472,177 +423,208 @@ document.addEventListener('DOMContentLoaded', () => {
         if(vidWrap) vidWrap.style.display = (value === 'locked') ? 'block' : 'none';
     };
 
-    window.addNewLinkRow = function(title = '', url = '') {
-        const container = document.getElementById('dynamicLinksContainer');
-        const rows = container.querySelectorAll('.dynamic-link-row').length;
-        if (rows >= 5) { alert("Maximum 5 links allowed."); return; }
-        
-        const newRow = document.createElement('div');
-        newRow.className = 'dynamic-link-row';
-        newRow.style.cssText = 'display:flex; gap:10px; margin-top:12px;';
-        newRow.innerHTML = `
-            <input type="text" class="ex-link-title" placeholder="Title (e.g. Server 1)" value="${title}" style="flex:1; padding:12px 15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; outline:none; font-size:13px;">
-            <input type="text" class="ex-link-url" placeholder="Download Link URL" value="${url}" style="flex:2; padding:12px 15px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:#fff; outline:none; font-size:13px;">
-        `;
-        container.appendChild(newRow);
-        if (rows + 1 >= 5) { document.getElementById('addMoreLinkBtn').style.display = 'none'; }
+    window.toggleUploadMethodInputsStructure = function(type, method) {
+        const output = document.getElementById(`${type}UrlOutput`);
+        const fileBox = document.getElementById(`${type}FileBox`);
+        const preview = document.getElementById(`${type}PreviewImg`);
+
+        if (method === 'base64') {
+            if(fileBox) fileBox.style.display = 'none';
+            if(preview) preview.style.display = 'none';
+            output.type = 'text';
+            output.className = 'play-input';
+            output.placeholder = "Paste Base64 code...";
+        } else {
+            if(fileBox) fileBox.style.display = 'block';
+            output.type = 'hidden';
+            output.placeholder = "";
+        }
+        output.value = '';
     };
 
     // ==========================================================================
-    // 8. CUSTOM UI IMAGE UPLOAD HANDLERS
+    // 8. CORE BINARY CONVERTER & CLOUD API ENGINE
     // ==========================================================================
-    window.processLogoUploadAction = function(file) {
-        if(!file) return;
-        const status = document.getElementById('logoProcessStatus');
-        status.innerText = "Uploading Logo...";
+    function executeBinaryAssetProcessingStream(file, methodSelectId, outputInputId, statusParaId, previewImgId) {
+        if (!file) return;
+
+        const method = document.getElementById(methodSelectId).value;
+        const output = document.getElementById(outputInputId);
+        const status = document.getElementById(statusParaId);
+        const preview = document.getElementById(previewImgId);
+
+        status.innerText = "Processing...";
         status.style.color = "var(--warning)";
-        
-        const formData = new FormData();
-        formData.append("image", file);
-        
-        fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: formData })
-        .then(res => res.json()).then(json => {
-            if (json.success) {
-                document.getElementById('logoUrlOutput').value = json.data.url;
-                document.getElementById('logoPlaceholder').style.display = 'none';
-                const previewImg = document.getElementById('logoPreviewImg');
-                previewImg.src = json.data.url;
-                previewImg.style.display = 'block';
-                status.innerText = "Logo Added Successfully!";
-                status.style.color = "var(--success)";
-                setTimeout(()=> status.innerText='', 3000);
-            } else { status.innerText = "Logo Upload failed."; status.style.color = "var(--danger)"; }
-            document.getElementById('logoFile').value = '';
-        }).catch(() => { status.innerText = "Network error."; status.style.color = "var(--danger)"; });
-    };
 
-    window.processScreenshotUploadAction = function(file) {
+        if (method === 'base64') {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                output.value = e.target.result;
+                status.innerText = "Base64 Success!";
+                status.style.color = "var(--success)";
+                if(preview) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+            };
+            reader.readAsDataURL(file);
+        } else {
+            const formData = new FormData();
+            formData.append("image", file);
+
+            fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                method: "POST",
+                body: formData
+            })
+            .then(res => res.json())
+            .then(json => {
+                if (json.success) {
+                    output.value = json.data.url;
+                    status.innerText = "Upload Complete!";
+                    status.style.color = "var(--success)";
+                    if(preview) {
+                        preview.src = json.data.url;
+                        preview.style.display = 'block';
+                    }
+                } else {
+                    status.innerText = "Upload failed.";
+                    status.style.color = "var(--danger)";
+                }
+            })
+            .catch(() => {
+                status.innerText = "Network error.";
+                status.style.color = "var(--danger)";
+            });
+        }
+    }
+
+    function executeGalleryScreenshotUploadProcessingStream(file) {
         if(!file) return;
-        if (uploadedScreenshotsList.length >= 5) { alert("Maximum 5 screenshots allowed."); return; }
-        
         const status = document.getElementById('screenshotProcessStatus');
-        status.innerText = "Uploading Screenshot...";
+        const wrapper = document.getElementById('screenshotPreviewWrapper');
+
+        status.innerText = "Uploading...";
         status.style.color = "var(--warning)";
-        
+
         const formData = new FormData();
         formData.append("image", file);
-        
-        fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: formData })
-        .then(res => res.json()).then(json => {
+
+        fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+            method: "POST",
+            body: formData
+        })
+        .then(res => res.json())
+        .then(json => {
             if (json.success) {
-                uploadedScreenshotsList.push(json.data.url);
-                renderScreenshotsUI();
-                status.innerText = "Screenshot Uploaded!";
+                const imgUrl = json.data.url;
+                uploadedScreenshotsList.push(imgUrl);
+
+                let thumb = document.createElement('img');
+                thumb.src = imgUrl;
+                thumb.className = 'sc-preview-thumb';
+                wrapper.appendChild(thumb);
+
+                status.innerText = `Screenshot ${uploadedScreenshotsList.length}/5 Synced!`;
                 status.style.color = "var(--success)";
-                setTimeout(()=> status.innerText='', 3000);
-            } else { status.innerText = "Upload failed."; status.style.color = "var(--danger)"; }
+            } else {
+                status.innerText = "Upload failed.";
+                status.style.color = "var(--danger)";
+            }
             document.getElementById('screenshotFileBtn').value = '';
-        }).catch(() => { status.innerText = "Network error."; status.style.color = "var(--danger)"; });
-    };
-
-    window.renderScreenshotsUI = function() {
-        const wrapper = document.getElementById('screenshotPreviewWrapper');
-        if (!wrapper) return;
-        
-        wrapper.querySelectorAll('.sc-preview-box').forEach(el => el.remove());
-        const addLabel = document.getElementById('scUploadLabel');
-        
-        uploadedScreenshotsList.forEach((url, index) => {
-            const box = document.createElement('div');
-            box.className = 'sc-preview-box';
-            box.style.cssText = 'position:relative; width:70px; height:110px; flex-shrink:0;';
-            box.innerHTML = `
-                <img src="${url}" style="width:100%; height:100%; border-radius:12px; object-fit:cover; border:1px solid var(--border-color);">
-                <div onclick="removeScreenshotItem(${index})" style="position:absolute; top:-6px; right:-6px; width:22px; height:22px; background:var(--danger); color:#fff; border-radius:50%; display:flex; justify-content:center; align-items:center; cursor:pointer; font-size:10px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:2px solid var(--bg-surface);"><i class="fas fa-times"></i></div>
-            `;
-            wrapper.insertBefore(box, addLabel);
+        })
+        .catch(() => {
+            status.innerText = "Network error.";
+            status.style.color = "var(--danger)";
         });
-        
-        if (uploadedScreenshotsList.length >= 5) { addLabel.style.display = 'none'; } 
-        else { addLabel.style.display = 'flex'; }
-    };
-
-    window.removeScreenshotItem = function(index) {
-        uploadedScreenshotsList.splice(index, 1);
-        renderScreenshotsUI();
-    };
+    }
 
     // ==========================================================================
-    // 9. DATABASE COMMIT (UPLOAD OR EDIT)
+    // 9. DATABASE COMMIT PACKAGES CONTROLLER
     // ==========================================================================
-    window.submitAppFormData = function(mode) {
+    window.commitPackageToPendingDatabaseNode = function() {
         const name = document.getElementById('pName').value.trim();
-        const mainLinkUrl = document.getElementById('pMainLinkUrl').value.trim();
-        let collectedLinks = [];
-        
-        const container = document.getElementById('dynamicLinksContainer');
-        const titles = container.querySelectorAll('.ex-link-title');
-        const urls = container.querySelectorAll('.ex-link-url');
+        const devName = document.getElementById('pDevName').value.trim(); 
+        const mainLink = document.getElementById('pMainLink').value.trim();
+        const logoData = document.getElementById('logoUrlOutput').value.trim();
+        const isTrendingChecked = document.getElementById('pTrendingCheck').checked;
+        const isPushNotificationChecked = document.getElementById('pPushNotificationCheck').checked;
 
+        if (!name || !mainLink) {
+            alert("App Name and Download Link are required.");
+            return;
+        }
+
+        let collectedExtraLinks = [];
+        const titles = document.querySelectorAll('.ex-link-title');
+        const urls = document.querySelectorAll('.ex-link-url');
+        
         for(let i = 0; i < urls.length; i++) {
             let tVal = titles[i].value.trim();
             let uVal = urls[i].value.trim();
             if(uVal !== "") {
-                collectedLinks.push({ title: tVal || `Link ${i + 1}`, url: uVal });
+                collectedExtraLinks.push({
+                    title: tVal || `Link ${i + 1}`,
+                    url: uVal
+                });
             }
         }
 
-        if (!name || mainLinkUrl === "") {
-            alert("App Name and Main Download Link are required."); return;
-        }
-
         const btn = document.getElementById('executePublishBtn');
-        btn.innerText = "SAVING..."; btn.disabled = true;
+        btn.innerText = "UPLOADING...";
+        btn.disabled = true;
+
+        const categoryVal = document.getElementById('pCat').value;
+        const videoLinkVal = document.getElementById('pVideoLink') ? document.getElementById('pVideoLink').value.trim() : "";
 
         const transactionalPackagePayload = {
             appName: name,
-            developerName: document.getElementById('pDevName').value.trim() || (userProfile?userProfile.name:"Unknown Developer"), 
+            developerName: devName || userProfile.name || "Unknown Developer", 
             version: document.getElementById('pVer').value.trim() || "1.0",
             size: document.getElementById('pSize').value.trim() || "0 MB",
             appType: document.getElementById('pType').value,
-            category: document.getElementById('pCat').value,
+            category: categoryVal,
             coinPrice: parseInt(document.getElementById('pCoinPrice').value) || 0,
-            videoLink: document.getElementById('pVideoLink') ? document.getElementById('pVideoLink').value.trim() : "",
-            isTrending: document.getElementById('pTrendingCheck').checked,
-            sendNotification: document.getElementById('pPushNotificationCheck').checked, 
-            logoUrl: document.getElementById('logoUrlOutput').value.trim() || "https://via.placeholder.com/150/121212/00e6b8?text=APP",
+            videoLink: videoLinkVal,
+            isTrending: isTrendingChecked,
+            sendNotification: isPushNotificationChecked, 
+            logoUrl: logoData || "https://via.placeholder.com/150/121212/00e6b8?text=APP",
             screenshots: uploadedScreenshotsList, 
-            downloadUrl: mainLinkUrl,
-            extraLinks: collectedLinks, 
+            downloadUrl: mainLink,
+            extraLinks: collectedExtraLinks, 
             tags: uploadedTagsList, 
-            description: document.getElementById('pDescription').value.trim() || "No description provided."
+            description: document.getElementById('pDescription').value.trim() || "No description provided.",
+            uploaderUid: currentUser.uid,
+            uploaderName: userProfile.name,
+            timestamp: firebase.database.ServerValue.TIMESTAMP,
+            autoApproveTime: Date.now() + 60000, 
+            status: 'pending',
+            downloads: 0,
+            views: 0,
+            rating: 0,
+            totalRatingsCount: 0,
+            ratingDistribution: {
+                1: 0, 2: 0, 3: 0, 4: 0, 5: 0
+            }
         };
 
-        if (mode === 'upload') {
-            transactionalPackagePayload.uploaderUid = currentUser.uid;
-            transactionalPackagePayload.uploaderName = userProfile.name;
-            transactionalPackagePayload.timestamp = firebase.database.ServerValue.TIMESTAMP;
-            transactionalPackagePayload.autoApproveTime = Date.now() + 60000; 
-            transactionalPackagePayload.status = 'pending';
-            transactionalPackagePayload.downloads = 0;
-            transactionalPackagePayload.views = 0;
-            transactionalPackagePayload.rating = 0;
-            transactionalPackagePayload.totalRatingsCount = 0;
-            transactionalPackagePayload.ratingDistribution = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
-
-            db.ref('pending_apps').push(transactionalPackagePayload).then(() => {
-                alert("App uploaded successfully! It will be live in 1 minute.");
-                document.getElementById('dynamicAppFormModal').remove();
-                if (typeof window.fetchMyUploadedApps === 'function') window.fetchMyUploadedApps();
-            });
-        } else if (mode === 'edit') {
-            db.ref(`${currentEditingNode}/${currentEditingAppId}`).update(transactionalPackagePayload).then(() => {
-                alert("Application Edited and Synchronized Successfully!");
-                document.getElementById('dynamicAppFormModal').remove();
-                if (typeof window.fetchMyUploadedApps === 'function') window.fetchMyUploadedApps();
-                if (typeof window.loadStoreFeed === 'function') window.loadStoreFeed();
-            });
-        }
+        db.ref('pending_apps').push(transactionalPackagePayload).then(() => {
+            alert("App uploaded successfully! It will be live in 1 minute.");
+            document.getElementById('dynamicUploadModal').remove();
+        }).catch((err) => {
+            alert("Error: " + err.message);
+            btn.innerText = "UPLOAD APP";
+            btn.disabled = false;
+        });
     };
 
     // ==========================================================================
-    // 10. SYSTEM NOTIFICATIONS & BACKGROUND CONTROLLERS
+    // 10. IN-APP SYSTEM NOTIFICATIONS
     // ==========================================================================
+    window.clearLocalNotifications = function() {
+        document.getElementById('notificationInboxDisplay').innerHTML = `<div class="empty-msg" style="text-align:center; color:var(--text-secondary); padding:40px;"><i class="fas fa-trash-alt" style="font-size:30px; margin-bottom:10px;"></i><br>Inbox cleared locally.</div>`;
+        document.getElementById('notiAlert').style.display = 'none';
+    };
+
     function listenForLiveSystemNotifications() {
         const inbox = document.getElementById('notificationInboxDisplay');
         const badge = document.getElementById('notiAlert');
@@ -664,17 +646,21 @@ document.addEventListener('DOMContentLoaded', () => {
             notices.forEach(note => {
                 const alertClass = note.type === 'alert' ? 'system-alert' : '';
                 let clickAction = "";
+                let cursorStyle = "";
                 let linkIndicator = "";
                 
                 if (note.link && note.link.trim() !== "") {
                     let safeUrl = note.link;
-                    if (!/^https?:\/\//i.test(safeUrl) && !safeUrl.startsWith('details.html')) safeUrl = 'https://' + safeUrl;
+                    if (!/^https?:\/\//i.test(safeUrl) && !safeUrl.startsWith('details.html')) {
+                        safeUrl = 'https://' + safeUrl;
+                    }
                     clickAction = `onclick="window.open('${safeUrl}', '_blank')"`;
+                    cursorStyle = `cursor: pointer; transition: transform 0.2s; border-color: var(--primary);`;
                     linkIndicator = `<i class="fas fa-external-link-alt" style="color:var(--primary); font-size:12px; float:right;"></i>`;
                 }
 
                 html += `
-                    <div class="noti-card ${alertClass}" ${clickAction} style="cursor:pointer; border-color:var(--primary);">
+                    <div class="noti-card ${alertClass}" ${clickAction} style="${cursorStyle}">
                         <div class="noti-header">
                             <span class="noti-title"><i class="fas fa-bullhorn"></i> ${note.title} ${linkIndicator}</span>
                             <span class="noti-time">${note.timeString || "Recent"}</span>
@@ -687,6 +673,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // ==========================================================================
+    // 11. AUTOMATED APP DEPLOYMENT & AUTO-NOTIFICATION BOT (CRON SIMULATOR)
+    // ==========================================================================
     function runSystemAutoApproveEngine() {
         setInterval(() => {
             db.ref('pending_apps').once('value').then((snapshot) => {
@@ -694,9 +683,29 @@ document.addEventListener('DOMContentLoaded', () => {
                     const currentTimeStamp = Date.now();
                     snapshot.forEach((child) => {
                         let appRecord = child.val();
+                        
                         if (currentTimeStamp >= appRecord.autoApproveTime) {
                             appRecord.status = 'approved';
+                            appRecord.approvedBy = 'System-Auto-1Min';
+                            appRecord.approvedAt = firebase.database.ServerValue.TIMESTAMP;
+
                             db.ref(`store_apps/${child.key}`).set(appRecord).then(() => {
+                                
+                                if (appRecord.sendNotification === true) {
+                                    const date = new Date();
+                                    const timeStr = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) + " | " + date.toLocaleDateString();
+                                    
+                                    db.ref('system_broadcasts').push({
+                                        title: "New Application Live!",
+                                        message: `🚀 '${appRecord.appName}' (v${appRecord.version}) has been deployed successfully. Tap to explore details.`,
+                                        type: "normal",
+                                        timeString: timeStr,
+                                        sender: "System Bot",
+                                        link: `details.html?id=${child.key}`, 
+                                        timestamp: firebase.database.ServerValue.TIMESTAMP
+                                    });
+                                }
+
                                 db.ref(`pending_apps/${child.key}`).remove();
                             });
                         }
@@ -707,33 +716,57 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================================================
-    // 11. FETCH MY UPLOADS & DELETE LOGIC
+    // 12. DIRECT AVATAR UPLOAD LISTENER & MY UPLOADS LOGIC
     // ==========================================================================
     window.fetchMyUploadedApps = function() {
         const container = document.getElementById('myUploadsContainer');
-        if (!currentUser || !container) return;
+        if (!currentUser) {
+             if(container) container.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-dim);">Please login to view your uploads.</div>`;
+             return;
+        }
 
-        container.innerHTML = `<div style="text-align:center; padding:30px;"><i class="fas fa-circle-notch fa-spin" style="color:var(--primary); font-size:24px;"></i><p style="margin-top:10px;">Scanning...</p></div>`;
+        container.innerHTML = `<div style="text-align:center; padding:30px;"><i class="fas fa-circle-notch fa-spin" style="color:var(--primary); font-size:24px;"></i><p style="margin-top:10px;">Scanning your ecosystem packages...</p></div>`;
 
-        Promise.all([ db.ref('store_apps').once('value'), db.ref('pending_apps').once('value') ]).then(([storeSnap, pendingSnap]) => {
+        let html = '';
+        Promise.all([
+            db.ref('store_apps').once('value'),
+            db.ref('pending_apps').once('value')
+        ]).then(([storeSnap, pendingSnap]) => {
             let userApps = [];
-            if (storeSnap.exists()) storeSnap.forEach(child => { if (child.val().uploaderUid === currentUser.uid) userApps.push({ id: child.key, node: 'store_apps', ...child.val() }); });
-            if (pendingSnap.exists()) pendingSnap.forEach(child => { if (child.val().uploaderUid === currentUser.uid) userApps.push({ id: child.key, node: 'pending_apps', ...child.val() }); });
+
+            if (storeSnap.exists()) {
+                storeSnap.forEach(child => {
+                    let app = child.val();
+                    if (app.uploaderUid === currentUser.uid) {
+                        userApps.push({ id: child.key, node: 'store_apps', ...app });
+                    }
+                });
+            }
+
+            if (pendingSnap.exists()) {
+                pendingSnap.forEach(child => {
+                    let app = child.val();
+                    if (app.uploaderUid === currentUser.uid) {
+                        userApps.push({ id: child.key, node: 'pending_apps', ...app });
+                    }
+                });
+            }
 
             if (userApps.length === 0) {
-                container.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-dim);"><i class="fas fa-box-open" style="font-size:35px; margin-bottom:10px; opacity:0.5;"></i><p>No uploads yet.</p></div>`;
+                container.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-dim);"><i class="fas fa-box-open" style="font-size:35px; margin-bottom:10px; opacity:0.5;"></i><p>You have not published any package blocks yet.</p></div>`;
                 return;
             }
 
-            let html = '';
             userApps.reverse().forEach(app => {
-                const statusBadge = app.node === 'store_apps' ? `<span style="color:var(--success); font-size:10px; font-weight:bold; background:rgba(46,213,115,0.1); padding:2px 6px; border-radius:4px; border:1px solid rgba(46,213,115,0.2);">Live</span>` : `<span style="color:var(--warning); font-size:10px; font-weight:bold; background:rgba(255,165,0,0.1); padding:2px 6px; border-radius:4px; border:1px solid rgba(255,165,0,0.2);">Pending</span>`;
+                const isLive = app.node === 'store_apps';
+                const statusBadge = isLive ? `<span style="color:var(--success); font-size:10px; font-weight:bold; background:rgba(46,213,115,0.1); padding:2px 6px; border-radius:4px; border:1px solid rgba(46,213,115,0.2);">Live Store</span>` : `<span style="color:var(--warning); font-size:10px; font-weight:bold; background:rgba(255,165,0,0.1); padding:2px 6px; border-radius:4px; border:1px solid rgba(255,165,0,0.2);">Pending Review</span>`;
+                
                 html += `
-                    <div style="display:flex; align-items:center; gap:12px; background:rgba(0,0,0,0.2); margin-bottom:12px; padding:12px; border-radius:12px; border:1px solid var(--border-color);">
-                        <img src="${app.logoUrl}" style="width:48px; height:48px; border-radius:10px; object-fit:cover; border:1px solid var(--border-color);">
+                    <div style="display:flex; align-items:center; gap:12px; background:rgba(0,0,0,0.2); margin-bottom:12px; padding:12px; border-radius:12px; border:1px solid var(--border-glass);">
+                        <img src="${app.logoUrl}" style="width:48px; height:48px; border-radius:10px; object-fit:cover; border:1px solid var(--border-glass);">
                         <div style="flex:1; overflow:hidden;">
                             <h4 style="font-size:14px; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:4px;">${app.appName}</h4>
-                            <p style="font-size:12px; color:var(--text-secondary); display:flex; align-items:center; gap:8px;">v${app.version} • ${statusBadge}</p>
+                            <p style="font-size:12px; color:var(--text-dim); display:flex; align-items:center; gap:8px;">v${app.version} • ${statusBadge}</p>
                         </div>
                         <div style="display:flex; gap:8px;">
                             <button style="background:rgba(0,168,255,0.1); color:var(--info); border:none; width:35px; height:35px; border-radius:8px; cursor:pointer;" onclick="window.openUserAppEdit('${app.id}', '${app.node}')"><i class="fas fa-edit"></i></button>
@@ -746,81 +779,61 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
+    window.openUserAppEdit = function(appId, node) {
+        db.ref(`${node}/${appId}`).once('value').then(snap => {
+            if (!snap.exists()) return;
+            const app = snap.val();
+            
+            document.getElementById('euAppId').value = appId;
+            document.getElementById('euAppStatus').value = node;
+            document.getElementById('euName').value = app.appName || "";
+            document.getElementById('euVer').value = app.version || "";
+            document.getElementById('euSize').value = app.size || "";
+            document.getElementById('euMainLink').value = app.downloadUrl || "";
+            document.getElementById('euDescription').value = app.description || "";
+            
+            document.getElementById('userAppEditModal').classList.add('active');
+        });
+    };
+
+    window.submitUserAppUpdate = function() {
+        const appId = document.getElementById('euAppId').value;
+        const node = document.getElementById('euAppStatus').value;
+        const name = document.getElementById('euName').value.trim();
+        const ver = document.getElementById('euVer').value.trim();
+        const size = document.getElementById('euSize').value.trim();
+        const link = document.getElementById('euMainLink').value.trim();
+        const desc = document.getElementById('euDescription').value.trim();
+
+        if (!name || !link) {
+            alert("App Name and Download Link are required parameters.");
+            return;
+        }
+
+        let updates = {
+            appName: name,
+            version: ver || "1.0",
+            size: size || "0 MB",
+            downloadUrl: link,
+            description: desc || "No description provided."
+        };
+
+        db.ref(`${node}/${appId}`).update(updates).then(() => {
+            alert("Application Package Synchronized Successfully!");
+            document.getElementById('userAppEditModal').classList.remove('active');
+            window.fetchMyUploadedApps();
+            if (typeof window.loadStoreFeed === 'function') window.loadStoreFeed();
+        });
+    };
+
     window.deleteUserApp = function(appId, node) {
-        if (confirm("Are you sure you want to permanently delete this app?")) {
+        if (confirm("DANGER: Are you sure you want to permanently wipe this application block registry from the master server?")) {
             db.ref(`${node}/${appId}`).remove().then(() => {
-                alert("App deleted successfully.");
+                alert("Wipe lifecycle transaction completed.");
                 window.fetchMyUploadedApps();
                 if (typeof window.loadStoreFeed === 'function') window.loadStoreFeed();
             });
         }
     };
 
-    // ==========================================================================
-    // 12. GLOBAL SEARCH (FIXED)
-    // ==========================================================================
-    function initializeGlobalSearch() {
-        const searchInput = document.getElementById('storeSearchInput');
-        if(!searchInput) return;
-
-        searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.trim().toLowerCase();
-            const grid = document.getElementById('searchResultGrid');
-            if(!grid) return;
-
-            if(query === '') {
-                grid.innerHTML = `<div style="text-align: center; padding: 40px; grid-column: 1/-1; color: var(--text-secondary);"><i class="fas fa-search-plus" style="font-size: 40px; margin-bottom: 15px; color: var(--border-color);"></i><h3>Type any keyword to search</h3></div>`;
-                return;
-            }
-
-            grid.innerHTML = `<div style="text-align:center; padding: 50px; grid-column: 1/-1;"><i class="fas fa-spinner fa-spin" style="font-size:32px; color:var(--primary);"></i><p style="margin-top:15px; color:var(--text-secondary); font-weight:500;">Searching...</p></div>`;
-
-            // FIXED: Removed strict .equalTo('approved') filter for global search
-            db.ref('store_apps').once('value').then(snapshot => {
-                if(!snapshot.exists()) { grid.innerHTML = `<div style="text-align:center; padding:50px; grid-column:1/-1; color:var(--text-secondary);">No apps found.</div>`; return; }
-
-                let results = [];
-                snapshot.forEach(child => {
-                    let app = { id: child.key, ...child.val() };
-                    let appName = (app.appName || "").toLowerCase();
-                    let devName = (app.developerName || app.uploaderName || "").toLowerCase();
-                    let tags = app.tags || [];
-                    
-                    let isMatch = false;
-                    if(appName.includes(query) || devName.includes(query)) { isMatch = true; } 
-                    else { for(let t of tags) { if(t.toLowerCase().includes(query)) { isMatch = true; break; } } }
-                    if(isMatch) results.push(app);
-                });
-
-                if(results.length === 0) {
-                    grid.innerHTML = `<div style="text-align:center; padding:50px; grid-column:1/-1; color:var(--text-secondary);"><i class="fas fa-box-open" style="font-size:40px; margin-bottom:15px; opacity:0.5;"></i><p>No results found for "${query}"</p></div>`;
-                    return;
-                }
-
-                let html = '';
-                results.forEach(app => {
-                    const priceLabel = app.category === 'paid' ? `${app.coinPrice || 0} Coins` : (app.category === 'locked' ? 'LOCKED' : 'FREE');
-                    const badgeClass = app.category === 'paid' ? 'badge-paid' : (app.category === 'locked' ? 'badge-locked' : 'badge-free');
-
-                    html += `
-                        <div class="app-card" onclick="window.location.href='details.html?id=${app.id}'">
-                            <span class="badge ${badgeClass}">${priceLabel}</span>
-                            <img src="${app.logoUrl}" class="app-icon-large" loading="lazy" onerror="this.src='https://via.placeholder.com/75/121212/00e6b8?text=FILE'">
-                            <div class="app-info-list" style="width: 100%; word-wrap: break-word; white-space: normal;">
-                                <h3 class="app-title-list" style="white-space: normal; overflow: visible; text-overflow: unset; line-height: 1.3; font-size: 17px;">${app.appName} <i class="fas fa-check-circle verified-tick" style="color:var(--primary); font-size:13px; margin-left:4px;"></i></h3>
-                                <div class="app-dev-list">${app.developerName || app.uploaderName || "Developer"} • ${app.size || "0 MB"}</div>
-                                <div class="app-meta-list">
-                                    <span style="color:var(--primary); font-weight:700;"><i class="fas fa-arrow-alt-circle-down"></i> ${app.downloads || 0}</span>
-                                    <span>v${app.version || "1.0"}</span>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-                grid.innerHTML = html;
-            });
-        });
-    }
-
-    initializeGlobalSearch();
 });
